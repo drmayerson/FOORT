@@ -21,18 +21,12 @@ Term Geodesic::Update()
 	m_CurrentPos = newpos;
 	m_CurrentVel = newvel;
 
-	// Does metric want termination (due to e.g. horizon)?
-	m_TermCond = m_theMetric->InternalTerminate(m_CurrentPos);
-
-	// If metric does not want termination, check all other Terminations
-	if (m_TermCond == Term::Continue)
+	// Check all possible termination conditions
+	for (const auto& t : m_AllTerminations)
 	{
-		for (const auto& t : m_AllTerminations)
-		{
-			m_TermCond = t->CheckTermination(*this);
-			if (m_TermCond != Term::Continue)
-				break;
-		}
+		m_TermCond = t->CheckTermination(*this);
+		if (m_TermCond != Term::Continue)
+			break;
 	}
 
 	// No matter if we terminate now or not, loop through all Diagnostics to update them

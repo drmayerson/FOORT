@@ -40,7 +40,7 @@ namespace Config
 
 	// Use configuration to set the Terminations bitflag appropriately;
 	// initialize all TerminationOptions for all Terminations that are turned on;
-	void InitializeTerminations(const ConfigObject& theCfg, TermBitflag& allterms);
+	void InitializeTerminations(const ConfigObject& theCfg, TermBitflag& allterms, const Metric* theMetric);
 
 	std::unique_ptr<Mesh> GetMesh(const ConfigObject& theCfg, DiagBitflag valdiag);
 	std::unique_ptr<ViewScreen> GetViewScreen(const ConfigObject& theCfg, DiagBitflag valdiag, const Metric* theMetric);

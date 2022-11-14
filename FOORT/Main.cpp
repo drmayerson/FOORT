@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
 
     // Terminations
     TermBitflag AllTerms;
-    Config::InitializeTerminations(cfgObject, AllTerms);
+    Config::InitializeTerminations(cfgObject, AllTerms, theM.get());
     ScreenOutput("All Terminations that have been turned on are:", dbgoutput);
     ScreenOutput("<begin list>", dbgoutput);
     { // temp scope to create/destroy this termination vector

@@ -1,5 +1,6 @@
 #include"Terminations.h"
 #include"Geodesic.h"
+#include"Metric.h"
 
 #include<cassert>
 
@@ -11,6 +12,11 @@ TerminationUniqueVector CreateTerminationVector(TermBitflag termflags)
 
 	TerminationUniqueVector theTermVector{};
 
+	// Is Horizon turned on?
+	if (termflags & Term_Horizon)
+	{
+		theTermVector.emplace_back(new HorizonTermination{});
+	}
 	// Is BoundarySphere turned on?
 	if (termflags & Term_BoundarySphere)
 	{
@@ -26,6 +32,24 @@ TerminationUniqueVector CreateTerminationVector(TermBitflag termflags)
 	// (more ifs for other terminations as they are added)
 
 	return theTermVector;
+}
+
+Term HorizonTermination::CheckTermination(const Geodesic& theGeodesic)
+{
+	Term ret = Term::Continue;
+	//ScreenOutput(toString(p),OutputLevel::Level_4_DEBUG);
+	//ScreenOutput(std::to_string(m_HorizonRadius), OutputLevel::Level_4_DEBUG);
+
+	// Check to see if radius is almost at horizon; if we are using a logarithmic r scale (u=log(r)) then first exponentiate to get
+	// true radius
+	real thegeodesicr = (theGeodesic.getCurrentPos())[1];
+	real r = TermOptions->m_rLogScale ? exp(thegeodesicr) : thegeodesicr;
+	if (r < TermOptions->m_HorizonRadius * (1 + TermOptions->m_AtHorizonEps))
+	{
+		ret = Term::Horizon;
+	}
+
+	return ret;
 }
 
 // Check to see if Boundary Sphere is reached, if so return Term::BoundarySphere

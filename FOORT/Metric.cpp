@@ -73,27 +73,20 @@ real Metric::getKretschmann(const Point& p) const
 /// SphericalHorizonMetric functions
 /// </summary>
 
-SphericalHorizonMetric::SphericalHorizonMetric(real HorizonRadius, real AtHorizonEps, bool rLogScale)
-	: m_rLogScale{ rLogScale }, m_HorizonRadius{ HorizonRadius }, m_AtHorizonEps{AtHorizonEps}
+SphericalHorizonMetric::SphericalHorizonMetric(real HorizonRadius, bool rLogScale)
+	: m_rLogScale{ rLogScale }, m_HorizonRadius{ HorizonRadius }
 {
 	//ScreenOutput("SphericalHorizon constructor: " + std::to_string(m_HorizonRadius), OutputLevel::Level_4_DEBUG);
 }
 
-Term SphericalHorizonMetric::InternalTerminate(const Point& p) const
+real SphericalHorizonMetric::getHorizonRadius() const
 {
-	Term ret = Term::Continue;
-	//ScreenOutput(toString(p),OutputLevel::Level_4_DEBUG);
-	//ScreenOutput(std::to_string(m_HorizonRadius), OutputLevel::Level_4_DEBUG);
+	return m_HorizonRadius;
+}
 
-	// Check to see if radius is almost at horizon; if we are using a logarithmic r scale (u=log(r)) then first exponentiate to get
-	// true radius
-	real r = m_rLogScale ? exp(p[1]) : p[1];
-	if (r < m_HorizonRadius * (1 + m_AtHorizonEps))
-	{
-		ret = Term::Horizon;
-	}
-		
-	return ret;
+bool SphericalHorizonMetric::getrLogScale() const
+{
+	return m_rLogScale;
 }
 
 
@@ -102,9 +95,9 @@ Term SphericalHorizonMetric::InternalTerminate(const Point& p) const
 /// </summary>
 
 
-KerrMetric::KerrMetric(real aParam, real atHorizonEps, bool rLogScale)
+KerrMetric::KerrMetric(real aParam, bool rLogScale)
 	: m_aParam{ aParam }, 
-	SphericalHorizonMetric(1 + sqrt(1 - aParam * aParam), atHorizonEps, rLogScale)
+	SphericalHorizonMetric(1 + sqrt(1 - aParam * aParam), rLogScale)
 {
 	assert(dimension == 4 && "Cannot construct Kerr metric in spacetime dimension other than 4!");
 
@@ -113,7 +106,7 @@ KerrMetric::KerrMetric(real aParam, real atHorizonEps, bool rLogScale)
 
 	ScreenOutput("Kerr metric constructed with a = " + std::to_string(m_aParam)
 		+ "; horizon at: " + std::to_string(m_HorizonRadius) + "; using log(r): " + std::to_string(m_rLogScale)
-		+ "; epsilon at horizon: " + std::to_string(m_AtHorizonEps) + ".", OutputLevel::Level_4_DEBUG);
+		 + ".", OutputLevel::Level_4_DEBUG);
 	
 }
 
@@ -203,9 +196,4 @@ TwoIndex FlatSpaceMetric::getMetric_uu(const Point& p) const
 {
 	return TwoIndex{ {{-1, 0,0,0}, {0,1,0,0}, {0,0,1/(p[1] * p[1]),0},{0,0,0,1/(p[1] * p[1] * sin(p[2]) * sin(p[2]))}} };
 
-}
-
-Term FlatSpaceMetric::InternalTerminate(const Point& p) const
-{
-	return Term::Continue;
 }

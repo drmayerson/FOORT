@@ -4,7 +4,21 @@
 #include<vector>
 #include<memory>
 
-#include"Metric.h"
+#include"Geometry.h"
+
+//#include"Metric.h"
+
+// Possible termination conditions that can be set by Terminations
+enum class Term
+{
+	Continue = 0,		// All is right, continue integrating geodesic
+	Horizon,			// STOP, encountered horizon (set by Metric)
+	Singularity,		// STOP, encountered singularity/center (set by Metric)
+	BoundarySphere,		// STOP, encountered boundary sphere (set by Termination::BoundarySphereTermination)
+	TimeOut,			// STOP, taken too many steps (set by Termination::TimeOutTermination)
+
+	Maxterms			// Number of termination conditions that exist
+};
 
 // Termination bitflags
 // Used for constructing vector of Terminations
@@ -15,9 +29,11 @@ using TermBitflag = std::uint16_t;
 constexpr TermBitflag Term_None{ 0b0000'0000'0000'0000 };
 constexpr TermBitflag Term_BoundarySphere{ 0b0000'0000'0000'0001 };
 constexpr TermBitflag Term_TimeOut{ 0b0000'0000'0000'0010 };
+constexpr TermBitflag Term_Horizon{ 0b0000'0000'0000'0100 };
 
 // Forward declarations needed before Terminations classes are declared
 struct TerminationOptions;
+struct HorizonTermOptions;
 struct BoundarySphereTermOptions;
 struct TimeOutTermOptions;
 
@@ -44,6 +60,17 @@ protected:
 
 // The OWNER vector of derived Termination classes
 using TerminationUniqueVector = std::vector<std::unique_ptr<Termination>>;
+
+
+// Horizon termination: terminate geodesics if they get too close to the horizon
+class HorizonTermination final : public Termination
+{
+public:
+	Term CheckTermination(const Geodesic& theGeodesic) final;
+
+	static std::unique_ptr<HorizonTermOptions> TermOptions;
+};
+
 
 // The Boundary Sphere: this terminates the geodesic (and returns Term::BoundarySphere) if 
 // the geodesic reaches outside of the boundary sphere
@@ -84,6 +111,20 @@ public:
 
 	const int UpdateEveryNSteps;
 };
+
+// Options class for HorizonTermination; keeps track of location of horizon radius and the epsilon to terminate away from the horizon
+struct HorizonTermOptions : public TerminationOptions
+{
+public:
+	HorizonTermOptions(real HorizonRadius, bool rLogScale, real AtHorizonEps, int Nsteps) :
+		m_HorizonRadius{ HorizonRadius }, m_AtHorizonEps{ AtHorizonEps }, m_rLogScale{ rLogScale }, TerminationOptions(Nsteps)
+	{}
+
+	const real m_HorizonRadius;
+	const real m_AtHorizonEps;
+	const bool m_rLogScale;
+};
+
 
 // Options class for BoundarySphere; has to keep track of the BoundarySphere's radius
 struct BoundarySphereTermOptions : public TerminationOptions

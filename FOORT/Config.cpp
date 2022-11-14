@@ -8,8 +8,8 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 	std::string MetricName{};
 
 	// SET DEFAULTS HERE: Kerr with a = 0.5, epsHorizon = 0.01
-	std::unique_ptr<Metric> TheMetric{ new KerrMetric{0.5,0.01} };
-	std::string DefaultString{ "Kerr with a = 0.5, epsilon_horizon = 0.01" };
+	std::unique_ptr<Metric> TheMetric{ new KerrMetric{0.5} };
+	std::string DefaultString{ "Kerr with a = 0.5" };
 
 	// Get the root collection
 	ConfigSetting& root = theCfg.getRoot();
@@ -49,21 +49,13 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 					Output_Other_Default);
 			}
 
-			// Second setting to look up: (relative) radial distance to horizon before stopping integration
-			double epsHorizon{ 0.01 };
-			if (!MetricSettings.lookupValue("Epsilon_Horizon", epsHorizon))
-			{
-				ScreenOutput("Kerr: no value for Epsilon_Horizon given. Using default: " + std::to_string(epsHorizon) + ".",
-					Output_Other_Default);
-			}
-
-			// Third setting to look up: using a logarithmic r coordinate or not.
+			// Second setting to look up: using a logarithmic r coordinate or not.
 			// Don't need to output message if setting not found
 			bool rLogScale{ false };
 			MetricSettings.lookupValue("RLogScale", rLogScale);
 
 			// All settings complete; create Metric object!
-			TheMetric = std::unique_ptr<Metric>(new KerrMetric{ theKerra,epsHorizon, rLogScale });
+			TheMetric = std::unique_ptr<Metric>(new KerrMetric{ theKerra, rLogScale });
 		}
 		else if (MetricName == "flatspace")
 		{
@@ -216,6 +208,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 }
 
 // DECLARATION OF ALL static TerminationOptions (for all types of Terminations) needed here!
+std::unique_ptr<HorizonTermOptions> HorizonTermination::TermOptions;
 std::unique_ptr<BoundarySphereTermOptions> BoundarySphereTermination::TermOptions;
 std::unique_ptr<TimeOutTermOptions> TimeOutTermination::TermOptions;
 
@@ -224,7 +217,7 @@ std::unique_ptr<TimeOutTermOptions> TimeOutTermination::TermOptions;
 /// Terminations switch:  Use configuration to set the Termination bitflag appropriately;
 /// initialize all TerminationOptions for all Terminations that are turned on;
 /// </summary>
-void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& allterms)
+void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& allterms, const Metric* theMetric)
 {
 	// First set the flag to all zeros
 	allterms = Term_None;
@@ -255,6 +248,40 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 				&& AllTermSettings[TermName].lookupValue("On", termison)
 				&& termison;
 		};
+
+		if (CheckIfTermOn("Horizon"))
+		{
+			
+			// Make sure metric is of the horizon type!
+			const SphericalHorizonMetric* sphermetric = dynamic_cast<const SphericalHorizonMetric*>(theMetric);
+			if (!sphermetric)
+			{
+				ScreenOutput("Horizon Termination turned on but metric does not have horizon! Turning off Horizon Termination.",
+					Output_Important_Default);
+			}
+			else
+			{
+				// Horizon
+				allterms |= Term_Horizon;
+
+				// Look up horizon radius and r log scale
+				real horizonRadius = sphermetric->getHorizonRadius();
+				bool rLogScale = sphermetric->getrLogScale();
+
+				// Setting to look up: (relative) radial distance to horizon before stopping integration
+				double epsHorizon{ 0.01 };
+				AllTermSettings["Horizon"].lookupValue("Epsilon_Horizon", epsHorizon);
+
+				// By default, this Termination updates every step
+				// Check to see if a different update frequency has been specified
+				int updatefreq = 1;
+				AllTermSettings["Horizon"].lookupValue("UpdateFrequency", updatefreq);
+
+				// Initialize the (static) TerminationOptions for Horizon!
+				HorizonTermination::TermOptions =
+					std::unique_ptr<HorizonTermOptions>(new HorizonTermOptions{ horizonRadius,rLogScale,epsHorizon,updatefreq });
+			}
+		}
 
 		// BoundarySphere
 		if (CheckIfTermOn("BoundarySphere"))
