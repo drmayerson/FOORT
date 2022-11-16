@@ -6,6 +6,7 @@
 #include"Geometry.h"
 #include"Diagnostics.h"
 #include<vector>
+#include<cmath>
 
 
 
