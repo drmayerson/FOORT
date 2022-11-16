@@ -43,7 +43,9 @@ public:
 		: m_TotalPixels{ static_cast<int>(sqrt(totalPixels)) * static_cast<int>(sqrt(totalPixels)) },
 		  m_RowColumnSize{static_cast<int>(sqrt(totalPixels))},
 		  Mesh(valdiag)
-	{ assert(dimension == 4 && "SimpleSquareMesh only defined in 4D!"); }
+	{
+		//assert(dimension == 4 && "SimpleSquareMesh only defined in 4D!");
+	}
 
 	bool IsFinished() const override;
 	void getNewInitConds(int index,ScreenPoint &newunitpoint, ScreenIndex &newscreenindex) override;
@@ -91,7 +93,7 @@ public:
 		 m_MaxSubdivide{maxSubdivide}, m_RowColumnSize{ (static_cast<int>(sqrt(initialPixels))-1) * ExpInt(2,maxSubdivide-1) + 1 },
 		m_PixelsLeft{ maxPixels }, m_IterationPixels{ iterationPixels }, Mesh(valdiag)
 	{
-		assert(dimension == 4 && "SquareSubdivisionMesh only defined in 4D!");
+		//assert(dimension == 4 && "SquareSubdivisionMesh only defined in 4D!");
 
 		if (maxPixels < 0)
 			m_InfinitePixels = true;

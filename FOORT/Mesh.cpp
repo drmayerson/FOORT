@@ -2,7 +2,6 @@
 #include"InputOutput.h"
 
 #include<cassert>
-#include<limits>
 
 
 bool SimpleSquareMesh::IsFinished() const
@@ -41,7 +40,7 @@ void SimpleSquareMesh::getNewInitConds(int index, ScreenPoint& newunitpoint, Scr
 void SimpleSquareMesh::EndCurrentLoop()
 {
 	// This Mesh does not need to do anything at the end of the loop. However, all pixels should have been initialized at the end!
-	assert(m_CurrentPixel == m_TotalPixels && "Not all pixels have been initialized!");
+	//assert(m_CurrentPixel == m_TotalPixels && "Not all pixels have been initialized!");
 }
 
 int SimpleSquareMesh::getCurNrGeodesics() const
@@ -59,7 +58,7 @@ InputCertainPixelsMesh::InputCertainPixelsMesh(int totalPixels, DiagBitflag vald
 m_RowColumnSize{ static_cast<int>(sqrt(totalPixels)) },
 Mesh(valdiag)
 {
-	assert(dimension == 4 && "InputCertainPixelsMesh only defined in 4D!");
+	//assert(dimension == 4 && "InputCertainPixelsMesh only defined in 4D!");
 	std::string prefix{ "InputCertainPixelsMesh message: " };
 	OutputLevel outputlvl{ OutputLevel::Level_0_NONE };
 
@@ -99,7 +98,7 @@ Mesh(valdiag)
 		std::cin.clear();
 	}
 
-	assert(m_TotalPixels > 0 && "No pixels added to integration list!");
+	//assert(m_TotalPixels > 0 && "No pixels added to integration list!");
 
 }
 
@@ -112,7 +111,7 @@ int InputCertainPixelsMesh::getCurNrGeodesics() const
 void InputCertainPixelsMesh::EndCurrentLoop()
 {
 	// This Mesh does not need to do anything at the end of the loop. However, all pixels should have been initialized at the end!
-	assert(m_CurrentPixel == m_TotalPixels - 1 && "Not all pixels have been initialized!");
+	//assert(m_CurrentPixel == m_TotalPixels - 1 && "Not all pixels have been initialized!");
 }
 
 void InputCertainPixelsMesh::GeodesicFinished(int index, std::vector<real> finalValues)
@@ -330,7 +329,7 @@ void SquareSubdivisionMesh::EndCurrentLoop()
 			alldone = false;
 		}
 	}
-	assert(alldone && "Not all pixels have been integrated!");
+	//assert(alldone && "Not all pixels have been integrated!");
 
 	// Next, we move all the pixels in CurrentPixelQueue to AllPixels
 	// and update the necessary neighbors of these pixels, then make CurrentPixelQueue empty
@@ -422,8 +421,8 @@ void SquareSubdivisionMesh::UpdateAllNeighbors()
 				[row, col](const PixelInfo& p)
 				{ return p.Index[0] == row && p.Index[1] == col; });
 			// The neighbor should always exist if everything proceeded correctly!
-			assert(rightloc != m_AllPixels.end() && "Something went wrong. Pixel "
-				+ toString(pixel.Index) + " does not have a right neighbor!");
+			//assert(rightloc != m_AllPixels.end() && "Something went wrong. Pixel "
+			//	+ toString(pixel.Index) + " does not have a right neighbor!");
 			pixel.RightNbrIndex = rightloc - m_AllPixels.begin();
 
 			// Find lower neighbor
@@ -433,8 +432,8 @@ void SquareSubdivisionMesh::UpdateAllNeighbors()
 				[row, col](const PixelInfo& p)
 				{ return p.Index[0] == row && p.Index[1] == col; });
 			// The neighbor should always exist if everything proceeded correctly!
-			assert(lowloc != m_AllPixels.end() && "Something went wrong. Pixel "
-				+ toString(pixel.Index) + " does not have a lower neighbor!");
+			//assert(lowloc != m_AllPixels.end() && "Something went wrong. Pixel "
+			//	+ toString(pixel.Index) + " does not have a lower neighbor!");
 			pixel.LowerNbrIndex = lowloc - m_AllPixels.begin();
 		}
 	}

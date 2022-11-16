@@ -6,7 +6,7 @@ SRC = Config.cpp Diagnostics.cpp Geodesic.cpp InputOutput.cpp Integrators.cpp Ma
 OBJ = Config.o Diagnostics.o Geodesic.o InputOutput.o Integrators.o Main.o Mesh.o Metric.o Terminations.o ViewScreen.o
 
 harm: $(OBJ)
-$(CC) $(CFLAGS) -o FOORT $(OBJ) $(LDFLAGS)
+	$(CC) $(CFLAGS) -o FOORT $(OBJ) $(LDFLAGS)
 
 %.o : %.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@
