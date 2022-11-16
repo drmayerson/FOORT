@@ -92,7 +92,11 @@ public:
 	{
 		assert(dimension == 4 && "SquareSubdivisionMesh only defined in 4D!");
 
-		ScreenOutput("SquareSubdivisionMesh constructed: maxPixels: " + std::to_string(maxPixels) + "; m_InitialPixels: "
+		if (maxPixels < 0)
+			m_InfinitePixels = true;
+
+		ScreenOutput("SquareSubdivisionMesh constructed: maxPixels: " + (m_InfinitePixels ? "infinite" : std::to_string(maxPixels))
+			+ "; m_InitialPixels: "
 			+ std::to_string(m_InitialPixels) + "; m_RowColumnSize: " + std::to_string(m_RowColumnSize), OutputLevel::Level_4_DEBUG);
 
 		InitializeFirstGrid();
@@ -142,6 +146,7 @@ protected:
 	const int m_RowColumnSize;
 	const int m_IterationPixels;
 
+	bool m_InfinitePixels;
 	int m_PixelsLeft;
 	std::vector<PixelInfo> m_CurrentPixelQueue{};
 	std::vector<bool> m_CurrentPixelQueueDone{};

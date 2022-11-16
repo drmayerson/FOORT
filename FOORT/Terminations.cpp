@@ -3,6 +3,7 @@
 #include"Metric.h"
 
 #include<cassert>
+#include<string>
 
 // Helper to create a new vector of Terminations, based on the bitflag
 TerminationUniqueVector CreateTerminationVector(TermBitflag termflags)

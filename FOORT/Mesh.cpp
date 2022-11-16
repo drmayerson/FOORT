@@ -7,7 +7,7 @@
 
 bool SimpleSquareMesh::IsFinished() const
 {
-	if (m_CurrentPixel == m_TotalPixels-1)
+	if (m_CurrentPixel == m_TotalPixels)
 		return true;
 	else
 		return false;
@@ -41,7 +41,7 @@ void SimpleSquareMesh::getNewInitConds(int index, ScreenPoint& newunitpoint, Scr
 void SimpleSquareMesh::EndCurrentLoop()
 {
 	// This Mesh does not need to do anything at the end of the loop. However, all pixels should have been initialized at the end!
-	assert(m_CurrentPixel == m_TotalPixels-1 && "Not all pixels have been initialized!");
+	assert(m_CurrentPixel == m_TotalPixels && "Not all pixels have been initialized!");
 }
 
 int SimpleSquareMesh::getCurNrGeodesics() const
@@ -189,9 +189,15 @@ bool SquareSubdivisionMesh::IsFinished() const
 void SquareSubdivisionMesh::SubdivideAndQueue(int ind)
 {
 	// Helper function to find a pixel
-	auto FindPos = [this](int row, int col)
+	auto FindPosBefore = [this](int row, int col)
 	{
 		return std::find_if(m_AllPixels.begin(), m_AllPixels.end(),
+			[row, col](const PixelInfo& pixel)
+			{ return pixel.Index[0] == row && pixel.Index[1] == col; });
+	};
+	auto FindPosCurrent = [this](int row, int col)
+	{
+		return std::find_if(m_CurrentPixelQueue.begin(), m_CurrentPixelQueue.end(),
 			[row, col](const PixelInfo& pixel)
 			{ return pixel.Index[0] == row && pixel.Index[1] == col; });
 	};
@@ -208,11 +214,18 @@ void SquareSubdivisionMesh::SubdivideAndQueue(int ind)
 	// new right neighbor (+0,+1) -- will have neighbors
 	row = m_AllPixels[ind].Index[0];
 	col = m_AllPixels[ind].Index[1] + ExpInt(2, m_MaxSubdivide - newsubdiv);
-	auto newpos = FindPos(row, col);
+	auto newpos = FindPosBefore(row, col);
 	if (newpos == m_AllPixels.end())
 	{
 		// New pixel to integrate; weight is automatically 0
-		m_CurrentPixelQueue.push_back(PixelInfo(ScreenIndex{ row, col }, newsubdiv));
+		// Only add to queue if not already in queue! If already in queue, check to make sure subdivision is set correctly
+		auto curpos = FindPosCurrent(row, col);
+		if (curpos == m_CurrentPixelQueue.end())
+			m_CurrentPixelQueue.push_back(PixelInfo(ScreenIndex{ row, col }, newsubdiv));
+		else
+		{
+				curpos->SubdivideLevel = std::max(curpos->SubdivideLevel, newsubdiv);
+		}
 	}
 	else
 	{
@@ -226,11 +239,18 @@ void SquareSubdivisionMesh::SubdivideAndQueue(int ind)
 	// new lower neighbor (+1,+0) -- will have neighbors
 	row = m_AllPixels[ind].Index[0] + ExpInt(2, m_MaxSubdivide - newsubdiv);
 	col = m_AllPixels[ind].Index[1];
-	newpos = FindPos(row, col);
+	newpos = FindPosBefore(row, col);
 	if (newpos == m_AllPixels.end())
 	{
 		// New pixel to integrate; weight is automatically 0
-		m_CurrentPixelQueue.push_back(PixelInfo(ScreenIndex{ row, col }, newsubdiv));
+		// Only add to queue if not already in queue! If already in queue, check to make sure subdivision is set correctly
+		auto curpos = FindPosCurrent(row, col);
+		if (curpos == m_CurrentPixelQueue.end())
+			m_CurrentPixelQueue.push_back(PixelInfo(ScreenIndex{ row, col }, newsubdiv));
+		else
+		{
+			curpos->SubdivideLevel = std::max(curpos->SubdivideLevel, newsubdiv);
+		}
 	}
 	else
 	{
@@ -244,11 +264,18 @@ void SquareSubdivisionMesh::SubdivideAndQueue(int ind)
 	// new middle pixel (+1,+1) -- will have neighbors
 	row = m_AllPixels[ind].Index[0] + ExpInt(2, m_MaxSubdivide - newsubdiv);
 	col = m_AllPixels[ind].Index[1] + ExpInt(2, m_MaxSubdivide - newsubdiv);
-	newpos = FindPos(row, col);
+	newpos = FindPosBefore(row, col);
 	if (newpos == m_AllPixels.end())
 	{
 		// New pixel to integrate; weight is automatically -1
-		m_CurrentPixelQueue.push_back(PixelInfo(ScreenIndex{ row, col }, newsubdiv));
+		// Only add to queue if not already in queue! If already in queue, check to make sure subdivision is set correctly
+		auto curpos = FindPosCurrent(row, col);
+		if (curpos == m_CurrentPixelQueue.end())
+			m_CurrentPixelQueue.push_back(PixelInfo(ScreenIndex{ row, col }, newsubdiv));
+		else
+		{
+			curpos->SubdivideLevel = std::max(curpos->SubdivideLevel, newsubdiv);
+		}
 	}
 	else
 	{
@@ -262,24 +289,28 @@ void SquareSubdivisionMesh::SubdivideAndQueue(int ind)
 	// new lower-middle pixel (+2,+1) -- will NOT have neighbor
 	row = m_AllPixels[ind].Index[0] + 2 * ExpInt(2, m_MaxSubdivide - newsubdiv);
 	col = m_AllPixels[ind].Index[1] + ExpInt(2, m_MaxSubdivide - newsubdiv);
-	newpos = FindPos(row, col);
+	newpos = FindPosBefore(row, col);
 	if (newpos == m_AllPixels.end())
 	{
 		// New pixel to integrate; weight is automatically 0;
 		// subdivision = 0 because no neighbor!
-		m_CurrentPixelQueue.push_back(PixelInfo(ScreenIndex{ row, col }, 0));
+		// Only add to queue if not already in queue!
+		if (FindPosCurrent(row, col) == m_CurrentPixelQueue.end())
+			m_CurrentPixelQueue.push_back(PixelInfo(ScreenIndex{ row, col }, 0));
 	}
 	// no else: no new neighbor for this pixel!
 
 	// new middle-right pixel (+1,+2) -- will NOT have neighbor
 	row = m_AllPixels[ind].Index[0] + ExpInt(2, m_MaxSubdivide - newsubdiv);
 	col = m_AllPixels[ind].Index[1] + 2 * ExpInt(2, m_MaxSubdivide - newsubdiv);
-	newpos = FindPos(row, col);
+	newpos = FindPosBefore(row, col);
 	if (newpos == m_AllPixels.end())
 	{
 		// New pixel to integrate; weight is automatically -1
 		// subdivision = 0 because no neighbor!
-		m_CurrentPixelQueue.push_back(PixelInfo(ScreenIndex{ row, col }, 0));
+		// Only add to queue if not already in queue!
+		if (FindPosCurrent(row, col) == m_CurrentPixelQueue.end())
+			m_CurrentPixelQueue.push_back(PixelInfo(ScreenIndex{ row, col }, 0));
 	}
 	// no else: no new neighbor for this pixel!
 
@@ -316,7 +347,7 @@ void SquareSubdivisionMesh::EndCurrentLoop()
 	m_CurrentPixelQueueDone = std::vector<bool>{};
 
 	// Now, we want to create a new pixel queue, but only if there are pixels left to integrate
-	if (m_PixelsLeft > 0)
+	if (m_InfinitePixels || m_PixelsLeft > 0)
 	{
 		// Update all neighbors and weights
 		UpdateAllNeighbors();
@@ -359,12 +390,13 @@ void SquareSubdivisionMesh::EndCurrentLoop()
 
 		// If the queue is too large, truncate it
 		// We choose to delete the last elements. These should be the least important in the queue
-		if (m_CurrentPixelQueue.size() > m_PixelsLeft)
+		if (!m_InfinitePixels && m_CurrentPixelQueue.size() > m_PixelsLeft)
 			m_CurrentPixelQueue.erase(m_CurrentPixelQueue.begin() + m_PixelsLeft, m_CurrentPixelQueue.end());
 
 		// Queue is constructed now, make sure to subtract the pixels from the total we have left
 		// and initialize m_CurrentPixelQueueDone
-		m_PixelsLeft -= m_CurrentPixelQueue.size();
+		if (!m_InfinitePixels)
+			m_PixelsLeft -= m_CurrentPixelQueue.size();
 		m_CurrentPixelQueueDone = std::vector<bool>(m_CurrentPixelQueue.size(), false);
 	}
 

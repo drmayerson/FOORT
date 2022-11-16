@@ -1,5 +1,7 @@
 #include"Config.h"
 
+#include <string>
+
 /// <summary>
 /// SelectMetric switch:  Use configuration to create the correct metric with specified parameters
 /// </summary>
@@ -397,6 +399,8 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigObject& theCfg, DiagBitflag va
 			MeshSettings.lookupValue("MaxPixels", maxpixels);
 			MeshSettings.lookupValue("IterationPixels", iterationpixels);
 			MeshSettings.lookupValue("MaxSubdivide", maxsubdivide);
+
+			bool infinitepixels{ maxpixels < 0 };
 
 			theMesh = std::unique_ptr<Mesh>(new SquareSubdivisionMesh(maxpixels,initialpixels,maxsubdivide,iterationpixels, valdiag));
 		}

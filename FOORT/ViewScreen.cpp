@@ -1,4 +1,5 @@
 #include"ViewScreen.h"
+#include<string>
 
 void ViewScreen::SetNewInitialConditions(int index, Point& pos, OneIndex& vel, ScreenIndex &scrIndex)
 {

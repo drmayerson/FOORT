@@ -6,6 +6,7 @@
 #include"Metric.h"
 
 #include<cassert>
+#include<string>
 
 /// <summary>
 /// Metric functions
