@@ -7,6 +7,7 @@
 
 #include<cassert>
 #include<string>
+#include<cmath>
 
 /// <summary>
 /// Metric functions

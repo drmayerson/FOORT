@@ -3,7 +3,7 @@
 
 void ViewScreen::SetNewInitialConditions(int index, Point& pos, OneIndex& vel, ScreenIndex &scrIndex)
 {
-	assert(m_GeodType == GeodesicType::Null && "Only null geodesics supported at the moment!");
+	//assert(m_GeodType == GeodesicType::Null && "Only null geodesics supported at the moment!");
 
 	// Helper function for the sign of a real number
 	auto sign = [](real arg)->real {return (arg > 0) ? +1 : ((arg < 0) ? -1 : 0); };
@@ -21,7 +21,7 @@ void ViewScreen::SetNewInitialConditions(int index, Point& pos, OneIndex& vel, S
 	real beta = m_ScreenSize[1] * (UnitScreenPos[1] - 0.5);
 
 	// Currently only radially inpointing camera is supported; this should have been overridden at initialization
-	assert(m_Direction == OneIndex{ 0,-1,0,0 });
+	//assert(m_Direction == OneIndex{ 0,-1,0,0 });
 
 	real costheta0 = cos(pos[2]);
 	real sintheta0 = sin(pos[2]);

@@ -4,6 +4,7 @@
 
 #include<cassert>
 #include<string>
+#include<cmath>
 
 // Helper to create a new vector of Terminations, based on the bitflag
 TerminationUniqueVector CreateTerminationVector(TermBitflag termflags)
