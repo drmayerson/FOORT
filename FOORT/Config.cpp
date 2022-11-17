@@ -119,9 +119,9 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 		auto CheckIfDiagOn = [&AllDiagSettings](const std::string& DiagName)
 		{
 			bool diagison{ false };
-			return AllDiagSettings.exists(DiagName)
-				&& AllDiagSettings[DiagName].exists("On")
-				&& AllDiagSettings[DiagName].lookupValue("On", diagison)
+			return AllDiagSettings.exists(DiagName.c_str())
+				&& AllDiagSettings[DiagName.c_str()].exists("On")
+				&& AllDiagSettings[DiagName.c_str()].lookupValue("On", diagison)
 				&& diagison;
 		};
 
@@ -245,9 +245,9 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 		auto CheckIfTermOn = [&AllTermSettings](const std::string& TermName)
 		{
 			bool termison{ false };
-			return AllTermSettings.exists(TermName)
-				&& AllTermSettings[TermName].exists("On")
-				&& AllTermSettings[TermName].lookupValue("On", termison)
+			return AllTermSettings.exists(TermName.c_str())
+				&& AllTermSettings[TermName.c_str()].exists("On")
+				&& AllTermSettings[TermName.c_str()].lookupValue("On", termison)
 				&& termison;
 		};
 
