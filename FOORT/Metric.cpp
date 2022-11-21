@@ -5,7 +5,6 @@
 
 #include"Metric.h"
 
-#include<cassert>
 #include<string>
 #include<cmath>
 
@@ -68,6 +67,11 @@ real Metric::getKretschmann(const Point& p) const
 	return 0;
 }
 
+std::string Metric::GetDescriptionString() const
+{
+	return "Metric (no override description specified)";
+}
+
 
 
 
@@ -101,14 +105,15 @@ KerrMetric::KerrMetric(real aParam, bool rLogScale)
 	: m_aParam{ aParam }, 
 	SphericalHorizonMetric(1 + sqrt(1 - aParam * aParam), rLogScale)
 {
-	assert(dimension == 4 && "Cannot construct Kerr metric in spacetime dimension other than 4!");
+	if (dimension != 4)
+		ScreenOutput("Cannot construct Kerr metric in spacetime dimension other than 4!", OutputLevel::Level_0_WARNING);
 
 	// Kerr has a Killing vector along t and phi
 	m_Symmetries = { 0,3 };
 
-	ScreenOutput("Kerr metric constructed with a = " + std::to_string(m_aParam)
-		+ "; horizon at: " + std::to_string(m_HorizonRadius) + "; using log(r): " + std::to_string(m_rLogScale)
-		 + ".", OutputLevel::Level_4_DEBUG);
+	//ScreenOutput("Kerr metric constructed with a = " + std::to_string(m_aParam)
+	//	+ "; horizon at: " + std::to_string(m_HorizonRadius) + "; using log(r): " + std::to_string(m_rLogScale)
+	//	 + ".", OutputLevel::Level_4_DEBUG);
 	
 }
 
@@ -176,6 +181,11 @@ TwoIndex KerrMetric::getMetric_uu(const Point& p) const
 	return TwoIndex{ {{g00, 0,0, g03 }, {0,g11,0,0}, {0,0,g22,0},{g03,0,0,g33}} };
 }
 
+std::string KerrMetric::GetDescriptionString() const
+{
+	return "Kerr (a = " + std::to_string(m_aParam) + ", " + (m_rLogScale ? "using logarithmic r coord" : "using normal r coord") + ")";
+}
+
 
 /// <summary>
 /// FlatSpaceMetric functions
@@ -183,7 +193,8 @@ TwoIndex KerrMetric::getMetric_uu(const Point& p) const
 
 FlatSpaceMetric::FlatSpaceMetric()
 {
-	assert(dimension == 4 && "Flat space metric only defined in 4 dimensions!");
+	if (dimension != 4)
+		ScreenOutput("Flat space metric only defined in 4 dimensions!", OutputLevel::Level_0_WARNING);
 
 	// Killing vectors along t and phi (other Killing vectors of flat space not explicit in spherical coords)
 	m_Symmetries = { 0,3 };
@@ -198,4 +209,9 @@ TwoIndex FlatSpaceMetric::getMetric_uu(const Point& p) const
 {
 	return TwoIndex{ {{-1, 0,0,0}, {0,1,0,0}, {0,0,1/(p[1] * p[1]),0},{0,0,0,1/(p[1] * p[1] * sin(p[2]) * sin(p[2]))}} };
 
+}
+
+std::string FlatSpaceMetric::GetDescriptionString() const
+{
+	return "Flat space";
 }

@@ -1,6 +1,9 @@
 #include"Config.h"
 
 #include <string>
+#include<chrono>
+#include<sstream>
+#include<iomanip>
 
 /// <summary>
 /// SelectMetric switch:  Use configuration to create the correct metric with specified parameters
@@ -85,6 +88,8 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 // DECLARATION OF ALL static DiagnosticOptions (for all types of Diagnostics) needed here!
 std::unique_ptr<DiagnosticOptions> FourColorScreenDiagnostic::DiagOptions;
 std::unique_ptr<GeodesicPositionOptions> GeodesicPositionDiagnostic::DiagOptions;
+std::unique_ptr<DiagnosticOptions> EquatorialPassesDiagnostic::DiagOptions;
+
 
 
 /// <summary>
@@ -119,7 +124,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 		auto CheckIfDiagOn = [&AllDiagSettings](const std::string& DiagName)
 		{
 			bool diagison{ false };
-			return AllDiagSettings.exists(DiagName.c_str())
+			return AllDiagSettings.exists(DiagName.c_str()) // note that g++ on Fabio's Linux requires the .c_str() everywhere
 				&& AllDiagSettings[DiagName.c_str()].exists("On")
 				&& AllDiagSettings[DiagName.c_str()].lookupValue("On", diagison)
 				&& diagison;
@@ -148,6 +153,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 				valdiag = Diag_FourColorScreen;
 			}
 		}
+		// GeodesicPosition
 		if (CheckIfDiagOn("GeodesicPosition"))
 		{
 			alldiags |= Diag_GeodesicPosition;
@@ -166,6 +172,24 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 			{
 				// Use this Diagnostic for the Mesh values
 				valdiag = Diag_GeodesicPosition;
+			}
+		}
+		// GeodesicPosition
+		if (CheckIfDiagOn("EquatorialPasses"))
+		{
+			alldiags |= Diag_EquatorialPasses;
+
+			int updatefreq = 1; // update every step
+			AllDiagSettings["EquatorialPasses"].lookupValue("UpdateFrequency", updatefreq);
+
+			EquatorialPassesDiagnostic::DiagOptions =
+				std::unique_ptr<DiagnosticOptions>(new DiagnosticOptions{ updatefreq });
+
+			bool isVal{ false };
+			if (valdiag == Diag_None && AllDiagSettings["EquatorialPasses"].lookupValue("UseForMesh", isVal) && isVal)
+			{
+				// Use this Diagnostic for the Mesh values
+				valdiag = Diag_EquatorialPasses;
 			}
 		}
 		// if (CheckIfDiagOn("..."))
@@ -245,7 +269,7 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 		auto CheckIfTermOn = [&AllTermSettings](const std::string& TermName)
 		{
 			bool termison{ false };
-			return AllTermSettings.exists(TermName.c_str())
+			return AllTermSettings.exists(TermName.c_str()) // note that g++ on Fabio's Linux requires the .c_str() everywhere
 				&& AllTermSettings[TermName.c_str()].exists("On")
 				&& AllTermSettings[TermName.c_str()].lookupValue("On", termison)
 				&& termison;
@@ -599,11 +623,37 @@ GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigObject& theCfg)
 	return TheFunc;
 }
 
-std::unique_ptr<GeodesicOutputHandler> Config::GetAndInitializeOutput(const ConfigObject& theCfg)
+void Config::InitializeScreenOutput(const ConfigObject& theCfg)
 {
-	// DEFAULTS
-	std::unique_ptr<GeodesicOutputHandler> TheHandler{ new GeodesicOutputHandler("",OutputHandler_CacheAll) };
 	SetOutputLevel(OutputLevel::Level_4_DEBUG);
+	OutputLevel theOutputLevel{};
+	// Get the root collection
+	ConfigSetting& root = theCfg.getRoot();
+	if (root.exists("Output"))
+	{
+		ConfigSetting& OutputSettings = root["Output"];
+		int scroutputint{ static_cast<int>(OutputLevel::Level_4_DEBUG) };
+		OutputSettings.lookupValue("ScreenOutputLevel", scroutputint);
+		scroutputint = std::max(scroutputint, static_cast<int>(OutputLevel::Level_0_WARNING));
+		scroutputint = std::min(scroutputint, static_cast<int>(OutputLevel::MaxLevel));
+		SetOutputLevel(static_cast<OutputLevel>(scroutputint));
+	}
+}
+
+std::unique_ptr<GeodesicOutputHandler> Config::InitializeOutputHandler(const ConfigObject& theCfg, 
+	DiagBitflag alldiags, DiagBitflag valdiag, std::string FirstLineInfo)
+{
+	std::vector<std::string>diagstrings{};
+	// Construct vector of Diagnostic names in temporary scope
+	{
+		DiagnosticUniqueVector tempDiags{ CreateDiagnosticVector(alldiags, valdiag, nullptr) };
+		diagstrings.reserve(tempDiags.size());
+		for (const auto& d : tempDiags)
+			diagstrings.push_back(d->GetDiagNameStr());
+	}
+
+	// DEFAULTS
+	std::unique_ptr<GeodesicOutputHandler> TheHandler{ new GeodesicOutputHandler("","","",diagstrings,OutputHandler_All)};
 
 	// Get the root collection
 	ConfigSetting& root = theCfg.getRoot();
@@ -613,29 +663,51 @@ std::unique_ptr<GeodesicOutputHandler> Config::GetAndInitializeOutput(const Conf
 		// Check to see that there are Output settings at all
 		if (!root.exists("Output"))
 		{
-			throw SettingError("No output settings found.");
+			throw SettingError("No output handler settings found.");
 		}
 
 		// Go to the Output settings
 		ConfigSetting& OutputSettings = root["Output"];
 
-		OutputLevel theOutputLevel{};
-		int scroutputint{ static_cast<int>(OutputLevel::Level_4_DEBUG) };
-		OutputSettings.lookupValue("ScreenOutputLevel", scroutputint);
-		scroutputint = std::max(scroutputint, static_cast<int>(OutputLevel::Level_0_NONE));
-		scroutputint = std::min(scroutputint, static_cast<int>(OutputLevel::MaxLevel));
-		SetOutputLevel(static_cast<OutputLevel>(scroutputint));
 
-		std::string FileName{};
-		// Check to see that the output file name has been specified
-		if (!OutputSettings.lookupValue("File", FileName))
+		std::string FilePrefix{};
+		// Check to see that the output file name prefix has been specified
+		if (!OutputSettings.lookupValue("FilePrefix", FilePrefix))
 		{
-			throw SettingError("No output file name found.");
+			throw SettingError("No output file name prefix found.");
 		}
-		int nrToCache{ OutputHandler_CacheAll };
+
+		std::string FileExtension{ "" };
+		OutputSettings.lookupValue("FileExtension", FileExtension);
+
+		bool TimeStamp{ true };
+		OutputSettings.lookupValue("TimeStamp", TimeStamp);
+		std::string TimeStampStr{ "" };
+		if (TimeStamp)
+		{
+			std::time_t t = std::time(nullptr);
+			std::tm tm = *std::localtime(&t);
+			std::stringstream datetime;
+			datetime << std::put_time(&tm, "%y%m%d-%H%M%S");
+			TimeStampStr = datetime.str();
+			//TimeStampStr = "TIMESTAMP";
+		}
+
+		int nrToCache{ OutputHandler_All };
 		OutputSettings.lookupValue("GeodesicToCache", nrToCache);
 
-		TheHandler = std::unique_ptr<GeodesicOutputHandler>(new GeodesicOutputHandler(FileName, nrToCache));
+		int GeodesicsPerFile{ OutputHandler_All };
+		OutputSettings.lookupValue("GeodesicsPerFile", GeodesicsPerFile);
+
+		bool FirstLineInfoOn{ true };
+		OutputSettings.lookupValue("FirstLineInfo", FirstLineInfoOn);
+
+		std::string FirstLineInfoString{ "" };
+		if (FirstLineInfoOn)
+			FirstLineInfoString = FirstLineInfo;
+
+		TheHandler = std::unique_ptr<GeodesicOutputHandler>(new GeodesicOutputHandler(FilePrefix, TimeStampStr,
+															FileExtension,diagstrings, nrToCache, GeodesicsPerFile,FirstLineInfoString) );
 	}
 	catch (SettingError& e)
 	{
@@ -645,6 +717,33 @@ std::unique_ptr<GeodesicOutputHandler> Config::GetAndInitializeOutput(const Conf
 	}
 
 	return TheHandler;
+}
+
+std::string Config::GetFirstLineInfoString(const Metric* theMetric, const Source* theSource, DiagBitflag alldiags, DiagBitflag valdiag,
+	TermBitflag allterms, const ViewScreen* theView, GeodesicIntegratorFunc theIntegrator)
+{
+	/*std::string fulldiagstring{"Diagnostics: "};
+	{ // temp scope to create/destroy this diagnostic vector
+		DiagnosticUniqueVector tempdiagvec{ CreateDiagnosticVector(alldiags, valdiag, nullptr) };
+		for (auto& d : tempdiagvec)
+		{
+			fulldiagstring+= d->GetDescriptionString() + ", ";
+		}
+	}*/
+
+	std::string fulltermstring{ "Terminations: " };
+	{ // temp scope to create/destroy this termination vector
+		TerminationUniqueVector temptermvec{ CreateTerminationVector(allterms, nullptr) };
+		for (auto& t : temptermvec)
+		{
+			fulltermstring += t->GetDescriptionString() + ", ";
+		}
+	}
+
+
+	return "Metric: " + theMetric->GetDescriptionString() + "; "
+		+ "Source: " + theSource->GetDescriptionString() + "; "
+		+ fulltermstring + "; " + theView->GetDescriptionstring();
 }
 
 

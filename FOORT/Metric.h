@@ -26,6 +26,8 @@ public:
 	virtual FourIndex getRiemann_uddd(const Point& p) const;
 	// Get the Kretschmann scalar
 	virtual real getKretschmann(const Point& p) const;
+
+	virtual std::string GetDescriptionString() const;
 protected:
 	std::vector<int> m_Symmetries{};
 };
@@ -69,6 +71,8 @@ public:
 
 	TwoIndex getMetric_dd(const Point& p) const final;
 	TwoIndex getMetric_uu(const Point& p) const final;
+
+	std::string GetDescriptionString() const final;
 };
 
 // Flat space in spherical coordinates (4D)
@@ -80,6 +84,8 @@ public:
 
 	TwoIndex getMetric_dd(const Point& p) const final;
 	TwoIndex getMetric_uu(const Point& p) const final;
+
+	std::string GetDescriptionString() const final;
 };
 
 

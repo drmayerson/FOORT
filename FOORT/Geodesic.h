@@ -19,6 +19,8 @@ public:
 
 	virtual OneIndex getSource(Point pos, OneIndex vel) const = 0;
 
+	virtual std::string GetDescriptionString() const;
+
 protected:
 	const Metric* m_theMetric;
 };
@@ -28,6 +30,8 @@ class NoSource : public Source
 public:
 	NoSource(const Metric* theMetric) : Source(theMetric) {}
 	OneIndex getSource(Point pos, OneIndex vel) const override;
+
+	std::string GetDescriptionString() const final;
 };
 
 
@@ -40,13 +44,13 @@ public:
 		TermBitflag termbit,GeodesicIntegratorFunc theIntegrator) : 
 		m_ScreenIndex{ scrindex }, m_CurrentPos { initpos }, m_CurrentVel{ initvel },
 		m_theMetric{ theMetric }, m_theSource{ theSource },
-		m_AllDiagnostics{ CreateDiagnosticVector(diagbit,valdiagbit) }, m_AllTerminations{ CreateTerminationVector(termbit) },
+		m_AllDiagnostics{ CreateDiagnosticVector(diagbit,valdiagbit,this) }, m_AllTerminations{ CreateTerminationVector(termbit,this) },
 		m_theIntegrator{ theIntegrator }
 	{
 		// Start: loop through all diagnostics to update at starting position
 		for (const auto& d : m_AllDiagnostics)
 		{
-			d->UpdateData(*this);
+			d->UpdateData();
 		}
 	}
 
@@ -57,8 +61,7 @@ public:
 	OneIndex getCurrentVel() const;
 	real getCurrentLambda() const;
 
-//	DiagnosticCopyVector getDiagnostics() const;
-	std::string getDiagnosticOutputStr() const;
+	std::vector<std::string> getAllOutputStr() const;
 	std::vector<real> GetDiagnosticFinalValue() const;
 protected:
 	Term m_TermCond{Term::Continue};

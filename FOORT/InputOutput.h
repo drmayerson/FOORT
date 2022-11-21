@@ -13,7 +13,7 @@
 // Determines at what priority level the output is generated to the console.
 enum class OutputLevel
 {
-	Level_0_NONE = 0,		// No output at all
+	Level_0_WARNING = 0,	// Only warnings are outputted
 	Level_1_PROC = 1,		// Coarsest level output; only the major procedures produce output
 	Level_2_SUBPROC = 2,	// Subprocedures can also produce output
 	Level_3_ALLDETAIL = 3,	// Finest level output; all details are shown
@@ -29,45 +29,44 @@ void SetOutputLevel(OutputLevel theLvl);
 void ScreenOutput(std::string_view theOutput, OutputLevel lvl = OutputLevel::Level_3_ALLDETAIL, bool newLine = true);
 
 
-constexpr int OutputHandler_CacheAll = -1;
+constexpr int OutputHandler_All = -1;
 
 class GeodesicOutputHandler
 {
 public:
-	GeodesicOutputHandler(std::string outputfile,int nroutputstocache=OutputHandler_CacheAll) :
-		m_OutputFile{ outputfile }, m_nrOutputsToCache{ nroutputstocache }
-	{
-		if (m_nrOutputsToCache>0)
-			m_AllCachedData.reserve(m_nrOutputsToCache+1);
+	GeodesicOutputHandler(std::string FilePrefix, std::string TimeStamp, std::string FileExtension,
+		std::vector<std::string> DiagNames, int nroutputstocache = OutputHandler_All, int geodperfile = OutputHandler_All,
+		std::string firstlineinfo="");
 
-		// check to see if we indeed can open the file and write to it
-		// std::ios::trunc makes the new file empty
-		if (m_OutputFile != "")
-		{
-			std::ofstream outf{ m_OutputFile, std::ios::out | std::ios::trunc };
-			if (!outf)
-			{
-				ScreenOutput("Error opening file " + m_OutputFile + " for writing output. Will output to console instead.",
-					OutputLevel::Level_0_NONE);
-				m_OutputFile = ""; // Will write to console
-			}
-			else
-			{
-				outf.close();
-			}
-		}
-	}
-
-	void NewGeodesicOutput(std::string theOutput);
+	void NewGeodesicOutput(std::vector<std::string> theOutput);
 
 	void OutputFinished();
 
 private:
 	void WriteCachedOutputToFile();
 
-	int m_nrOutputsToCache{};
-	std::string m_OutputFile{};
-	std::vector<std::string> m_AllCachedData{};
+	void OpenForFirstTime(std::string filename);
+
+	std::string GetFileName(int diagnr, int filenr) const;
+
+	const std::string m_FilePrefix;
+	const std::string m_TimeStamp;
+	const std::string m_FileExtension;
+	const std::vector<std::string> m_DiagNames;
+
+	const bool m_PrintFirstLineInfo;
+	const std::string m_FirstLineInfoString;
+
+	const int m_nrOutputsToCache{};
+	const int m_nrGeodesicsPerFile{};
+
+	bool m_WriteToConsole{ false };
+
+	int m_CurrentGeodesicsInFile{ 0 };
+	int m_CurrentFullFiles{ 0 };
+
+
+	std::vector<std::vector<std::string>> m_AllCachedData{};
 };
 
 

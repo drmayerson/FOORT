@@ -1,0 +1,38 @@
+TODO and wishlist:
+------------------
+
+*** TOP PRIORITY:
+
+--- Equatorial orbits problem?? Also glitches at rings (log r? stepsize?)
+
+--------------------------------
+
+*** PRIORITY:
+
+--- Speed improvements? Caching multiple geodesics per thread (to avoid omp critical statements)
+
+--- ViewScreen procedures understand/better/more general
+
+--------------------------------
+
+*** ALSO TODO:
+
+--- Ring fuzzball metric?
+
+--- better int/size_t types etc
+
+--- Commenting (especially Mesh/View + Integrator + Geodesic + GeodesicOutputHandler)
+
+--- document “add” procedures
+
+--- revisit all variables (bool? long? unsigned? etc)
+
+--- (unit) testing
+
+--------------------------------
+
+*** WISHLIST:
+
+---- Fast "compiled" version?
+
+--- Code own config handler?

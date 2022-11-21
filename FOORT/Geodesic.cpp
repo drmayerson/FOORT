@@ -1,10 +1,20 @@
 #include"Geodesic.h"
 #include"Metric.h"
 
+std::string Source::GetDescriptionString() const
+{
+	return "Source (no override description specified)";
+}
+
 OneIndex NoSource::getSource(Point pos, OneIndex vel) const
 {
 	// no rhs for the geodesic equation
 	return OneIndex{ 0,0,0,0 };
+}
+
+std::string NoSource::GetDescriptionString() const
+{
+	return "No source";
 }
 
 ///////////////////////////////////
@@ -24,7 +34,7 @@ Term Geodesic::Update()
 	// Check all possible termination conditions
 	for (const auto& t : m_AllTerminations)
 	{
-		m_TermCond = t->CheckTermination(*this);
+		m_TermCond = t->CheckTermination();
 		if (m_TermCond != Term::Continue)
 			break;
 	}
@@ -32,7 +42,7 @@ Term Geodesic::Update()
 	// No matter if we terminate now or not, loop through all Diagnostics to update them
 	for (const auto& d : m_AllDiagnostics)
 	{
-		d->UpdateData(*this);
+		d->UpdateData();
 	}
 
 	return m_TermCond;
@@ -59,30 +69,22 @@ real Geodesic::getCurrentLambda() const
 }
 
 
-//DiagnosticCopyVector Geodesic::getDiagnostics() const
-//{
-//	DiagnosticCopyVector thecopies;
-//	thecopies.reserve(m_AllDiagnostics.size());
-//	for (const auto& uniquediag : m_AllDiagnostics)
-//	{
-//		thecopies.push_back(uniquediag.get());
-//	}
-//	return thecopies;
-//}
-
-
-std::string Geodesic::getDiagnosticOutputStr() const
+std::vector<std::string> Geodesic::getAllOutputStr() const
 {
-	std::string theOutput{ "" };
+	std::vector<std::string> theOutput{};
+	theOutput.reserve(m_AllDiagnostics.size() + 1);
 
+	// First position is screen index
+	std::string strScreenIndex{ "" };
 	for (int i=0; i<dimension-2; ++i)
 	{
-		theOutput += std::to_string(m_ScreenIndex[i]) + " ";
+		strScreenIndex += std::to_string(m_ScreenIndex[i]) + " ";
 	}
+	theOutput.push_back(strScreenIndex);
 
 	for (const auto& d : m_AllDiagnostics)
 	{
-		theOutput += "X " + d->getFullData();
+		theOutput.push_back(d->getFullData());
 	}
 
 	return theOutput;
