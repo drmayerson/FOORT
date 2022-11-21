@@ -58,6 +58,8 @@ public:
 
 	void GeodesicFinished(int index, std::vector<real> finalValues);
 
+	std::string GetDescriptionstring() const;
+
 private:
 	Point m_Pos;
 	OneIndex m_Direction;

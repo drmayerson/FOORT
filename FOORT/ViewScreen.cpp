@@ -50,9 +50,8 @@ void ViewScreen::SetNewInitialConditions(int index, Point& pos, OneIndex& vel, S
 	OneIndex p_down{ 0,0,0,0 };
 	p_down[0] = -Energy;
 	p_down[3] = lambda * Energy;
-	p_down[2] = sign(beta) * Energy * sqrt(q
-		- lambda * lambda * costheta0 * costheta0 / sintheta0 / sintheta0
-		+ costheta0 * costheta0);
+	real tempinsqrt{ q - lambda * lambda * costheta0 * costheta0 / sintheta0 / sintheta0 + costheta0 * costheta0 };
+	p_down[2] = sign(beta) * Energy * sqrt(std::max(tempinsqrt,0.0));
 
 	// Now, use the metric at the geodesic position to raise the vector and get the geodesic's initial velocity
 	TwoIndex metricpos_uu = m_theMetric->getMetric_uu(pos);
@@ -88,4 +87,10 @@ void ViewScreen::EndCurrentLoop()
 void ViewScreen::GeodesicFinished(int index, std::vector<real> finalValues)
 {
 	m_theMesh->GeodesicFinished(index, finalValues);
+}
+
+std::string ViewScreen::GetDescriptionstring() const
+{
+	return "ViewScreen position: " + toString(m_Pos) + ", screen size: " + toString(m_ScreenSize) + ", "
+		+ m_theMesh->GetDescriptionString();
 }

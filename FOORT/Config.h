@@ -16,7 +16,7 @@ namespace Config
 {
 	// Output level for important missing information that will default
 	// (e.g. no metric selected, no diagnostics selected, ...)
-	constexpr auto Output_Important_Default= OutputLevel::Level_0_NONE;
+	constexpr auto Output_Important_Default= OutputLevel::Level_0_WARNING;
 	// Output level for less important information that will default
 	// (e.g. Kerr metric a parameter not specified)
 	constexpr auto Output_Other_Default = OutputLevel::Level_1_PROC;
@@ -49,7 +49,13 @@ namespace Config
 
 	GeodesicIntegratorFunc GetGeodesicIntegrator(const ConfigObject& theCfg);
 
-	std::unique_ptr<GeodesicOutputHandler> GetAndInitializeOutput(const ConfigObject& theCfg);
+	void InitializeScreenOutput(const ConfigObject& theCfg);
+
+	std::unique_ptr<GeodesicOutputHandler> InitializeOutputHandler(const ConfigObject& theCfg,
+		DiagBitflag alldiags, DiagBitflag valdiag, std::string FirstLineInfo );
+
+	std::string GetFirstLineInfoString(const Metric* theMetric, const Source* theSource, DiagBitflag alldiags, DiagBitflag valdiag,
+		TermBitflag allterms, const ViewScreen* theView, GeodesicIntegratorFunc theIntegrator);
 }
 
 

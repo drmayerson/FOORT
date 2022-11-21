@@ -1,10 +1,9 @@
 #ifndef _FOORT_MESH_H
 #define _FOORT_MESH_H
 
-#include<cassert>
-
 #include"Geometry.h"
 #include"Diagnostics.h"
+#include"InputOutput.h"
 #include<vector>
 #include<cmath>
 
@@ -18,7 +17,7 @@ public:
 	// Calling CreateDiagnosticVector in this way will create a vector with exactly one element in it,
 	// i.e. the Diagnostic we need!
 	Mesh(DiagBitflag valdiag) 
-		: m_DistanceDiagnostic{ std::move( (CreateDiagnosticVector(valdiag,valdiag))[0] ) }
+		: m_DistanceDiagnostic{ std::move( (CreateDiagnosticVector(valdiag,valdiag,nullptr))[0] ) }
 	{}
 
 	virtual ~Mesh() = default;
@@ -32,6 +31,8 @@ public:
 
 	virtual void GeodesicFinished(int index, std::vector<real> finalValues) = 0;
 
+	virtual std::string GetDescriptionString() const;
+
 protected:
 	std::unique_ptr<Diagnostic> m_DistanceDiagnostic;
 };
@@ -44,7 +45,8 @@ public:
 		  m_RowColumnSize{static_cast<int>(sqrt(totalPixels))},
 		  Mesh(valdiag)
 	{
-		//assert(dimension == 4 && "SimpleSquareMesh only defined in 4D!");
+		if (dimension != 4)
+			ScreenOutput("SimpleSquareMesh only defined in 4D!", OutputLevel::Level_0_WARNING);
 	}
 
 	bool IsFinished() const override;
@@ -55,6 +57,8 @@ public:
 	int getCurNrGeodesics() const override;
 
 	void GeodesicFinished(int index, std::vector<real> finalValues) override;
+
+	std::string GetDescriptionString() const override;
 
 protected:
 	const int m_TotalPixels;
@@ -77,6 +81,8 @@ public:
 
 	void GeodesicFinished(int index, std::vector<real> finalValues) override;
 
+	std::string GetDescriptionString() const override;
+
 protected:
 	int m_TotalPixels{ 0 };
 	const int m_RowColumnSize;
@@ -88,12 +94,15 @@ protected:
 class SquareSubdivisionMesh : public Mesh
 {
 public:
-	SquareSubdivisionMesh(int maxPixels, int initialPixels, int maxSubdivide, int iterationPixels, DiagBitflag valdiag)
+	SquareSubdivisionMesh(int maxPixels, int initialPixels, int maxSubdivide, int iterationPixels, bool initialSubToFinal,
+		DiagBitflag valdiag)
 		: m_InitialPixels{ static_cast<int>(sqrt(initialPixels)) * static_cast<int>(sqrt(initialPixels)) },
 		 m_MaxSubdivide{maxSubdivide}, m_RowColumnSize{ (static_cast<int>(sqrt(initialPixels))-1) * ExpInt(2,maxSubdivide-1) + 1 },
-		m_PixelsLeft{ maxPixels }, m_IterationPixels{ iterationPixels }, Mesh(valdiag)
+		m_PixelsLeft{ maxPixels }, m_MaxPixels{ maxPixels }, m_IterationPixels{ iterationPixels },
+		m_InitialSubDividideToFinal{ initialSubToFinal }, Mesh(valdiag)
 	{
-		//assert(dimension == 4 && "SquareSubdivisionMesh only defined in 4D!");
+		if (dimension != 4)
+			ScreenOutput("SquareSubdivisionMesh only defined in 4D!", OutputLevel::Level_0_WARNING);
 
 		if (maxPixels < 0)
 			m_InfinitePixels = true;
@@ -113,6 +122,8 @@ public:
 	int getCurNrGeodesics() const override;
 
 	void GeodesicFinished(int index, std::vector<real> finalValues) override;
+
+	std::string GetDescriptionString() const override;
 
 protected:
 	struct PixelInfo
@@ -148,6 +159,9 @@ protected:
 	const int m_InitialPixels;
 	const int m_RowColumnSize;
 	const int m_IterationPixels;
+	const int m_MaxPixels;
+
+	const bool m_InitialSubDividideToFinal;
 
 	bool m_InfinitePixels;
 	int m_PixelsLeft;

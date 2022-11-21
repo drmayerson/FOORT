@@ -1,0 +1,38 @@
+TODO and wishlist:
+------------------
+
+*** TOP PRIORITY:
+
+--- Mesh: more efficient making new subdividing (don't go through every pixel again!?), also neighbors?
+
+--------------------------------
+
+*** PRIORITY:
+
+--- ViewScreen procedures: flat to locally flat; stationary/axisymmetric implementation
+
+--- better int/size_t types etc -- revisit all variables (bool? long? unsigned? etc)
+
+--- document “add” procedures + document all config options
+
+--------------------------------
+
+*** ALSO TODO:
+
+--- Other metrics?
+
+--- SpherePositionDiagnostic and starry sky picture
+
+--- Commenting (especially Mesh/View + Integrator + Geodesic + GeodesicOutputHandler)
+
+--- (unit) testing
+
+--------------------------------
+
+*** WISHLIST:
+
+--- >4D metric but 4D asymptotics (so still 2D viewscreen) -- like Pierre's solitons!
+
+---- Fast "compiled" version?
+
+--- Code own config handler?

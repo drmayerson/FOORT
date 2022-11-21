@@ -7,7 +7,7 @@
 #include<bitset>
 
 #include"Geometry.h"
-#include "InputOutput.h"
+// #include "InputOutput.h"
 
 // Diagnostic bitflags
 // Used for constructing vector of Diagnostics
@@ -18,7 +18,7 @@ using DiagBitflag = std::uint16_t;
 constexpr DiagBitflag Diag_None					{ 0b0000'0000'0000'0000 };
 constexpr DiagBitflag Diag_GeodesicPosition		{ 0b0000'0000'0000'0001 };
 constexpr DiagBitflag Diag_FourColorScreen		{ 0b0000'0000'0000'0010 };
-constexpr DiagBitflag Diag_PassThroughEquator	{ 0b0000'0000'0000'0100 };
+constexpr DiagBitflag Diag_EquatorialPasses 	{ 0b0000'0000'0000'0100 };
 constexpr DiagBitflag Diag_PassThroughSurface	{ 0b0000'0000'0000'1000 };
 
 // All settings of UpdateEveryNSteps > 0 mean to update every so many steps;
@@ -38,12 +38,17 @@ class Geodesic;
 class Diagnostic
 {
 public:
-	Diagnostic() = default;
+	struct BasicOptions
+	{
+		const int UpdateEveryNSteps;
+	};
+
+	Diagnostic(Geodesic* const theGeodesic) : m_theGeodesic{ theGeodesic }
+	{}
+
 	virtual ~Diagnostic() = default;
 
-	// The function that is called every step of the geodesic
-	// The diagnostic must check if it wants to update its data and update accordingly
-	virtual void UpdateData(const Geodesic& theGeodesic) = 0;
+	virtual void UpdateData() = 0;
 
 	// These functions are for use at the end of integration of a geodesic.
 	// getFullData() returns all the data stored in the Diagnostic as a string (for output to file)
@@ -56,17 +61,22 @@ public:
 	// (for determining coarseness of nearby geodesics)
 	virtual real FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const = 0;
 
+	virtual std::string GetDiagNameStr() const = 0;
+	virtual std::string GetDescriptionString() const;
 protected:
+	// The geodesic that the Diagnostic is watching; a const pointer to the Geodesic
+	Geodesic* const m_theGeodesic;
+
+	bool DecideUpdate(int UpdateNSteps);
+
 	// The diagnostic is itself in charge of keeping track of how many steps it has been since it has been updated
 	// The Diagnostic's DiagnosticOptions struct tells it how many steps it needs to wait between updates
 	int m_StepsSinceUpdated{};
 };
 
 
-// The OWNER vector of derived Diagnostics classes
+// Owner vector of derived Diagnostics classes
 using DiagnosticUniqueVector = std::vector<std::unique_ptr<Diagnostic>>;
-// A NON-OWNER vector of Diagnostic classes
-using DiagnosticCopyVector = std::vector<Diagnostic*>;
 
 
 // The four color screen: associates one of four colors based on the quadrant that the geodesic finishes in
@@ -74,7 +84,7 @@ using DiagnosticCopyVector = std::vector<Diagnostic*>;
 class FourColorScreenDiagnostic final : public Diagnostic
 {
 public:
-	void UpdateData(const Geodesic& theGeodesic) override;
+	FourColorScreenDiagnostic(Geodesic* const theGeodesic) : Diagnostic(theGeodesic) {}
 
 	// Both of these output functions simply returns the quadrant number associated with the geodesic's end position
 	std::string getFullData() const override;
@@ -86,7 +96,12 @@ public:
 	// Static member of this class that contains its DiagnosticOptions struct.
 	// FourColorScreen only needs the base class options
 	static std::unique_ptr<DiagnosticOptions> DiagOptions;
+
+	std::string GetDiagNameStr() const override;
+	std::string GetDescriptionString() const override;
 protected:
+	void UpdateData() override;
+
 	// Note initialization to 0; this means the default value returned will be 0
 	// (e.g. if Term::BoundarySphere is not reached)
 	int m_quadrant{0};
@@ -96,7 +111,7 @@ protected:
 class GeodesicPositionDiagnostic final : public Diagnostic
 {
 public:
-	void UpdateData(const Geodesic& theGeodesic) override;
+	GeodesicPositionDiagnostic(Geodesic* const theGeodesic) : Diagnostic(theGeodesic) {}
 
 	std::string getFullData() const override;
 	std::vector<real> getFinalDataVal() const override;
@@ -105,11 +120,38 @@ public:
 
 	static std::unique_ptr<GeodesicPositionOptions> DiagOptions;
 
-protected:
-	std::vector<Point> m_AllSavedPoints{};
+	std::string GetDiagNameStr() const override;
+	std::string GetDescriptionString() const override;
 
-	// Helper function to decide whether Diagnostic should update or not
-	bool DecideIfUpdate(const Geodesic& theGeodesic);
+protected:
+	void UpdateData() override;
+
+	std::vector<Point> m_AllSavedPoints{};
+};
+
+
+// Counting number of passes through equatorial plane
+class EquatorialPassesDiagnostic final : public Diagnostic
+{
+public:
+	EquatorialPassesDiagnostic(Geodesic* const theGeodesic) : Diagnostic(theGeodesic) {}
+
+	std::string getFullData() const override;
+	std::vector<real> getFinalDataVal() const override;
+
+	real FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const override;
+
+	static std::unique_ptr<DiagnosticOptions> DiagOptions;
+
+	std::string GetDiagNameStr() const override;
+	std::string GetDescriptionString() const override;
+
+protected:
+	void UpdateData() override;
+
+	int m_EquatPasses{ 0 };
+
+	real m_PrevTheta{ -1 };
 };
 
 // Base class for DiagnosticOptions. Other Diagnostics can inherit from here if they require more options.
@@ -137,7 +179,7 @@ public:
 
 // Helper to create a new vector of Diagnostic options, based on the bitflag
 // The first diagnostic is the value diagnostic
-DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag valdiag);
+DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag valdiag, Geodesic *const theGeodesic);
 
 
 #endif

@@ -1,7 +1,11 @@
 #include"Mesh.h"
 #include"InputOutput.h"
 
-#include<cassert>
+
+std::string Mesh::GetDescriptionString() const
+{
+	return "Mesh (no override description specified)";
+}
 
 
 bool SimpleSquareMesh::IsFinished() const
@@ -15,7 +19,10 @@ bool SimpleSquareMesh::IsFinished() const
 void SimpleSquareMesh::getNewInitConds(int index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex)
 {
 	// We should not be getting new initial conditions if all pixels are done already!
-	assert(m_CurrentPixel < m_TotalPixels);
+	if (m_CurrentPixel >= m_TotalPixels)
+	{
+		ScreenOutput("Trying to initialize a pixel after all pixels are done!", OutputLevel::Level_0_WARNING);
+	}
 
 	// get (row, column) where each is between 0 and m_RowColumnSize-1 (m_RowColumnSize^2 = m_TotalPixels)
 	// Note: m_CurrentPixel runs between 0 and m_TotalPixels-1
@@ -40,7 +47,10 @@ void SimpleSquareMesh::getNewInitConds(int index, ScreenPoint& newunitpoint, Scr
 void SimpleSquareMesh::EndCurrentLoop()
 {
 	// This Mesh does not need to do anything at the end of the loop. However, all pixels should have been initialized at the end!
-	//assert(m_CurrentPixel == m_TotalPixels && "Not all pixels have been initialized!");
+	if (m_CurrentPixel < m_TotalPixels)
+	{
+		ScreenOutput("Not all pixels have been initialized!", OutputLevel::Level_0_WARNING);
+	}
 }
 
 int SimpleSquareMesh::getCurNrGeodesics() const
@@ -54,13 +64,20 @@ void SimpleSquareMesh::GeodesicFinished(int index, std::vector<real> finalValues
 	// This Mesh doesn't actually have to do anything with the geodesic (values) when it's done!
 }
 
+std::string SimpleSquareMesh::GetDescriptionString() const
+{
+	return "Mesh: simple square grid (" + std::to_string(m_RowColumnSize) + "^2 pixels)";
+}
+
 InputCertainPixelsMesh::InputCertainPixelsMesh(int totalPixels, DiagBitflag valdiag) :
 m_RowColumnSize{ static_cast<int>(sqrt(totalPixels)) },
 Mesh(valdiag)
 {
-	//assert(dimension == 4 && "InputCertainPixelsMesh only defined in 4D!");
+	if (dimension!=4)
+		ScreenOutput("InputCertainPixelsMesh only defined in 4D!", OutputLevel::Level_0_WARNING);
+
 	std::string prefix{ "InputCertainPixelsMesh message: " };
-	OutputLevel outputlvl{ OutputLevel::Level_0_NONE };
+	OutputLevel outputlvl{ OutputLevel::Level_0_WARNING };
 
 	ScreenOutput(prefix + " Screen is a square with width/height = " + std::to_string(m_RowColumnSize) + ".",
 		outputlvl);
@@ -92,13 +109,14 @@ Mesh(valdiag)
 			++m_TotalPixels;
 			m_PixelsToIntegrate.push_back(ScreenIndex{ newx,newy });
 			ScreenOutput(prefix + "Pixel (" + std::to_string(newx) + ", " + std::to_string(newy) + ") added.",
-				OutputLevel::Level_0_NONE);
+				outputlvl);
 		}
 		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 		std::cin.clear();
 	}
 
-	//assert(m_TotalPixels > 0 && "No pixels added to integration list!");
+	if (m_TotalPixels == 0)
+		ScreenOutput("No pixels added to integration list!", OutputLevel::Level_0_WARNING);
 
 }
 
@@ -111,7 +129,8 @@ int InputCertainPixelsMesh::getCurNrGeodesics() const
 void InputCertainPixelsMesh::EndCurrentLoop()
 {
 	// This Mesh does not need to do anything at the end of the loop. However, all pixels should have been initialized at the end!
-	//assert(m_CurrentPixel == m_TotalPixels - 1 && "Not all pixels have been initialized!");
+	 if (m_CurrentPixel != m_TotalPixels )
+		ScreenOutput("Not all pixels have been initialized!", OutputLevel::Level_0_WARNING);
 }
 
 void InputCertainPixelsMesh::GeodesicFinished(int index, std::vector<real> finalValues)
@@ -121,7 +140,7 @@ void InputCertainPixelsMesh::GeodesicFinished(int index, std::vector<real> final
 
 bool InputCertainPixelsMesh::IsFinished() const
 {
-	if (m_CurrentPixel == m_TotalPixels - 1)
+	if (m_CurrentPixel == m_TotalPixels)
 		return true;
 	else
 		return false;
@@ -130,7 +149,8 @@ bool InputCertainPixelsMesh::IsFinished() const
 void InputCertainPixelsMesh::getNewInitConds(int index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex)
 {
 	// We should not be getting new initial conditions if all pixels are done already!
-	assert(m_CurrentPixel < m_TotalPixels);
+	if (m_CurrentPixel >= m_TotalPixels)
+		ScreenOutput("Trying to initialize pixel but all pixels are done already!", OutputLevel::Level_0_WARNING);
 
 	// The next pixel in line
 	newscreenindex = m_PixelsToIntegrate[m_CurrentPixel];
@@ -145,6 +165,11 @@ void InputCertainPixelsMesh::getNewInitConds(int index, ScreenPoint& newunitpoin
 	//	OutputLevel::Level_4_DEBUG);
 	newunitpoint = ScreenPoint{ newscreenindex[0] * 1.0 / static_cast<real>(m_RowColumnSize - 1), 
 		newscreenindex[1] * 1.0 / static_cast<real>(m_RowColumnSize - 1)};
+}
+
+std::string InputCertainPixelsMesh::GetDescriptionString() const
+{
+	return "Mesh: User-input pixels";
 }
 
 /// <summary>
@@ -329,7 +354,8 @@ void SquareSubdivisionMesh::EndCurrentLoop()
 			alldone = false;
 		}
 	}
-	//assert(alldone && "Not all pixels have been integrated!");
+	if (!alldone)
+		ScreenOutput("Not all pixels have been integrated!", OutputLevel::Level_0_WARNING);
 
 	// Next, we move all the pixels in CurrentPixelQueue to AllPixels
 	// and update the necessary neighbors of these pixels, then make CurrentPixelQueue empty
@@ -345,6 +371,9 @@ void SquareSubdivisionMesh::EndCurrentLoop()
 	m_CurrentPixelQueue = std::vector<PixelInfo>{};
 	m_CurrentPixelQueueDone = std::vector<bool>{};
 
+	ScreenOutput("Total integrated geodesic so far: " + std::to_string(m_AllPixels.size()) + ".", OutputLevel::Level_2_SUBPROC);
+	ScreenOutput("Calculating pixels to subdivide next...", OutputLevel::Level_2_SUBPROC);
+
 	// Now, we want to create a new pixel queue, but only if there are pixels left to integrate
 	if (m_InfinitePixels || m_PixelsLeft > 0)
 	{
@@ -352,17 +381,29 @@ void SquareSubdivisionMesh::EndCurrentLoop()
 		UpdateAllNeighbors();
 		UpdateAllWeights();
 
+		ScreenOutput("Identifying all possible candidate pixels for subdivision...", OutputLevel::Level_3_ALLDETAIL);
+
 		// Select new subdivide vertices (m)
 		std::vector<int> DivideVertexIndices{};
 		DivideVertexIndices.reserve(m_AllPixels.size());
 		// first, select all allowed candidates; allowed candidates must have weight > 0!
 		for (int i=0; i<m_AllPixels.size(); ++i)
 		{
-			if (m_AllPixels[i].SubdivideLevel > 0 && m_AllPixels[i].SubdivideLevel < m_MaxSubdivide && m_AllPixels[i].Weight > 0)
-			{
-				DivideVertexIndices.push_back(i);
+			// The pixel needs to have a subdivision level > 0 (so it is not on an edge) and < max (so that we are allowed to subdivide
+			// it further) in order for it to be a candidate. Then, there are two possible criteria:
+			// 1) when m_InitialSubDividideToFinal = false, then we only subdivide pixels that have a non-zero weight
+			// 2) when m_InitialSubDividideToFinal = true, then we are ALSO allowed to subdivide pixels with a zero weight,
+			// IF they have already been subdivided at least once before.
+			if (m_AllPixels[i].SubdivideLevel > 0 && m_AllPixels[i].SubdivideLevel < m_MaxSubdivide)
+			{ // allowed to subdivide
+				if ( m_AllPixels[i].Weight > 0
+					|| (m_InitialSubDividideToFinal && m_AllPixels[i].SubdivideLevel > 1) )
+				{
+					DivideVertexIndices.push_back(i);
+				}
 			}
 		}
+		ScreenOutput("Selecting pixels for subdivision...", OutputLevel::Level_3_ALLDETAIL);
 		// Now, order the candidates according to how much we want to subdivide them (front is most important)
 		auto Comp = [this](int ind1, int ind2) -> bool // returns true if ind1 is more important than ind2
 		{
@@ -379,6 +420,7 @@ void SquareSubdivisionMesh::EndCurrentLoop()
 		if(DivideVertexIndices.size() > m_IterationPixels)
 			DivideVertexIndices.erase(DivideVertexIndices.begin() + m_IterationPixels, DivideVertexIndices.end());		
 
+		ScreenOutput("Setting up subdivided pixels for integration...", OutputLevel::Level_3_ALLDETAIL);
 		// At most, we will be creating 5x this number of new pixels to integrate
 		m_CurrentPixelQueue.reserve(5 * DivideVertexIndices.size());
 		// Populate the queue with <=5*m_IterationPixels to integrate
@@ -398,6 +440,7 @@ void SquareSubdivisionMesh::EndCurrentLoop()
 			m_PixelsLeft -= m_CurrentPixelQueue.size();
 		m_CurrentPixelQueueDone = std::vector<bool>(m_CurrentPixelQueue.size(), false);
 	}
+	ScreenOutput("Done calculating next iteration of pixels.", OutputLevel::Level_2_SUBPROC);
 
 	// Our queue is ready for integration now!
 	// if no pixels are left to integrate, the queue will have remained empty (and IsFinished() will return true)
@@ -406,6 +449,7 @@ void SquareSubdivisionMesh::EndCurrentLoop()
 
 void SquareSubdivisionMesh::UpdateAllNeighbors()
 {
+	ScreenOutput("Updating all pixel neighbor information...", OutputLevel::Level_3_ALLDETAIL);
 
 	for (auto& pixel : m_AllPixels)
 	{
@@ -421,8 +465,9 @@ void SquareSubdivisionMesh::UpdateAllNeighbors()
 				[row, col](const PixelInfo& p)
 				{ return p.Index[0] == row && p.Index[1] == col; });
 			// The neighbor should always exist if everything proceeded correctly!
-			//assert(rightloc != m_AllPixels.end() && "Something went wrong. Pixel "
-			//	+ toString(pixel.Index) + " does not have a right neighbor!");
+			if (rightloc == m_AllPixels.end())
+				ScreenOutput("Something went wrong. Pixel "
+					+ toString(pixel.Index) + " does not have a right neighbor!", OutputLevel::Level_0_WARNING);
 			pixel.RightNbrIndex = rightloc - m_AllPixels.begin();
 
 			// Find lower neighbor
@@ -432,17 +477,21 @@ void SquareSubdivisionMesh::UpdateAllNeighbors()
 				[row, col](const PixelInfo& p)
 				{ return p.Index[0] == row && p.Index[1] == col; });
 			// The neighbor should always exist if everything proceeded correctly!
-			//assert(lowloc != m_AllPixels.end() && "Something went wrong. Pixel "
-			//	+ toString(pixel.Index) + " does not have a lower neighbor!");
+			if (lowloc == m_AllPixels.end())
+			ScreenOutput("Something went wrong. Pixel "
+				+ toString(pixel.Index) + " does not have a lower neighbor!", OutputLevel::Level_0_WARNING);
 			pixel.LowerNbrIndex = lowloc - m_AllPixels.begin();
 		}
 	}
+
+	ScreenOutput("Done updating pixel neighbor information.", OutputLevel::Level_3_ALLDETAIL);
 }
 
 void SquareSubdivisionMesh::UpdateAllWeights()
 {
 	// Updates all weights of the pixels in m_AllPixels with weight = 0 and subdiv > 0 and subdiv < m_MaxSubdivide
 	// Assumes all squares have neighbors assigned correctly
+	ScreenOutput("Updating all pixel weights...", OutputLevel::Level_3_ALLDETAIL);
 
 	for (auto& pixel : m_AllPixels)
 	{
@@ -471,6 +520,7 @@ void SquareSubdivisionMesh::UpdateAllWeights()
 			pixel.Weight = *std::max_element(distances.begin(), distances.end());
 		}
 	}
+	ScreenOutput("Done updating pixel weights.", OutputLevel::Level_3_ALLDETAIL);
 }
 
 void SquareSubdivisionMesh::GeodesicFinished(int index, std::vector<real> finalValues)
@@ -503,4 +553,14 @@ void SquareSubdivisionMesh::InitializeFirstGrid()
 	// Subtract the number of pixels we are integrating, and initialize m_CurrentPixelQueueDone
 	m_PixelsLeft -= m_CurrentPixelQueue.size();
 	m_CurrentPixelQueueDone = std::vector<bool>(m_CurrentPixelQueue.size(), false);
+}
+
+
+std::string SquareSubdivisionMesh::GetDescriptionString() const
+{
+	return "Mesh: square subdivision (initial pixels: " + std::to_string(static_cast<int>(sqrt(m_InitialPixels))) + "^2; max subdivision: "
+		+ std::to_string(m_MaxSubdivide) + "; pixels subdivided per iteration: " + std::to_string(m_IterationPixels)
+		+ "; max total pixels: " + (m_InfinitePixels ? "infinite" : std::to_string(m_MaxPixels))
+		+ "; if pixel is initially subdivided, will continue to max: " + std::to_string(m_InitialSubDividideToFinal)
+		+ ")";
 }

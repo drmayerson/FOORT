@@ -44,15 +44,21 @@ class Geodesic;
 class Termination
 {
 public:
-	Termination() = default;
+	Termination(Geodesic* const theGeodesic) : m_theGeodesic{ theGeodesic } {}
 	virtual ~Termination() = default;
 
 	// Function that is called to determine whether Termination wants to
 	// terminate the Geodesic. Returns Term::Continue if no termination wanted,
 	// otherwise it returns the appropriate Term condition
-	virtual Term CheckTermination(const Geodesic& theGeodesic) = 0;
+	virtual Term CheckTermination() = 0;
+
+	virtual std::string GetDescriptionString() const = 0;
 
 protected:
+	Geodesic* const m_theGeodesic;
+
+	bool DecideUpdate(int UpdateNSteps);
+
 	// The termination is itself in charge of keeping track of how many steps it has been since it has been updated
 	// The Termination's TerminationOptions struct tells it how many steps it needs to wait between updates
 	int m_StepsSinceUpdated{};
@@ -66,9 +72,13 @@ using TerminationUniqueVector = std::vector<std::unique_ptr<Termination>>;
 class HorizonTermination final : public Termination
 {
 public:
-	Term CheckTermination(const Geodesic& theGeodesic) final;
+	HorizonTermination(Geodesic* const theGeodesic) : Termination(theGeodesic) {}
+
+	Term CheckTermination() final;
 
 	static std::unique_ptr<HorizonTermOptions> TermOptions;
+
+	std::string GetDescriptionString() const override;
 };
 
 
@@ -77,10 +87,14 @@ public:
 class BoundarySphereTermination final : public Termination
 {
 public:
-	Term CheckTermination(const Geodesic& theGeodesic) final;
+	BoundarySphereTermination(Geodesic* const theGeodesic) : Termination(theGeodesic) {}
+
+	Term CheckTermination() final;
 
 	// The options that the BoundarySphereTermination keeps
 	static std::unique_ptr<BoundarySphereTermOptions> TermOptions;
+
+	std::string GetDescriptionString() const override;
 
 };
 
@@ -89,10 +103,14 @@ public:
 class TimeOutTermination final : public Termination
 {
 public:
-	Term CheckTermination(const Geodesic& theGeodesic) final;
+	TimeOutTermination(Geodesic* const theGeodesic) : Termination(theGeodesic) {}
+
+	Term CheckTermination() final;
 
 	// The options that the TimeOutTermination keeps
 	static std::unique_ptr<TimeOutTermOptions> TermOptions;
+
+	std::string GetDescriptionString() const override;
 private:
 	// Keep track of the number of steps that the geodesic has taken so far
 	int m_CurNrSteps{ 0 };
@@ -147,7 +165,7 @@ public:
 };
 
 // Helper to create a new vector of Diagnostic options, based on the bitflag
-TerminationUniqueVector CreateTerminationVector(TermBitflag termflags);
+TerminationUniqueVector CreateTerminationVector(TermBitflag termflags, Geodesic *const theGeodesic);
 
 
 
