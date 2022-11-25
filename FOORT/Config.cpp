@@ -1,9 +1,21 @@
 #include"Config.h"
+#include"Utilities.h"
 
 #include <string>
-#include<chrono>
-#include<sstream>
-#include<iomanip>
+
+// DECLARATION OF ALL static DiagnosticOptions (for all types of Diagnostics) needed here!
+std::unique_ptr<DiagnosticOptions> FourColorScreenDiagnostic::DiagOptions;
+std::unique_ptr<GeodesicPositionOptions> GeodesicPositionDiagnostic::DiagOptions;
+std::unique_ptr<DiagnosticOptions> EquatorialPassesDiagnostic::DiagOptions;
+
+// DECLARATION OF ALL static TerminationOptions (for all types of Terminations) needed here!
+std::unique_ptr<HorizonTermOptions> HorizonTermination::TermOptions;
+std::unique_ptr<BoundarySphereTermOptions> BoundarySphereTermination::TermOptions;
+std::unique_ptr<TimeOutTermOptions> TimeOutTermination::TermOptions;
+
+#ifdef CONFIGURATION_MODE
+
+
 
 /// <summary>
 /// SelectMetric switch:  Use configuration to create the correct metric with specified parameters
@@ -83,12 +95,6 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 
 	return TheMetric;
 }
-
-
-// DECLARATION OF ALL static DiagnosticOptions (for all types of Diagnostics) needed here!
-std::unique_ptr<DiagnosticOptions> FourColorScreenDiagnostic::DiagOptions;
-std::unique_ptr<GeodesicPositionOptions> GeodesicPositionDiagnostic::DiagOptions;
-std::unique_ptr<DiagnosticOptions> EquatorialPassesDiagnostic::DiagOptions;
 
 
 
@@ -232,11 +238,6 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 	}
 
 }
-
-// DECLARATION OF ALL static TerminationOptions (for all types of Terminations) needed here!
-std::unique_ptr<HorizonTermOptions> HorizonTermination::TermOptions;
-std::unique_ptr<BoundarySphereTermOptions> BoundarySphereTermination::TermOptions;
-std::unique_ptr<TimeOutTermOptions> TimeOutTermination::TermOptions;
 
 
 /// <summary>
@@ -646,14 +647,7 @@ void Config::InitializeScreenOutput(const ConfigObject& theCfg)
 std::unique_ptr<GeodesicOutputHandler> Config::InitializeOutputHandler(const ConfigObject& theCfg, 
 	DiagBitflag alldiags, DiagBitflag valdiag, std::string FirstLineInfo)
 {
-	std::vector<std::string>diagstrings{};
-	// Construct vector of Diagnostic names in temporary scope
-	{
-		DiagnosticUniqueVector tempDiags{ CreateDiagnosticVector(alldiags, valdiag, nullptr) };
-		diagstrings.reserve(tempDiags.size());
-		for (const auto& d : tempDiags)
-			diagstrings.push_back(d->GetDiagNameStr());
-	}
+	std::vector<std::string>diagstrings{ Utilities::GetDiagStrings(alldiags, valdiag) };
 
 	// DEFAULTS
 	std::unique_ptr<GeodesicOutputHandler> TheHandler{ new GeodesicOutputHandler("","","",diagstrings,OutputHandler_All)};
@@ -688,16 +682,11 @@ std::unique_ptr<GeodesicOutputHandler> Config::InitializeOutputHandler(const Con
 		std::string TimeStampStr{ "" };
 		if (TimeStamp)
 		{
-			std::time_t t = std::time(nullptr);
-			std::tm tm = *std::localtime(&t);
-			std::stringstream datetime;
-			datetime << std::put_time(&tm, "%y%m%d-%H%M%S");
-			TimeStampStr = datetime.str();
-			//TimeStampStr = "TIMESTAMP";
+			TimeStampStr = Utilities::GetTimeStampString();
 		}
 
 		int nrToCache{ OutputHandler_All };
-		OutputSettings.lookupValue("GeodesicToCache", nrToCache);
+		OutputSettings.lookupValue("GeodesicsToCache", nrToCache);
 
 		int GeodesicsPerFile{ OutputHandler_All };
 		OutputSettings.lookupValue("GeodesicsPerFile", GeodesicsPerFile);
@@ -722,31 +711,8 @@ std::unique_ptr<GeodesicOutputHandler> Config::InitializeOutputHandler(const Con
 	return TheHandler;
 }
 
-std::string Config::GetFirstLineInfoString(const Metric* theMetric, const Source* theSource, DiagBitflag alldiags, DiagBitflag valdiag,
-	TermBitflag allterms, const ViewScreen* theView, GeodesicIntegratorFunc theIntegrator)
-{
-	/*std::string fulldiagstring{"Diagnostics: "};
-	{ // temp scope to create/destroy this diagnostic vector
-		DiagnosticUniqueVector tempdiagvec{ CreateDiagnosticVector(alldiags, valdiag, nullptr) };
-		for (auto& d : tempdiagvec)
-		{
-			fulldiagstring+= d->GetDescriptionString() + ", ";
-		}
-	}*/
-
-	std::string fulltermstring{ "Terminations: " };
-	{ // temp scope to create/destroy this termination vector
-		TerminationUniqueVector temptermvec{ CreateTerminationVector(allterms, nullptr) };
-		for (auto& t : temptermvec)
-		{
-			fulltermstring += t->GetDescriptionString() + ", ";
-		}
-	}
 
 
-	return "Metric: " + theMetric->GetDescriptionString() + "; "
-		+ "Source: " + theSource->GetDescriptionString() + "; "
-		+ fulltermstring + "; " + theView->GetDescriptionstring();
-}
+#endif // CONFIGURATION_MODE
 
 

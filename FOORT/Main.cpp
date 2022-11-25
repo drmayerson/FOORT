@@ -1,39 +1,95 @@
 #include <iostream>
-#include<chrono>
+#include<random>
+
+#include<omp.h>
 
 #include "InputOutput.h"
 #include "Geometry.h"
 #include"Metric.h"
 #include"Integrators.h"
 #include"Diagnostics.h"
-#include"Config.h"
+#include"Utilities.h"
+#include "Config.h"
 
-#include<random>
-
+#ifdef CONFIGURATION_MODE // This is set in Config.h!
 #include<libconfig.h++>
+#endif
 
-#include<omp.h>
 
-class Timer
+// This function is called if CONFIGURATION_MODE is NOT turned on.
+// CHANGE PRECOMPILED OPTIONS HERE!
+void LoadPrecompiledOptions(std::unique_ptr<Metric> &theM, std::unique_ptr<Source> &theS, DiagBitflag &AllDiags, DiagBitflag &ValDiag,
+    TermBitflag &AllTerms, std::unique_ptr<ViewScreen> &theView, GeodesicIntegratorFunc &theIntegrator,
+    std::unique_ptr<GeodesicOutputHandler> & theOutputHandler)
 {
-private:
-    // Type aliases to make accessing nested type easier
-    using Clock = std::chrono::steady_clock;
-    using Second = std::chrono::duration<double, std::ratio<1> >;
+    // Screen output
+    SetOutputLevel(OutputLevel::Level_4_DEBUG);
 
-    std::chrono::time_point<Clock> m_beg{ Clock::now() };
+    // Metric
+    // KerrMetric (real a, bool rLogScale)
+    theM = std::unique_ptr<Metric>(new KerrMetric( 0.5, false ));
 
-public:
-    void reset()
+    // Source
+    theS = std::unique_ptr<Source>(new NoSource(theM.get()));
+
+    // Diagnostics
+    AllDiags = Diag_FourColorScreen | Diag_EquatorialPasses;
+    ValDiag = Diag_EquatorialPasses;
+
+    // Diagnostic options
+    FourColorScreenDiagnostic::DiagOptions =
+        std::unique_ptr<DiagnosticOptions>(new DiagnosticOptions{ Update_OnlyFinish });
+    GeodesicPositionDiagnostic::DiagOptions =
+        std::unique_ptr<GeodesicPositionOptions>(new GeodesicPositionOptions{ 5000, 1 });
+    EquatorialPassesDiagnostic::DiagOptions =
+        std::unique_ptr<DiagnosticOptions>(new DiagnosticOptions{ 1 });
+
+    // Terminations
+    AllTerms = Term_BoundarySphere | Term_Horizon | Term_TimeOut;
+
+    // Termination options
+    if (dynamic_cast<SphericalHorizonMetric*>(theM.get()))
     {
-        m_beg = Clock::now();
+        HorizonTermination::TermOptions =
+            std::unique_ptr<HorizonTermOptions>(new HorizonTermOptions{
+            dynamic_cast<SphericalHorizonMetric*>(theM.get())->getHorizonRadius(), false, 0.01, 1 });
     }
+    BoundarySphereTermination::TermOptions =
+        std::unique_ptr<BoundarySphereTermOptions>(new BoundarySphereTermOptions{ 1000, 1 });
+    TimeOutTermination::TermOptions =
+        std::unique_ptr<TimeOutTermOptions>(new TimeOutTermOptions{ 1000000, 1 });
 
-    double elapsed() const
-    {
-        return std::chrono::duration_cast<Second>(Clock::now() - m_beg).count();
-    }
-};
+    // Mesh & Viewscreen
+    std::unique_ptr<Mesh> theMesh = std::unique_ptr<Mesh>(new SquareSubdivisionMesh(
+        -1, // maxpixels
+        10000, // initial pixels
+        7, // maxsubdivide
+        2000, // iteration pixels
+        false, // initial subdivide to final
+        ValDiag ));
+    theView = std::unique_ptr<ViewScreen>(new ViewScreen(
+        { 0.0,1000.0,0.2966972222222, 0.0 }, // position
+        { 0.0, -1.0, 0.0, 0.0 }, // direction
+        { 15, 15 }, // screen size
+        std::move(theMesh),
+        theM.get()));
+
+    // Integrator
+    theIntegrator = Integrators::IntegrateGeodesicStep_RK4;
+    Integrators::epsilon = 0.03;
+
+    // Output handler
+    theOutputHandler = std::unique_ptr<GeodesicOutputHandler>(new GeodesicOutputHandler(
+        "output", // file prefix
+        Utilities::GetTimeStampString(), // time stamp
+        "dat", // file extension
+        Utilities::GetDiagStrings(AllDiags, ValDiag),
+        200000, // nr geodesics to cache
+        200000, // nr geodesics per file
+        Utilities::GetFirstLineInfoString(theM.get(), theS.get(), AllDiags, ValDiag, AllTerms, theView.get(),
+            theIntegrator) // first line info
+    ));
+}
 
 
 
@@ -41,10 +97,15 @@ int main(int argc, char* argv[])
 {
     SetOutputLevel(OutputLevel::Level_4_DEBUG);
 
+    // CONFIGURATION MODE (using libconfig)
+#ifdef CONFIGURATION_MODE
+    ScreenOutput("FOORT compiled in configuration mode.", OutputLevel::Level_1_PROC);
+
     Config::ConfigObject cfgObject;
     if (argc < 2) // no configuration file given
     {
-        ScreenOutput("No configuration file given. Proceeding with default configuration.\n", OutputLevel::Level_0_WARNING);
+        ScreenOutput("No configuration file given. Exiting...\n", OutputLevel::Level_0_WARNING);
+        exit(0);
     }
     else
     {
@@ -69,22 +130,58 @@ int main(int argc, char* argv[])
 
     ScreenOutput("Initializing all object using configuration file...", OutputLevel::Level_1_PROC);
 
-    OutputLevel listallobjects = OutputLevel::Level_2_SUBPROC;
-
     // Initialize screen output first since it sets OutputLevel for the rest
     Config::InitializeScreenOutput(cfgObject);
 
     // Metric
     std::unique_ptr<Metric> theM = Config::GetMetric(cfgObject);
-    ScreenOutput("Metric: " + theM->GetDescriptionString() + ".", listallobjects);
 
     // Source
-    std::unique_ptr<Source> theS = Config::GetSource(cfgObject,theM.get());
-    ScreenOutput("Geodesic source: " + theS->GetDescriptionString() + ".", listallobjects);
+    std::unique_ptr<Source> theS = Config::GetSource(cfgObject, theM.get());
 
     // Diagnostics
     DiagBitflag AllDiags, ValDiag;
     Config::InitializeDiagnostics(cfgObject, AllDiags, ValDiag);
+
+    // Terminations
+    TermBitflag AllTerms;
+    Config::InitializeTerminations(cfgObject, AllTerms, theM.get());
+
+    // Viewscreen
+    std::unique_ptr<ViewScreen> theView = Config::GetViewScreen(cfgObject, ValDiag, theM.get());
+
+    // Integrator
+    GeodesicIntegratorFunc theIntegrator = Config::GetGeodesicIntegrator(cfgObject);
+
+    // Output handler
+    std::string FirstLineInfo{ Utilities::GetFirstLineInfoString(theM.get(), theS.get(), AllDiags, ValDiag, AllTerms, theView.get(),
+        theIntegrator) };
+    std::unique_ptr<GeodesicOutputHandler> theOutputHandler = Config::InitializeOutputHandler(cfgObject, AllDiags, ValDiag, FirstLineInfo);
+
+    ScreenOutput("Done loading options from configuration file.", OutputLevel::Level_1_PROC);
+
+#else // IN PRECOMPILED OPTIONS MODE
+    ScreenOutput("FOORT compiled in precompiled options mode.", OutputLevel::Level_1_PROC);
+    ScreenOutput("Initializing all object using configuration file...", OutputLevel::Level_1_PROC);
+
+
+    std::unique_ptr<Metric> theM;
+    std::unique_ptr<Source> theS;
+    DiagBitflag AllDiags, ValDiag;
+    TermBitflag AllTerms;
+    std::unique_ptr<ViewScreen> theView;
+    GeodesicIntegratorFunc theIntegrator;
+    std::unique_ptr<GeodesicOutputHandler> theOutputHandler;
+    LoadPrecompiledOptions(theM, theS, AllDiags, ValDiag, AllTerms, theView, theIntegrator, theOutputHandler);
+
+    ScreenOutput("Done loading precompiled options.", OutputLevel::Level_1_PROC);
+
+#endif // CONFIGURATION OR PRECOMPILED MODE
+
+    OutputLevel listallobjects = OutputLevel::Level_2_SUBPROC;
+
+    ScreenOutput("Metric: " + theM->GetDescriptionString() + ".", listallobjects);
+    ScreenOutput("Geodesic source: " + theS->GetDescriptionString() + ".", listallobjects);
     ScreenOutput("Diagnostics turned on: ", listallobjects);
     ScreenOutput("<begin list>", listallobjects);
     { // temp scope to create/destroy this diagnostic vector
@@ -93,12 +190,8 @@ int main(int argc, char* argv[])
         {
             ScreenOutput(d->GetDescriptionString() + ".", listallobjects);
         }
-        ScreenOutput("<end list>", listallobjects);
     }
-
-    // Terminations
-    TermBitflag AllTerms;
-    Config::InitializeTerminations(cfgObject, AllTerms, theM.get());
+    ScreenOutput("<end list>", listallobjects);
     ScreenOutput("Terminations turned on:", listallobjects);
     ScreenOutput("<begin list>", listallobjects);
     { // temp scope to create/destroy this termination vector
@@ -109,32 +202,17 @@ int main(int argc, char* argv[])
         }
         ScreenOutput("<end list>", listallobjects);
     }
-
-    // Viewscreen
-    std::unique_ptr<ViewScreen> theView = Config::GetViewScreen(cfgObject, ValDiag, theM.get());
     ScreenOutput(theView->GetDescriptionstring() + ".", listallobjects);
-
-    // Integrator
-    GeodesicIntegratorFunc theIntegrator = Config::GetGeodesicIntegrator(cfgObject);
     ScreenOutput("Integrator selected. Default step size: " + std::to_string(Integrators::epsilon) + ".", listallobjects);
-
-    // Output handler
-    std::string FirstLineInfo{ Config::GetFirstLineInfoString(theM.get(), theS.get(), AllDiags, ValDiag, AllTerms, theView.get(),
-        theIntegrator) };
-    std::unique_ptr<GeodesicOutputHandler> theOutputHandler = Config::InitializeOutputHandler(cfgObject,AllDiags,ValDiag,FirstLineInfo);
     ScreenOutput("Geodesic output handler initialized.", listallobjects);
 
-    ScreenOutput("Done initialization.", OutputLevel::Level_1_PROC);
-
-
-
-    Timer totalTimer;
+    Utilities::Timer totalTimer;
     totalTimer.reset();
     while (!theView->IsFinished())
     {
         ScreenOutput("Starting new integration loop.", OutputLevel::Level_1_PROC);
 
-        Timer IterationTimer;
+        Utilities::Timer IterationTimer;
         int CurNrGeod = theView->getCurNrGeodesics();
 #pragma omp parallel
         { // start up threads!

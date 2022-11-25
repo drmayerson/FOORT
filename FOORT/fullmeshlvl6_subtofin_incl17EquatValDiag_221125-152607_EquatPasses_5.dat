@@ -1,0 +1,5 @@
+Metric: Kerr (a = 0.990000, using normal r coord); Source: No source; Terminations: Horizon (stop at 1.010000x(horizon radius)), Boundary sphere (R = 1000.000000), Time out (max integration steps: 1000000), ; ViewScreen position: ( 0.000000, 1000.000000, 0.296697, 0.000000 ), screen size: ( 15.000000, 15.000000 ), Mesh: square subdivision (initial pixels: 200^2; max subdivision: 7; pixels subdivided per iteration: 2000; max total pixels: infinite; if pixel is initially subdivided, will continue to max: 0)
+9975 2571  1
+7381 1544  2
+3257 8007  -3
+7688 9939  -2

@@ -164,6 +164,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Terminations.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="ViewScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -177,6 +178,7 @@
     <ClInclude Include="Integrators.h" />
     <ClInclude Include="Terminations.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Utilities.h" />
     <ClInclude Include="ViewScreen.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

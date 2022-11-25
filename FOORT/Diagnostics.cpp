@@ -281,6 +281,13 @@ void EquatorialPassesDiagnostic::UpdateData()
 
 		m_PrevTheta = curTheta;
 	}
+
+	// If the geodesic is finished integrating and we finish inside the horizon, make the passes negative
+	// (to have a difference between inside and outside the horizon)
+	if (m_theGeodesic->GetTermCondition() == Term::Horizon)
+	{
+		m_EquatPasses = -m_EquatPasses;
+	}
 }
 
 std::string EquatorialPassesDiagnostic::GetDiagNameStr() const

@@ -1,8 +1,10 @@
 #ifndef _FOORT_CONFIG_H
 #define _FOORT_CONFIG_H
 
-#include<exception>
-#include<libconfig.h++>
+//////////////////////////////////////////////////////////
+// COMMENT ONLY THIS LINE OUT TO BE IN PRECOMPILED OPTIONS MODE
+ #define CONFIGURATION_MODE
+//////////////////////////////////////////////////////////
 
 #include"Geometry.h"
 #include"Metric.h"
@@ -11,6 +13,13 @@
 #include"ViewScreen.h"
 #include"Geodesic.h"
 #include"Integrators.h"
+
+#ifdef CONFIGURATION_MODE
+
+#include<exception>
+#include<libconfig.h++>
+
+
 
 namespace Config
 {
@@ -61,5 +70,6 @@ namespace Config
 
 
 
+#endif // CONFIGURATION_MODE
 
 #endif
