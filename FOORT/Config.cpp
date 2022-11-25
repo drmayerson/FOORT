@@ -365,7 +365,7 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 	{
 		// Something happened (e.g. no Termination options specified) that makes us revert completely to
 		// default Termination options (which are SET HERE)
-		ScreenOutput(std::string(e.what()) + " Using default termination(s) (" + "BoundarySphere \& TimeOut" + ").",
+		ScreenOutput(std::string(e.what()) + " Using default termination(s) (" + "BoundarySphere and TimeOut" + ").",
 			Output_Important_Default);
 		allterms= Term_BoundarySphere | Term_TimeOut;
 		BoundarySphereTermination::TermOptions =

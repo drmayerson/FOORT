@@ -25,6 +25,10 @@ TODO and wishlist:
 
 --- Commenting (especially Mesh/View + Integrator + Geodesic + GeodesicOutputHandler)
 
+--- document “add” procedures
+
+--- revisit all variables (bool? long? unsigned? etc)
+
 --- (unit) testing
 
 --------------------------------
