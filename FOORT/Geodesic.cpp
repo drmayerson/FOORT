@@ -1,23 +1,34 @@
-#include"Geodesic.h"
-#include"Metric.h"
+#include"Geodesic.h" // We are implementing Source & Geodesic member functions declared here
 
-std::string Source::GetDescriptionString() const
+#include "InputOutput.h" // for ScreenOutput()
+
+/// <summary>
+/// Source (and descendant classes) functions
+/// </summary>
+
+std::string Source::getFullDescriptionStr() const
 {
+	// Basic full description string
 	return "Source (no override description specified)";
 }
 
-OneIndex NoSource::getSource(Point pos, OneIndex vel) const
+OneIndex NoSource::getSource([[maybe_unused]] Point pos, [[maybe_unused]] OneIndex vel) const
 {
-	// no rhs for the geodesic equation
+	// no rhs for the geodesic equation: no force felt by geodesic
 	return OneIndex{ 0,0,0,0 };
 }
 
-std::string NoSource::GetDescriptionString() const
+std::string NoSource::getFullDescriptionStr() const
 {
+	// Full description string
 	return "No source";
 }
 
-///////////////////////////////////
+
+
+/// <summary>
+/// Geodesic (and descendant classes) functions
+/// </summary>
 
 
 Term Geodesic::Update()
@@ -26,6 +37,7 @@ Term Geodesic::Update()
 	Point newpos{};
 	OneIndex newvel{};
 	real step{};
+	// The integrator function will set the new position, new velocity, and the (affine parameter) step taken
 	m_theIntegrator(m_CurrentPos, m_CurrentVel, newpos, newvel, step, m_theMetric, m_theSource);
 	m_curLambda += step;
 	m_CurrentPos = newpos;
@@ -48,7 +60,7 @@ Term Geodesic::Update()
 	return m_TermCond;
 }
 
-Term Geodesic::GetTermCondition() const
+Term Geodesic::getTermCondition() const
 {
 	return m_TermCond;
 }
@@ -71,27 +83,40 @@ real Geodesic::getCurrentLambda() const
 
 std::vector<std::string> Geodesic::getAllOutputStr() const
 {
+	// The Geodesic should have terminated if this is called!
+	if (m_TermCond == Term::Continue)
+		ScreenOutput("Geodesic not terminated yet but getAllOutputStr() is called!", OutputLevel::Level_0_WARNING);
+
+
+	// This gets the complete output that should be written to the output file
+	// Every Diagnostic returns a string, PLUS the FIRST string is the screen index
 	std::vector<std::string> theOutput{};
 	theOutput.reserve(m_AllDiagnostics.size() + 1);
 
-	// First position is screen index
+	// First string is the screen index of the Geodesic
 	std::string strScreenIndex{ "" };
-	for (int i=0; i<dimension-2; ++i)
+	for (int i = 0; i < m_ScreenIndex.size(); ++i)
 	{
+		// We don't use the toString() function to avoid extraneous parentheses and commas therein
 		strScreenIndex += std::to_string(m_ScreenIndex[i]) + " ";
 	}
 	theOutput.push_back(strScreenIndex);
 
+	// The rest of the strings are the output strings as given by each of the Diagnostics
 	for (const auto& d : m_AllDiagnostics)
 	{
-		theOutput.push_back(d->getFullData());
+		theOutput.push_back(d->getFullDataStr());
 	}
 
 	return theOutput;
 }
 
-std::vector<real> Geodesic::GetDiagnosticFinalValue() const
+std::vector<real> Geodesic::getDiagnosticFinalValue() const
 {
+	// The Geodesic should have terminated if this is called!
+	if (m_TermCond == Term::Continue)
+		ScreenOutput("Geodesic not terminated yet but getDiagnosticFinalValue() is called!", OutputLevel::Level_0_WARNING);
+
 	// The diagnostic that contributes the value is always at the first position in the Diagnostic array!
 	return m_AllDiagnostics[0]->getFinalDataVal();
 }

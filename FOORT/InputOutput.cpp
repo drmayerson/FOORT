@@ -1,6 +1,11 @@
-#include"InputOutput.h"
-#include<fstream>
-#include<algorithm>
+#include"InputOutput.h" // We are defining functions from here
+
+#include <algorithm> // needed for std::min etc
+
+
+/// <summary>
+/// Screen output functions
+/// </summary>
 
 // This is the output level; default is 1. Note: variable only accessible in this code file!
 static OutputLevel theOutputLevel{ OutputLevel::Level_1_PROC };
@@ -11,7 +16,8 @@ void SetOutputLevel(OutputLevel theLvl)
 	theOutputLevel = theLvl;
 }
 
-// Outputs line to screen console), contingent on it being allowed by the set outputlevel
+// Outputs line to screen console, contingent on it being allowed by the set outputlevel
+// Defaults are lvl = OutputLevel::Level_3_ALLDETAIL and newLine = true
 void ScreenOutput(std::string_view theOutput, OutputLevel lvl, bool newLine)
 {
 	if (static_cast<int>(lvl) <= static_cast<int>(theOutputLevel))	// Output is allowed at current set level
@@ -32,50 +38,66 @@ void ScreenOutput(std::string_view theOutput, OutputLevel lvl, bool newLine)
 	}
 }
 
+/// <summary>
+/// GeodesicOutputHandler functions
+/// </summary>
+
+// Constructor initializes all const member variables using the arguments
 GeodesicOutputHandler::GeodesicOutputHandler(std::string FilePrefix, std::string TimeStamp, std::string FileExtension,
-	std::vector<std::string> DiagNames, int nroutputstocache, int geodperfile, std::string firstlineinfo) :
+	std::vector<std::string> DiagNames, size_t nroutputstocache, size_t geodperfile, std::string firstlineinfo) :
 	m_FilePrefix {FilePrefix}, m_TimeStamp{TimeStamp}, m_FileExtension{FileExtension}, m_DiagNames{DiagNames},
 	m_nrOutputsToCache{ nroutputstocache }, m_nrGeodesicsPerFile{ geodperfile }, m_PrintFirstLineInfo{ firstlineinfo != "" },
 	m_FirstLineInfoString{ firstlineinfo }
 {
-	if (m_FilePrefix == "")
+	// If no prefix has been set, or we are allowed zero geodesics per file, then we necessarily output to the console
+	if (m_FilePrefix == "" || m_nrGeodesicsPerFile == 0)
 		m_WriteToConsole = true;
 
-	if (m_nrOutputsToCache > 0)
-		m_AllCachedData.reserve(m_nrOutputsToCache + 1);
+	// Reserve an appropriate amount in the cached data vector
+	m_AllCachedData.reserve(m_nrOutputsToCache + 1);
 }
 
 
 void GeodesicOutputHandler::NewGeodesicOutput(std::vector<std::string> theOutput)
 {
+	// First, we put this current output in the cached data
 	m_AllCachedData.push_back(theOutput);
-	if (m_nrOutputsToCache != OutputHandler_All && m_nrOutputsToCache < m_AllCachedData.size())
+	// Now, check if we have cached (one) too many outputs, if so, we want to write all the cached output to file
+	if (m_AllCachedData.size() > m_nrOutputsToCache)
 		WriteCachedOutputToFile();
 }
 
 void GeodesicOutputHandler::OutputFinished()
 {
+	// There is no more output, so we write anything that is cached to file to clean up and finalize
 	WriteCachedOutputToFile();
 }
 
 void GeodesicOutputHandler::WriteCachedOutputToFile()
 {
-	if (!m_WriteToConsole)
+	if (!m_WriteToConsole)	// We are writing to files
 	{
 		ScreenOutput("Writing cached geodesic output to file(s)...", OutputLevel::Level_2_SUBPROC);
 
 		// Check if we will be breaking the cached output into multiple files
-		int nrfiles{ 1 };
-		if (m_nrGeodesicsPerFile > 0)
-		{
-			while (m_AllCachedData.size() > nrfiles * m_nrGeodesicsPerFile)
-				++nrfiles;
-		}
-		int curfile{ 1 };
-		int curgeod{ 0 };
-		int lastfilecount{ 0 };
+		unsigned short nrfiles{ 1 };
+		// Note that the constructor has checked that indeed m_nrGeodesicsPerFile > 0
+		while (m_AllCachedData.size() > nrfiles * m_nrGeodesicsPerFile)
+			++nrfiles;
+
+		// Keeps track of the current file we are working in; note that this will be offset by the number of
+		// full files when specifying the true file number to write to
+		unsigned short curfile{ 1 };
+		// The next geodesic (index in m_AllCachedData) that we need to output
+		size_t curgeod{ 0 };
+		// The number of geodesics stored in the last file we will open for output
+		size_t lastfilecount{ 0 };
+		// We are sure that the number of diagnostics fits in an int!
+		// Note that the first element of each output vector is the screen index
 		const int nrdiags{ static_cast<int>(m_AllCachedData[0].size()) - 1 };
 		
+		// Are we exactly at a point where we need to start a new file for the first file we write to?
+		// If so, open each of the necessary new output files for the first time
 		if (m_CurrentGeodesicsInFile == 0)
 		{
 			// Starting a new file (for each diagnostic), so open it for the first time
@@ -86,24 +108,33 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 			}
 		}
 
+		// The m_WriteToConsole check is because any file I/O error will trigger setting this to true
+		// We now loop through all of the files we need to write to
 		while (curfile <= nrfiles && !m_WriteToConsole)
 		{
-			int loopmax{static_cast<int>(m_AllCachedData.size())};
-			if (m_nrGeodesicsPerFile > 0)
+			size_t loopmax{ m_AllCachedData.size() };
+			if (curfile == 1)
 			{
-				if (curfile == 1)
-					loopmax = std::min(static_cast<int>(m_AllCachedData.size()), m_nrGeodesicsPerFile - m_CurrentGeodesicsInFile);
-				else
-					loopmax = std::min(static_cast<int>(m_AllCachedData.size()) - curgeod, m_nrGeodesicsPerFile);
+				// if this is the first file we are writing to, then there could already be geodesics written
+				// to this file which we need to take into account
+				// (note that then automatically curgeod == 0)
+				loopmax = std::min(m_AllCachedData.size(), m_nrGeodesicsPerFile - m_CurrentGeodesicsInFile);
+			}
+			else
+			{
+				// If this is not the first file we are writing to, then see if we will write all geodesics to this file or not
+				loopmax = std::min(m_AllCachedData.size() - curgeod, m_nrGeodesicsPerFile);
 			}
 
 			// loop through each diagnostic
 			for (int curdiag = 0; curdiag < nrdiags; ++curdiag)
 			{ 
+				// open appropriate file for appending
 				std::string outputfile{ GetFileName(curdiag, m_CurrentFullFiles + curfile) };
-				// open file for appending
 				std::ofstream outf{ outputfile, std::ios::out | std::ios::app };
 
+				// If something goes wrong in opening the file,
+				// then write to console from now on
 				if (!outf)
 				{
 					ScreenOutput("Output file error! Could not open " + GetFileName(curdiag, m_CurrentFullFiles + curfile)
@@ -112,22 +143,26 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 				}
 				else
 				{
-					for (int j = curgeod; j < curgeod + loopmax; ++j)
+					// All went well opening the file. Output the current diagnostic data of the current diagnostic
+					// for all geodesics that go in this file
+					for (size_t j = curgeod; j < curgeod + loopmax; ++j)
 					{
 						// Output pixel and then diagnostic data
 						outf << m_AllCachedData[j][0] << " " << m_AllCachedData[j][curdiag+1] << "\n";
 					}
 
-					// close file
+					// We are done with this diagnostic file, close file
 					outf.close();
 				}
 			}
 
+			// We have now filled up the current file (or we have outputted all cached data already)
 			++curfile;
-			if (curfile <= nrfiles)
+			if (curfile <= nrfiles) // Is there still a file to be (partially) written?
 			{
+				// We have outputted another loopmax geodesics, so increment curgeod accordingly
 				curgeod += loopmax;
-				// Starting a new file (for each diagnostic), so open it for the first time
+				// We will be starting a new file (for each diagnostic), so open it for the first time
 				for (int i = 0; i < nrdiags && !m_WriteToConsole; ++i)
 				{
 					std::string outputfile{ GetFileName(i,m_CurrentFullFiles + curfile) };
@@ -136,26 +171,34 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 			}
 			else // curfile > nrfiles, so we just did the last file
 			{
+				// This is how many geodesics went into the last file
 				lastfilecount = loopmax;
 			}
-
+			// We are now done with one iteration of the loop; the next iteration
+			// will write to the next file (for each geodesic). Note that we have prepared
+			// this next file (for each geodesic) for writing by opening it already for the first time.
 		} // end while
 
-		// Fill up files
+		// We are done writing all the output to files. Now, we update the internal counters 
+		// We have filled up entirely nrfiles-1 files for sure.
 		m_CurrentFullFiles += nrfiles - 1;
-		// Check if last file is actually just exactly full
+		// The last file may have been exactly filled, check this
 		if (lastfilecount == m_nrGeodesicsPerFile)
 		{
+			// If the last file was exactly filled, we have one more full file, and the next file to write to
+			// will be empty
 			++m_CurrentFullFiles;
 			lastfilecount = 0;
 		}
+		// Set how many geodesics have already been written to in the current (non-full) file
 		m_CurrentGeodesicsInFile = lastfilecount;
 
 		ScreenOutput("Done writing cached geodesic output to file(s).", OutputLevel::Level_2_SUBPROC);
 	} // end if (!m_WriteToConsole)
 
+
 	if (m_WriteToConsole)	// write everything to console; note this is not an else from the previous if since in the previous if,
-							// we may encounter problems that sets this to true
+							// we may encounter file I/O problems that sets this to true in the if block above
 	{
 		for (int i = 0; i < m_AllCachedData.size(); ++i)
 		{
@@ -165,16 +208,19 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 		}
 	}
 	
-	// Clean up cache now
+	// Whether we have written all output to file or to console, in any case we have outputted all cached data,
+	// so empty the cache now
 	m_AllCachedData.clear();
 	m_AllCachedData.reserve(m_nrOutputsToCache + 1);
 }
 
-std::string GeodesicOutputHandler::GetFileName(int diagnr, int filenr) const
+std::string GeodesicOutputHandler::GetFileName(int diagnr, unsigned short filenr) const
 {
 	if (m_WriteToConsole)
 		ScreenOutput("Should not be getting a file name if we are writing to console!", OutputLevel::Level_0_WARNING);
 
+	// This procedure construct a full output file name from the various parts of the file name stored
+	// in the member variables
 	std::string FullFileName{ m_FilePrefix + "_"};
 
 	if (m_TimeStamp != "")
@@ -182,12 +228,12 @@ std::string GeodesicOutputHandler::GetFileName(int diagnr, int filenr) const
 
 	FullFileName += m_DiagNames[diagnr];
 
-	if (filenr > 1)
+	if (filenr > 1) // only output the number of the file if it is not the first file
 	{
 		FullFileName += "_" + std::to_string(filenr);
 	}
 
-	if (m_FileExtension != "")
+	if (m_FileExtension != "") // if there is not extension, we also don't want the trailing .
 		FullFileName += "." + m_FileExtension;
 
 	return FullFileName;
@@ -195,8 +241,9 @@ std::string GeodesicOutputHandler::GetFileName(int diagnr, int filenr) const
 
 void GeodesicOutputHandler::OpenForFirstTime(std::string filename)
 {
+	// Open the file, effectively overwriting the file
 	std::ofstream outf{ filename, std::ios::out | std::ios::trunc };
-	if (!outf)
+	if (!outf) // Trigger writing to console if something went wrong opening the file
 	{
 		ScreenOutput("Output file error! Could not open " + filename
 			+ ". Will write rest of output to console.", OutputLevel::Level_0_WARNING);
@@ -204,17 +251,23 @@ void GeodesicOutputHandler::OpenForFirstTime(std::string filename)
 	}
 	else
 	{
-		// write first line info
+		// write first line info in the file; it is then prepared for geodesic output
 		if (m_PrintFirstLineInfo)
 			outf << m_FirstLineInfoString << "\n";
 
+		// Close the file
 		outf.close();
 	}
 }
 
 
+/// <summary>
+/// ThreadIntermediateChacher functions - UNUSED
+/// </summary>
 
-void ThreadIntermediateCacher::CacheInitialConditions(int index, Point initpos, OneIndex initvel, ScreenIndex scrindex)
+
+
+void ThreadIntermediateCacher::CacheInitialConditions(size_t index, Point initpos, OneIndex initvel, ScreenIndex scrindex)
 {
 	m_CachedInitialConds_Index.push_back(index);
 	m_CachedInitialConds_Pos.push_back(initpos);
@@ -222,7 +275,7 @@ void ThreadIntermediateCacher::CacheInitialConditions(int index, Point initpos, 
 	m_CachedInitialConds_ScrIndex.push_back(scrindex);
 }
 
-void ThreadIntermediateCacher::SetNewInitialConditions(int& index, Point& initpos, OneIndex& initvel, ScreenIndex& scrindex)
+void ThreadIntermediateCacher::SetNewInitialConditions(size_t& index, Point& initpos, OneIndex& initvel, ScreenIndex& scrindex)
 {
 	index = m_CachedInitialConds_Index.back();
 	initpos = m_CachedInitialConds_Pos.back();
@@ -235,20 +288,20 @@ void ThreadIntermediateCacher::SetNewInitialConditions(int& index, Point& initpo
 	m_CachedInitialConds_ScrIndex.pop_back();
 }
 
-int ThreadIntermediateCacher::GetNrInitialConds() const
+size_t ThreadIntermediateCacher::GetNrInitialConds() const
 {
 	return m_CachedInitialConds_Index.size();
 }
 
 
-void ThreadIntermediateCacher::CacheGeodesicOutput(int index, std::vector<real> finalvals, std::vector<std::string> geodoutput)
+void ThreadIntermediateCacher::CacheGeodesicOutput(size_t index, std::vector<real> finalvals, std::vector<std::string> geodoutput)
 {
 	m_CachedOutput_Index.push_back(index);
 	m_CachedOutput_FinalVals.push_back(finalvals);
 	m_CachedOutput_GeodOutput.push_back(geodoutput);
 }
 
-void ThreadIntermediateCacher::SetGeodesicOutput(int& index, std::vector<real>& finalvals, std::vector<std::string>& geodoutput)
+void ThreadIntermediateCacher::SetGeodesicOutput(size_t& index, std::vector<real>& finalvals, std::vector<std::string>& geodoutput)
 {
 	index = m_CachedOutput_Index.back();
 	finalvals = m_CachedOutput_FinalVals.back();
@@ -259,7 +312,7 @@ void ThreadIntermediateCacher::SetGeodesicOutput(int& index, std::vector<real>& 
 	m_CachedOutput_GeodOutput.pop_back();
 }
 
-int ThreadIntermediateCacher::GetNrGeodesicOutputs() const
+size_t ThreadIntermediateCacher::GetNrGeodesicOutputs() const
 {
 	return m_CachedOutput_Index.size();
 }

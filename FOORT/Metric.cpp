@@ -1,29 +1,29 @@
-#include"Geometry.h"
+#include"Metric.h" // we are defining the Metric functions here
 
-#include"InputOutput.h"
-#include"Integrators.h"
+#include"InputOutput.h" // needed for ScreenOutput()
+#include"Integrators.h" // needed for the constant DERIVATIVE_hval
 
-#include"Metric.h"
-
-#include<string>
-#include<cmath>
+#include<cmath> // needed for sqrt() and sin() etc (only on Linux)
 
 /// <summary>
-/// Metric functions
+/// Metric (abstract base class) functions
 /// </summary>
 
+// Christoffel symbols of the metric (indices up, down, down)
 ThreeIndex Metric::getChristoffel_udd(const Point& p) const
 {
-	//ScreenOutput("Called Christoffel at" + toString(p),OutputLevel::Level_4_DEBUG);
-
 	// Populate metric derivatives with index down. Only evaluates numerical derivative of metric for a given coordinate
 	// if the metric does not have a symmetry in that coordinate (otherwise derivative vanishes)
+	// (exploiting symmetries this way speeds up computations considerably!)
 	ThreeIndex metric_dd_der{};
+	// Helper function that returns a bool true/false if the coordinate is a symmetry yes/no
 	auto HasSym = [this](int theCoord) { return std::find(m_Symmetries.begin(), m_Symmetries.end(), theCoord) != m_Symmetries.end(); };
 	for (int coord = 0; coord < dimension; ++coord)
 	{
 		if (!HasSym(coord))
 		{
+			// The metric does not have a symmetry in the coordinate coord, so we calculate the derivative of the metric
+			// wrt this coordinate by central difference
 			Point pShift{};
 			pShift[coord] = DERIVATIVE_hval;
 			metric_dd_der[coord] = (getMetric_dd(p + pShift) - getMetric_dd(p - pShift)) / (2 * DERIVATIVE_hval);
@@ -53,21 +53,26 @@ ThreeIndex Metric::getChristoffel_udd(const Point& p) const
 	return theChristoffel;
 }
 
+// Riemann tensor (indices up, down, down, down)
 FourIndex Metric::getRiemann_uddd(const Point& p) const
 {
+	// TO IMPLEMENT!
 	ScreenOutput("Called Riemann at" + toString(p));
 
 	return {};
 }
 
+// Kretschmann scalar (Riem^2)
 real Metric::getKretschmann(const Point& p) const
 {
+	// TO IMPLEMENT!
 	ScreenOutput("Called Kretschmann at" + toString(p));
 
 	return 0;
 }
 
-std::string Metric::GetDescriptionString() const
+// Generic description string
+std::string Metric::getFullDescriptionStr() const
 {
 	return "Metric (no override description specified)";
 }
@@ -79,17 +84,18 @@ std::string Metric::GetDescriptionString() const
 /// SphericalHorizonMetric functions
 /// </summary>
 
+// Constructor, to be called with the horizon radius and a bool indicating whether we are using a logarithmic radial scale
 SphericalHorizonMetric::SphericalHorizonMetric(real HorizonRadius, bool rLogScale)
 	: m_rLogScale{ rLogScale }, m_HorizonRadius{ HorizonRadius }
-{
-	//ScreenOutput("SphericalHorizon constructor: " + std::to_string(m_HorizonRadius), OutputLevel::Level_4_DEBUG);
-}
+{ }
 
+// Getter for horizon radius
 real SphericalHorizonMetric::getHorizonRadius() const
 {
 	return m_HorizonRadius;
 }
 
+// Getter for radial log scale
 bool SphericalHorizonMetric::getrLogScale() const
 {
 	return m_rLogScale;
@@ -100,30 +106,27 @@ bool SphericalHorizonMetric::getrLogScale() const
 /// KerrMetric functions
 /// </summary>
 
-
+// Constructor, must be passed the Kerr a parameter and whether we are using a logarithmic radial scale
 KerrMetric::KerrMetric(real aParam, bool rLogScale)
 	: m_aParam{ aParam }, 
-	SphericalHorizonMetric(1 + sqrt(1 - aParam * aParam), rLogScale)
+	SphericalHorizonMetric(1 + sqrt(1 - aParam * aParam), rLogScale) // initialize base class with horizon radius and rLogScale
 {
-	if (dimension != 4)
-		ScreenOutput("Cannot construct Kerr metric in spacetime dimension other than 4!", OutputLevel::Level_0_WARNING);
-
-	// Kerr has a Killing vector along t and phi
+	// Make sure we are in four spacetime dimensions
+	if constexpr (dimension != 4)
+	{
+		ScreenOutput("Kerr is only defined in four dimensions!", OutputLevel::Level_0_WARNING);
+	}
+	// Kerr has a Killing vector along t and phi, so we initialize the symmetries accordingly
 	m_Symmetries = { 0,3 };
-
-	//ScreenOutput("Kerr metric constructed with a = " + std::to_string(m_aParam)
-	//	+ "; horizon at: " + std::to_string(m_HorizonRadius) + "; using log(r): " + std::to_string(m_rLogScale)
-	//	 + ".", OutputLevel::Level_4_DEBUG);
-	
 }
 
+// Kerr metric getter, indices down
 TwoIndex KerrMetric::getMetric_dd(const Point& p) const
 {
-	// ScreenOutput("Kerr metric dd at " + toString(p));
-
 	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
 	real r = m_rLogScale ? exp(p[1]) : p[1];
 
+	// Shorthands
 	real theta = p[2];
 	real sint = sin(theta);
 	real cost = cos(theta);
@@ -148,14 +151,13 @@ TwoIndex KerrMetric::getMetric_dd(const Point& p) const
 	return TwoIndex{ {{g00, 0,0, g03 }, {0,g11,0,0}, {0,0,g22,0},{g03,0,0,g33}} };
 }
 
-
+// Kerr metric getter, indices up
 TwoIndex KerrMetric::getMetric_uu(const Point& p) const
 {
-	//ScreenOutput("Kerr metric uu at " + toString(p));
-
 	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
 	real r = m_rLogScale ? exp(p[1]) : p[1];
 
+	// Shorthands
 	real theta = p[2];
 	real sint = sin(theta);
 	real cost = cos(theta);
@@ -181,7 +183,8 @@ TwoIndex KerrMetric::getMetric_uu(const Point& p) const
 	return TwoIndex{ {{g00, 0,0, g03 }, {0,g11,0,0}, {0,0,g22,0},{g03,0,0,g33}} };
 }
 
-std::string KerrMetric::GetDescriptionString() const
+// Kerr description string; also gives a parameter value and whether we are using logarithmic radial coordinate
+std::string KerrMetric::getFullDescriptionStr() const
 {
 	return "Kerr (a = " + std::to_string(m_aParam) + ", " + (m_rLogScale ? "using logarithmic r coord" : "using normal r coord") + ")";
 }
@@ -191,27 +194,39 @@ std::string KerrMetric::GetDescriptionString() const
 /// FlatSpaceMetric functions
 /// </summary>
 
+// Basic constructor (no arguments necessary)
 FlatSpaceMetric::FlatSpaceMetric()
 {
-	if (dimension != 4)
-		ScreenOutput("Flat space metric only defined in 4 dimensions!", OutputLevel::Level_0_WARNING);
+	// Make sure we are in four spacetime dimensions
+	if constexpr (dimension != 4)
+	{
+		ScreenOutput("FlatSpaceMetric is only defined in four dimensions!", OutputLevel::Level_0_WARNING);
+	}
 
 	// Killing vectors along t and phi (other Killing vectors of flat space not explicit in spherical coords)
 	m_Symmetries = { 0,3 };
 }
 
+// Flat metric getter, indices down
 TwoIndex FlatSpaceMetric::getMetric_dd(const Point& p) const
 {
+	// Flat metric in spherical coordinates
 	return TwoIndex{ {{-1, 0,0,0}, {0,1,0,0}, {0,0,p[1]*p[1],0},{0,0,0,p[1] * p[1]*sin(p[2])*sin(p[2])}} };
 }
 
+// Flat metric getter, indices up
 TwoIndex FlatSpaceMetric::getMetric_uu(const Point& p) const
 {
+	// Flat metric in spherical coordinates
 	return TwoIndex{ {{-1, 0,0,0}, {0,1,0,0}, {0,0,1/(p[1] * p[1]),0},{0,0,0,1/(p[1] * p[1] * sin(p[2]) * sin(p[2]))}} };
-
 }
 
-std::string FlatSpaceMetric::GetDescriptionString() const
+// Description string for flat space
+std::string FlatSpaceMetric::getFullDescriptionStr() const
 {
 	return "Flat space";
 }
+
+
+
+//// (New Metric classes can define their member functions here)

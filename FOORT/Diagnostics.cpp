@@ -1,10 +1,11 @@
-#include"Diagnostics.h"
-#include"Metric.h"
-#include"Geodesic.h"
-#include "InputOutput.h"
+#include "Diagnostics.h" // We are defining Diagnostic member functions here
 
-#include<memory>
+#include "Geodesic.h" // We need member functions of the Geodesic class here
+#include "InputOutput.h" // for ScreenOutput()
 
+/// <summary>
+/// Diagnostic helper function
+/// </summary>
 
 // Helper to create a new vector of Diagnostic options, based on the bitflag
 DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag valdiag, Geodesic *const theGeodesic)
@@ -12,10 +13,14 @@ DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag
 	// This should never happen if everything was set up correctly
 	if(diagflags == Diag_None)
 		ScreenOutput("No Diagnostics in bitflag!", OutputLevel::Level_0_WARNING);
-	if (diagflags == Diag_None)
+	if (valdiag == Diag_None)
 		ScreenOutput("No Diagnostics in bitflag!", OutputLevel::Level_0_WARNING);
 
 	DiagnosticUniqueVector theDiagVector{};
+
+	// We will now determine for each Diagnostic individually whether it is turned on in diagflags,
+	// and if so add an instance of it to theDiagVector. If it is additionally also the valdiag,
+	// then we move it to the front of the vector.
 
 	// Is FourColorScreen turned on?
 	if (diagflags & Diag_FourColorScreen)
@@ -53,95 +58,116 @@ DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag
 			std::rotate(theDiagVector.begin(), theDiagVector.begin() + 1, theDiagVector.end());
 		}
 	}
-	// Is ... turned on?
-	// ...
-	// (more ifs for other diagnostics as they are added)
+
+	//// GEODESIC ADD POINT C ////
+	// Add an if statement that checks if your Diagnostic's DiagBitflag is turned on, if so add a new instance of it
+	// to theDiagVector. Then check if valdiag is your Diagnostic and rotate theDiagVector accordingly if it is.
+	// Sample code:
+	/*
+	// Is MyDiagnostic turned on?
+	if (diagflags & Diag_MyDiag)
+	{
+		theDiagVector.emplace_back(new MyDiagnostic{ theGeodesic });
+		// If this is the value Diagnostic, we want it to be the first Diagnostic.
+		// Since at the moment it is the last element of the array, we perform a simple rotate right
+		// on the current array to place the Diagnostic in the front.
+		if (valdiag & Diag_MyDiag)
+		{
+			std::rotate(theDiagVector.begin(), theDiagVector.begin() + 1, theDiagVector.end());
+		}
+	}
+	*/
+	//// END GEODESIC ADD POINT C ////
+
 
 	return theDiagVector;
 }
 
+/// <summary>
+/// Diagnostic (abstract base class) functions
+/// </summary>
 
-bool Diagnostic::DecideUpdate(int UpdateNSteps)
+
+// This helper function returns true if the Diagnostic should update its internal status. Should be called from within
+// UpdateData() with the appropriate DiagnosticOptions::theUpdateFrequency
+bool Diagnostic::DecideUpdate(const UpdateFrequency& myUpdateFrequency)
 {
 	bool decideupdate = false;
-	
-	// Check if it is start and we (only) update at start (and/or finish)
-	if ((UpdateNSteps == Update_OnlyStart
-		|| UpdateNSteps == Update_OnlyStartAndFinish)
-		&& m_theGeodesic->getCurrentLambda() == 0.0)
-	{
-		decideupdate = true;
-	}
-	// Check if it is finish and we (only) update at finish (and/or start)
-	else if ((UpdateNSteps == Update_OnlyFinish
-		|| UpdateNSteps == Update_OnlyStartAndFinish)
-		&& m_theGeodesic->GetTermCondition() != Term::Continue)
-	{
-		decideupdate = true;
-	}
-	// Check if we update every n steps
-	else if (UpdateNSteps > 0)
+	// First, check if we are to update every so many steps
+	if (myUpdateFrequency.UpdateNSteps > 0)
 	{
 		// increase step counter and check if it is time to update
 		++m_StepsSinceUpdated;
-		if (m_StepsSinceUpdated >= UpdateNSteps)
+		if (m_StepsSinceUpdated >= myUpdateFrequency.UpdateNSteps)
 		{
 			// Time to update and reset step counter
 			decideupdate = true;
 			m_StepsSinceUpdated = 0;
 		}
 	}
+	// If UpdateNsteps == 0, then we only update either at start and/or end of the integration, so check these
+	// cases
+	else if (myUpdateFrequency.UpdateStart && m_OwnerGeodesic->getCurrentLambda() == 0.0)
+	{
+		decideupdate = true;
+	}
+	else if (myUpdateFrequency.UpdateFinish && m_OwnerGeodesic->getTermCondition() != Term::Continue)
+	{
+		decideupdate = true;
+	}
+	
 	return decideupdate;
 }
 
-std::string Diagnostic::GetDescriptionString() const
+// Base class definition just returns the short name (which itself is pure virtual in the base class!)
+std::string Diagnostic::getFullDescriptionStr() const
 {
-	return GetDiagNameStr();
+	return getNameStr();
 }
+
+/// <summary>
+/// FourColorScreen functions
+/// </summary>
 
 void FourColorScreenDiagnostic::UpdateData()
 {
-	// This checks to see if we want to update the data now (and increments the step counter if necessary)
-	if (DecideUpdate(DiagOptions->UpdateEveryNSteps))
+	// Note: FourColorScreen only wants to update at the end, and then only if
+	// the geodesic has exited the boundary sphere.
+	// Check to see that the geodesic has finished, and that in particular
+	// it has finished because it has "escaped" to the boundary sphere.
+	if (m_OwnerGeodesic->getTermCondition() == Term::BoundarySphere)
 	{
-		// Note: FourColorScreen only wants to update at the end, and then only if
-		// the geodesic has exited the boundary sphere.
-		// Check to see that the geodesic has finished, and that in particular
-		// it has finished because it has "escaped" to the boundary sphere.
-		if (m_theGeodesic->GetTermCondition() == Term::BoundarySphere)
+		// Position of the terminated geodesic
+		Point pos{ m_OwnerGeodesic->getCurrentPos() };
+		// Rework phi coordinate to be between 0 and 2pi
+		while (pos[3] > 2 * pi)
+			pos[3] -= 2 * pi;
+		while (pos[3] < 0)
+			pos[3] += 2 * pi;
+
+		// Check which quadrant the geodesic is in
+		int quadrant{ 0 };
+		if (pos[2] < pi / 2)
 		{
-			// Position of the terminated geodesic
-			Point pos{ m_theGeodesic->getCurrentPos() };
-			// Rework phi coordinate to be between 0 and 2pi
-			while (pos[3] > 2 * pi)
-				pos[3] -= 2 * pi;
-			while (pos[3] < 0)
-				pos[3] += 2 * pi;
-
-			// Check which quadrant the geodesic is in
-			int quadrant{ 0 };
-			if (pos[2] < pi / 2)
-			{
-				if (pos[3] < pi)
-					quadrant = 1;
-				else
-					quadrant = 2;
-			}
+			if (pos[3] < pi)
+				quadrant = 1;
 			else
-			{
-				if (pos[3] < pi)
-					quadrant = 3;
-				else
-					quadrant = 4;
-			}
-
-			// Put this quadrant data into the class' quadrant data
-			m_quadrant = quadrant;
+				quadrant = 2;
 		}
+		else
+		{
+			if (pos[3] < pi)
+				quadrant = 3;
+			else
+				quadrant = 4;
+		}
+
+		// Put this quadrant data into the class' quadrant data
+		m_quadrant = quadrant;
 	}
 }
 
-std::string FourColorScreenDiagnostic::getFullData() const
+std::string FourColorScreenDiagnostic::getFullDataStr() const
 {
 	// Return the value of the quadrant as string
 	return std::to_string(m_quadrant);
@@ -156,51 +182,59 @@ std::vector<real> FourColorScreenDiagnostic::getFinalDataVal() const
 real FourColorScreenDiagnostic::FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const
 {
 	// Discrete metric for distance: returns 0 if the quadrants are the same, 1 if they are not
-	if (abs(val1[0] - val2[0])<1)
+	if (abs(val1[0] - val2[0]) < 1) // use <1 instead of == 0.0 to avoid floating point round-off errors
 		return 0;
 	else
 		return 1;
 }
 
-std::string FourColorScreenDiagnostic::GetDiagNameStr() const
+std::string FourColorScreenDiagnostic::getNameStr() const
 {
-	return std::string{ "FourColorScreen" };
+	// Simple name without spaces
+	return "FourColorScreen";
 }
 
-std::string FourColorScreenDiagnostic::GetDescriptionString() const
+std::string FourColorScreenDiagnostic::getFullDescriptionStr() const
 {
+	// Full description does not have more information than simple name, but can contain spaces
 	return "Four-color screen";
 }
 
+/// <summary>
+/// GeodesicPositionDiagnostic functions
+/// </summary>
 
 void GeodesicPositionDiagnostic::UpdateData()
 {
 	// This checks to see if we want to update the data now (and increments the step counter if necessary)
-	if (DecideUpdate(DiagOptions->UpdateEveryNSteps))
+	if (DecideUpdate(DiagOptions->theUpdateFrequency))
 	{
 		// Put the current position in the saved position vector
-		m_AllSavedPoints.push_back(m_theGeodesic->getCurrentPos());
+		m_AllSavedPoints.push_back(m_OwnerGeodesic->getCurrentPos());
 	}
 
-	// if geodesic is done integrating. Check if we need to resize all the saved points
-	if (m_theGeodesic->GetTermCondition() != Term::Continue)
-	{
-		
-		int nrstepstokeep{ DiagOptions->OutputNrSteps };
 
-		// check if we need to resize
+	// We also want extra behaviour at the end, when the geodesic is done integrating:
+	// at this point, we want to resize the vector of saved points if needed.
+	if (m_OwnerGeodesic->getTermCondition() != Term::Continue) // we are done integrating
+	{
+		size_t nrstepstokeep{ DiagOptions->OutputNrSteps };
+
+		// check if we need to resize; note that nrstepstokeep == 0 if we keep all of the steps
 		if (nrstepstokeep > 0 && nrstepstokeep < m_AllSavedPoints.size())
 		{
-			int jettison = m_AllSavedPoints.size() / nrstepstokeep;
+			size_t jettison = m_AllSavedPoints.size() / nrstepstokeep;
+			// we create a temporary vector that stores all the data we are keeping
 			std::vector<Point> tmp{};
-			for (int i = 0; i < m_AllSavedPoints.size(); ++i)
+			for (size_t i = 0; i < m_AllSavedPoints.size(); ++i)
 			{
 				if (i % jettison == 0)
 					tmp.push_back(m_AllSavedPoints[i]);
 			}
 			// Make sure to keep last step
-			if ((m_AllSavedPoints.size() - 1) % jettison != 0)
+			if ((m_AllSavedPoints.size() - 1) % jettison != 0) // if we have not already saved the last step
 			{
+				// delete the last saved step and replace it by the actual last entry of the data
 				tmp.pop_back();
 				tmp.push_back(m_AllSavedPoints[m_AllSavedPoints.size() - 1]);
 			}
@@ -210,15 +244,19 @@ void GeodesicPositionDiagnostic::UpdateData()
 	}
 }
 
-std::string GeodesicPositionDiagnostic::getFullData() const
+std::string GeodesicPositionDiagnostic::getFullDataStr() const
 {
+	// The full output string looks like this:
+	// "(total nr steps) ;; (step 1) (step 2) (step 3) ..."
+	// where each step is a (space-separated) output of the geodesic coordinates at that step
 	std::string outputstr{ std::to_string(m_AllSavedPoints.size()) + " ;; "};
 
 	for (auto& output : m_AllSavedPoints)
 	{
+		// We are not using the toString() function since that contains extraneous brackets and commas that
+		// we don't want in our output
 		for (int i = 0; i < dimension; ++i)
 			outputstr += std::to_string(output[i]) + " ";
-		//outputstr += "; ";
 	}
 
 	return outputstr;
@@ -226,78 +264,104 @@ std::string GeodesicPositionDiagnostic::getFullData() const
 
 std::vector<real> GeodesicPositionDiagnostic::getFinalDataVal() const
 {
-	// return the last (theta, phi)
+	// return the last (theta, phi) coordinates
 	Point lastpt{ m_AllSavedPoints.back() };
 	return std::vector<real>{lastpt[2],lastpt[3]};
 }
 
 real GeodesicPositionDiagnostic::FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const
 {
+	// Check to make sure we have the right size vectors passed
 	if (val1.size() != 2 || val2.size() != 2)
 	{
 		ScreenOutput("Wrong values given to GeodesicPositionDiagnostic::FinalDataValDistance!", OutputLevel::Level_0_WARNING);
 		return 0;
 	}
-
+	
+	// This has not been implemented correctly yet!!
 	ScreenOutput("Using GeodesicPositionDiagnostic::FinalDataValDistance without implementation!", OutputLevel::Level_0_WARNING);
 	return abs((val1[0] - val1[0]) * (val1[0] - val1[0]) + (val1[1] - val1[1]) * (val1[1] - val1[1]));
 }
 
-std::string GeodesicPositionDiagnostic::GetDiagNameStr() const
+std::string GeodesicPositionDiagnostic::getNameStr() const
 {
-	return std::string{ "GeodesicPosition" };
+	// Simple name string without spaces
+	return  "GeodesicPosition" ;
 }
 
-std::string GeodesicPositionDiagnostic::GetDescriptionString() const
+std::string GeodesicPositionDiagnostic::getFullDescriptionStr() const
 {
+	// Full description string; also contains information about how frequently it updates and how many steps it outputs at the end
 	return "Geodesic position (output " + std::to_string(DiagOptions->OutputNrSteps) + 
-		" steps, updates every " + std::to_string(DiagOptions->UpdateEveryNSteps) + " steps)";
+		" steps, updates every " + std::to_string(DiagOptions->theUpdateFrequency.UpdateNSteps) + " steps)";
 }
 
 
-std::string EquatorialPassesDiagnostic::getFullData() const
-{
-	return std::to_string(m_EquatPasses);
-}
+/// <summary>
+/// EquatorialPassesDiagnostic functions
+/// </summary>
 
-std::vector<real> EquatorialPassesDiagnostic::getFinalDataVal() const
-{
-	return std::vector<real> {static_cast<real>(m_EquatPasses)};
-}
-
-real EquatorialPassesDiagnostic::FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const
-{
-	return abs(val1[0] - val2[0]);
-}
 
 void EquatorialPassesDiagnostic::UpdateData()
 {
-	if (DecideUpdate(DiagOptions->UpdateEveryNSteps))
+	// This checks to see if we want to update the data now (and increments the step counter if necessary)
+	if (DecideUpdate(DiagOptions->theUpdateFrequency))
 	{
-		real curTheta{ m_theGeodesic->getCurrentPos()[2] };
+		// Get the current theta coordinate of the geodesic
+		real curTheta{ m_OwnerGeodesic->getCurrentPos()[2] };
 
-		if (m_PrevTheta > 0 && ( (m_PrevTheta-pi/2.0) * (curTheta-pi/2.0) ) < 0.0)
+		// This checks to see if we have crossed the equatorial plane by comparing the previous theta coordinate
+		// with the current theta coordinate
+		// (Note that m_PrevTheta = -1 at initialization)
+		if (m_PrevTheta > 0 && ((m_PrevTheta - pi / 2.0) * (curTheta - pi / 2.0)) < 0.0)
 			++m_EquatPasses;
-
+		
+		// The current theta coordinate becomes the previous coordinate for the next iteration
 		m_PrevTheta = curTheta;
 	}
 
 	// If the geodesic is finished integrating and we finish inside the horizon, make the passes negative
 	// (to have a difference between inside and outside the horizon)
-	if (m_theGeodesic->GetTermCondition() == Term::Horizon)
+	if (m_OwnerGeodesic->getTermCondition() == Term::Horizon)
 	{
 		m_EquatPasses = -m_EquatPasses;
 	}
 }
 
-std::string EquatorialPassesDiagnostic::GetDiagNameStr() const
+
+std::string EquatorialPassesDiagnostic::getFullDataStr() const
 {
-	return std::string{ "EquatPasses" };
+	// Returns a string of how many times it passed across the equatorial plane
+	return std::to_string(m_EquatPasses);
 }
 
-std::string EquatorialPassesDiagnostic::GetDescriptionString() const
+std::vector<real> EquatorialPassesDiagnostic::getFinalDataVal() const
 {
+	// Simple vector of size one containing the number of equatorial passes
+	return std::vector<real> {static_cast<real>(m_EquatPasses)};
+}
+
+real EquatorialPassesDiagnostic::FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const
+{
+	// Returns the simple distance between two geodesics. Note that
+	// a geodesic terminating inside the horizon has NEGATIVE number of equatorial passes, so a geodesic inside and outside
+	// the horizon will always have non-zero distance.
+	return abs(val1[0] - val2[0]);
+}
+
+std::string EquatorialPassesDiagnostic::getNameStr() const
+{
+	// Simple name string without spaces
+	return  "EquatPasses";
+}
+
+std::string EquatorialPassesDiagnostic::getFullDescriptionStr() const
+{
+	// More descriptive string (with spaces) is also just the name
 	return "Equatorial passes";
 }
+
+
+//// (New Diagnostic classes can define their member functions here)
 
 

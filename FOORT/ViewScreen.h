@@ -1,13 +1,20 @@
 #ifndef _FOORT_VIEWSCREEN_H
 #define _FOORT_VIEWSCREEN_H
 
-#include"Geometry.h"
-#include"Metric.h"
-#include"Mesh.h"
+///////////////////////////////////////////////////////////////////////////////////////
+////// VIEWSCREEN.H
+////// Declarations of ViewScreen class. This class is in charge of converting
+////// a pixel on the screen (which is dictated by its Mesh to be integrated)
+////// into physical initial conditions for the geodesic.
+////// All definitions in ViewScreen.cpp
+///////////////////////////////////////////////////////////////////////////////////////
 
-#include<array>
-#include<memory>
+#include "Geometry.h" // For basic tensor objects
+#include "Metric.h" // For the Metric object
+#include "Mesh.h" // For the Mesh object
 
+
+// Type of geodesic being integrated. NOTE: only Null supported/implemented at the moment!
 enum class GeodesicType
 {
 	Null = 0,
@@ -15,61 +22,75 @@ enum class GeodesicType
 	Spacelike = 1,
 };
 
+// ViewScreen class: this class is in charge of converting a pixel on the screen (which the Mesh wants to integrate)
+// to physical initial conditions for the position and velocity of a geodesic. It owns a Mesh instance, which will tell it
+// which pixels to integrate etc.
 class ViewScreen
 {
 public:
-	ViewScreen( Point pos, OneIndex dir, std::array<real, dimension - 2> screensize,
-		std::unique_ptr<Mesh> theMesh, const Metric* theMetric, GeodesicType thegeodtype=GeodesicType::Null) 
+	// No default constructor possible
+	ViewScreen() = delete;
+	// constructor must pass following arguments along:
+	// - physical position and looking direction;
+	// - screen dimensions (in dimensions of length)
+	// - the Mesh used (ViewScreen must become a owner of this object!)
+	// - the Metric used (ViewScreen is NOT the owner of the Metric)
+	// - the geodesic type to be integrated (null, timelike, spacelike)
+	ViewScreen(Point pos, OneIndex dir, std::array<real, dimension - 2> screensize,
+		std::unique_ptr<Mesh> theMesh, const Metric* const theMetric, GeodesicType thegeodtype=GeodesicType::Null) 
 		: m_Pos{ pos }, m_Direction{ dir }, m_ScreenSize{ screensize }, m_theMesh{ std::move(theMesh) },
 		m_theMetric{theMetric},	m_GeodType{ thegeodtype }
 	{
+		// At the moment, we don't even use the direction; we are always pointed towards the origin
 		if (m_Direction != Point{ 0,-1,0,0 })
 		{
-			ScreenOutput("Warning: ViewScreen is only supported pointing inwards at the moment; Direction = {0, -1, 0, 0} will be used",
-				OutputLevel::Level_1_PROC);
-			m_Direction = Point{ 0,-1,0,0 };
+			ScreenOutput("ViewScreen is only supported pointing inwards at the moment; Direction = {0, -1, 0, 0} will be used",
+				OutputLevel::Level_0_WARNING);
 		}
-		if (m_ScreenSize[1] != m_ScreenSize[0])
-		{
-			ScreenOutput("At the moment only considering square screens. Setting the height equal to width.", OutputLevel::Level_1_PROC);
-			m_ScreenSize[1] = m_ScreenSize[0];
-		}
+		// At the moment, we are only integrating null geodesics
 		if (m_GeodType != GeodesicType::Null)
 		{
-			ScreenOutput("Warning: ViewScreen only supports null geodesics at the moment; setting geodesics to null.");
-			m_GeodType = GeodesicType::Null;
+			ScreenOutput("ViewScreen only supports null geodesics at the moment; geodesics integrated will be null.",
+				OutputLevel::Level_0_WARNING);
 		}
 
-
+		// Investigate metric at the camera position
 		TwoIndex metricpos = m_theMetric->getMetric_uu(m_Pos);
 		// If there are g^{r\nu} (with \nu\neq r) cross terms, then our procedure is strictly speaking not correct!
 		// We use p_r = 0 implicitly when raising indices to obtain the geodesic's initial velocity
 		if (metricpos[1][0] != 0 || metricpos[1][2] != 0 || metricpos[1][3] != 0)
-			ScreenOutput("Warning: inverse metric has cross terms of the form g^{r a} (with a<>r)! Initial conditions of geodesic will not be strictly speaking correct!", OutputLevel::Level_1_PROC);
+			ScreenOutput("ViewScreen: inverse metric has cross terms of the form g^{r a} (with a<>r)! Initial conditions of geodesic will not be strictly correct!", OutputLevel::Level_0_WARNING);
 	}
 
-	void SetNewInitialConditions(int index, Point& pos, OneIndex& vel, ScreenIndex& scrIndex);
+	// Heart of the ViewScreen: here, the ViewScreen is asked to provide initial conditions
+	// for the geodesic nr index of the current iteration; based on the screen index
+	// that the Mesh gives, it sets up these physical initial conditions.
+	void SetNewInitialConditions(size_t index, Point& pos, OneIndex& vel, ScreenIndex& scrIndex);
 
-	bool IsFinished();
+	// These member functions essentially pass on information to/from the Mesh
+	bool IsFinished() const; // Does the ViewScreen (i.e. the Mesh) want to integrate more geodesics or not?
+	size_t getCurNrGeodesics() const; // Current number of geodesics in this iteration
+	void EndCurrentLoop(); // The current iteration of geodesics is finished; prepare the next one
+	void GeodesicFinished(size_t index, std::vector<real> finalValues); // This geodesic has been integrated, returning its final "values"
 
-	int getCurNrGeodesics();
-
-	void EndCurrentLoop();
-
-	void GeodesicFinished(int index, std::vector<real> finalValues);
-
-	std::string GetDescriptionstring() const;
+	// Description string getter (spaces allowed), also will contain information about the Mesh
+	std::string getFullDescriptionStr() const;
 
 private:
-	Point m_Pos;
-	OneIndex m_Direction;
-	std::array<real, dimension - 2> m_ScreenSize;
+	// The position and looking direction of the camera
+	const Point m_Pos;
+	const OneIndex m_Direction;
+	// The screensize (in physical units of length)
+	const ScreenPoint m_ScreenSize;
 
-	const Metric* m_theMetric;
+	// const pointer to const Metric
+	const Metric* const m_theMetric;
 
-	GeodesicType m_GeodType{ GeodesicType::Null };
+	// The geodesic type to be integrated
+	const GeodesicType m_GeodType{ GeodesicType::Null };
 
-	std::unique_ptr<Mesh> m_theMesh;
+	// The const pointer to the Mesh we are using to determine pixels to be integrated
+	const std::unique_ptr<Mesh> m_theMesh;
 };
 
 

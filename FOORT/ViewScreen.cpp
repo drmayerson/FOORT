@@ -1,10 +1,12 @@
-#include"ViewScreen.h"
-#include<string>
+#include "ViewScreen.h" // We are implementing ViewScreen member functions
 
-void ViewScreen::SetNewInitialConditions(int index, Point& pos, OneIndex& vel, ScreenIndex &scrIndex)
+/// <summary>
+/// ViewScreen functions
+/// </summary>
+
+
+void ViewScreen::SetNewInitialConditions(size_t index, Point& pos, OneIndex& vel, ScreenIndex &scrIndex)
 {
-	//assert(m_GeodType == GeodesicType::Null && "Only null geodesics supported at the moment!");
-
 	// Helper function for the sign of a real number
 	auto sign = [](real arg)->real {return (arg > 0) ? +1 : ((arg < 0) ? -1 : 0); };
 
@@ -20,8 +22,7 @@ void ViewScreen::SetNewInitialConditions(int index, Point& pos, OneIndex& vel, S
 	real alpha = m_ScreenSize[0] * (UnitScreenPos[0] - 0.5);
 	real beta = m_ScreenSize[1] * (UnitScreenPos[1] - 0.5);
 
-	// Currently only radially inpointing camera is supported; this should have been overridden at initialization
-	//assert(m_Direction == OneIndex{ 0,-1,0,0 });
+	// Note: currently only radially inpointing camera is supported (we do not check m_Direction)
 
 	real costheta0 = cos(pos[2]);
 	real sintheta0 = sin(pos[2]);
@@ -66,31 +67,36 @@ void ViewScreen::SetNewInitialConditions(int index, Point& pos, OneIndex& vel, S
 	// sign of velocity is determined by having geodesic point inwards
 	vel[1] = -sqrt(-metricpos_uu[1][1] * (vel[0] * p_down[0] + vel[2] * p_down[2] + vel[3] * p_down[3]));
 
-	// pos and vel have been set, so we are done!
+	// pos and vel have been set (scrIndex was set above by the call to Mesh already), so we are done!
 }
 
-bool ViewScreen::IsFinished()
+bool ViewScreen::IsFinished() const
 {
+	// pass on information to the Mesh
 	return m_theMesh->IsFinished();
 }
 
-int ViewScreen::getCurNrGeodesics()
+size_t ViewScreen::getCurNrGeodesics() const
 {
+	// pass on information to the Mesh
 	return m_theMesh->getCurNrGeodesics();
 }
 
 void ViewScreen::EndCurrentLoop()
 {
+	// pass on information to the Mesh
 	m_theMesh->EndCurrentLoop();
 }
 
-void ViewScreen::GeodesicFinished(int index, std::vector<real> finalValues)
+void ViewScreen::GeodesicFinished(size_t index, std::vector<real> finalValues)
 {
+	// pass on information to the Mesh
 	m_theMesh->GeodesicFinished(index, finalValues);
 }
 
-std::string ViewScreen::GetDescriptionstring() const
+std::string ViewScreen::getFullDescriptionStr() const
 {
+	// Full description string; carries over information from the Mesh as well
 	return "ViewScreen position: " + toString(m_Pos) + ", screen size: " + toString(m_ScreenSize) + ", "
-		+ m_theMesh->GetDescriptionString();
+		+ m_theMesh->getFullDescriptionStr();
 }

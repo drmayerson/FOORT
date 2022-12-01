@@ -1,30 +1,71 @@
-#include"Config.h"
-#include"Utilities.h"
+#include "Config.h" // We are implementing these Config namespace functions here
 
-#include <string>
+#include "Utilities.h" // for Utilities::GetDiagNameStrings
+
+#include <algorithm> // for std::transform
+
 
 // DECLARATION OF ALL static DiagnosticOptions (for all types of Diagnostics) needed here!
-std::unique_ptr<DiagnosticOptions> FourColorScreenDiagnostic::DiagOptions;
 std::unique_ptr<GeodesicPositionOptions> GeodesicPositionDiagnostic::DiagOptions;
 std::unique_ptr<DiagnosticOptions> EquatorialPassesDiagnostic::DiagOptions;
+
+//// DIAGNOSTIC ADD POINT D.1 ////
+// Declare your Diagnostic's static DiagnosticOptions struct here!
+// Sample code:
+/*
+std::unique_ptr<DiagnosticOptions> MyDiagnostic::DiagOptions; // change DiagnosticOptions to your descendant struct if necessary
+*/
+//// END DIAGNOSTIC ADD POINT D.1 ////
+
 
 // DECLARATION OF ALL static TerminationOptions (for all types of Terminations) needed here!
 std::unique_ptr<HorizonTermOptions> HorizonTermination::TermOptions;
 std::unique_ptr<BoundarySphereTermOptions> BoundarySphereTermination::TermOptions;
 std::unique_ptr<TimeOutTermOptions> TimeOutTermination::TermOptions;
 
+//// TERMINATION ADD POINT D.1 ////
+// Declare your Termination's static TerminationOptions struct here!
+// Sample code:
+/*
+std::unique_ptr<MyTermOptions> MyTermination::DiagOptions;
+*/
+//// END TERMINATION ADD POINT D.1 ////
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// Config namespace and all of its functions are only defined in CONFIGURATION_MODE
 #ifdef CONFIGURATION_MODE
 
 
 
+// Initialize screen output
+void Config::InitializeScreenOutput(const ConfigObject& theCfg)
+{
+	// DEFAULT: highest level output allowed
+	SetOutputLevel(OutputLevel::Level_4_DEBUG);
+	// Get the root collection
+	ConfigSetting& root = theCfg.getRoot();
+	if (root.exists("Output"))
+	{
+		ConfigSetting& OutputSettings = root["Output"];
+		int scroutputint{ static_cast<int>(OutputLevel::Level_4_DEBUG) };
+		OutputSettings.lookupValue("ScreenOutputLevel", scroutputint);
+		// We do these checks to make sure the int we have read in can indeed be interpreted as an OutputLevel
+		scroutputint = std::max(scroutputint, static_cast<int>(OutputLevel::Level_0_WARNING));
+		scroutputint = std::min(scroutputint, static_cast<int>(OutputLevel::MaxLevel));
+		SetOutputLevel(static_cast<OutputLevel>(scroutputint));
+	}
+}
+
+
 /// <summary>
-/// SelectMetric switch:  Use configuration to create the correct metric with specified parameters
+/// Config::GetMetric():  Use configuration to create the correct Metric with specified parameters
 /// </summary>
 std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 {
 	std::string MetricName{};
 
-	// SET DEFAULTS HERE: Kerr with a = 0.5, epsHorizon = 0.01
+	// DEFAULT: Kerr with a = 0.5, epsHorizon = 0.01
 	std::unique_ptr<Metric> TheMetric{ new KerrMetric{0.5} };
 	std::string DefaultString{ "Kerr with a = 0.5" };
 
@@ -51,7 +92,7 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 		// Metric name exists; now we can look up the correct metric
 		// Make MetricName all lower case to avoid case-specific errors
 		std::transform(MetricName.begin(), MetricName.end(), MetricName.begin(),
-			[](unsigned char c) { return std::tolower(c); });
+			[](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
 		// COMPARISON WITH ALL LOWER CASE LETTERS!
 		if (MetricName == "kerr")
@@ -80,6 +121,23 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 			// Create Metric object!
 			TheMetric = std::unique_ptr<Metric>(new FlatSpaceMetric{});
 		}
+		//// METRIC ADD POINT B ////
+		// Add an else if clause to check for your new Metric object!
+		// To look for additional options in the metric configuration, use
+		// MetricSettings.lookupValue("OptionName", optionvar);
+		// Sample code:
+		/*
+		else if (MetricName == "mymetric") // remember to use all lower case!
+		{
+			type myparam{ defaultsetting }; 
+			// Note: if this option is not present in the configuration file, then myparam will not be changed
+			// by the call to lookupValue
+			MetricSettings.lookupValue("MyParameter", myparam);
+
+			TheMetric = std::unique_ptr<Metric>(new MyMetric{ myparam }); // put your additional parameters needed in the constructor
+		}
+		*/
+		//// END METRIC ADD POINT B ////
 		else // no match found: must be incorrect metric name specified in configuration file
 		{
 			throw SettingError("No metric settings found.");
@@ -97,9 +155,70 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 }
 
 
+/// <summary>
+/// Config::GetSource():  Use configuration to create the correct Source with specified parameters
+/// </summary>
+std::unique_ptr<Source> Config::GetSource(const ConfigObject& theCfg, const Metric* const theMetric)
+{
+	std::string SourceName{};
+
+	// SET DEFAULTS HERE: no source
+	std::unique_ptr<Source> TheSource{ new NoSource(theMetric) };
+	std::string DefaultString{ "No source." };
+
+	// Get the root collection
+	ConfigSetting& root = theCfg.getRoot();
+
+	try
+	{
+		// Check to see that there are Source settings at all
+		if (!root.exists("Source"))
+		{
+			throw SettingError("No geodesic source settings found.");
+		}
+
+		// Go to the Source settings
+		ConfigSetting& SourceSettings = root["Source"];
+
+		// Check to see that the Source's name has been specified
+		if (!SourceSettings.lookupValue("Name", SourceName))
+		{
+			throw SettingError("No source settings found.");
+		}
+
+		// Source name exists; now we can look up the correct source
+		// Make SourceName all lower case to avoid case-specific errors
+		std::transform(SourceName.begin(), SourceName.end(), SourceName.begin(),
+			[](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+
+		// COMPARISON WITH ALL LOWER CASE LETTERS!
+		if (SourceName == "nosource")
+		{
+			// No further settings needed; create Source!
+			TheSource = std::unique_ptr<Source>(new NoSource(theMetric));
+		}
+		// else if ... (other sources here)
+		else // no match found: must be incorrect source name specified in configuration file
+		{
+			throw SettingError("No source settings found.");
+		}
+	}
+	catch (SettingError& e)
+	{
+		// Something happened so that we were unable to determine even which source to use.
+		// Use the default settings (set above at begin of this function)
+		// This is not so important since it is just the source --- we can assume this is just NoSource by default
+		ScreenOutput(std::string(e.what()) + " Using default source (" + DefaultString + ").",
+			Output_Other_Default);
+	}
+
+	return TheSource;
+}
+
+
 
 /// <summary>
-/// Diagnostics switch:  Use configuration to set the Diagnostics bitflag appropriately;
+/// Config::InitializeDiagnostics():  Use configuration to set the Diagnostics bitflag appropriately;
 /// initialize all DiagnosticOptions for all Diagnostics that are turned on;
 /// and set bitflag for diagnostic to be used for coarseness evaluating in Mesh
 /// </summary>
@@ -142,12 +261,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 			// Four color screen diagnostic on! Add it to bitflag.
 			alldiags |= Diag_FourColorScreen;
 
-			// By default, this Diagnostic only updates at the end of each geodesic.
-			// Check to see if a different update frequency has been specified
-			int updatefreq = Update_OnlyFinish;
-			AllDiagSettings["FourColorScreen"].lookupValue("UpdateFrequency", updatefreq);
-			// Initialize the (static) DiagnosticOptions for FourColorScreen!
-			FourColorScreenDiagnostic::DiagOptions = std::unique_ptr<DiagnosticOptions>(new DiagnosticOptions{ updatefreq });
+			// There are no options to set for FourColorScreen
 
 			// check to see if there is no valdiag set yet;
 			// and there is a option "UseForMesh" specied for this Diagnostic;
@@ -164,14 +278,22 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 		{
 			alldiags |= Diag_GeodesicPosition;
 
-			int updatefreq = 1; // update every step
-			AllDiagSettings["GeodesicPosition"].lookupValue("UpdateFrequency", updatefreq);
+			size_t updatensteps = 1;
+			bool updatestart{ false };
+			bool updatefinish{ true };
+			AllDiagSettings["GeodesicPosition"].lookupValue("UpdateFrequency", updatensteps);
+			if (updatensteps == 0)
+			{
+				AllDiagSettings["GeodesicPosition"].lookupValue("UpdateStart", updatestart);
+				AllDiagSettings["GeodesicPosition"].lookupValue("UpdateFinish", updatefinish);
+			}
 
-			int outputsteps = -1; // keep all steps
+			size_t outputsteps = 0; // keep all steps
 			AllDiagSettings["GeodesicPosition"].lookupValue("OutputSteps", outputsteps);
 
 			GeodesicPositionDiagnostic::DiagOptions = 
-				std::unique_ptr<GeodesicPositionOptions>(new GeodesicPositionOptions{ outputsteps, updatefreq });
+				std::unique_ptr<GeodesicPositionOptions>(new GeodesicPositionOptions{ outputsteps,
+											UpdateFrequency{updatensteps,updatestart,updatefinish} });
 
 			bool isVal{ false };
 			if (valdiag == Diag_None && AllDiagSettings["GeodesicPosition"].lookupValue("UseForMesh", isVal) && isVal)
@@ -185,11 +307,18 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 		{
 			alldiags |= Diag_EquatorialPasses;
 
-			int updatefreq = 1; // update every step
-			AllDiagSettings["EquatorialPasses"].lookupValue("UpdateFrequency", updatefreq);
+			size_t updatensteps = 1;
+			bool updatestart{ true };
+			bool updatefinish{ true };
+			AllDiagSettings["EquatorialPasses"].lookupValue("UpdateFrequency", updatensteps);
+			if (updatensteps == 0)
+			{
+				AllDiagSettings["EquatorialPasses"].lookupValue("UpdateStart", updatestart);
+				AllDiagSettings["EquatorialPasses"].lookupValue("UpdateFinish", updatefinish);
+			}
 
 			EquatorialPassesDiagnostic::DiagOptions =
-				std::unique_ptr<DiagnosticOptions>(new DiagnosticOptions{ updatefreq });
+				std::unique_ptr<DiagnosticOptions>(new DiagnosticOptions{ UpdateFrequency{updatensteps,updatestart,updatefinish} });
 
 			bool isVal{ false };
 			if (valdiag == Diag_None && AllDiagSettings["EquatorialPasses"].lookupValue("UseForMesh", isVal) && isVal)
@@ -198,9 +327,43 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 				valdiag = Diag_EquatorialPasses;
 			}
 		}
-		// if (CheckIfDiagOn("..."))
-		// ...
-		// ... (other ifs for other diagnostics here)
+
+		//// DIAGNOSTIC ADD POINT D.2 ////
+		// Add a check to see if your new Diagnostic is turned on here. If it is, check any further options it needs and
+		// make sure to set the diagnostic flags appropriately.
+		// Sample code:
+		/*
+		// MyDiagnostic
+		if (CheckIfDiagOn("MyDiagnostic"))
+		{
+			alldiags |= Diag_MyDiagnostic; // use the flag you created at DIAGNOSTIC ADD POINT B.
+
+			// The following assumes your new Diagnostic carries a static DiagnosticOptions struct.
+			// If it does not, or if it carries additional options (in a descendant struct of DiagnosticOptions),
+			// then update this accordingly
+			size_t updatensteps = 1;
+			bool updatestart{ true };
+			bool updatefinish{ true };
+			AllDiagSettings["MyDiagnostic"].lookupValue("UpdateFrequency", updatensteps);
+			if (updatensteps == 0)
+			{
+				AllDiagSettings["MyDiagnostic"].lookupValue("UpdateStart", updatestart);
+				AllDiagSettings["MyDiagnostic"].lookupValue("UpdateFinish", updatefinish);
+			}
+			// (look up any additional options here...)
+
+			MyDiagnostic::DiagOptions =
+				std::unique_ptr<DiagnosticOptions>(new DiagnosticOptions{ UpdateFrequency{updatensteps,updatestart,updatefinish} });
+
+			bool isVal{ false };
+			if (valdiag == Diag_None && AllDiagSettings["MyDiagnostic"].lookupValue("UseForMesh", isVal) && isVal)
+			{
+				// Use this Diagnostic for the Mesh values
+				valdiag = Diag_MyDiagnostic; // use the flag you created at DIAGNOSTIC ADD POINT B.
+			}
+		}
+		*/
+		//// END DIAGNOSTIC ADD POINT D.2. ////
 
 
 
@@ -234,17 +397,16 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 			Output_Important_Default);
 		alldiags = Diag_FourColorScreen;
 		valdiag = Diag_FourColorScreen;
-		FourColorScreenDiagnostic::DiagOptions = std::unique_ptr<DiagnosticOptions>(new DiagnosticOptions{ Update_OnlyFinish });
 	}
 
 }
 
 
 /// <summary>
-/// Terminations switch:  Use configuration to set the Termination bitflag appropriately;
-/// initialize all TerminationOptions for all Terminations that are turned on;
+/// Config::InitializeTerminations():  Use configuration to set the Termination bitflag appropriately;
+/// and initialize all TerminationOptions for all Terminations that are turned on.
 /// </summary>
-void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& allterms, const Metric* theMetric)
+void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& allterms, const Metric* const theMetric)
 {
 	// First set the flag to all zeros
 	allterms = Term_None;
@@ -301,7 +463,7 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 
 				// By default, this Termination updates every step
 				// Check to see if a different update frequency has been specified
-				int updatefreq = 1;
+				size_t updatefreq = 1;
 				AllTermSettings["Horizon"].lookupValue("UpdateFrequency", updatefreq);
 
 				// Initialize the (static) TerminationOptions for Horizon!
@@ -323,7 +485,7 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 
 			// By default, this Termination updates every step
 			// Check to see if a different update frequency has been specified
-			int updatefreq = 1;
+			size_t updatefreq = 1;
 			AllTermSettings["BoundarySphere"].lookupValue("UpdateFrequency", updatefreq);
 
 			// Initialize the (static) TerminationOptions for BoundarySphere!
@@ -338,22 +500,41 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 			allterms |= Term_TimeOut;
 
 			// Get the number of steps until time-out. Default is 10000
-			int timeoutsteps {10000 };
+			size_t timeoutsteps {10000 };
 			AllTermSettings["TimeOut"].lookupValue("MaxSteps", timeoutsteps);
-
 
 			// By default, this Termination updates every step
 			// Check to see if a different update frequency has been specified
-			int updatefreq = 1;
+			size_t updatefreq = 1;
 			AllTermSettings["TimeOut"].lookupValue("UpdateFrequency", updatefreq);
 
 			// Initialize the (static) TerminationOptions for TimeOut!
 			TimeOutTermination::TermOptions =
 				std::unique_ptr<TimeOutTermOptions>(new TimeOutTermOptions{ timeoutsteps, updatefreq });
 		}
-		// if (CheckIfTermOn("..."))
-		// ...
-		// ... (other ifs for other Terminations here)
+
+		//// TERMINATION ADD POINT D.2. ////
+		// Check to see if your new Termination has been turned on, and if so, add it to the allterms bitflag
+		// and set its options accordingly.
+		// Sample code:
+		/*
+		// MyTermination
+		if (CheckIfTermOn("MyTermination"))
+		{
+			allterms |= Term_MyTermination; // use the bitflag you defined at TERMINATION ADD POINT B.1.
+
+			// The following assumes that MyTermination has a static TerminationOptions struct,
+			// if it does not or has additional options (i.e. it has a descendant of TerminationOptions as its
+			// static struct), then update here accordingly.
+			size_t updatefreq = 1;
+			AllTermSettings["MyTermination"].lookupValue("UpdateFrequency", updatefreq);
+
+			// Initialize the (static) TerminationOptions!
+			MyTermination::TermOptions =
+				std::unique_ptr<TerminationOptions>(new TerminationOptions{ updatefreq });
+		}
+		*/
+		//// END TERMINATION ADD POINT D.2. ////
 
 
 		// Done looking for terminations. Make sure something has been turned on!
@@ -377,80 +558,12 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 
 }
 
-std::unique_ptr<Mesh> Config::GetMesh(const ConfigObject& theCfg, DiagBitflag valdiag)
-{
-	// Get the root configuration settings
-	ConfigSetting& root = theCfg.getRoot();
 
-	std::unique_ptr<Mesh> theMesh;
-
-	try
-	{
-		if (!root.exists("ViewScreen") || !root["ViewScreen"].exists("Mesh"))
-		{
-			throw SettingError("No Mesh settings found.");
-		}
-
-		ConfigSetting& MeshSettings = root["ViewScreen"]["Mesh"];
-
-		std::string meshname{};
-		if (!MeshSettings.lookupValue("Type", meshname))
-		{
-			throw SettingError("No Mesh Type specified.");
-		}
-
-		if (meshname == "SimpleSquareMesh")
-		{
-			// Simple Square Mesh!
-			int totalpixels{ 100 * 100 };
-			MeshSettings.lookupValue("TotalPixels", totalpixels);
-
-			theMesh = std::unique_ptr<Mesh>(new SimpleSquareMesh(totalpixels,valdiag));
-		}
-		else if (meshname == "InputCertainPixelsMesh")
-		{
-			int totalpixels{ 100 * 100 };
-			MeshSettings.lookupValue("TotalPixels", totalpixels);
-
-			theMesh = std::unique_ptr<Mesh>(new InputCertainPixelsMesh(totalpixels,valdiag));
-		}
-		else if (meshname == "SquareSubdivisionMesh")
-		{
-			int initialpixels{ 100 };
-			int maxpixels{ 100 };
-			int iterationpixels{ 100 };
-			int maxsubdivide{ 1 };
-			bool initialsubtofinal{ false };
-			MeshSettings.lookupValue("InitialPixels", initialpixels);
-			MeshSettings.lookupValue("MaxPixels", maxpixels);
-			MeshSettings.lookupValue("IterationPixels", iterationpixels);
-			MeshSettings.lookupValue("MaxSubdivide", maxsubdivide);
-			MeshSettings.lookupValue("InitialSubdivisionToFinal", initialsubtofinal);
-
-			bool infinitepixels{ maxpixels < 0 };
-
-			theMesh = std::unique_ptr<Mesh>(new SquareSubdivisionMesh(maxpixels,initialpixels,maxsubdivide,
-				iterationpixels, initialsubtofinal, valdiag));
-		}
-		// else if ... (test for other Meshs here)
-		else
-		{
-			throw SettingError("Incorrect Mesh Type specified.");
-		}
-	}
-	catch (SettingError& e)
-	{
-		// default Mesh options (SET HERE)
-		ScreenOutput(std::string(e.what()) + " Using default (SimpleSquareMesh with 100x100 pixels).",
-			Output_Important_Default);
-		theMesh = std::unique_ptr<Mesh>(new SimpleSquareMesh{ 100 * 100,valdiag });
-	}
-
-	return theMesh;
-}
-
-
-std::unique_ptr<ViewScreen> Config::GetViewScreen(const ConfigObject& theCfg, DiagBitflag valdiag, const Metric* theMetric)
+/// <summary>
+/// Config::GetViewScreen():  Use configuration to create the ViewScreen object;
+/// with options set according to the configuration.
+/// </summary>
+std::unique_ptr<ViewScreen> Config::GetViewScreen(const ConfigObject& theCfg, DiagBitflag valdiag, const Metric* const theMetric)
 {
 	ConfigSetting& root = theCfg.getRoot();
 
@@ -470,7 +583,7 @@ std::unique_ptr<ViewScreen> Config::GetViewScreen(const ConfigObject& theCfg, Di
 		// Go to the ViewScreen settings
 		ConfigSetting& ViewSettings = root["ViewScreen"];
 
-		// Look up camera position, direction, solidangle
+		// Look up camera position, direction, screen size
 		if (ViewSettings.exists("Position"))
 		{
 			ViewSettings["Position"].lookupValue("t", pos[0]);
@@ -497,8 +610,10 @@ std::unique_ptr<ViewScreen> Config::GetViewScreen(const ConfigObject& theCfg, Di
 			Output_Important_Default);
 	}
 
+	// Get all Mesh settings
 	std::unique_ptr<Mesh> theMesh{ Config::GetMesh(theCfg,valdiag)};
 
+	// Create the ViewScreen!
 	std::unique_ptr<ViewScreen> theViewScreen{ new ViewScreen(pos, dir, screensize,
 		std::move(theMesh),theMetric) };
 
@@ -506,63 +621,96 @@ std::unique_ptr<ViewScreen> Config::GetViewScreen(const ConfigObject& theCfg, Di
 }
 
 
-std::unique_ptr<Source> Config::GetSource(const ConfigObject& theCfg, const Metric* theMetric)
+/// <summary>
+/// Config::GetMesh():  Use configuration to create the Mesh object;
+/// with options set according to the configuration.
+/// Config::GetViewScreen() calls this when creating the ViewScreen object.
+/// </summary>
+std::unique_ptr<Mesh> Config::GetMesh(const ConfigObject& theCfg, DiagBitflag valdiag)
 {
-	std::string SourceName{};
-
-	// SET DEFAULTS HERE: no source
-	std::unique_ptr<Source> TheSource{ new NoSource(theMetric) };
-	std::string DefaultString{ "No source." };
-
-	// Get the root collection
+	// Get the root configuration settings
 	ConfigSetting& root = theCfg.getRoot();
+
+	std::unique_ptr<Mesh> theMesh;
 
 	try
 	{
-		// Check to see that there are Source settings at all
-		if (!root.exists("Source"))
+		// Look for the Mesh setting under ViewScreen
+		if (!root.exists("ViewScreen") || !root["ViewScreen"].exists("Mesh"))
 		{
-			throw SettingError("No geodesic source settings found.");
+			throw SettingError("No Mesh settings found.");
+		}
+		ConfigSetting& MeshSettings = root["ViewScreen"]["Mesh"];
+
+		// Look for the Type option under the Mesh header
+		std::string meshname{};
+		if (!MeshSettings.lookupValue("Type", meshname))
+		{
+			throw SettingError("No Mesh Type specified.");
 		}
 
-		// Go to the Source settings
-		ConfigSetting& SourceSettings = root["Source"];
-
-		// Check to see that the Source's name has been specified
-		if (!SourceSettings.lookupValue("Name", SourceName))
+		// We have read in the Mesh type. Now we select and create a Mesh accordingly
+		if (meshname == "SimpleSquareMesh")
 		{
-			throw SettingError("No source settings found.");
+			// Simple Square Mesh!
+			int totalpixels{ 100 * 100 };
+			MeshSettings.lookupValue("TotalPixels", totalpixels);
+
+			theMesh = std::unique_ptr<Mesh>(new SimpleSquareMesh(totalpixels, valdiag));
 		}
-
-		// Source name exists; now we can look up the correct source
-		// Make SourceName all lower case to avoid case-specific errors
-		std::transform(SourceName.begin(), SourceName.end(), SourceName.begin(),
-			[](unsigned char c) { return std::tolower(c); });
-
-		// COMPARISON WITH ALL LOWER CASE LETTERS!
-		if (SourceName == "nosource")
+		else if (meshname == "InputCertainPixelsMesh")
 		{
-			// No further settings needed; create Source!
-			TheSource = std::unique_ptr<Source>(new NoSource( theMetric ));
+			// This Mesh will ask the user to input pixels on the grid specified in the configuration file.
+			// (the Mesh will ask for input in its constructor, so here!)
+			int totalpixels{ 100 * 100 };
+			MeshSettings.lookupValue("TotalPixels", totalpixels);
+
+			theMesh = std::unique_ptr<Mesh>(new InputCertainPixelsMesh(totalpixels, valdiag));
 		}
-		// else if ... (other sources here)
-		else // no match found: must be incorrect source name specified in configuration file
+		else if (meshname == "SquareSubdivisionMesh")
 		{
-			throw SettingError("No source settings found.");
+			size_t initialpixels{ 100 };
+			size_t maxpixels{ 100 };
+			size_t iterationpixels{ 100 };
+			int maxsubdivide{ 1 };
+			bool initialsubtofinal{ false };
+			MeshSettings.lookupValue("InitialPixels", initialpixels);
+			MeshSettings.lookupValue("MaxPixels", maxpixels);
+			MeshSettings.lookupValue("IterationPixels", iterationpixels);
+			MeshSettings.lookupValue("MaxSubdivide", maxsubdivide);
+			if (maxsubdivide < 1) // 1 is the minimum level (initial grid is level 1)
+			{
+				ScreenOutput("Invalid MaxSubdivide level given. Using MaxSubdivide = 1.", Output_Other_Default);
+				maxsubdivide = 1;
+			}
+			MeshSettings.lookupValue("InitialSubdivisionToFinal", initialsubtofinal);
+
+			theMesh = std::unique_ptr<Mesh>(new SquareSubdivisionMesh(maxpixels, initialpixels, maxsubdivide,
+				iterationpixels, initialsubtofinal, valdiag));
+		}
+		// else if ... (test for other Meshs here)
+		else
+		{
+			throw SettingError("Incorrect Mesh Type specified.");
 		}
 	}
 	catch (SettingError& e)
 	{
-		// Something happened so that we were unable to determine even which source to use.
-		// Use the default settings (set above at begin of this function)
-		// This is not so important since it is just the source --- we can assume this is just NoSource by default
-		ScreenOutput(std::string(e.what()) + " Using default source (" + DefaultString + ").",
-			Output_Other_Default);
+		// default Mesh options (SET HERE)
+		ScreenOutput(std::string(e.what()) + " Using default (SimpleSquareMesh with 100x100 pixels).",
+			Output_Important_Default);
+		theMesh = std::unique_ptr<Mesh>(new SimpleSquareMesh{ 100 * 100,valdiag });
 	}
 
-	return TheSource;
+	return theMesh;
 }
 
+
+
+/// <summary>
+/// Config::GetGeodesicIntegrator():  Returns a pointer to the integrator function to be used
+/// as specified in the configuration file.
+/// </summary>
 GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigObject& theCfg)
 {
 	std::string IntegratorType{};
@@ -593,7 +741,7 @@ GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigObject& theCfg)
 		// Integrator type exists; now we can look up the correct integrator
 		// Make IntegratorType all lower case to avoid case-specific errors
 		std::transform(IntegratorType.begin(), IntegratorType.end(), IntegratorType.begin(),
-			[](unsigned char c) { return std::tolower(c); });
+			[](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
 		// COMPARISON WITH ALL LOWER CASE LETTERS!
 		if (IntegratorType == "rk4")
@@ -601,9 +749,11 @@ GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigObject& theCfg)
 			// Set the integrator function
 			TheFunc = Integrators::IntegrateGeodesicStep_RK4;
 
+			// Look up the integrator step size
 			if (!IntegratorSettings.lookupValue("StepSize", stepsize))
 			{
-				ScreenOutput("Using default integrator stepsize: " + std::to_string(Integrators::epsilon) + ".", Output_Other_Default);
+				ScreenOutput("Using default integrator stepsize: " + std::to_string(Integrators::epsilon) + ".",
+					Output_Other_Default);
 			}
 			else
 			{
@@ -627,30 +777,20 @@ GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigObject& theCfg)
 	return TheFunc;
 }
 
-void Config::InitializeScreenOutput(const ConfigObject& theCfg)
-{
-	SetOutputLevel(OutputLevel::Level_4_DEBUG);
-	OutputLevel theOutputLevel{};
-	// Get the root collection
-	ConfigSetting& root = theCfg.getRoot();
-	if (root.exists("Output"))
-	{
-		ConfigSetting& OutputSettings = root["Output"];
-		int scroutputint{ static_cast<int>(OutputLevel::Level_4_DEBUG) };
-		OutputSettings.lookupValue("ScreenOutputLevel", scroutputint);
-		scroutputint = std::max(scroutputint, static_cast<int>(OutputLevel::Level_0_WARNING));
-		scroutputint = std::min(scroutputint, static_cast<int>(OutputLevel::MaxLevel));
-		SetOutputLevel(static_cast<OutputLevel>(scroutputint));
-	}
-}
 
-std::unique_ptr<GeodesicOutputHandler> Config::InitializeOutputHandler(const ConfigObject& theCfg, 
+
+/// <summary>
+/// Config::GetOutputHandler():  Creates the GeodesicOutputHandler object with options specified
+/// according to the configuration file, for handling of geodesic outputs.
+/// </summary>
+std::unique_ptr<GeodesicOutputHandler> Config::GetOutputHandler(const ConfigObject& theCfg,
 	DiagBitflag alldiags, DiagBitflag valdiag, std::string FirstLineInfo)
 {
-	std::vector<std::string>diagstrings{ Utilities::GetDiagStrings(alldiags, valdiag) };
+	// First populate a helper vector of strings of the names of all diagnostics
+	std::vector<std::string>diagstrings{ Utilities::GetDiagNameStrings(alldiags, valdiag) };
 
 	// DEFAULTS
-	std::unique_ptr<GeodesicOutputHandler> TheHandler{ new GeodesicOutputHandler("","","",diagstrings,OutputHandler_All)};
+	std::unique_ptr<GeodesicOutputHandler> TheHandler{ new GeodesicOutputHandler("","","",diagstrings)};
 
 	// Get the root collection
 	ConfigSetting& root = theCfg.getRoot();
@@ -674,9 +814,11 @@ std::unique_ptr<GeodesicOutputHandler> Config::InitializeOutputHandler(const Con
 			throw SettingError("No output file name prefix found.");
 		}
 
+		// File extension
 		std::string FileExtension{ "" };
 		OutputSettings.lookupValue("FileExtension", FileExtension);
 
+		// Print a time stamp in the file name or not
 		bool TimeStamp{ true };
 		OutputSettings.lookupValue("TimeStamp", TimeStamp);
 		std::string TimeStampStr{ "" };
@@ -685,12 +827,15 @@ std::unique_ptr<GeodesicOutputHandler> Config::InitializeOutputHandler(const Con
 			TimeStampStr = Utilities::GetTimeStampString();
 		}
 
-		int nrToCache{ OutputHandler_All };
+		// Max number of geodesics to cache
+		size_t nrToCache{ SIZE_MAX-1 }; // default is essentially infinite
 		OutputSettings.lookupValue("GeodesicsToCache", nrToCache);
 
-		int GeodesicsPerFile{ OutputHandler_All };
+		// Max number of geodesics to write to file
+		size_t GeodesicsPerFile{ SIZE_MAX }; // default is essentially infinite
 		OutputSettings.lookupValue("GeodesicsPerFile", GeodesicsPerFile);
 
+		// Write a description line as the first line in every file or not
 		bool FirstLineInfoOn{ true };
 		OutputSettings.lookupValue("FirstLineInfo", FirstLineInfoOn);
 
@@ -698,8 +843,10 @@ std::unique_ptr<GeodesicOutputHandler> Config::InitializeOutputHandler(const Con
 		if (FirstLineInfoOn)
 			FirstLineInfoString = FirstLineInfo;
 
+		// Create the Output Handler!
 		TheHandler = std::unique_ptr<GeodesicOutputHandler>(new GeodesicOutputHandler(FilePrefix, TimeStampStr,
-															FileExtension,diagstrings, nrToCache, GeodesicsPerFile,FirstLineInfoString) );
+															FileExtension,diagstrings, nrToCache,
+															GeodesicsPerFile,FirstLineInfoString) );
 	}
 	catch (SettingError& e)
 	{

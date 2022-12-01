@@ -1,21 +1,26 @@
-#include"Integrators.h"
-#include"Geodesic.h"
+#include "Integrators.h" // We are defining functions declared here
 
+#include "Geodesic.h" // Needed for Source member functions
+
+// This is a GeodesicIntegratorFunc
+// Integrate the geodesic equation by one step using Runge-Kutta-4
 void Integrators::IntegrateGeodesicStep_RK4(Point curpos, OneIndex curvel,
 	Point& nextpos, OneIndex& nextvel, real& stepsize, const Metric* theMetric, const Source* theSource)
 {
-	// determine stepsize
+	//// Determine the (affine parameter) step size to take
 	// algorithm as in Raptor (eqs (21)-(24)), which is taken from Noble et al. (2007) & Dolence et al. (2009)
 	real dlambda_x1 = epsilon / (std::abs(curvel[1]) + delta_nodiv0);
-	//real dlambda_x2 = epsilon * std::min(curpos[2], 1 - curpos[2]) / (std::abs(curvel[2]) + delta_nodiv0);
 	real dlambda_x2 = epsilon * std::min(curpos[2], pi - curpos[2]) / (std::abs(curvel[2]) + delta_nodiv0);
 	real dlambda_x3 = epsilon / (std::abs(curvel[3] + delta_nodiv0));
+
 	real h = 1 / (1 / std::abs(dlambda_x1) + 1 / std::abs(dlambda_x2) + 1 / std::abs(dlambda_x3));
+	// Make sure we take at least the smallest allowed step size
 	h = std::max(h, SmallestPossibleStepsize);
 
-
-	// geodesic equation for the velocity is d/d\lambda(u^a) = - Gamma^a_{bc} u^b u^c + [Source(x,u)]^a;
-	// this helper function computes the rhs of the geodesic equation
+	//// Construct geodesic equation
+	// The rhs of the geodesic equation for the velocity is:
+	// d/d\lambda(u^a) = - Gamma^a_{bc} u^b u^c + [Source(x,u)]^a;
+	// This helper function computes the rhs of the geodesic equation
 	auto geoRHS = [theMetric, theSource](Point p, OneIndex v)->OneIndex
 	{
 		ThreeIndex christ{ theMetric->getChristoffel_udd(p) };
@@ -26,6 +31,9 @@ void Integrators::IntegrateGeodesicStep_RK4(Point curpos, OneIndex curvel,
 					ret[i] -= christ[i][j][k] * v[j] * v[k];
 		return ret;
 	};
+
+
+	//// Perform Runge-Kutta 4 algorithm
 
 	// RK step 1
 	OneIndex k1{ geoRHS(curpos,curvel) };
