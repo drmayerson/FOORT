@@ -5,7 +5,7 @@
 /// </summary>
 
 
-void ViewScreen::SetNewInitialConditions(size_t index, Point& pos, OneIndex& vel, ScreenIndex &scrIndex)
+void ViewScreen::SetNewInitialConditions(largecounter index, Point& pos, OneIndex& vel, ScreenIndex &scrIndex)
 {
 	// Helper function for the sign of a real number
 	auto sign = [](real arg)->real {return (arg > 0) ? +1 : ((arg < 0) ? -1 : 0); };
@@ -76,7 +76,7 @@ bool ViewScreen::IsFinished() const
 	return m_theMesh->IsFinished();
 }
 
-size_t ViewScreen::getCurNrGeodesics() const
+largecounter ViewScreen::getCurNrGeodesics() const
 {
 	// pass on information to the Mesh
 	return m_theMesh->getCurNrGeodesics();
@@ -88,7 +88,7 @@ void ViewScreen::EndCurrentLoop()
 	m_theMesh->EndCurrentLoop();
 }
 
-void ViewScreen::GeodesicFinished(size_t index, std::vector<real> finalValues)
+void ViewScreen::GeodesicFinished(largecounter index, std::vector<real> finalValues)
 {
 	// pass on information to the Mesh
 	m_theMesh->GeodesicFinished(index, finalValues);

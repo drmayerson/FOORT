@@ -20,18 +20,16 @@ using real = double;
 // A pixel coordinate: always >=0 and integer, so using unsigned int
 using pixelcoord = unsigned int;
 
-// Macro definition of maximum number storeable in a size_t (should be pre-defined)
-#ifndef SIZE_MAX
-# ifdef __SIZE_MAX__
-#  define SIZE_MAX __SIZE_MAX__
-# else
-#  define SIZE_MAX std::numeric_limits<size_t>::max()
-# endif
-#endif
+// Can be used to count large number of objects
+using largecounter = unsigned int;
 
 // Macro definition of maximum number for a pixel coordinate
 #ifndef PIXEL_MAX
 #define PIXEL_MAX std::numeric_limits<pixelcoord>::max()
+#endif
+
+#ifndef largecounter_MAX
+#define largecounter_MAX std::numeric_limits<largecounter>::max()
 #endif
 
 /// <summary>

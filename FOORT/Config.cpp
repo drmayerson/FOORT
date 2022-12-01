@@ -36,13 +36,6 @@ std::unique_ptr<MyTermOptions> MyTermination::DiagOptions;
 // Config namespace and all of its functions are only defined in CONFIGURATION_MODE
 #ifdef CONFIGURATION_MODE
 
-// This is the largest integral type that lookupValue in libconfig can actually look up!
-using LibCfgLargestInt = long long;
-
-#ifndef LibCfgLargestInt_MAX
-#define LibCfgLargestInt_MAX std::numeric_limits<LibCfgLargestInt>::max()
-#endif
-
 
 
 // Initialize screen output
@@ -285,7 +278,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 		{
 			alldiags |= Diag_GeodesicPosition;
 
-			LibCfgLargestInt updatensteps = 1;
+			largecounter updatensteps = 1;
 			bool updatestart{ false };
 			bool updatefinish{ true };
 			AllDiagSettings["GeodesicPosition"].lookupValue("UpdateFrequency", updatensteps);
@@ -295,7 +288,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 				AllDiagSettings["GeodesicPosition"].lookupValue("UpdateFinish", updatefinish);
 			}
 
-			LibCfgLargestInt outputsteps = 0; // keep all steps
+			largecounter outputsteps = 0; // keep all steps
 			AllDiagSettings["GeodesicPosition"].lookupValue("OutputSteps", outputsteps);
 
 			if (updatensteps < 0)
@@ -304,8 +297,8 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 				outputsteps = 1;
 
 			GeodesicPositionDiagnostic::DiagOptions = 
-				std::unique_ptr<GeodesicPositionOptions>(new GeodesicPositionOptions{ static_cast<size_t>(outputsteps),
-											UpdateFrequency{static_cast<size_t>(updatensteps),updatestart,updatefinish} });
+				std::unique_ptr<GeodesicPositionOptions>(new GeodesicPositionOptions{ outputsteps,
+											UpdateFrequency{updatensteps,updatestart,updatefinish} });
 
 			bool isVal{ false };
 			if (valdiag == Diag_None && AllDiagSettings["GeodesicPosition"].lookupValue("UseForMesh", isVal) && isVal)
@@ -319,7 +312,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 		{
 			alldiags |= Diag_EquatorialPasses;
 
-			LibCfgLargestInt updatensteps = 1;
+			largecounter updatensteps = 1;
 			bool updatestart{ true };
 			bool updatefinish{ true };
 			AllDiagSettings["EquatorialPasses"].lookupValue("UpdateFrequency", updatensteps);
@@ -331,7 +324,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 			}
 
 			EquatorialPassesDiagnostic::DiagOptions =
-				std::unique_ptr<DiagnosticOptions>(new DiagnosticOptions{ UpdateFrequency{static_cast<size_t>(updatensteps),
+				std::unique_ptr<DiagnosticOptions>(new DiagnosticOptions{ UpdateFrequency{updatensteps,
 					updatestart,updatefinish} });
 
 			bool isVal{ false };
@@ -355,7 +348,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 			// The following assumes your new Diagnostic carries a static DiagnosticOptions struct.
 			// If it does not, or if it carries additional options (in a descendant struct of DiagnosticOptions),
 			// then update this accordingly
-			LibCfgLargestInt updatensteps = 1;
+			largecounter updatensteps = 1;
 			bool updatestart{ true };
 			bool updatefinish{ true };
 			AllDiagSettings["MyDiagnostic"].lookupValue("UpdateFrequency", updatensteps);
@@ -367,7 +360,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 			// (look up any additional options here...)
 
 			MyDiagnostic::DiagOptions =
-				std::unique_ptr<DiagnosticOptions>(new DiagnosticOptions{ UpdateFrequency{static_cast<size_t>(updatensteps),
+				std::unique_ptr<DiagnosticOptions>(new DiagnosticOptions{ UpdateFrequency{updatensteps,
 				updatestart,updatefinish} });
 
 			bool isVal{ false };
@@ -478,7 +471,7 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 
 				// By default, this Termination updates every step
 				// Check to see if a different update frequency has been specified
-				LibCfgLargestInt updatefreq = 1;
+				largecounter updatefreq = 1;
 				AllTermSettings["Horizon"].lookupValue("UpdateFrequency", updatefreq);
 				if (updatefreq <= 0)
 					updatefreq = 1;
@@ -486,7 +479,7 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 				// Initialize the (static) TerminationOptions for Horizon!
 				HorizonTermination::TermOptions =
 					std::unique_ptr<HorizonTermOptions>(new HorizonTermOptions{ horizonRadius,rLogScale,epsHorizon,
-						static_cast<size_t>(updatefreq) });
+					updatefreq });
 			}
 		}
 
@@ -503,14 +496,14 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 
 			// By default, this Termination updates every step
 			// Check to see if a different update frequency has been specified
-			LibCfgLargestInt updatefreq = 1;
+			largecounter updatefreq = 1;
 			if (updatefreq <= 0)
 				updatefreq = 1;
 			AllTermSettings["BoundarySphere"].lookupValue("UpdateFrequency", updatefreq);
 
 			// Initialize the (static) TerminationOptions for BoundarySphere!
 			BoundarySphereTermination::TermOptions =
-				std::unique_ptr<BoundarySphereTermOptions>(new BoundarySphereTermOptions{ radius, static_cast<size_t>(updatefreq) });
+				std::unique_ptr<BoundarySphereTermOptions>(new BoundarySphereTermOptions{ radius, updatefreq });
 		}
 
 		// TimeOut
@@ -520,22 +513,22 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 			allterms |= Term_TimeOut;
 
 			// Get the number of steps until time-out. Default is 10000
-			LibCfgLargestInt timeoutsteps {10000 };
+			largecounter timeoutsteps {10000 };
 			AllTermSettings["TimeOut"].lookupValue("MaxSteps", timeoutsteps);
 			if (timeoutsteps <= 0)
 				timeoutsteps = 10000;
 
 			// By default, this Termination updates every step
 			// Check to see if a different update frequency has been specified
-			LibCfgLargestInt updatefreq = 1;
+			largecounter updatefreq = 1;
 			AllTermSettings["TimeOut"].lookupValue("UpdateFrequency", updatefreq);
 			if (updatefreq <= 0)
 				updatefreq = 1;
 
 			// Initialize the (static) TerminationOptions for TimeOut!
 			TimeOutTermination::TermOptions =
-				std::unique_ptr<TimeOutTermOptions>(new TimeOutTermOptions{ static_cast<size_t>(timeoutsteps),
-					static_cast<size_t>(updatefreq) });
+				std::unique_ptr<TimeOutTermOptions>(new TimeOutTermOptions{ timeoutsteps,
+					updatefreq });
 		}
 
 		//// TERMINATION ADD POINT D.2. ////
@@ -551,14 +544,14 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 			// The following assumes that MyTermination has a static TerminationOptions struct,
 			// if it does not or has additional options (i.e. it has a descendant of TerminationOptions as its
 			// static struct), then update here accordingly.
-			LibCfgLargestInt updatefreq = 1;
+			largecounter updatefreq = 1;
 			AllTermSettings["MyTermination"].lookupValue("UpdateFrequency", updatefreq);
 			if (updatefreq <= 0)
 				updatefreq = 1;
 
 			// Initialize the (static) TerminationOptions!
 			MyTermination::TermOptions =
-				std::unique_ptr<TerminationOptions>(new TerminationOptions{ static_cast<size_t>(updatefreq) });
+				std::unique_ptr<TerminationOptions>(new TerminationOptions{ updatefreq });
 		}
 		*/
 		//// END TERMINATION ADD POINT D.2. ////
@@ -696,9 +689,9 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigObject& theCfg, DiagBitflag va
 		}
 		else if (meshname == "SquareSubdivisionMesh")
 		{
-			LibCfgLargestInt initialpixels{ 100 };
-			LibCfgLargestInt maxpixels{ 100 };
-			LibCfgLargestInt iterationpixels{ 100 };
+			largecounter initialpixels{ 100 };
+			largecounter maxpixels{ 100 };
+			largecounter iterationpixels{ 100 };
 			int maxsubdivide{ 1 };
 			bool initialsubtofinal{ false };
 			MeshSettings.lookupValue("InitialPixels", initialpixels);
@@ -718,9 +711,9 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigObject& theCfg, DiagBitflag va
 			}
 			MeshSettings.lookupValue("InitialSubdivisionToFinal", initialsubtofinal);
 
-			theMesh = std::unique_ptr<Mesh>(new SquareSubdivisionMesh(static_cast<size_t>(maxpixels),
-				static_cast<size_t>(initialpixels), maxsubdivide,
-				static_cast<size_t>(iterationpixels), initialsubtofinal, valdiag));
+			theMesh = std::unique_ptr<Mesh>(new SquareSubdivisionMesh(maxpixels,
+				initialpixels, maxsubdivide,
+				iterationpixels, initialsubtofinal, valdiag));
 		}
 		// else if ... (test for other Meshs here)
 		else
@@ -862,16 +855,16 @@ std::unique_ptr<GeodesicOutputHandler> Config::GetOutputHandler(const ConfigObje
 		}
 
 		// Max number of geodesics to cache
-		LibCfgLargestInt nrToCache{ LibCfgLargestInt_MAX-1 }; // default is essentially infinite
+		largecounter nrToCache{ largecounter_MAX-1 }; // default is essentially infinite
 		OutputSettings.lookupValue("GeodesicsToCache", nrToCache);
 		if (nrToCache < 0)
-			nrToCache = 0;
+			nrToCache = largecounter_MAX - 1;
 
 		// Max number of geodesics to write to file
-		LibCfgLargestInt GeodesicsPerFile{ LibCfgLargestInt_MAX }; // default is essentially infinite
+		largecounter GeodesicsPerFile{ largecounter_MAX }; // default is essentially infinite
 		OutputSettings.lookupValue("GeodesicsPerFile", GeodesicsPerFile);
 		if (GeodesicsPerFile <= 0)
-			GeodesicsPerFile = 1;
+			GeodesicsPerFile = largecounter_MAX;
 
 		// Write a description line as the first line in every file or not
 		bool FirstLineInfoOn{ true };
@@ -884,8 +877,8 @@ std::unique_ptr<GeodesicOutputHandler> Config::GetOutputHandler(const ConfigObje
 		// Create the Output Handler!
 		TheHandler = std::unique_ptr<GeodesicOutputHandler>(new GeodesicOutputHandler(FilePrefix, TimeStampStr,
 															FileExtension,diagstrings, 
-															static_cast<size_t>(nrToCache),
-															static_cast<size_t>(GeodesicsPerFile),FirstLineInfoString) );
+															nrToCache,
+															GeodesicsPerFile,FirstLineInfoString) );
 	}
 	catch (SettingError& e)
 	{

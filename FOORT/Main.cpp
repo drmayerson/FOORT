@@ -73,8 +73,8 @@ void LoadPrecompiledOptions(std::unique_ptr<Metric> &theM, std::unique_ptr<Sourc
 
 
     //// Diagnostic options (static member structs) ////
-    // Syntax: UpdateFrequency{ size_t updateEveryNSteps, bool UpdateOnStart, bool UpdateOnEnd }
-    // Syntax: GeodesicPositionOptions(size_t outputsteps, UpdateFrequency)
+    // Syntax: UpdateFrequency{ largecounter updateEveryNSteps, bool UpdateOnStart, bool UpdateOnEnd }
+    // Syntax: GeodesicPositionOptions(largecounter outputsteps, UpdateFrequency)
     // Syntax DiagnosticOptions(UpdateFrequency)
     // Note: FourColorScreen does not have any options
     GeodesicPositionDiagnostic::DiagOptions =
@@ -89,9 +89,9 @@ void LoadPrecompiledOptions(std::unique_ptr<Metric> &theM, std::unique_ptr<Sourc
 
 
     //// Termination options (static member structs) ////
-    // Syntax: HorizonTermOptions(real HorizonRadius,bool rLogScale, real EpsAtHorizon, size_t UpdateNSteps)
-    // Syntax: BoundarySphereTermOptions(real sphereradius, size_t UpdateNSteps)
-    // Syntax TimeOutTermOptions(size_t timeoutsteps, size_t UpdateNSteps)
+    // Syntax: HorizonTermOptions(real HorizonRadius,bool rLogScale, real EpsAtHorizon, largecounter UpdateNSteps)
+    // Syntax: BoundarySphereTermOptions(real sphereradius, largecounter UpdateNSteps)
+    // Syntax TimeOutTermOptions(largecounter timeoutsteps, largecounter UpdateNSteps)
     if (dynamic_cast<SphericalHorizonMetric*>(theM.get())) // Only set the Horizon termination options if the metric has a horizon
     {
         HorizonTermination::TermOptions =
@@ -106,8 +106,8 @@ void LoadPrecompiledOptions(std::unique_ptr<Metric> &theM, std::unique_ptr<Sourc
 
     //// Mesh & Viewscreen ////
     // Mesh possibilities & syntax:
-    // SimpleSquareMesh(size_t totalPixels, ValDiag);
-    // InputCertainPixelsMesh(size_t totalPixels, ValDiag); // totalPixels fixes the screen size in pixels, pixels to be integrated will be user-inputted
+    // SimpleSquareMesh(largecounter totalPixels, ValDiag);
+    // InputCertainPixelsMesh(largecounter totalPixels, ValDiag); // totalPixels fixes the screen size in pixels, pixels to be integrated will be user-inputted
     // SquareSubdivisionMesh: see below
     std::unique_ptr<Mesh> theMesh = std::unique_ptr<Mesh>(new SquareSubdivisionMesh(
         0, // maxpixels (0 = infinite)
@@ -304,13 +304,8 @@ int main(int argc, char* argv[])
         Utilities::Timer IterationTimer;
 
         // How many geodesics are we integrating this iteration
-        // OpenMP distributed for loops demand a SIGNED integral type as the loop iterator, so we need to make sure
-        // the maximum loop iterator fits in the largest possible signed integral type (long long)
-        // Note: long long can contain up to approx. up to 9.10^18 so this should not be a problem
-        if (theView->getCurNrGeodesics() > static_cast<size_t>(std::numeric_limits<long long>::max()) )
-            ScreenOutput("Current number of geodesics to integrate does not fit in a long long! (This is most likely too many geodesics to integrate.)",
-                OutputLevel::Level_0_WARNING);
-        long long CurNrGeod = static_cast<long long>(theView->getCurNrGeodesics());
+        // OpenMP distributed for loops demand a SIGNED integral type as the loop iterator
+        long CurNrGeod = static_cast<long>(theView->getCurNrGeodesics());
 
 #pragma omp parallel // start up threads!
         { 

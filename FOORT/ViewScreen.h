@@ -65,13 +65,13 @@ public:
 	// Heart of the ViewScreen: here, the ViewScreen is asked to provide initial conditions
 	// for the geodesic nr index of the current iteration; based on the screen index
 	// that the Mesh gives, it sets up these physical initial conditions.
-	void SetNewInitialConditions(size_t index, Point& pos, OneIndex& vel, ScreenIndex& scrIndex);
+	void SetNewInitialConditions(largecounter index, Point& pos, OneIndex& vel, ScreenIndex& scrIndex);
 
 	// These member functions essentially pass on information to/from the Mesh
 	bool IsFinished() const; // Does the ViewScreen (i.e. the Mesh) want to integrate more geodesics or not?
-	size_t getCurNrGeodesics() const; // Current number of geodesics in this iteration
+	largecounter getCurNrGeodesics() const; // Current number of geodesics in this iteration
 	void EndCurrentLoop(); // The current iteration of geodesics is finished; prepare the next one
-	void GeodesicFinished(size_t index, std::vector<real> finalValues); // This geodesic has been integrated, returning its final "values"
+	void GeodesicFinished(largecounter index, std::vector<real> finalValues); // This geodesic has been integrated, returning its final "values"
 
 	// Description string getter (spaces allowed), also will contain information about the Mesh
 	std::string getFullDescriptionStr() const;

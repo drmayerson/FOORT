@@ -29,14 +29,14 @@ public:
 	virtual ~Mesh() = default;
 
 	// Getter for how many geodesics the Mesh currently wants to integrate in this iteration
-	virtual size_t getCurNrGeodesics() const = 0;
+	virtual largecounter getCurNrGeodesics() const = 0;
 
 	// This sets a new initial conditions (in the form of a ScreenPoint and ScreenIndex)
 	// for a next pixel to be integrated in the current iteration
-	virtual void getNewInitConds(size_t index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) = 0;
+	virtual void getNewInitConds(largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) = 0;
 
 	// When a geodesic is finished integrating, it tells the Mesh and passes on its final "value"
-	virtual void GeodesicFinished(size_t index, std::vector<real> finalValues) = 0;
+	virtual void GeodesicFinished(largecounter index, std::vector<real> finalValues) = 0;
 
 	// This is called when the current iteration is finished. The Mesh can now evaluate whether to continue or not
 	virtual void EndCurrentLoop() = 0;
@@ -63,7 +63,7 @@ public:
 	SimpleSquareMesh() = delete;
 	// Constructor initializes total number of pixels and passes valdiag to base constructor
 	// Note that we static_cast the sqrt() to round off the row/column size to an integer number
-	SimpleSquareMesh(size_t totalPixels, DiagBitflag valdiag)
+	SimpleSquareMesh(largecounter totalPixels, DiagBitflag valdiag)
 		: m_TotalPixels{ static_cast<pixelcoord>(sqrt(totalPixels))
 			* static_cast<pixelcoord>(sqrt(totalPixels)) },
 		  m_RowColumnSize{ static_cast<pixelcoord>(sqrt(totalPixels)) },
@@ -72,18 +72,15 @@ public:
 		if constexpr (dimension != 4)
 			ScreenOutput("SimpleSquareMesh only defined in 4D!", OutputLevel::Level_0_WARNING);
 		
-		// Check for overflows
-		if (static_cast<size_t>(sqrt(totalPixels)) * static_cast<size_t>(sqrt(totalPixels)) > PIXEL_MAX)
-			ScreenOutput("Warning: Mesh overflowing PIXEL_MAX!", OutputLevel::Level_0_WARNING);
 	}
 
 	// Declarations of overriding virtual functions
 
-	size_t getCurNrGeodesics() const final;
+	largecounter getCurNrGeodesics() const final;
 
-	void getNewInitConds(size_t index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) final;
+	void getNewInitConds(largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) final;
 	
-	void GeodesicFinished(size_t index, std::vector<real> finalValues) final;
+	void GeodesicFinished(largecounter index, std::vector<real> finalValues) final;
 
 	void EndCurrentLoop() final;
 
@@ -94,11 +91,11 @@ public:
 
 private:
 	// Total amount of pixels in grid (is the square of m_RowColumnSize)
-	const size_t m_TotalPixels;
+	const largecounter m_TotalPixels;
 	// Amount of pixels per row or column (square grid)
 	const pixelcoord m_RowColumnSize;
 	// The next pixel to send for integration
-	size_t m_CurrentPixel{ 0 };
+	largecounter m_CurrentPixel{ 0 };
 };
 
 
@@ -111,15 +108,15 @@ public:
 	// Copy constructor not possible
 	InputCertainPixelsMesh(const InputCertainPixelsMesh&) = delete;
 	// Constructor given in Mesh.cpp file; constructor asks for input of pixels
-	InputCertainPixelsMesh(size_t totalPixels, DiagBitflag valdiag);
+	InputCertainPixelsMesh(largecounter totalPixels, DiagBitflag valdiag);
 
 	// Declarations of overriding virtual functions
 
-	size_t getCurNrGeodesics() const final;
+	largecounter getCurNrGeodesics() const final;
 
-	void getNewInitConds(size_t index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) final;
+	void getNewInitConds(largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) final;
 
-	void GeodesicFinished(size_t index, std::vector<real> finalValues) final;
+	void GeodesicFinished(largecounter index, std::vector<real> finalValues) final;
 
 	void EndCurrentLoop() final;
 
@@ -133,11 +130,11 @@ private:
 	const pixelcoord m_RowColumnSize;
 
 	// How many pixels have been inputted in total, i.e. need integrating
-	size_t m_TotalPixels{ 0 };
+	largecounter m_TotalPixels{0};
 	// All pixels' location
 	std::vector<ScreenIndex> m_PixelsToIntegrate{};
 	// Next pixel to integrate
-	size_t m_CurrentPixel{ 0 };
+	largecounter m_CurrentPixel{ 0 };
 };
 
 
@@ -162,7 +159,7 @@ public:
 	// - initialSubToFinal: once we decide to subdivide a square, do we automatically keep subdividing it
 	// until we reach maxSubdivision?
 	// - valdiag: the "value" and "distance" Diagnostic to use
-	SquareSubdivisionMesh(size_t maxPixels, size_t initialPixels, int maxSubdivide, size_t iterationPixels, bool initialSubToFinal,
+	SquareSubdivisionMesh(largecounter maxPixels, largecounter initialPixels, int maxSubdivide, largecounter iterationPixels, bool initialSubToFinal,
 		DiagBitflag valdiag)
 		: m_InitialPixels{ static_cast<pixelcoord>(sqrt(initialPixels))
 			* static_cast<pixelcoord>(sqrt(initialPixels)) },
@@ -173,11 +170,6 @@ public:
 	{
 		if constexpr (dimension != 4)
 			ScreenOutput("SquareSubdivisionMesh only defined in 4D!", OutputLevel::Level_0_WARNING);
-
-		// Check for overflows
-		if ( (static_cast<size_t>(sqrt(initialPixels)) * static_cast<size_t>(sqrt(initialPixels)) > PIXEL_MAX)
-			|| (static_cast<size_t>( (sqrt(initialPixels) - 1) * ExpInt(2, maxSubdivide - 1) + 1 ) > PIXEL_MAX) )
-			ScreenOutput("Warning: Mesh overflowing PIXEL_MAX!", OutputLevel::Level_0_WARNING);
 
 		// DEBUG message for constructor (can delete)
 		ScreenOutput("SquareSubdivisionMesh constructed: maxPixels: " + (m_InfinitePixels ? "infinite" : std::to_string(maxPixels))
@@ -190,11 +182,11 @@ public:
 
 	// Declarations of overriding virtual functions
 
-	size_t getCurNrGeodesics() const final;
+	largecounter getCurNrGeodesics() const final;
 
-	void getNewInitConds(size_t index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) final;
+	void getNewInitConds(largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) final;
 
-	void GeodesicFinished(size_t index, std::vector<real> finalValues) final;
+	void GeodesicFinished(largecounter index, std::vector<real> finalValues) final;
 
 	void EndCurrentLoop() final;
 
@@ -205,22 +197,22 @@ public:
 
 private:
 	// How many initial pixels (spread uniformly over the grid) do we integrate?
-	const size_t m_InitialPixels;
+	const largecounter m_InitialPixels;
 	// How many times are we allowed  to subdivide a square? Note: the initial grid is already at 1
 	const int m_MaxSubdivide;
 	// The total size in pixels of a row or column (square grid)
 	const pixelcoord m_RowColumnSize;
 	// How many pixels per iteration can we subdivide?
-	const size_t m_IterationPixels;
+	const largecounter m_IterationPixels;
 	// How many pixels can we integrate in total over all iterations?
-	const size_t m_MaxPixels;
+	const largecounter m_MaxPixels;
 	// If we decide to subdivide a square, do we automatically subdivide it further to the max level?
 	const bool m_InitialSubDividideToFinal;
 	// Are we allowed to integrate as many pixels as we want? (m_MaxPixels == 0)
 	const bool m_InfinitePixels;
 
 	// How many pixels are we still allowed to integrate (if !m_InfinitePixels)?
-	size_t m_PixelsLeft;
+	largecounter m_PixelsLeft;
 
 	// A struct the Mesh uses to keep all information about a given pixel
 	struct PixelInfo
@@ -246,8 +238,8 @@ private:
 
 		// Where its lower and right neighbors are located in m_AllPixels
 		// Note: the pixel with index 0 is (0,0) and can never be the lower or right neighbor of any other pixel!
-		size_t LowerNbrIndex{ 0 };
-		size_t RightNbrIndex{ 0 };
+		largecounter LowerNbrIndex{ 0 };
+		largecounter RightNbrIndex{ 0 };
 	};
 	// The current queue of pixels to be integrated
 	std::vector<PixelInfo> m_CurrentPixelQueue{};
@@ -268,7 +260,7 @@ private:
 
 	// This will take the pixel m_AllPixels[ind] and subdivide it,
 	// adding up to <=5 pixels to the CurrentPixelQueue
-	void SubdivideAndQueue(size_t ind);
+	void SubdivideAndQueue(largecounter ind);
 
 	// Helper function to exponentiate an int to an int
 	// Note: the result can be larger than fits in an int, but the base is always 2 and the exp is always

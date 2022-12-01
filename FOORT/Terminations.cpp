@@ -56,7 +56,7 @@ TerminationUniqueVector CreateTerminationVector(TermBitflag termflags, Geodesic 
 
 // This helper function returns true if the Termination should update its internal status. Should be called from within
 // CheckTermination() with the appropriate TermOptions::UpdateEveryNSteps
-bool Termination::DecideUpdate(size_t UpdateNSteps)
+bool Termination::DecideUpdate(largecounter UpdateNSteps)
 {
 	bool decideupdate = false;
 

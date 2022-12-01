@@ -44,9 +44,9 @@ void ScreenOutput(std::string_view theOutput, OutputLevel lvl, bool newLine)
 
 // Constructor initializes all const member variables using the arguments
 GeodesicOutputHandler::GeodesicOutputHandler(std::string FilePrefix, std::string TimeStamp, std::string FileExtension,
-	std::vector<std::string> DiagNames, size_t nroutputstocache, size_t geodperfile, std::string firstlineinfo) :
+	std::vector<std::string> DiagNames, largecounter nroutputstocache, largecounter geodperfile, std::string firstlineinfo) :
 	m_FilePrefix {FilePrefix}, m_TimeStamp{TimeStamp}, m_FileExtension{FileExtension}, m_DiagNames{DiagNames},
-	m_nrOutputsToCache{ nroutputstocache }, m_nrGeodesicsPerFile{ geodperfile }, m_PrintFirstLineInfo{ firstlineinfo != "" },
+	m_nrOutputsToCache{ std::min(nroutputstocache, static_cast<largecounter>(m_AllCachedData.max_size())-1)}, m_nrGeodesicsPerFile{geodperfile}, m_PrintFirstLineInfo{firstlineinfo != ""},
 	m_FirstLineInfoString{ firstlineinfo }
 {
 	// If no prefix has been set, or we are allowed zero geodesics per file, then we necessarily output to the console
@@ -54,7 +54,7 @@ GeodesicOutputHandler::GeodesicOutputHandler(std::string FilePrefix, std::string
 		m_WriteToConsole = true;
 
 	// Reserve an appropriate amount in the cached data vector
-	m_AllCachedData.reserve(m_nrOutputsToCache + 1);
+	m_AllCachedData.reserve(std::min(m_nrOutputsToCache + 1,100000U));
 }
 
 
@@ -89,9 +89,9 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 		// full files when specifying the true file number to write to
 		unsigned short curfile{ 1 };
 		// The next geodesic (index in m_AllCachedData) that we need to output
-		size_t curgeod{ 0 };
+		largecounter curgeod{ 0 };
 		// The number of geodesics stored in the last file we will open for output
-		size_t lastfilecount{ 0 };
+		largecounter lastfilecount{ 0 };
 		// We are sure that the number of diagnostics fits in an int!
 		// Note that the first element of each output vector is the screen index
 		const int nrdiags{ static_cast<int>(m_AllCachedData[0].size()) - 1 };
@@ -112,18 +112,18 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 		// We now loop through all of the files we need to write to
 		while (curfile <= nrfiles && !m_WriteToConsole)
 		{
-			size_t loopmax{ m_AllCachedData.size() };
+			largecounter loopmax{ static_cast<largecounter>(m_AllCachedData.size()) };
 			if (curfile == 1)
 			{
 				// if this is the first file we are writing to, then there could already be geodesics written
 				// to this file which we need to take into account
 				// (note that then automatically curgeod == 0)
-				loopmax = std::min(m_AllCachedData.size(), m_nrGeodesicsPerFile - m_CurrentGeodesicsInFile);
+				loopmax = std::min(static_cast<largecounter>(m_AllCachedData.size()), m_nrGeodesicsPerFile - m_CurrentGeodesicsInFile);
 			}
 			else
 			{
 				// If this is not the first file we are writing to, then see if we will write all geodesics to this file or not
-				loopmax = std::min(m_AllCachedData.size() - curgeod, m_nrGeodesicsPerFile);
+				loopmax = std::min(static_cast<largecounter>(m_AllCachedData.size()) - curgeod, m_nrGeodesicsPerFile);
 			}
 
 			// loop through each diagnostic
@@ -145,7 +145,7 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 				{
 					// All went well opening the file. Output the current diagnostic data of the current diagnostic
 					// for all geodesics that go in this file
-					for (size_t j = curgeod; j < curgeod + loopmax; ++j)
+					for (largecounter j = curgeod; j < curgeod + loopmax; ++j)
 					{
 						// Output pixel and then diagnostic data
 						outf << m_AllCachedData[j][0] << " " << m_AllCachedData[j][curdiag+1] << "\n";
@@ -267,7 +267,7 @@ void GeodesicOutputHandler::OpenForFirstTime(std::string filename)
 
 
 
-void ThreadIntermediateCacher::CacheInitialConditions(size_t index, Point initpos, OneIndex initvel, ScreenIndex scrindex)
+void ThreadIntermediateCacher::CacheInitialConditions(largecounter index, Point initpos, OneIndex initvel, ScreenIndex scrindex)
 {
 	m_CachedInitialConds_Index.push_back(index);
 	m_CachedInitialConds_Pos.push_back(initpos);
@@ -275,7 +275,7 @@ void ThreadIntermediateCacher::CacheInitialConditions(size_t index, Point initpo
 	m_CachedInitialConds_ScrIndex.push_back(scrindex);
 }
 
-void ThreadIntermediateCacher::SetNewInitialConditions(size_t& index, Point& initpos, OneIndex& initvel, ScreenIndex& scrindex)
+void ThreadIntermediateCacher::SetNewInitialConditions(largecounter& index, Point& initpos, OneIndex& initvel, ScreenIndex& scrindex)
 {
 	index = m_CachedInitialConds_Index.back();
 	initpos = m_CachedInitialConds_Pos.back();
@@ -288,20 +288,20 @@ void ThreadIntermediateCacher::SetNewInitialConditions(size_t& index, Point& ini
 	m_CachedInitialConds_ScrIndex.pop_back();
 }
 
-size_t ThreadIntermediateCacher::GetNrInitialConds() const
+largecounter ThreadIntermediateCacher::GetNrInitialConds() const
 {
-	return m_CachedInitialConds_Index.size();
+	return static_cast<largecounter>(m_CachedInitialConds_Index.size());
 }
 
 
-void ThreadIntermediateCacher::CacheGeodesicOutput(size_t index, std::vector<real> finalvals, std::vector<std::string> geodoutput)
+void ThreadIntermediateCacher::CacheGeodesicOutput(largecounter index, std::vector<real> finalvals, std::vector<std::string> geodoutput)
 {
 	m_CachedOutput_Index.push_back(index);
 	m_CachedOutput_FinalVals.push_back(finalvals);
 	m_CachedOutput_GeodOutput.push_back(geodoutput);
 }
 
-void ThreadIntermediateCacher::SetGeodesicOutput(size_t& index, std::vector<real>& finalvals, std::vector<std::string>& geodoutput)
+void ThreadIntermediateCacher::SetGeodesicOutput(largecounter& index, std::vector<real>& finalvals, std::vector<std::string>& geodoutput)
 {
 	index = m_CachedOutput_Index.back();
 	finalvals = m_CachedOutput_FinalVals.back();
@@ -312,7 +312,7 @@ void ThreadIntermediateCacher::SetGeodesicOutput(size_t& index, std::vector<real
 	m_CachedOutput_GeodOutput.pop_back();
 }
 
-size_t ThreadIntermediateCacher::GetNrGeodesicOutputs() const
+largecounter ThreadIntermediateCacher::GetNrGeodesicOutputs() const
 {
-	return m_CachedOutput_Index.size();
+	return static_cast<largecounter>(m_CachedOutput_Index.size());
 }

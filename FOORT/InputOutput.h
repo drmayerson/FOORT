@@ -56,9 +56,9 @@ public:
 	// how many geodesics are allowed per file created
 	GeodesicOutputHandler(std::string FilePrefix, std::string TimeStamp, std::string FileExtension,
 		std::vector<std::string> DiagNames,
-		size_t nroutputstocache = SIZE_MAX-1, // note SIZE_MAX-1,
+		largecounter nroutputstocache = largecounter_MAX-1, // note -1,
 										// since we will actually cache one more then this number before outputting everything
-		size_t geodperfile = SIZE_MAX,
+		largecounter geodperfile = largecounter_MAX,
 		std::string firstlineinfo="");
 
 	// A new vector of output strings from a (single) Geodesic;
@@ -95,8 +95,8 @@ private:
 
 	// consts setting the maximum number of outputs that can be cached before writing output to file,
 	// and the max number of geodesics to store in a file
-	const size_t m_nrOutputsToCache{};
-	const size_t m_nrGeodesicsPerFile{};
+	const largecounter m_nrOutputsToCache{};
+	const largecounter m_nrGeodesicsPerFile{};
 
 	// If this is false, then we are writing to file(s). At any time, if a file I/O error occurs,
 	// the output handler switches to outputting everything to the console
@@ -104,7 +104,7 @@ private:
 
 	// The number of geodesics already written to the current file
 	// (once this hits m_nrGeodesicsPerFile, this file is full)
-	size_t m_CurrentGeodesicsInFile{ 0 };
+	largecounter m_CurrentGeodesicsInFile{ 0 };
 
 	// The current counter of completely full files (this is kept track of
 	// so that it knows what the next file to write output to is)
@@ -137,7 +137,7 @@ private:
 class ThreadIntermediateCacher
 {
 public:
-	ThreadIntermediateCacher(size_t nrexpectedgeodesics)
+	ThreadIntermediateCacher(largecounter nrexpectedgeodesics)
 	{
 		m_CachedInitialConds_Index.reserve(nrexpectedgeodesics);
 		m_CachedInitialConds_Pos.reserve(nrexpectedgeodesics);
@@ -149,21 +149,21 @@ public:
 		m_CachedOutput_GeodOutput.reserve(nrexpectedgeodesics);
 	};
 
-	void CacheInitialConditions(size_t index, Point initpos, OneIndex initvel, ScreenIndex scrindex);
-	void SetNewInitialConditions(size_t& index, Point& initpos, OneIndex& initvel, ScreenIndex& scrindex);
-	size_t GetNrInitialConds() const;
+	void CacheInitialConditions(largecounter index, Point initpos, OneIndex initvel, ScreenIndex scrindex);
+	void SetNewInitialConditions(largecounter& index, Point& initpos, OneIndex& initvel, ScreenIndex& scrindex);
+	largecounter GetNrInitialConds() const;
 
-	void CacheGeodesicOutput(size_t index, std::vector<real> finalvals, std::vector<std::string> geodoutput);
-	void SetGeodesicOutput(size_t& index, std::vector<real>& finalvals, std::vector<std::string>& geodoutput);
-	size_t GetNrGeodesicOutputs() const;
+	void CacheGeodesicOutput(largecounter index, std::vector<real> finalvals, std::vector<std::string> geodoutput);
+	void SetGeodesicOutput(largecounter& index, std::vector<real>& finalvals, std::vector<std::string>& geodoutput);
+	largecounter GetNrGeodesicOutputs() const;
 
 private:
-	std::vector<size_t> m_CachedInitialConds_Index{};
+	std::vector<largecounter> m_CachedInitialConds_Index{};
 	std::vector<Point> m_CachedInitialConds_Pos{};
 	std::vector<OneIndex> m_CachedInitialConds_Vel{};
 	std::vector<ScreenIndex> m_CachedInitialConds_ScrIndex{};
 
-	std::vector<size_t> m_CachedOutput_Index{};
+	std::vector<largecounter> m_CachedOutput_Index{};
 	std::vector<std::vector<real>> m_CachedOutput_FinalVals{};
 	std::vector<std::vector<std::string>> m_CachedOutput_GeodOutput{};
 };

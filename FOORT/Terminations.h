@@ -95,11 +95,11 @@ protected:
 
 	// Helper function to decide if the Termination should indeed update its status, based on
 	// UpdateNSteps (which is set to 0 if we always update)
-	bool DecideUpdate(size_t UpdateNSteps);
+	bool DecideUpdate(largecounter UpdateNSteps);
 
 	// The termination is itself in charge of keeping track of how many steps it has been since it has been updated
 	// The Termination's TerminationOptions struct tells it how many steps it needs to wait between updates
-	size_t m_StepsSinceUpdated{};
+	largecounter m_StepsSinceUpdated{};
 };
 
 // The owner vector of derived Termination classes
@@ -175,8 +175,8 @@ public:
 
 private:
 	// Keep track of the number of steps that the geodesic has taken so far
-	// Default: max that can be contained in a size_t
-	size_t m_CurNrSteps{ SIZE_MAX };
+	// Default: max that can be contained in a largecounter
+	largecounter m_CurNrSteps{ largecounter_MAX };
 };
 
 //// TERMINATION ADD POINT A1 /////
@@ -219,20 +219,20 @@ struct TerminationOptions
 {
 public:
 	// Basic constructor only sets the number of steps between updates
-	TerminationOptions(size_t Nsteps) : UpdateEveryNSteps{ Nsteps }
+	TerminationOptions(largecounter Nsteps) : UpdateEveryNSteps{ Nsteps }
 	{}
 
 	// virtual destructor to ensure correct destruction of descendants
 	virtual ~TerminationOptions() = default;
 
-	const size_t UpdateEveryNSteps;
+	const largecounter UpdateEveryNSteps;
 };
 
 // Options class for HorizonTermination; keeps track of location of horizon radius and the epsilon to terminate away from the horizon
 struct HorizonTermOptions : public TerminationOptions
 {
 public:
-	HorizonTermOptions(real HorizonRadius, bool rLogScale, real AtHorizonEps, size_t Nsteps) :
+	HorizonTermOptions(real HorizonRadius, bool rLogScale, real AtHorizonEps, largecounter Nsteps) :
 		m_HorizonRadius{ HorizonRadius }, m_AtHorizonEps{ AtHorizonEps }, m_rLogScale{ rLogScale }, TerminationOptions(Nsteps)
 	{}
 
@@ -246,7 +246,7 @@ public:
 struct BoundarySphereTermOptions : public TerminationOptions
 {
 public:
-	BoundarySphereTermOptions(real theRadius, size_t Nsteps) : SphereRadius{theRadius}, TerminationOptions(Nsteps)
+	BoundarySphereTermOptions(real theRadius, largecounter Nsteps) : SphereRadius{theRadius}, TerminationOptions(Nsteps)
 	{}
 
 	const real SphereRadius;
@@ -256,10 +256,10 @@ public:
 struct TimeOutTermOptions : public TerminationOptions
 {
 public:
-	TimeOutTermOptions(size_t MaxStepsAllowed, size_t Nsteps) : MaxSteps{ MaxStepsAllowed }, TerminationOptions(Nsteps)
+	TimeOutTermOptions(largecounter MaxStepsAllowed, largecounter Nsteps) : MaxSteps{ MaxStepsAllowed }, TerminationOptions(Nsteps)
 	{}
 
-	const size_t MaxSteps;
+	const largecounter MaxSteps;
 };
 
 
@@ -270,7 +270,7 @@ public:
 struct MyTermOptions : public TerminationOptions
 {
 public:
-	MyTermOptions(..., size_t Nsteps) : TerminationOptions(Nsteps) //, other initialization
+	MyTermOptions(..., largecounter Nsteps) : TerminationOptions(Nsteps) //, other initialization
 	{} 
 
 	// member variables (const!) here	

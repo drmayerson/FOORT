@@ -46,7 +46,7 @@ constexpr DiagBitflag Diag_MyDiag				{ 0b0000'0000'0000'1000 };
 // If UpdateNSteps == 0, then it only updates at the start and/or finish of integration if the appropriate bool is set.
 struct UpdateFrequency
 {
-	size_t UpdateNSteps{ 0 };
+	largecounter UpdateNSteps{ 0 };
 	bool UpdateStart{ false };
 	bool UpdateFinish{ false };
 };
@@ -101,7 +101,7 @@ protected:
 
 	// The diagnostic is itself in charge of keeping track of how many steps it has been since it has been updated
 	// The Diagnostic's DiagnosticOptions struct tells it how many steps it needs to wait between updates
-	size_t m_StepsSinceUpdated{};
+	largecounter m_StepsSinceUpdated{};
 };
 
 // Owner vector of derived Diagnostics classes
@@ -282,11 +282,11 @@ public:
 struct GeodesicPositionOptions : public DiagnosticOptions
 {
 public:
-	GeodesicPositionOptions(size_t outputsteps, UpdateFrequency thefrequency) : OutputNrSteps{ outputsteps }, 
+	GeodesicPositionOptions(largecounter outputsteps, UpdateFrequency thefrequency) : OutputNrSteps{ outputsteps }, 
 		DiagnosticOptions(thefrequency)
 	{}
 
-	const size_t OutputNrSteps;
+	const largecounter OutputNrSteps;
 };
 
 //// DIAGNOSTIC ADD POINT A2 (optional) ////
