@@ -10,9 +10,9 @@
 
 #include "Geometry.h" // for tensor objects
 #include "Metric.h" // for the metric
-#include"Diagnostics.h" // Geodesics own Diagnostics
-#include"Terminations.h" // Geodesics own Terminations
-#include"Integrators.h" // Geodesics use an GeodesicIntegratorFunc to integrate itself
+#include "Diagnostics.h" // Geodesics own Diagnostics
+#include "Terminations.h" // Geodesics own Terminations
+#include "Integrators.h" // Geodesics use an GeodesicIntegratorFunc to integrate itself
 
 ///////////////////////////////////////////////////////////
 //// DECLARATIONS OF SOURCE BASE CLASS AND DESCENDANTS ////

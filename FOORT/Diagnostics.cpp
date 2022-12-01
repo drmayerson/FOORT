@@ -3,6 +3,8 @@
 #include "Geodesic.h" // We need member functions of the Geodesic class here
 #include "InputOutput.h" // for ScreenOutput()
 
+#include <algorithm> // needed for std::rotate
+
 /// <summary>
 /// Diagnostic helper function
 /// </summary>
