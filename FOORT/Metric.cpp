@@ -1,9 +1,10 @@
-#include"Metric.h" // we are defining the Metric functions here
+#include "Metric.h" // we are defining the Metric functions here
 
-#include"InputOutput.h" // needed for ScreenOutput()
-#include"Integrators.h" // needed for the constant DERIVATIVE_hval
+#include "InputOutput.h" // needed for ScreenOutput()
+#include "Integrators.h" // needed for the constant DERIVATIVE_hval
 
-#include<cmath> // needed for sqrt() and sin() etc (only on Linux)
+#include <cmath> // needed for sqrt() and sin() etc (only on Linux)
+#include <algorithm> // needed for std::find
 
 /// <summary>
 /// Metric (abstract base class) functions
