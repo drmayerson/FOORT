@@ -157,7 +157,6 @@
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Diagnostics.cpp" />
     <ClCompile Include="Geodesic.cpp" />
-    <ClCompile Include="Metric_VARIANT.cpp" />
     <ClCompile Include="Metric.cpp" />
     <ClCompile Include="InputOutput.cpp" />
     <ClCompile Include="Integrators.cpp" />
@@ -172,7 +171,6 @@
     <ClInclude Include="Diagnostics.h" />
     <ClInclude Include="Geodesic.h" />
     <ClInclude Include="Geometry.h" />
-    <ClInclude Include="Metric_VARIANT.h" />
     <ClInclude Include="Metric.h" />
     <ClInclude Include="InputOutput.h" />
     <ClInclude Include="Integrators.h" />

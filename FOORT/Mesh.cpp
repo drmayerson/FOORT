@@ -641,7 +641,13 @@ void SquareSubdivisionMesh::EndCurrentLoop()
 
 		// Queue is constructed now, make sure to subtract the pixels in the queue from the total we have left
 		if (!m_InfinitePixels)
+		{
+
 			m_PixelsLeft -= static_cast<largecounter>(m_CurrentPixelQueue.size());
+			ScreenOutput("Mesh says: Still max. " + std::to_string(m_PixelsLeft) + 
+				" left to integrate after the currently queued " + std::to_string(m_CurrentPixelQueue.size()) + ".",
+				OutputLevel::Level_2_SUBPROC);
+		}
 		// Initialize m_CurrentPixelQueueDone
 		m_CurrentPixelQueueDone = std::vector<bool>(m_CurrentPixelQueue.size(), false);
 	}

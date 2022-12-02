@@ -44,7 +44,7 @@ bool Config::lookupValuelargecounter(const ConfigSetting& theSetting, const char
 	// which is currently used for largecounter!)
 	// So instead, we get the setting as a long long and then convert it to a largecounter
 	// We need to test various versions of lookupValue because libconfig
-	// does not automatically convert integers
+	// does not automatically convert integers between smaller/larger types...
 
 	long long intermedvalLL{};
 	bool ret{ theSetting.lookupValue(name,intermedvalLL) };
@@ -60,28 +60,25 @@ bool Config::lookupValuelargecounter(const ConfigSetting& theSetting, const char
 			ret = theSetting.lookupValue(name, intermedvalUI);
 			if (ret)
 			{
+				// as long as it's >=0, it will fit in a largecounter
 				if (intermedvalI >= 0)
 					value = static_cast<largecounter>(intermedvalI);
 			}
 		}
 		else
 		{
-			if (intermedvalUI > LARGECOUNTER_MAX)
-			{
-				intermedvalUI = LARGECOUNTER_MAX;
-			}
+			// unsigned int will fit in a largecounter
 			value = static_cast<largecounter>(intermedvalUI);
-				
 		}
 	}
 	else
 	{
-		// if the number is too big to fit in a largecounter, then we scale it down to its max value
+		// if the long long is too big to fit in a largecounter, then we scale it down to its max value
 		if (intermedvalLL > LARGECOUNTER_MAX)
 		{
 			intermedvalLL = LARGECOUNTER_MAX;
 		}
-		if (intermedvalLL > 0)
+		if (intermedvalLL >= 0)
 			value = static_cast<largecounter>(intermedvalLL);
 	}
 

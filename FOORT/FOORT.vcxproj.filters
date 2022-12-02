@@ -27,9 +27,6 @@
     <ClCompile Include="Integrators.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Metric_VARIANT.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Diagnostics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -63,9 +60,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Geometry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Metric_VARIANT.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Diagnostics.h">
