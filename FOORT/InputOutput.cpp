@@ -105,7 +105,7 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 		// We are sure that the number of diagnostics fits in an int!
 		// Note that the first element of each output vector is the screen index
 		const int nrdiags{ static_cast<int>(m_AllCachedData[0].size()) - 1 };
-		
+
 		// Are we exactly at a point where we need to start a new file for the first file we write to?
 		// If so, open each of the necessary new output files for the first time
 		if (m_CurrentGeodesicsInFile == 0)
@@ -138,7 +138,7 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 
 			// loop through each diagnostic
 			for (int curdiag = 0; curdiag < nrdiags; ++curdiag)
-			{ 
+			{
 				// open appropriate file for appending
 				std::string outputfile{ GetFileName(curdiag, m_CurrentFullFiles + curfile) };
 				std::ofstream outf{ outputfile, std::ios::out | std::ios::app };
@@ -158,7 +158,7 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 					for (largecounter j = curgeod; j < curgeod + loopmax; ++j)
 					{
 						// Output pixel and then diagnostic data
-						outf << m_AllCachedData[j][0] << " " << m_AllCachedData[j][curdiag+1] << "\n";
+						outf << m_AllCachedData[j][0] << " " << m_AllCachedData[j][curdiag + 1] << "\n";
 					}
 
 					// We are done with this diagnostic file, close file
@@ -213,15 +213,15 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 		for (int i = 0; i < m_AllCachedData.size(); ++i)
 		{
 			// write output line to console
-			for (int j = 0; j  < m_AllCachedData[i].size(); ++j)
-			ScreenOutput(m_AllCachedData[i][j], OutputLevel::Level_1_PROC);
+			for (int j = 0; j < m_AllCachedData[i].size(); ++j)
+				ScreenOutput(m_AllCachedData[i][j], OutputLevel::Level_1_PROC);
 		}
 	}
-	
+
 	// Whether we have written all output to file or to console, in any case we have outputted all cached data,
 	// so empty the cache now
 	m_AllCachedData.clear();
-	m_AllCachedData.reserve(m_nrOutputsToCache + 1);
+	m_AllCachedData.reserve(std::min(m_nrOutputsToCache + 1, static_cast<largecounter>(100000)));
 }
 
 std::string GeodesicOutputHandler::GetFileName(int diagnr, unsigned short filenr) const
