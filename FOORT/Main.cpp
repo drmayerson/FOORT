@@ -456,5 +456,7 @@ int main(int argc, char* argv[])
     theOutputHandler->OutputFinished();
 
     // end main - program finished!
+    ScreenOutput("FOORT finished. Goodbye!", OutputLevel::Level_1_PROC);
+
     return 0; 
 } 
