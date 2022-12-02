@@ -50,11 +50,14 @@ namespace Config
 	// Always should be caught and then reverted to default settings
 	using SettingError = std::invalid_argument;
 
+	// Helper function to look up largecounter options
+	bool lookupValuelargecounter(const ConfigSetting& theSetting, const char *name, largecounter &value);
+
 
 	//// Initialization functions ////
 	//////////////////////////////////
-
-	// TODO reorder these (and their implementations)
+	
+	
 
 	// Use configuration to initialize the screen output level
 	void InitializeScreenOutput(const ConfigObject& theCfg);

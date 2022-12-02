@@ -1,9 +1,9 @@
 #ifndef _FOORT_METRIC_H
 #define _FOORT_METRIC_H
 
-#include"Geometry.h" // Needed for basic tensor objects etc.
+#include "Geometry.h" // Needed for basic tensor objects etc.
 
-#include<vector> // needed for the (non-fixed size) vector of symmetries in the metric
+#include <vector> // needed for the (non-fixed size) vector of symmetries in the metric
 
 
 ///////////////////////////////////////////////////////////////////////////////////////

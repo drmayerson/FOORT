@@ -17,20 +17,24 @@
 // (Could be changed to use arbitrary precision in the future.)
 using real = double;
 
-// A pixel coordinate: always >=0 and integer, so using unsigned int
-using pixelcoord = unsigned int;
 
-// Can be used to count large number of objects
-using largecounter = unsigned int;
+// Note: An unsigned long is guaranteed to be able to hold at least 4 294 967 295 (4.10^10).
+// An unsigned int is only guaranteed to be able to hold 65 535, although
+// many modern-day implementations will actually make the int 32-bit and so much larger
+// 
+// This type is used to count geodesics integrated
+using largecounter = unsigned long;
+// A pixel coordinate: always >=0 and integer; we use the largecounter type
+using pixelcoord = largecounter;
 
-// Macro definition of maximum number for a pixel coordinate
+// Macro definition of maximum value that can be held in this large counter
+#ifndef LARGECOUNTER_MAX
+#define LARGECOUNTER_MAX std::numeric_limits<largecounter>::max()
+#endif
 #ifndef PIXEL_MAX
 #define PIXEL_MAX std::numeric_limits<pixelcoord>::max()
 #endif
 
-#ifndef largecounter_MAX
-#define largecounter_MAX std::numeric_limits<largecounter>::max()
-#endif
 
 /// <summary>
 /// CONSTANTS
@@ -110,12 +114,12 @@ std::string toString(const std::array<real, TensorDim> &theTensor)
 	return theStr;
 }
 
-// Base case for single index tensor of unsigned ints (ScreenIndex).
+// Base case for single index tensor of unsigned integers (ScreenIndex).
 // We do not want toString(ScreenIndex) to convert its entries to reals and use the above
 // implementation for a single index tensor of reals, because we do not want decimal points in our
 // string for the ints!
 template<size_t TensorDim>
-std::string toString(const std::array<pixelcoord, TensorDim>& theTensor)
+std::string toString(const std::array<largecounter, TensorDim>& theTensor)
 {
 	std::string theStr{"("}; // no spaces for the innermost brackets
 	for (int i = 0; i < TensorDim - 1; ++i)

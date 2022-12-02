@@ -7,7 +7,7 @@
 ////// Definitions in InputOutput.cpp
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-#include"Geometry.h" // for basic tensor objects
+#include "Geometry.h" // for basic tensor objects
 
 #include <string_view> // std::string_view used in ScreenOutput()
 #include <iostream> // needed for file output
@@ -56,9 +56,9 @@ public:
 	// how many geodesics are allowed per file created
 	GeodesicOutputHandler(std::string FilePrefix, std::string TimeStamp, std::string FileExtension,
 		std::vector<std::string> DiagNames,
-		largecounter nroutputstocache = largecounter_MAX-1, // note -1,
+		largecounter nroutputstocache = LARGECOUNTER_MAX-1, // note -1,
 										// since we will actually cache one more then this number before outputting everything
-		largecounter geodperfile = largecounter_MAX,
+		largecounter geodperfile = LARGECOUNTER_MAX,
 		std::string firstlineinfo="");
 
 	// A new vector of output strings from a (single) Geodesic;

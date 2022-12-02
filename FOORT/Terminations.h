@@ -7,8 +7,6 @@
 ////// All definitions in Terminations.cpp
 ///////////////////////////////////////////////////////////////////////////////////////
 
-
-
 #include "Geometry.h" // for basic tensor objects
 
 #include <memory> // for std::unique_ptr
@@ -175,8 +173,7 @@ public:
 
 private:
 	// Keep track of the number of steps that the geodesic has taken so far
-	// Default: max that can be contained in a largecounter
-	largecounter m_CurNrSteps{ largecounter_MAX };
+	largecounter m_CurNrSteps{ 0 };
 };
 
 //// TERMINATION ADD POINT A1 /////

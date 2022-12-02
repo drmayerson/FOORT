@@ -1,8 +1,8 @@
 #include "Utilities.h" // We are implementing functions from here
 
 // These are used in GetTimeStampString()
-#include<sstream>
-#include<iomanip>
+#include <sstream>
+#include <iomanip>
 
 
 /// <summary>

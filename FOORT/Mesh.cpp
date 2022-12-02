@@ -204,7 +204,7 @@ std::string InputCertainPixelsMesh::getFullDescriptionStr() const
 largecounter SquareSubdivisionMesh::getCurNrGeodesics() const
 {
 	// The number of geodesics in the current integration iteration
-	return m_CurrentPixelQueue.size();
+	return static_cast<largecounter>(m_CurrentPixelQueue.size());
 }
 
 void SquareSubdivisionMesh::getNewInitConds(largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex)
@@ -290,7 +290,7 @@ void SquareSubdivisionMesh::InitializeFirstGrid()
 
 	// Subtract the number of pixels we are integrating from the pixels we are allowed to integrate
 	if (!m_InfinitePixels)
-		m_PixelsLeft -= m_CurrentPixelQueue.size();
+		m_PixelsLeft -= static_cast<largecounter>(m_CurrentPixelQueue.size());
 
 	// All pixels have not been integrated yet
 	m_CurrentPixelQueueDone = std::vector<bool>(m_CurrentPixelQueue.size(), false);
@@ -319,7 +319,7 @@ void SquareSubdivisionMesh::UpdateAllNeighbors()
 			if (rightloc == m_AllPixels.end())
 				ScreenOutput("Something went wrong. Pixel "
 					+ toString(pixel.Index) + " does not have a right neighbor!", OutputLevel::Level_0_WARNING);
-			pixel.RightNbrIndex = rightloc - m_AllPixels.begin();
+			pixel.RightNbrIndex = static_cast<largecounter>( rightloc - m_AllPixels.begin() );
 
 			// Find lower neighbor
 			row = pixel.Index[0] + ExpInt(2, m_MaxSubdivide - pixel.SubdivideLevel);
@@ -331,7 +331,7 @@ void SquareSubdivisionMesh::UpdateAllNeighbors()
 			if (lowloc == m_AllPixels.end())
 				ScreenOutput("Something went wrong. Pixel "
 					+ toString(pixel.Index) + " does not have a lower neighbor!", OutputLevel::Level_0_WARNING);
-			pixel.LowerNbrIndex = lowloc - m_AllPixels.begin();
+			pixel.LowerNbrIndex = static_cast<largecounter>( lowloc - m_AllPixels.begin() );
 		}
 	}
 
@@ -641,7 +641,7 @@ void SquareSubdivisionMesh::EndCurrentLoop()
 
 		// Queue is constructed now, make sure to subtract the pixels in the queue from the total we have left
 		if (!m_InfinitePixels)
-			m_PixelsLeft -= m_CurrentPixelQueue.size();
+			m_PixelsLeft -= static_cast<largecounter>(m_CurrentPixelQueue.size());
 		// Initialize m_CurrentPixelQueueDone
 		m_CurrentPixelQueueDone = std::vector<bool>(m_CurrentPixelQueue.size(), false);
 	}

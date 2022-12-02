@@ -1,4 +1,4 @@
-#include"InputOutput.h" // We are defining functions from here
+#include "InputOutput.h" // We are defining functions from here
 
 #include <algorithm> // needed for std::min etc
 
@@ -46,7 +46,12 @@ void ScreenOutput(std::string_view theOutput, OutputLevel lvl, bool newLine)
 GeodesicOutputHandler::GeodesicOutputHandler(std::string FilePrefix, std::string TimeStamp, std::string FileExtension,
 	std::vector<std::string> DiagNames, largecounter nroutputstocache, largecounter geodperfile, std::string firstlineinfo) :
 	m_FilePrefix {FilePrefix}, m_TimeStamp{TimeStamp}, m_FileExtension{FileExtension}, m_DiagNames{DiagNames},
-	m_nrOutputsToCache{ std::min(nroutputstocache, static_cast<largecounter>(m_AllCachedData.max_size())-1)}, m_nrGeodesicsPerFile{geodperfile}, m_PrintFirstLineInfo{firstlineinfo != ""},
+	// Make sure that we only cache up to the max amount that fits in largecounter
+	// OR, if smaller, the max amount of elements that can be reserved in the cache vector
+	m_nrOutputsToCache{ static_cast<largecounter>( std::min({ static_cast<size_t>(nroutputstocache),
+													m_AllCachedData.max_size() - 1,
+													static_cast<size_t>(LARGECOUNTER_MAX - 1) }) ) },
+	m_nrGeodesicsPerFile{ geodperfile }, m_PrintFirstLineInfo{firstlineinfo != ""},
 	m_FirstLineInfoString{ firstlineinfo }
 {
 	// If no prefix has been set, or we are allowed zero geodesics per file, then we necessarily output to the console
@@ -54,7 +59,8 @@ GeodesicOutputHandler::GeodesicOutputHandler(std::string FilePrefix, std::string
 		m_WriteToConsole = true;
 
 	// Reserve an appropriate amount in the cached data vector
-	m_AllCachedData.reserve(std::min(m_nrOutputsToCache + 1,100000U));
+	// Don't reserve the entire m_nrOutputsToCache if it is huge, do this 100k at a time
+	m_AllCachedData.reserve( std::min(m_nrOutputsToCache + 1, static_cast<largecounter>(100000)) );
 }
 
 
@@ -65,6 +71,10 @@ void GeodesicOutputHandler::NewGeodesicOutput(std::vector<std::string> theOutput
 	// Now, check if we have cached (one) too many outputs, if so, we want to write all the cached output to file
 	if (m_AllCachedData.size() > m_nrOutputsToCache)
 		WriteCachedOutputToFile();
+
+	// Check if we should reserve more room in the cache (do this 100k at a time)
+	if (m_AllCachedData.size() == m_AllCachedData.capacity())
+		m_AllCachedData.reserve( std::min(static_cast<size_t>(m_nrOutputsToCache + 1), m_AllCachedData.capacity() + 100000) );
 }
 
 void GeodesicOutputHandler::OutputFinished()

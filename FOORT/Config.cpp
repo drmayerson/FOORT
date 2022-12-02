@@ -37,6 +37,27 @@ std::unique_ptr<MyTermOptions> MyTermination::DiagOptions;
 #ifdef CONFIGURATION_MODE
 
 
+// Helper function to look up largecounter
+bool Config::lookupValuelargecounter(const ConfigSetting& theSetting, const char* name, largecounter& value)
+{
+	// the libconfig function lookupValue() only has overloads to return unsigned int and long long (so not unsigned long
+	// which is currently used for largecounter!)
+	// So instead, we get the setting as a long long and then convert it to a largecounter
+
+	long long intermedval{-1};
+	bool ret{ theSetting.lookupValue(name,intermedval) };
+
+	// if the number is too big to fit in a largecounter, then we scale it down to its max value
+	if (intermedval > LARGECOUNTER_MAX)
+	{
+		intermedval = LARGECOUNTER_MAX;
+	}
+	if (intermedval > 0)
+		value = static_cast<largecounter>(intermedval);
+
+	return ret;
+}
+
 
 // Initialize screen output
 void Config::InitializeScreenOutput(const ConfigObject& theCfg)
@@ -281,7 +302,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 			largecounter updatensteps = 1;
 			bool updatestart{ false };
 			bool updatefinish{ true };
-			AllDiagSettings["GeodesicPosition"].lookupValue("UpdateFrequency", updatensteps);
+			lookupValuelargecounter(AllDiagSettings["GeodesicPosition"], "UpdateFrequency", updatensteps);
 			if (updatensteps == 0)
 			{
 				AllDiagSettings["GeodesicPosition"].lookupValue("UpdateStart", updatestart);
@@ -289,12 +310,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 			}
 
 			largecounter outputsteps = 0; // keep all steps
-			AllDiagSettings["GeodesicPosition"].lookupValue("OutputSteps", outputsteps);
-
-			if (updatensteps < 0)
-				updatensteps = 1;
-			if (outputsteps < 0)
-				outputsteps = 1;
+			lookupValuelargecounter(AllDiagSettings["GeodesicPosition"], "OutputSteps", outputsteps);
 
 			GeodesicPositionDiagnostic::DiagOptions = 
 				std::unique_ptr<GeodesicPositionOptions>(new GeodesicPositionOptions{ outputsteps,
@@ -315,10 +331,9 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 			largecounter updatensteps = 1;
 			bool updatestart{ true };
 			bool updatefinish{ true };
-			AllDiagSettings["EquatorialPasses"].lookupValue("UpdateFrequency", updatensteps);
-			if (updatensteps <= 0)
+			lookupValuelargecounter(AllDiagSettings["EquatorialPasses"], "UpdateFrequency", updatensteps);
+			if (updatensteps == 0)
 			{
-				updatensteps = 0;
 				AllDiagSettings["EquatorialPasses"].lookupValue("UpdateStart", updatestart);
 				AllDiagSettings["EquatorialPasses"].lookupValue("UpdateFinish", updatefinish);
 			}
@@ -351,7 +366,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 			largecounter updatensteps = 1;
 			bool updatestart{ true };
 			bool updatefinish{ true };
-			AllDiagSettings["MyDiagnostic"].lookupValue("UpdateFrequency", updatensteps);
+			lookupValuelargecounter(AllDiagSettings["MyDiagnostic"], "UpdateFrequency", updatensteps);
 			if (updatensteps == 0)
 			{
 				AllDiagSettings["MyDiagnostic"].lookupValue("UpdateStart", updatestart);
@@ -472,9 +487,7 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 				// By default, this Termination updates every step
 				// Check to see if a different update frequency has been specified
 				largecounter updatefreq = 1;
-				AllTermSettings["Horizon"].lookupValue("UpdateFrequency", updatefreq);
-				if (updatefreq <= 0)
-					updatefreq = 1;
+				lookupValuelargecounter(AllTermSettings["Horizon"], "UpdateFrequency", updatefreq);
 
 				// Initialize the (static) TerminationOptions for Horizon!
 				HorizonTermination::TermOptions =
@@ -497,9 +510,7 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 			// By default, this Termination updates every step
 			// Check to see if a different update frequency has been specified
 			largecounter updatefreq = 1;
-			if (updatefreq <= 0)
-				updatefreq = 1;
-			AllTermSettings["BoundarySphere"].lookupValue("UpdateFrequency", updatefreq);
+			lookupValuelargecounter(AllTermSettings["BoundarySphere"], "UpdateFrequency", updatefreq);
 
 			// Initialize the (static) TerminationOptions for BoundarySphere!
 			BoundarySphereTermination::TermOptions =
@@ -513,17 +524,13 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 			allterms |= Term_TimeOut;
 
 			// Get the number of steps until time-out. Default is 10000
-			largecounter timeoutsteps {10000 };
-			AllTermSettings["TimeOut"].lookupValue("MaxSteps", timeoutsteps);
-			if (timeoutsteps <= 0)
-				timeoutsteps = 10000;
+			largecounter timeoutsteps { 10000 };
+			lookupValuelargecounter(AllTermSettings["TimeOut"], "MaxSteps", timeoutsteps);
 
 			// By default, this Termination updates every step
 			// Check to see if a different update frequency has been specified
 			largecounter updatefreq = 1;
-			AllTermSettings["TimeOut"].lookupValue("UpdateFrequency", updatefreq);
-			if (updatefreq <= 0)
-				updatefreq = 1;
+			lookupValuelargecounter(AllTermSettings["TimeOut"], "UpdateFrequency", updatefreq);
 
 			// Initialize the (static) TerminationOptions for TimeOut!
 			TimeOutTermination::TermOptions =
@@ -545,9 +552,7 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 			// if it does not or has additional options (i.e. it has a descendant of TerminationOptions as its
 			// static struct), then update here accordingly.
 			largecounter updatefreq = 1;
-			AllTermSettings["MyTermination"].lookupValue("UpdateFrequency", updatefreq);
-			if (updatefreq <= 0)
-				updatefreq = 1;
+			lookupValuelargecounter(AllTermSettings["MyTermination"], "UpdateFrequency", updatefreq);
 
 			// Initialize the (static) TerminationOptions!
 			MyTermination::TermOptions =
@@ -590,7 +595,7 @@ std::unique_ptr<ViewScreen> Config::GetViewScreen(const ConfigObject& theCfg, Di
 	// DEFAULTS set here
 	Point pos{ 0,1000,pi/2.0,0 };
 	OneIndex dir{ 0,-1,0,0 };
-	std::array<real, dimension - 2> screensize{ pi*1/10,pi*1/10 };
+	std::array<real, dimension - 2> screensize{ 10.0,10.0 };
 
 	try
 	{
@@ -673,8 +678,8 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigObject& theCfg, DiagBitflag va
 		if (meshname == "SimpleSquareMesh")
 		{
 			// Simple Square Mesh!
-			int totalpixels{ 100 * 100 };
-			MeshSettings.lookupValue("TotalPixels", totalpixels);
+			largecounter totalpixels{ 100 * 100 };
+			lookupValuelargecounter(MeshSettings, "TotalPixels", totalpixels);
 
 			theMesh = std::unique_ptr<Mesh>(new SimpleSquareMesh(totalpixels, valdiag));
 		}
@@ -682,8 +687,8 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigObject& theCfg, DiagBitflag va
 		{
 			// This Mesh will ask the user to input pixels on the grid specified in the configuration file.
 			// (the Mesh will ask for input in its constructor, so here!)
-			int totalpixels{ 100 * 100 };
-			MeshSettings.lookupValue("TotalPixels", totalpixels);
+			largecounter totalpixels{ 100 * 100 };
+			lookupValuelargecounter(MeshSettings, "TotalPixels", totalpixels);
 
 			theMesh = std::unique_ptr<Mesh>(new InputCertainPixelsMesh(totalpixels, valdiag));
 		}
@@ -694,16 +699,12 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigObject& theCfg, DiagBitflag va
 			largecounter iterationpixels{ 100 };
 			int maxsubdivide{ 1 };
 			bool initialsubtofinal{ false };
-			MeshSettings.lookupValue("InitialPixels", initialpixels);
-			MeshSettings.lookupValue("MaxPixels", maxpixels);
-			MeshSettings.lookupValue("IterationPixels", iterationpixels);
+			lookupValuelargecounter(MeshSettings, "InitialPixels", initialpixels);
+			lookupValuelargecounter(MeshSettings, "MaxPixels", maxpixels);
+			lookupValuelargecounter(MeshSettings, "IterationPixels", iterationpixels);
 			MeshSettings.lookupValue("MaxSubdivide", maxsubdivide);
-			if (initialpixels <= 0)
-				initialpixels = 100;
 			if (maxpixels < initialpixels)
 				maxpixels = initialpixels;
-			if (iterationpixels < 0)
-				iterationpixels = 0;
 			if (maxsubdivide < 1) // 1 is the minimum level (initial grid is level 1)
 			{
 				ScreenOutput("Invalid MaxSubdivide level given. Using MaxSubdivide = 1.", Output_Other_Default);
@@ -855,16 +856,14 @@ std::unique_ptr<GeodesicOutputHandler> Config::GetOutputHandler(const ConfigObje
 		}
 
 		// Max number of geodesics to cache
-		largecounter nrToCache{ largecounter_MAX-1 }; // default is essentially infinite
-		OutputSettings.lookupValue("GeodesicsToCache", nrToCache);
-		if (nrToCache < 0)
-			nrToCache = largecounter_MAX - 1;
+		largecounter nrToCache{ LARGECOUNTER_MAX-1 }; // default is essentially infinite
+		lookupValuelargecounter(OutputSettings, "GeodesicsToCache", nrToCache);
 
 		// Max number of geodesics to write to file
-		largecounter GeodesicsPerFile{ largecounter_MAX }; // default is essentially infinite
-		OutputSettings.lookupValue("GeodesicsPerFile", GeodesicsPerFile);
-		if (GeodesicsPerFile <= 0)
-			GeodesicsPerFile = largecounter_MAX;
+		largecounter GeodesicsPerFile{ LARGECOUNTER_MAX }; // default is essentially infinite
+		lookupValuelargecounter(OutputSettings, "GeodesicsPerFile", GeodesicsPerFile);
+		if (GeodesicsPerFile == 0)
+			GeodesicsPerFile = LARGECOUNTER_MAX;
 
 		// Write a description line as the first line in every file or not
 		bool FirstLineInfoOn{ true };

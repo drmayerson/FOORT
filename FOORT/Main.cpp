@@ -119,7 +119,7 @@ void LoadPrecompiledOptions(std::unique_ptr<Metric> &theM, std::unique_ptr<Sourc
 
     // ViewScreen syntax: see below
     theView = std::unique_ptr<ViewScreen>(new ViewScreen(
-        { 0.0,1000.0,0.2966972222222, 0.0 }, // position
+        { 0.0, 1000.0, 0.2966972222222, 0.0 }, // position
         { 0.0, -1.0, 0.0, 0.0 }, // direction
         { 15, 15 }, // screen size
         std::move(theMesh), // R-value of Mesh --- ViewScreen becomes owner!
@@ -305,7 +305,7 @@ int main(int argc, char* argv[])
 
         // How many geodesics are we integrating this iteration
         // OpenMP distributed for loops demand a SIGNED integral type as the loop iterator
-        long CurNrGeod = static_cast<long>(theView->getCurNrGeodesics());
+        long long CurNrGeod = static_cast<long long>(theView->getCurNrGeodesics());
 
 #pragma omp parallel // start up threads!
         { 
@@ -332,7 +332,7 @@ int main(int argc, char* argv[])
                 // This call to ViewScreen MUST be done one thread at a time as the ViewScreen/Mesh changes its internal structure
                 // every time it returns a geodesic initial condition
 #pragma omp critical   
-                theView->SetNewInitialConditions(index, initpos, initvel, scrindex);
+                theView->SetNewInitialConditions(static_cast<largecounter>(index), initpos, initvel, scrindex);
 
                 // Create the geodesic with given initial conditions!
                 Geodesic theGeod(scrindex,  // screen index
@@ -356,7 +356,7 @@ int main(int argc, char* argv[])
                 // in these calls!
 #pragma omp critical
                 {
-                    theView->GeodesicFinished(index, theGeod.getDiagnosticFinalValue());
+                    theView->GeodesicFinished(static_cast<largecounter>(index), theGeod.getDiagnosticFinalValue());
                     theOutputHandler->NewGeodesicOutput(theGeod.getAllOutputStr());
                 }
 

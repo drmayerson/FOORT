@@ -3,7 +3,7 @@
 #include "Geodesic.h" // We need member functions of the Geodesic class here
 #include "InputOutput.h" // for ScreenOutput()
 
-#include <algorithm>
+#include <algorithm> // needed for std::rotate()
 
 /// <summary>
 /// Diagnostic helper function
@@ -225,7 +225,7 @@ void GeodesicPositionDiagnostic::UpdateData()
 		// check if we need to resize; note that nrstepstokeep == 0 if we keep all of the steps
 		if (nrstepstokeep > 0 && nrstepstokeep < m_AllSavedPoints.size())
 		{
-			largecounter jettison = m_AllSavedPoints.size() / nrstepstokeep;
+			largecounter jettison = static_cast<largecounter>(m_AllSavedPoints.size()) / nrstepstokeep;
 			// we create a temporary vector that stores all the data we are keeping
 			std::vector<Point> tmp{};
 			for (largecounter i = 0; i < m_AllSavedPoints.size(); ++i)
