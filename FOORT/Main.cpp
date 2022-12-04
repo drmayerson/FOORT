@@ -31,11 +31,12 @@
 
 #include <omp.h>                // Needed for parallel computations with OpenMP
 
+#include <iostream>             // needed to open and load configuration file, if working in CONFIGURATION_MODE; also cout/cerr
+
 //// CONFIGURATION_MODE is set in Config.h!
 #include "Config.h"             // Processing configuration file (with libconfig)
 
 #ifdef CONFIGURATION_MODE       // This is set in Config.h!
-#include <iostream>             // needed to open and load configuration file, if working in CONFIGURATION_MODE
 #include <libconfig.h++>         // Needed to load configuration file, if working in CONFIGURATION_MODE
 #endif
 

@@ -9,6 +9,8 @@
 
 #include "Geometry.h" // for tensors
 
+#include <cstdint> // for std::uint16_t
+#include <string> // for strings
 #include <memory> // for std::unique_ptr
 #include <vector> // for std::vector
 

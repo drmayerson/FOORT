@@ -10,7 +10,7 @@
 #include "Geometry.h" // for basic tensor objects
 
 #include <string_view> // std::string_view used in ScreenOutput()
-#include <iostream> // needed for file output
+#include <iostream> // needed for file and console output
 #include <fstream> // needed for file ouput
 #include <string> // std::string used in various places
 #include <vector> // needed to create vectors of strings

@@ -1,5 +1,7 @@
 #include "ViewScreen.h" // We are implementing ViewScreen member functions
 
+#include <algorithm> // for std::max
+
 /// <summary>
 /// ViewScreen functions
 /// </summary>

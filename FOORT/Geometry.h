@@ -9,7 +9,7 @@
 ////// (No .cpp with implementations; all functions are inline)
 ///////////////////////////////////////////////////////////////////////////////////////
 
-#include <limits.h> // for max macros
+#include <limits> // for std::numeric_limits
 #include <string> // needed for toString(...) to convert tensors to strings
 #include <array> // needed to define tensors as fixed-size arrays of real or pixelcoord
 

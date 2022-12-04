@@ -9,6 +9,7 @@
 
 #include "Geometry.h" // for basic tensor objects
 
+#include <cstdint> // for std::uint16_t
 #include <memory> // for std::unique_ptr
 #include <vector> // for std::vector
 

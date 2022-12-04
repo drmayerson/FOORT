@@ -2,6 +2,9 @@
 
 #include "Geodesic.h" // Needed for Source member functions
 
+#include <algorithm> // for std::min, std::max
+#include <cmath> // for std::abs
+
 // This is a GeodesicIntegratorFunc
 // Integrate the geodesic equation by one step using Runge-Kutta-4
 void Integrators::IntegrateGeodesicStep_RK4(Point curpos, OneIndex curvel,

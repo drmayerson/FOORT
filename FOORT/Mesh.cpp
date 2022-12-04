@@ -1,6 +1,8 @@
 #include"Mesh.h" // We are defining Mesh functions here
 
-#include <algorithm> // needed for std::find_if
+#include <algorithm> // needed for std::find_if, std::sort, std::max_element, std::min, etc
+#include <limits> // for std::numeric_limits
+#include <iostream> // for std::cin
 
 
 /// <summary>

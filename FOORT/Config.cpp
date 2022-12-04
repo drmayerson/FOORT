@@ -2,7 +2,9 @@
 
 #include "Utilities.h" // for Utilities::GetDiagNameStrings
 
-#include <algorithm> // for std::transform
+#include <algorithm> // for std::transform, std::max, std::min
+#include <cctype> // for std::to_lower
+#include <utility> // std::move
 
 
 // DECLARATION OF ALL static DiagnosticOptions (for all types of Diagnostics) needed here!

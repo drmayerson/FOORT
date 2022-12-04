@@ -14,6 +14,9 @@
 #include "Terminations.h" // Geodesics own Terminations
 #include "Integrators.h" // Geodesics use an GeodesicIntegratorFunc to integrate itself
 
+#include <string> // for strings
+#include <vector> // for std::vector
+
 ///////////////////////////////////////////////////////////
 //// DECLARATIONS OF SOURCE BASE CLASS AND DESCENDANTS ////
 

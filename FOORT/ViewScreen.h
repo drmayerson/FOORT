@@ -13,6 +13,11 @@
 #include "Metric.h" // For the Metric object
 #include "Mesh.h" // For the Mesh object
 
+#include <memory> // std::unique_ptr
+#include <utility> // std::move
+#include <array> // std::array
+#include <string> // strings
+
 
 // Type of geodesic being integrated. NOTE: only Null supported/implemented at the moment!
 enum class GeodesicType

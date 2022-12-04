@@ -12,6 +12,11 @@
 #include "InputOutput.h" // needed for ScreenOutput
 
 #include <cmath> // needed for sqrt (only on Linux)
+#include <utility> // std::move
+#include <memory> // std::unique_ptr
+#include <vector> // std::vector
+#include <array> // std::array
+#include <string> // for strings
 
 
 // Abstract Mesh base class

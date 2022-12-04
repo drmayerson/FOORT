@@ -28,8 +28,12 @@
 // The entire configuration namespace and its functions are only defined in CONFIGURATION MODE!
 #ifdef CONFIGURATION_MODE
 
+#include <memory> // std::unique_ptr
+#include <string> // std::string
+
 #include <exception> // needed to define our own configuration error
 #include <libconfig.h++> // needed for libconfig functionality
+
 
 // Namespace for all configuration functions that initialize objects based on configuration file
 namespace Config

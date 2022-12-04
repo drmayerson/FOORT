@@ -16,6 +16,8 @@
 #include "Integrators.h"
 
 #include <chrono> // for timer functionality
+#include <string> // for strings
+#include <vector> // for std::vector
 
 // Namespace that contains our utility functions
 namespace Utilities

@@ -3,6 +3,7 @@
 
 #include "Geometry.h" // Needed for basic tensor objects etc.
 
+#include <string> // for strings
 #include <vector> // needed for the (non-fixed size) vector of symmetries in the metric
 
 
