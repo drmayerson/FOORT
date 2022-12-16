@@ -117,6 +117,12 @@ KerrMetric::KerrMetric(real aParam, bool rLogScale)
 	{
 		ScreenOutput("Kerr is only defined in four dimensions!", OutputLevel::Level_0_WARNING);
 	}
+
+	// Check on parameters
+	if (m_aParam * m_aParam > 1.0)
+		ScreenOutput("Kerr metric a parameter given (" + std::to_string(m_aParam) + ") is not within the allowed range -1 < a < 1!",
+			OutputLevel::Level_0_WARNING);
+
 	// Kerr has a Killing vector along t and phi, so we initialize the symmetries accordingly
 	m_Symmetries = { 0,3 };
 }
@@ -229,5 +235,137 @@ std::string FlatSpaceMetric::getFullDescriptionStr() const
 }
 
 
+/// <summary>
+/// RasheedLarsenMetric functions
+/// </summary>
+
+// Constructor, must be passed the four RL parameters and whether we are using a logarithmic radial scale
+// We rescale all parameters by the mass to end up with a M = 1 BH
+RasheedLarsenMetric::RasheedLarsenMetric(real mParam, real aParam, real pParam, real qParam, bool rLogScale)
+	: m_aParam{ aParam / ((pParam + qParam) / 4.0) },
+	m_mParam{ mParam / ((pParam + qParam) / 4.0) },
+	m_pParam{ pParam / ((pParam + qParam) / 4.0) },
+	m_qParam{ qParam / ((pParam + qParam) / 4.0) },
+	// initialize base class with horizon radius and rLogScale
+	SphericalHorizonMetric( ( mParam + sqrt(mParam * mParam - aParam * aParam) ) / ((pParam + qParam) / 4.0), rLogScale)
+{
+	// Make sure we are in four spacetime dimensions
+	if constexpr (dimension != 4)
+	{
+		ScreenOutput("Rasheed-Larsen is only defined in four dimensions!", OutputLevel::Level_0_WARNING);
+	}
+
+	// Check to see if the parameter values are within the correct ranges
+	if (m_pParam - 2.0 * m_mParam < 0.0
+		|| m_qParam  - 2.0 * m_mParam  < 0.0
+		|| m_aParam*m_aParam > m_mParam*m_mParam
+		|| m_mParam < 0.0)
+	{
+		ScreenOutput("Rasheed-Larsen parameters outside of allowed range! Parameters given: m = " + std::to_string(m_mParam)
+			+ ", a = " + std::to_string(m_aParam) + ", p = " + std::to_string(m_pParam) + ", q = " + std::to_string(m_qParam) + ".",
+			OutputLevel::Level_0_WARNING);
+	}
+
+	// Rasheed-Larsen has a Killing vector along t and phi, so we initialize the symmetries accordingly
+	m_Symmetries = { 0,3 };
+}
+
+TwoIndex RasheedLarsenMetric::getMetric_dd(const Point& p) const
+{
+	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
+	real r = m_rLogScale ? exp(p[1]) : p[1];
+
+	real r2 = r * r;
+
+	real theta = p[2];
+	real sint = sin(theta);
+	real cost = cos(theta);
+	real sint2 = sint * sint;
+	real cost2 = cost * cost;
+
+	real delta = r2 + m_aParam * m_aParam - 2. * r * m_mParam;
+	real H3 = r2 - 2. *  r * m_mParam  +  m_aParam * m_aParam * cost2;
+	real Bp = sqrt(m_pParam * m_qParam) * m_aParam * sint2 * (((m_pParam * m_qParam + 4. * m_mParam * m_mParam) * r
+		- m_mParam * (m_pParam - 2. * m_mParam) * (m_qParam - 2. * m_mParam)) / (2. * m_mParam * (m_pParam + m_qParam) * H3));
+		
+	real H1 = r2 + m_aParam * m_aParam * cost2 + r * (m_pParam - 2. * m_mParam)
+		+ (m_pParam / (m_pParam + m_qParam)) * ((m_pParam - 2. * m_mParam) * (m_qParam - 2. * m_mParam) / 2.)
+		- (m_pParam / (2. * m_mParam * (m_pParam + m_qParam))) * sqrt((m_pParam * m_pParam - 4. * m_mParam * m_mParam)
+			* (m_qParam * m_qParam - 4. * m_mParam * m_mParam)) * m_aParam * cost;
+	real H2 = r2 + m_aParam * m_aParam * cost2 + r * (m_qParam - 2. * m_mParam)
+		+ (m_qParam / (m_pParam + m_qParam)) * ((m_pParam - 2. * m_mParam) * (m_qParam - 2. * m_mParam) / 2.)
+		+ (m_qParam / (2. * m_mParam * (m_pParam + m_qParam))) * sqrt((m_pParam * m_pParam - 4. * m_mParam * m_mParam)
+			* (m_qParam * m_qParam - 4. * m_mParam * m_mParam)) * m_aParam * cost;
+
+	real sqH1H2 = sqrt(H1 * H2);
+
+	// Covariant metric elements
+	real g00 = -H3 / sqH1H2;
+	real g11 = sqH1H2 / delta;
+	real g22 = sqH1H2;
+	real g33 = -(H3 * Bp * Bp) / sqH1H2 + (sqH1H2 * delta * sint2) / H3;
+	real g03 = -(H3 * Bp) / sqH1H2;
+
+	// If the log scale is set on, the true coordinate we are calculating the metric in is u = log(r), so dr = r du
+	if (m_rLogScale)
+	{
+		g11 *= (r * r);
+	}
+
+	return TwoIndex{ {{g00, 0,0, g03 }, {0,g11,0,0}, {0,0,g22,0},{g03,0,0,g33}} };
+}
+
+TwoIndex RasheedLarsenMetric::getMetric_uu(const Point& p) const
+{
+	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
+	real r = m_rLogScale ? exp(p[1]) : p[1];
+
+	real r2 = r * r;
+
+	real theta = p[2];
+	real sint = sin(theta);
+	real cost = cos(theta);
+	real sint2 = sint * sint;
+	real cost2 = cost * cost;
+
+	real delta = r2 + m_aParam * m_aParam - 2. * r * m_mParam;
+	real H3 = r2 - 2. * r * m_mParam + m_aParam * m_aParam * cost2;
+	real Bp = sqrt(m_pParam * m_qParam) * m_aParam * sint2 * (((m_pParam * m_qParam + 4. * m_mParam * m_mParam) * r
+		- m_mParam * (m_pParam - 2. * m_mParam) * (m_qParam - 2. * m_mParam)) / (2. * m_mParam * (m_pParam + m_qParam) * H3));
+
+	real H1 = r2 + m_aParam * m_aParam * cost2 + r * (m_pParam - 2. * m_mParam)
+		+ (m_pParam / (m_pParam + m_qParam)) * ((m_pParam - 2. * m_mParam) * (m_qParam - 2. * m_mParam) / 2.)
+		- (m_pParam / (2. * m_mParam * (m_pParam + m_qParam))) * sqrt((m_pParam * m_pParam - 4. * m_mParam * m_mParam)
+			* (m_qParam * m_qParam - 4. * m_mParam * m_mParam)) * m_aParam * cost;
+	real H2 = r2 + m_aParam * m_aParam * cost2 + r * (m_qParam - 2. * m_mParam)
+		+ (m_qParam / (m_pParam + m_qParam)) * ((m_pParam - 2. * m_mParam) * (m_qParam - 2. * m_mParam) / 2.)
+		+ (m_qParam / (2. * m_mParam * (m_pParam + m_qParam))) * sqrt((m_pParam * m_pParam - 4. * m_mParam * m_mParam)
+			* (m_qParam * m_qParam - 4. * m_mParam * m_mParam)) * m_aParam * cost;
+
+	real sqH1H2 = sqrt(H1 * H2);
+
+	// Contravariant metric elements
+	real g00 = ((H3 * H3 * Bp * Bp) / sint2 - H1 * H2 * delta) / (sqH1H2 * H3 * delta);
+	real g11 = delta / sqH1H2;
+	real g22 = 1. / sqH1H2;
+	real g33 = H3 / (sqH1H2 * delta * sint2);
+	real g03 = -(H3 * Bp) / (sqH1H2 * delta * sint2);
+
+	// If the log scale is set on, the true coordinate we are calculating the metric in is u = log(r), so , so dr = r du
+	if (m_rLogScale)
+	{
+		g11 *= 1.0 / (r * r);
+	}
+
+	return TwoIndex{ {{g00, 0,0, g03 }, {0,g11,0,0}, {0,0,g22,0},{g03,0,0,g33}} };
+}
+
+// Rasheed-Larsen description string; also gives a parameter value and whether we are using logarithmic radial coordinate
+std::string RasheedLarsenMetric::getFullDescriptionStr() const
+{
+	return "Rasheed-Larsen (m = " + std::to_string(m_mParam) + ", a = " + std::to_string(m_aParam) 
+		+ ", p = " + std::to_string(m_pParam) + ", q = " + std::to_string(m_qParam) + ", "
+		+ (m_rLogScale ? "using logarithmic r coord" : "using normal r coord") + ")";
+}
 
 //// (New Metric classes can define their member functions here)

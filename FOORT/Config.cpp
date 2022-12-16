@@ -9,7 +9,7 @@
 
 // DECLARATION OF ALL static DiagnosticOptions (for all types of Diagnostics) needed here!
 std::unique_ptr<GeodesicPositionOptions> GeodesicPositionDiagnostic::DiagOptions;
-std::unique_ptr<DiagnosticOptions> EquatorialPassesDiagnostic::DiagOptions;
+std::unique_ptr<EquatorialPassesOptions> EquatorialPassesDiagnostic::DiagOptions;
 
 //// DIAGNOSTIC ADD POINT D.1 ////
 // Declare your Diagnostic's static DiagnosticOptions struct here!
@@ -170,6 +170,44 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 			// (4D) flat space in spherical coordinates; no options necessary
 			// Create Metric object!
 			TheMetric = std::unique_ptr<Metric>(new FlatSpaceMetric{});
+		}
+		else if (MetricName == "rasheedlarsen" || MetricName == "rasheed-larsen")
+		{
+			// The Rasheed-Larsen black hole
+			
+			// Look up four parameters of BH
+			double RLm{ 1.0 };
+			double RLa{ 0.5 };
+			double RLp{ 2.0 };
+			double RLq{ 2.0 };
+			if (!MetricSettings.lookupValue("m", RLm))
+			{
+				ScreenOutput("Rasheed-Larsen: no value for m given. Using default: " + std::to_string(RLm) + ".",
+					Output_Other_Default);
+			}
+			if (!MetricSettings.lookupValue("a", RLa))
+			{
+				ScreenOutput("Rasheed-Larsen: no value for a given. Using default: " + std::to_string(RLa) + ".",
+					Output_Other_Default);
+			}
+			if (!MetricSettings.lookupValue("p", RLp))
+			{
+				ScreenOutput("Rasheed-Larsen: no value for p given. Using default: " + std::to_string(RLp) + ".",
+					Output_Other_Default);
+			}
+			if (!MetricSettings.lookupValue("q", RLq))
+			{
+				ScreenOutput("Rasheed-Larsen: no value for q given. Using default: " + std::to_string(RLq) + ".",
+					Output_Other_Default);
+			}
+
+			// Second setting to look up: using a logarithmic r coordinate or not.
+			// Don't need to output message if setting not found
+			bool rLogScale{ false };
+			MetricSettings.lookupValue("RLogScale", rLogScale);
+
+			// All settings complete; create Metric object!
+			TheMetric = std::unique_ptr<Metric>(new RasheedLarsenMetric(RLm, RLa, RLp, RLq, rLogScale ) );
 		}
 		//// METRIC ADD POINT B ////
 		// Add an else if clause to check for your new Metric object!
@@ -367,9 +405,13 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 				AllDiagSettings["EquatorialPasses"].lookupValue("UpdateFinish", updatefinish);
 			}
 
+			real threshold{ 0.01 };
+			AllDiagSettings["EquatorialPasses"].lookupValue("Threshold", threshold);
+
+
 			EquatorialPassesDiagnostic::DiagOptions =
-				std::unique_ptr<DiagnosticOptions>(new DiagnosticOptions{ UpdateFrequency{updatensteps,
-					updatestart,updatefinish} });
+				std::unique_ptr<EquatorialPassesOptions>(new EquatorialPassesOptions( threshold, UpdateFrequency{updatensteps,
+					updatestart,updatefinish} ));
 
 			bool isVal{ false };
 			if (valdiag == Diag_None && AllDiagSettings["EquatorialPasses"].lookupValue("UseForMesh", isVal) && isVal)

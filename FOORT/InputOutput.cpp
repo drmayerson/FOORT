@@ -1,6 +1,7 @@
 #include "InputOutput.h" // We are defining functions from here
 
 #include <algorithm> // needed for std::min etc
+#include <filesystem> // needed for std::filesystem::create_directories
 
 
 /// <summary>
@@ -251,9 +252,21 @@ std::string GeodesicOutputHandler::GetFileName(int diagnr, unsigned short filenr
 
 void GeodesicOutputHandler::OpenForFirstTime(std::string filename)
 {
+	// We check here to see if the files are being put in a (sub)directory;
+	// if so, we create the directory/directories first to make sure creating/opening the file
+	// will succeed.
+	auto pos = filename.find_last_of("/");
+	if (pos != std::string::npos) // there is at least one slash, so files are in a (sub)directory
+	{
+		// This creates all necessary directories in this structure
+		// If the directory already exists, it does nothing
+		std::filesystem::create_directories(filename.substr(0, pos));
+	}
+
 	// Open the file, effectively overwriting the file
 	std::ofstream outf{ filename, std::ios::out | std::ios::trunc };
-	if (!outf) // Trigger writing to console if something went wrong opening the file
+
+	if (!outf) // Trigger writing to console if failed to open file
 	{
 		ScreenOutput("Output file error! Could not open " + filename
 			+ ". Will write rest of output to console.", OutputLevel::Level_0_WARNING);

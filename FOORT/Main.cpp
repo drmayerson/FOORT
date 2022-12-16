@@ -58,9 +58,9 @@ void LoadPrecompiledOptions(std::unique_ptr<Metric> &theM, std::unique_ptr<Sourc
 
     ///// Metric ////
     // Syntax: KerrMetric (real a, bool rLogScale)
+    // Syntax: RasheedLarsenMetric (real m, real a, real p, real q, bool rLogScale)
     // Syntax: FlatSpaceMetric()
     theM = std::unique_ptr<Metric>(new KerrMetric( 0.5, false ));
-
 
     //// Source ////
     // Syntax: NoSource(const Metric *)
@@ -76,12 +76,13 @@ void LoadPrecompiledOptions(std::unique_ptr<Metric> &theM, std::unique_ptr<Sourc
     //// Diagnostic options (static member structs) ////
     // Syntax: UpdateFrequency{ largecounter updateEveryNSteps, bool UpdateOnStart, bool UpdateOnEnd }
     // Syntax: GeodesicPositionOptions(largecounter outputsteps, UpdateFrequency)
+    // Syntax: EquatorialPassesOptions(real thethreshold, UpdateFrequency)
     // Syntax DiagnosticOptions(UpdateFrequency)
     // Note: FourColorScreen does not have any options
     GeodesicPositionDiagnostic::DiagOptions =
         std::unique_ptr<GeodesicPositionOptions>(new GeodesicPositionOptions{ 5000, UpdateFrequency{1,false,false} });
     EquatorialPassesDiagnostic::DiagOptions =
-        std::unique_ptr<DiagnosticOptions>(new DiagnosticOptions{ UpdateFrequency{1,false,false} });
+        std::unique_ptr<EquatorialPassesOptions>(new EquatorialPassesOptions{0.01, UpdateFrequency{1,false,false} });
 
 
     //// Terminations ////

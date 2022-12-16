@@ -84,6 +84,7 @@ private:
 
 public:
 	// No default constructor allowed, must specify a
+	KerrMetric() = delete;
 
 	// Constructor setting parameter a
 	KerrMetric(real aParam, bool rLogScale=false);
@@ -112,7 +113,28 @@ public:
 	std::string getFullDescriptionStr() const final;
 };
 
+class RasheedLarsenMetric final : public SphericalHorizonMetric
+{
+private:
+	// Rasheed-Larsen is specified by four parameters
+	const real m_aParam;
+	const real m_mParam;
+	const real m_pParam;
+	const real m_qParam;
+public:
+	// No default constructor allowed, must specify parameters
+	RasheedLarsenMetric() = delete;
 
+	// Constructor setting parameter a
+	RasheedLarsenMetric(real mParam, real aParam, real pParam, real qParam, bool rLogScale = false);
+
+	// The override of the basic metric getter functions
+	TwoIndex getMetric_dd(const Point& p) const final;
+	TwoIndex getMetric_uu(const Point& p) const final;
+
+	// The override of the description string getter
+	std::string getFullDescriptionStr() const final;
+};
 
 //// METRIC ADD POINT A ////
 // Declare your new Metric class here, publically inheriting from the base class Metric

@@ -3,6 +3,12 @@ TODO and wishlist:
 
 *** TOP PRIORITY:
 
+--- RL higher res look ok?
+--- push to development
+--- Ubuntu test directory creation
+--- merge with master
+--- RL M1 vs S2?
+
 --- ?? Mesh: more efficient making new subdividing (don't go through every pixel again!?), also neighbors?
 
 --------------------------------
@@ -10,9 +16,6 @@ TODO and wishlist:
 *** PRIORITY:
 
 --- ViewScreen procedures: flat to locally flat; stationary/axisymmetric implementation
-
---- specific Mesh for rings?
---- Mesh intermediate saving/loading functions?
 
 --------------------------------
 
@@ -22,11 +25,7 @@ TODO and wishlist:
 
 --- SpherePositionDiagnostic and starry sky picture
 
---- Commenting (especially Mesh/View + Integrator + Geodesic + GeodesicOutputHandler)
-
---- document “add” procedures
-
---- revisit all variables (bool? long? unsigned? etc)
+--- other “add” procedures (Mesh, Source)
 
 --- (unit) testing
 
@@ -34,8 +33,9 @@ TODO and wishlist:
 
 *** WISHLIST:
 
---- >4D metric but 4D asymptotics (so still 2D viewscreen) -- like Pierre's solitons!
+--- specific Mesh for rings?
+--- Mesh intermediate saving/loading functions?
 
----- Fast "compiled" version?
+--- >4D metric but 4D asymptotics (so still 2D viewscreen) -- like Pierre's solitons!
 
 --- Code own config handler?

@@ -185,7 +185,7 @@ private:
 
 
 // Forward declaration needed before Diagnostic
-struct DiagnosticOptions;
+struct EquatorialPassesOptions;
 // Diagnostic for counting number of passes through equatorial plane
 class EquatorialPassesDiagnostic final : public Diagnostic
 {
@@ -207,8 +207,8 @@ public:
 	std::string getNameStr() const final;
 	std::string getFullDescriptionStr() const final;
 
-	// Only needs the basic UpdateFrequency options
-	static std::unique_ptr<DiagnosticOptions> DiagOptions;
+	// Needs the extra option of a threshold
+	static std::unique_ptr<EquatorialPassesOptions> DiagOptions;
 
 private:
 	// Keeps track of how many passes have been made
@@ -289,6 +289,16 @@ public:
 	{}
 
 	const largecounter OutputNrSteps;
+};
+
+struct EquatorialPassesOptions : public DiagnosticOptions
+{
+public:
+	EquatorialPassesOptions(real thethreshold, UpdateFrequency thefrequency) : Threshold{ thethreshold },
+		DiagnosticOptions(thefrequency)
+	{}
+
+	const real Threshold;
 };
 
 //// DIAGNOSTIC ADD POINT A2 (optional) ////

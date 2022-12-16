@@ -312,14 +312,19 @@ void EquatorialPassesDiagnostic::UpdateData()
 		// Get the current theta coordinate of the geodesic
 		real curTheta{ m_OwnerGeodesic->getCurrentPos()[2] };
 
-		// This checks to see if we have crossed the equatorial plane by comparing the previous theta coordinate
-		// with the current theta coordinate
-		// (Note that m_PrevTheta = -1 at initialization)
-		if (m_PrevTheta > 0 && ((m_PrevTheta - pi / 2.0) * (curTheta - pi / 2.0)) < 0.0)
-			++m_EquatPasses;
-		
-		// The current theta coordinate becomes the previous coordinate for the next iteration
-		m_PrevTheta = curTheta;
+		// We only do anything (check for a pass and/or update the past theta) if the geodesic has
+		// passed over a threshold around the equatorial plane
+		if ( abs(curTheta - pi / 2.0) > pi / 2.0 * DiagOptions->Threshold )
+		{
+			// This checks to see if we have crossed the equatorial plane by comparing the previous theta coordinate
+			// with the current theta coordinate
+			// (Note that m_PrevTheta = -1 at initialization)
+			if (m_PrevTheta > 0 && ((m_PrevTheta - pi / 2.0) * (curTheta - pi / 2.0)) < 0.0)
+				++m_EquatPasses;
+
+			// The current theta coordinate becomes the previous coordinate for the next iteration
+			m_PrevTheta = curTheta;
+		}
 	}
 
 	// If the geodesic is finished integrating and we finish inside the horizon, make the passes negative
@@ -359,8 +364,8 @@ std::string EquatorialPassesDiagnostic::getNameStr() const
 
 std::string EquatorialPassesDiagnostic::getFullDescriptionStr() const
 {
-	// More descriptive string (with spaces) is also just the name
-	return "Equatorial passes";
+	// More descriptive string (with spaces)
+	return "Equatorial passes (threshold = " + std::to_string(DiagOptions->Threshold) + ")";
 }
 
 
