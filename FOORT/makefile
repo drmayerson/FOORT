@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -std=c++17 -fopenmp -Ofast -Wno-unused-result
-LDFLAGS = -lm -lstdc++ -L$(LD_LIBRARY_PATH) -lconfig++
+LDFLAGS = -lm -lstdc++ -lconfig++
 
 
 

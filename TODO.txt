@@ -3,13 +3,7 @@ TODO and wishlist:
 
 *** TOP PRIORITY:
 
---- RL higher res look ok?
---- push to development
---- Ubuntu test directory creation
---- merge with master
---- RL M1 vs S2?
-
---- ?? Mesh: more efficient making new subdividing (don't go through every pixel again!?), also neighbors?
+--- Mesh: more efficient making new subdividing (don't go through every pixel again!?), also neighbors?
 
 --------------------------------
 
@@ -25,9 +19,28 @@ TODO and wishlist:
 
 --- SpherePositionDiagnostic and starry sky picture
 
---- other “add” procedures (Mesh, Source)
+--- document other “add” procedures (for Mesh, Source)
 
 --- (unit) testing
+
+--------------------------------
+
+*** ISSUES:
+
+****** Metric.h & Metric.cpp
+--- make checks that always returning good numbers (not nan)??
+
+****** Diagnostics.h & Diagnostics.cpp
+--- GeodesicPositionDiagnostic::FinalDataValDistance() not implemented correctly yet
+
+****** Utilities.h & Utilities.cpp
+--- Utilities::GetFirstLineInfoString should also return information about Integrators, possibly also Diagnostics?
+
+****** Mesh.h & Mesh.cpp
+--- SquareSubdivisionMesh::PixelInfo::Index is not const but should be. However, if const, then operations between m_CurrentPixelQueue and m_AllPixels need to implement move instead of copy operations! (Unknown if this will introduce more or less overhead?!)
+
+****** ViewScreen.h & ViewScreen.cpp
+--- support for other types of geodesics; correct/general initialization
 
 --------------------------------
 
@@ -35,6 +48,8 @@ TODO and wishlist:
 
 --- specific Mesh for rings?
 --- Mesh intermediate saving/loading functions?
+
+--- implementing arbitrary precision, see https://www.boost.org/doc/libs/1_80_0/libs/math/doc/html/math_toolkit/high_precision/use_multiprecision.html 
 
 --- >4D metric but 4D asymptotics (so still 2D viewscreen) -- like Pierre's solitons!
 
