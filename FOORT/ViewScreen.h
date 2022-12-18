@@ -70,7 +70,7 @@ public:
 	// Heart of the ViewScreen: here, the ViewScreen is asked to provide initial conditions
 	// for the geodesic nr index of the current iteration; based on the screen index
 	// that the Mesh gives, it sets up these physical initial conditions.
-	void SetNewInitialConditions(largecounter index, Point& pos, OneIndex& vel, ScreenIndex& scrIndex);
+	void SetNewInitialConditions(largecounter index, Point& pos, OneIndex& vel, ScreenIndex& scrIndex) const;
 
 	// These member functions essentially pass on information to/from the Mesh
 	bool IsFinished() const; // Does the ViewScreen (i.e. the Mesh) want to integrate more geodesics or not?

@@ -11,6 +11,8 @@ TODO and wishlist:
 
 --- ViewScreen procedures: flat to locally flat; stationary/axisymmetric implementation
 
+--- makefile flag -lstdc++fs vs -lstdc++ (always ok to use fs? needed for cluster)
+
 --------------------------------
 
 *** ALSO TODO:

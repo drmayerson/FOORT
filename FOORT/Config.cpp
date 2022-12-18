@@ -787,6 +787,30 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigObject& theCfg, DiagBitflag va
 				initialpixels, maxsubdivide,
 				iterationpixels, initialsubtofinal, valdiag));
 		}
+		else if (meshname == "SquareSubdivisionMeshV2")
+		{
+			largecounter initialpixels{ 100 };
+			largecounter maxpixels{ 100 };
+			largecounter iterationpixels{ 100 };
+			int maxsubdivide{ 1 };
+			bool initialsubtofinal{ false };
+			lookupValuelargecounter(MeshSettings, "InitialPixels", initialpixels);
+			lookupValuelargecounter(MeshSettings, "MaxPixels", maxpixels);
+			lookupValuelargecounter(MeshSettings, "IterationPixels", iterationpixels);
+			MeshSettings.lookupValue("MaxSubdivide", maxsubdivide);
+			if (maxpixels < initialpixels)
+				maxpixels = initialpixels;
+			if (maxsubdivide < 1) // 1 is the minimum level (initial grid is level 1)
+			{
+				ScreenOutput("Invalid MaxSubdivide level given. Using MaxSubdivide = 1.", Output_Other_Default);
+				maxsubdivide = 1;
+			}
+			MeshSettings.lookupValue("InitialSubdivisionToFinal", initialsubtofinal);
+
+			theMesh = std::unique_ptr<Mesh>(new SquareSubdivisionMeshV2(maxpixels,
+				initialpixels, maxsubdivide,
+				iterationpixels, initialsubtofinal, valdiag));
+		}
 		// else if ... (test for other Meshs here)
 		else
 		{

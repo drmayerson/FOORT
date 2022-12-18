@@ -13,6 +13,7 @@
 
 #include <cmath> // needed for sqrt (only on Linux)
 #include <utility> // std::move
+#include <forward_list> // std::forward_list
 #include <memory> // std::unique_ptr
 #include <vector> // std::vector
 #include <array> // std::array
@@ -38,7 +39,7 @@ public:
 
 	// This sets a new initial conditions (in the form of a ScreenPoint and ScreenIndex)
 	// for a next pixel to be integrated in the current iteration
-	virtual void getNewInitConds(largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) = 0;
+	virtual void getNewInitConds(largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) const = 0;
 
 	// When a geodesic is finished integrating, it tells the Mesh and passes on its final "value"
 	virtual void GeodesicFinished(largecounter index, std::vector<real> finalValues) = 0;
@@ -83,7 +84,7 @@ public:
 
 	largecounter getCurNrGeodesics() const final;
 
-	void getNewInitConds(largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) final;
+	void getNewInitConds(largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) const final;
 	
 	void GeodesicFinished(largecounter index, std::vector<real> finalValues) final;
 
@@ -99,8 +100,8 @@ private:
 	const largecounter m_TotalPixels;
 	// Amount of pixels per row or column (square grid)
 	const pixelcoord m_RowColumnSize;
-	// The next pixel to send for integration
-	largecounter m_CurrentPixel{ 0 };
+	// Are we done integrating or not?
+	bool m_Finished{ false };
 };
 
 
@@ -119,7 +120,7 @@ public:
 
 	largecounter getCurNrGeodesics() const final;
 
-	void getNewInitConds(largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) final;
+	void getNewInitConds(largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) const final;
 
 	void GeodesicFinished(largecounter index, std::vector<real> finalValues) final;
 
@@ -138,8 +139,8 @@ private:
 	largecounter m_TotalPixels{0};
 	// All pixels' location
 	std::vector<ScreenIndex> m_PixelsToIntegrate{};
-	// Next pixel to integrate
-	largecounter m_CurrentPixel{ 0 };
+	// Are we finished integrating?
+	bool m_Finished{ false };
 };
 
 
@@ -189,7 +190,7 @@ public:
 
 	largecounter getCurNrGeodesics() const final;
 
-	void getNewInitConds(largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) final;
+	void getNewInitConds(largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) const final;
 
 	void GeodesicFinished(largecounter index, std::vector<real> finalValues) final;
 
@@ -238,7 +239,7 @@ private:
 		// between its values and those of its right, lower, and right-lower neighbors.
 		real Weight{-1};
 		
-		// The values associated to this pixel (as calculated by the value Diagnosti)
+		// The values associated to this pixel (as calculated by the value Diagnostic)
 		std::vector<real> DiagValue{};
 
 		// Where its lower and right neighbors are located in m_AllPixels
@@ -262,6 +263,158 @@ private:
 	// Updates all weights of the pixels in m_AllPixels with weight < 0 and subdiv > 0 and subdiv < m_MaxSubdivide
 	// Assumes all squares have neighbors assigned correctly
 	void UpdateAllWeights();
+
+	// This will take the pixel m_AllPixels[ind] and subdivide it,
+	// adding up to <=5 pixels to the CurrentPixelQueue
+	void SubdivideAndQueue(largecounter ind);
+
+	// Helper function to exponentiate an int to an int
+	// Note: the result can be larger than fits in an int, but the base is always 2 and the exp is always
+	// a number <=m_MaxSubdivide (which is an int)
+	pixelcoord ExpInt(int base, int exp);
+};
+
+
+// Adaptive subdivision Mesh: starts with evenly spaced, square Mesh,
+// then decides to subdivide certain squares of pixels into smaller squares, 
+// based on which pixels have a bigger "weight", which is defined as the maximum
+// "distance" (using the Diagnostic value distance) between the upper-left
+// vertex of the square with the other three vertices of the square.
+// V2: new way of dealing with neighbors and looping over pixels
+class SquareSubdivisionMeshV2 : public Mesh
+{
+public:
+	// default constructor not possible
+	SquareSubdivisionMeshV2() = delete;
+	// Constructor must be called with arguments:
+	// - maxPixels: max. nr of pixels that can be integrated in TOTAL, over all iterations (if 0, then this is infinite,
+	// i.e. we keep integrating until all squares are maximally subdivided or have weight 0)
+	// - initialPixels: initial number of pixels to integrate (spaced equally over the screen)
+	// - maxSubdivide: maximum number of times that we can subdivide squares (note: 1 denotes the
+	// initial grid, so 2 would be subdividing the squares once)
+	// - iterationPixels: maximum number of pixels to subdivide in each integration iteration
+	// (max number of pixels that will be integrates is then 5*iterationPixels)
+	// - initialSubToFinal: once we decide to subdivide a square, do we automatically keep subdividing it
+	// until we reach maxSubdivision?
+	// - valdiag: the "value" and "distance" Diagnostic to use
+	SquareSubdivisionMeshV2(largecounter maxPixels, largecounter initialPixels, int maxSubdivide, largecounter iterationPixels, bool initialSubToFinal,
+		DiagBitflag valdiag)
+		: m_InitialPixels{ static_cast<pixelcoord>(sqrt(initialPixels))
+			* static_cast<pixelcoord>(sqrt(initialPixels)) },
+		m_MaxSubdivide{ maxSubdivide },
+		m_RowColumnSize{ static_cast<pixelcoord>((sqrt(initialPixels) - 1) * ExpInt(2,maxSubdivide - 1) + 1) },
+		m_PixelsLeft{ maxPixels }, m_MaxPixels{ maxPixels }, m_InfinitePixels{ maxPixels == 0 }, m_IterationPixels{ iterationPixels },
+		m_InitialSubDividideToFinal{ initialSubToFinal }, Mesh(valdiag)
+	{
+		if constexpr (dimension != 4)
+			ScreenOutput("SquareSubdivisionMeshV2 only defined in 4D!", OutputLevel::Level_0_WARNING);
+
+		// DEBUG message for constructor (can delete)
+		ScreenOutput("SquareSubdivisionMeshV2 constructed: maxPixels: " + (m_InfinitePixels ? "infinite" : std::to_string(maxPixels))
+			+ "; m_InitialPixels: "
+			+ std::to_string(m_InitialPixels) + "; m_RowColumnSize: " + std::to_string(m_RowColumnSize), OutputLevel::Level_4_DEBUG);
+
+		// Initialize the initial square, equally spaced grid
+		InitializeFirstGrid();
+	}
+
+	// Declarations of overriding virtual functions
+
+	largecounter getCurNrGeodesics() const final;
+
+	void getNewInitConds(largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) const final;
+
+	void GeodesicFinished(largecounter index, std::vector<real> finalValues) final;
+
+	void EndCurrentLoop() final;
+
+	bool IsFinished() const final;
+
+	// Description string getter
+	std::string getFullDescriptionStr() const final;
+
+private:
+	// How many initial pixels (spread uniformly over the grid) do we integrate?
+	const largecounter m_InitialPixels;
+	// How many times are we allowed  to subdivide a square? Note: the initial grid is already at 1
+	const int m_MaxSubdivide;
+	// The total size in pixels of a row or column (square grid)
+	const pixelcoord m_RowColumnSize;
+	// How many pixels per iteration can we subdivide?
+	const largecounter m_IterationPixels;
+	// How many pixels can we integrate in total over all iterations?
+	const largecounter m_MaxPixels;
+	// If we decide to subdivide a square, do we automatically subdivide it further to the max level?
+	const bool m_InitialSubDividideToFinal;
+	// Are we allowed to integrate as many pixels as we want? (m_MaxPixels == 0)
+	const bool m_InfinitePixels;
+
+	// How many pixels are we still allowed to integrate (if !m_InfinitePixels)?
+	largecounter m_PixelsLeft;
+
+	// How many pixels we have integrated so far
+	largecounter m_PixelsIntegrated{ 0 };
+
+	// A struct the Mesh uses to keep all information about a given pixel
+	struct PixelInfo
+	{
+		// Constructor with its ScreenIndex and current subdivision level
+		PixelInfo(ScreenIndex ind, int subdiv) : Index{ ind }, SubdivideLevel{ subdiv } {}
+
+		// The pixel's screenindex
+		ScreenIndex Index{};
+
+		// The level at which the pixel has been subdivided
+		// Note: initial grid pixels are at 1; pixels at 0 are pixels that cannot be subdivided
+		// (for example, at the right or lower edges)
+		int SubdivideLevel{};
+
+		// Weight of the pixel: if negative, this signifies that it needs to be updated/calculated!
+		// The weight is determined as the max of the distance (as calculated by the value Diagnostic)
+		// between its values and those of its right, lower, and right-lower neighbors.
+		real Weight{ -1 };
+
+		// The values associated to this pixel (as calculated by the value Diagnostic)
+		std::vector<real> DiagValue{};
+
+		// Pointers to its neighbors
+		PixelInfo* LeftNbr{ nullptr };
+		PixelInfo* RightNbr{ nullptr };
+		PixelInfo* UpNbr{ nullptr };
+		PixelInfo* DownNbr{ nullptr };
+		PixelInfo* SEdiagNbr{ nullptr };
+	};
+
+	// Master list of all pixels
+	// std::forward_list is more space-efficient than std::list, bidirectional iteration is not needed, no random access supported
+	// This list is only used to store the owner pointers (and thus the objects) of all pixels.
+	// The other pixel vectors are used to iterate through (and need random access)
+	std::forward_list<std::unique_ptr<PixelInfo>> m_AllPixels{};
+
+	// List of active pixels, i.e. those that can be subdivided and have non-zero weight
+	std::vector<PixelInfo*> m_ActivePixels{};
+	// List of current queue of pixels to be sent to be integrated
+	std::vector<PixelInfo*> m_CurrentPixelQueue{};
+	// A bool for every pixel in the current queue: gets set to true when the pixel is done integrating and gets its values returned
+	std::vector<bool> m_CurrentPixelQueueDone{};
+	// List of pixels that are already integrated but need updating weights after current queue is all integrated
+	std::vector<PixelInfo*> m_CurrentPixelUpdating{};
+
+	// Initializes the first nxn screen and puts them in m_CurrentPixelQueue
+	void InitializeFirstGrid();
+
+	// Updates all weights of the pixels in m_CurrentPixelUpdating;
+	// these should have subdiv > 0 and subdiv < m_MaxSubdivide, and all their neigbors assigned correctly
+	// All pixels with weight > 0 will be added to m_ActivePixels
+	void UpdateAllWeights();
+
+	// Helper functions that return the appropriate neighbor of p, ONLY if this neighbor exists at the subdivision level specified
+	// Returns nullptr otherwise; also return nullptr if p==nullptr
+	PixelInfo* GetUp(PixelInfo* p, int subdiv);
+	PixelInfo* GetDown(PixelInfo* p, int subdiv);
+	PixelInfo* GetRight(PixelInfo* p, int subdiv);
+	PixelInfo* GetLeft(PixelInfo* p, int subdiv);
+
 
 	// This will take the pixel m_AllPixels[ind] and subdivide it,
 	// adding up to <=5 pixels to the CurrentPixelQueue

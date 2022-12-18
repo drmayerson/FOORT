@@ -1,5 +1,7 @@
 #include"Mesh.h" // We are defining Mesh functions here
 
+#include "Utilities.h" // we use the Timer in SquareSubdivisionMeshV2
+
 #include <algorithm> // needed for std::find_if, std::sort, std::max_element, std::min, etc
 #include <limits> // for std::numeric_limits
 #include <iostream> // for std::cin
@@ -23,16 +25,13 @@ std::string Mesh::getFullDescriptionStr() const
 bool SimpleSquareMesh::IsFinished() const
 {
 	// We are done if we have sent all pixels to be integrated (there is only one iteration of pixels)
-	if (m_CurrentPixel == m_TotalPixels)
-		return true;
-	else
-		return false;
+	return m_Finished;
 }
 
-void SimpleSquareMesh::getNewInitConds([[maybe_unused]] largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex)
+void SimpleSquareMesh::getNewInitConds(largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) const
 {
 	// We should not be getting new initial conditions if all pixels are done already!
-	if (m_CurrentPixel >= m_TotalPixels)
+	if (index >= m_TotalPixels)
 	{
 		ScreenOutput("Trying to initialize a pixel after all pixels are done!", OutputLevel::Level_0_WARNING);
 	}
@@ -40,13 +39,10 @@ void SimpleSquareMesh::getNewInitConds([[maybe_unused]] largecounter index, Scre
 	// get (row, column) where each is between 0 and m_RowColumnSize-1 (m_RowColumnSize^2 = m_TotalPixels)
 	// Note: m_CurrentPixel runs between 0 and m_TotalPixels-1
 	pixelcoord row{ 0 };
-	while ((row+1) * m_RowColumnSize <= m_CurrentPixel)
+	while ((row+1) * m_RowColumnSize <= index)
 		++row;
 
-	pixelcoord column =  m_CurrentPixel - row * m_RowColumnSize ;
-
-	// Make sure to go to next pixel
-	++m_CurrentPixel;
+	pixelcoord column =  index - row * m_RowColumnSize ;
 
 	// Return a 2D ScreenPoint (x,y) with both coordinates between 0 and 1, where 0 and 1 represent the edges of the viewscreen
 	newscreenindex = ScreenIndex{ row,column };
@@ -55,11 +51,8 @@ void SimpleSquareMesh::getNewInitConds([[maybe_unused]] largecounter index, Scre
 
 void SimpleSquareMesh::EndCurrentLoop()
 {
-	// This Mesh does not need to do anything at the end of the loop. However, all pixels should have been initialized at the end!
-	if (m_CurrentPixel < m_TotalPixels)
-	{
-		ScreenOutput("Not all pixels have been initialized!", OutputLevel::Level_0_WARNING);
-	}
+	// We are now done integrating
+	m_Finished = true;
 }
 
 largecounter SimpleSquareMesh::getCurNrGeodesics() const
@@ -155,9 +148,8 @@ largecounter InputCertainPixelsMesh::getCurNrGeodesics() const
 
 void InputCertainPixelsMesh::EndCurrentLoop()
 {
-	// This Mesh does not need to do anything at the end of the loop. However, all pixels should have been initialized at the end!
-	 if (m_CurrentPixel != m_TotalPixels )
-		ScreenOutput("Not all pixels have been initialized!", OutputLevel::Level_0_WARNING);
+	// This Mesh only has one loop; we are now finished integrating
+	m_Finished = true;
 }
 
 void InputCertainPixelsMesh::GeodesicFinished([[maybe_unused]] largecounter index, [[maybe_unused]] std::vector<real> finalValues)
@@ -167,24 +159,18 @@ void InputCertainPixelsMesh::GeodesicFinished([[maybe_unused]] largecounter inde
 
 bool InputCertainPixelsMesh::IsFinished() const
 {
-	// The Mesh is finished when it has sent all pixels to integrate (only one iteration/loop of pixels in this Mesh)
-	if (m_CurrentPixel == m_TotalPixels)
-		return true;
-	else
-		return false;
+	// The Mesh is finished after one loop
+	return m_Finished;
 }
 
-void InputCertainPixelsMesh::getNewInitConds([[maybe_unused]] largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex)
+void InputCertainPixelsMesh::getNewInitConds(largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) const
 {
 	// We should not be getting new initial conditions if all pixels are done already!
-	if (m_CurrentPixel >= m_TotalPixels)
+	if (index >= m_TotalPixels)
 		ScreenOutput("Trying to initialize pixel but all pixels are done already!", OutputLevel::Level_0_WARNING);
 
 	// The next pixel in line
-	newscreenindex = m_PixelsToIntegrate[m_CurrentPixel];
-
-	// Make sure to go to next pixel
-	++m_CurrentPixel;
+	newscreenindex = m_PixelsToIntegrate[index];
 
 	// Return a 2D ScreenPoint (x,y) with both coordinates between 0 and 1, where 0 and 1 represent the edges of the viewscreen
 	newunitpoint = ScreenPoint{ newscreenindex[0] * 1.0 / static_cast<real>(m_RowColumnSize - 1), 
@@ -209,7 +195,7 @@ largecounter SquareSubdivisionMesh::getCurNrGeodesics() const
 	return static_cast<largecounter>(m_CurrentPixelQueue.size());
 }
 
-void SquareSubdivisionMesh::getNewInitConds(largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex)
+void SquareSubdivisionMesh::getNewInitConds(largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) const
 {
 	// Returning the geodesic with the appropriate index in the current queue
 	newscreenindex = m_CurrentPixelQueue[index].Index;
@@ -655,6 +641,534 @@ void SquareSubdivisionMesh::EndCurrentLoop()
 	}
 	
 	ScreenOutput("Done calculating next iteration of pixels.", OutputLevel::Level_2_SUBPROC);
+	// Our queue is ready for integration now!
+	// if no pixels are left to integrate, the queue will have remained empty (and IsFinished() will now return true)
+	// (the same is true if we have not actually managed to "create" any new pixels in the subdivision process)
+}
+
+
+/// <summary>
+/// SquareSubdivisionMeshV2 functions
+/// </summary>
+
+
+largecounter SquareSubdivisionMeshV2::getCurNrGeodesics() const
+{
+	// The number of geodesics in the current integration iteration
+	return static_cast<largecounter>(m_CurrentPixelQueue.size());
+}
+
+void SquareSubdivisionMeshV2::getNewInitConds(largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) const
+{
+	// Returning the geodesic with the appropriate index in the current queue
+	newscreenindex = m_CurrentPixelQueue[index]->Index;
+	// Return a 2D ScreenPoint (x,y) with both coordinates between 0 and 1, where 0 and 1 represent the edges of the viewscreen
+	newunitpoint = ScreenPoint{ newscreenindex[0] * 1.0 / static_cast<real>(m_RowColumnSize - 1),
+		newscreenindex[1] * 1.0 / static_cast<real>(m_RowColumnSize - 1) };
+}
+
+void SquareSubdivisionMeshV2::GeodesicFinished(largecounter index, std::vector<real> finalValues)
+{
+	// Set this pixel's values to the returned values
+	m_CurrentPixelQueue[index]->DiagValue = finalValues;
+	// This pixels is now done
+	m_CurrentPixelQueueDone[index] = true;
+}
+
+// Note: definition of SquareSubdivisionMeshV2::EndCurrentLoop() is below
+
+bool SquareSubdivisionMeshV2::IsFinished() const
+{
+	// We are finished if we did not manage to populate the current pixel queue with any new pixels to integrate
+	return m_CurrentPixelQueue.size() == 0;
+}
+
+std::string SquareSubdivisionMeshV2::getFullDescriptionStr() const
+{
+	// Descriptive string
+	return "Mesh: square subdivision v2 (initial pixels: "
+		+ std::to_string(static_cast<pixelcoord>(sqrt(m_InitialPixels))) + "^2; max subdivision: "
+		+ std::to_string(m_MaxSubdivide) + "; pixels subdivided per iteration: " + std::to_string(m_IterationPixels)
+		+ "; max total pixels: " + (m_InfinitePixels ? "infinite" : std::to_string(m_MaxPixels))
+		+ "; if pixel is initially subdivided, will continue to max: " + std::to_string(m_InitialSubDividideToFinal)
+		+ ")";
+}
+
+// Helper (private) member function
+pixelcoord SquareSubdivisionMeshV2::ExpInt(int base, int exp)
+{
+	// Helper function to exponentiate ints; note: the result may be larger than fits in an int, but
+	// this is only called with int arguments
+	pixelcoord ret{ 1 };
+	while (exp > 0)
+	{
+		ret *= base;
+		--exp;
+	}
+	return ret;
+}
+
+//////////////////////////////////////////////////////////////
+//// Important SquareSubdivisionMeshV2 functions start here ////
+
+
+// Helper function: sets up the initial grid to integrate
+void SquareSubdivisionMeshV2::InitializeFirstGrid()
+{
+	// initial square grid of m_InitialPixels
+	pixelcoord initRowColSize = static_cast<pixelcoord>(sqrt(m_InitialPixels));
+	m_CurrentPixelQueue.reserve(m_InitialPixels);
+
+	// Initialize grid of empty pixels, to be filled
+	std::vector<std::vector<std::unique_ptr<PixelInfo>>> m_InitialGrid(initRowColSize);
+	for (largecounter i = 0; i < initRowColSize; ++i)
+		m_InitialGrid[i] = std::vector<std::unique_ptr<PixelInfo>>(initRowColSize);
+
+	// Fill grid with pixels
+	for (pixelcoord row = 0; row < initRowColSize; ++row)
+	{
+		for (pixelcoord column = 0; column < initRowColSize; ++column)
+		{
+			// Initialize vertex to subdivision level 1, except if vertex is at lower or rightmost edges,
+			// then this pixel can never be subdivided
+			int subdiv = 1;
+			if (row == initRowColSize - 1 || column == initRowColSize - 1)
+				subdiv = m_MaxSubdivide;
+
+			// Create pixel (weight is automatically initialized to -1)
+			// Note that the actual ScreenIndex that the pixel gets put at depends on the max
+			// level of subdivision: we are keeping room for all of the potential future pixels 
+			// that can come in between the initial grid!
+			m_InitialGrid[row][column] = std::make_unique<PixelInfo>(ExpInt(2, m_MaxSubdivide - 1) * ScreenIndex { row, column }, subdiv);
+		}
+	}
+
+	// Now, we need to update everybody's neighbors accordingly
+	// Note that right/down/SEdiag neighbors are ONLY defined if the pixel is a pixel that can be subdivided;
+	// and left/up neighbors are defined to be correct reciprocally with right/down relations
+	// The limits of the for loop are such that they only update the neighbors for all the pixels that have them
+	for (pixelcoord row = 0; row < initRowColSize - 1; ++row)
+	{
+		for (pixelcoord column = 0; column < initRowColSize - 1; ++column)
+		{
+			// Pixel has right/down neighbors, set them and the reciprocals
+
+			m_InitialGrid[row][column]->RightNbr = m_InitialGrid[row][column + 1].get();
+			m_InitialGrid[row][column + 1]->LeftNbr = m_InitialGrid[row][column].get();
+
+			m_InitialGrid[row][column]->DownNbr = m_InitialGrid[row + 1][column].get();
+			m_InitialGrid[row + 1][column]->UpNbr = m_InitialGrid[row][column].get();
+
+			m_InitialGrid[row][column]->SEdiagNbr = m_InitialGrid[row + 1][column + 1].get();
+		}
+	}
+
+	// Finally, we move the ownership of all pixels to the master pixel collection
+	// and we add all pixels to the integration list and weight-updating list (if applicable)
+	for (pixelcoord row = 0; row < initRowColSize; ++row)
+	{
+		for (pixelcoord column = 0; column < initRowColSize; ++column)
+		{
+			// This pixel must be integrated
+			m_CurrentPixelQueue.push_back(m_InitialGrid[row][column].get());
+
+			// If this pixel can be subdivided, it needs weight updating after integration
+			if (m_InitialGrid[row][column]->SubdivideLevel < m_MaxSubdivide)
+				m_CurrentPixelUpdating.push_back(m_InitialGrid[row][column].get());
+
+			// Transfer ownership to master pixel collection
+			m_AllPixels.push_front(std::move(m_InitialGrid[row][column]));
+		}
+	}
+
+	// Subtract the number of pixels we are integrating from the pixels we are allowed to integrate
+	if (!m_InfinitePixels)
+		m_PixelsLeft -= static_cast<largecounter>(m_CurrentPixelQueue.size());
+
+	// All pixels have not been integrated yet
+	m_CurrentPixelQueueDone = std::vector<bool>(m_CurrentPixelQueue.size(), false);
+}
+
+
+// Helper function: updates all weights of the pixels in m_CurrentPixelUpdating;
+// Note: these are assumed to have subdiv > 0 and subdiv < m_MaxSubdivide, and all their neigbors assigned correctly,
+// and are further assumed to have their (and their neighbor's) values assigned correctly
+// All pixels with weight > 0 will be added to m_ActivePixels
+void SquareSubdivisionMeshV2::UpdateAllWeights()
+{
+	// Updates all weights of the pixels in m_CurrentPixelUpdating
+	ScreenOutput("Updating pixel weights for " + std::to_string(m_CurrentPixelUpdating.size()) + " pixels...",
+		OutputLevel::Level_3_ALLDETAIL);
+
+	for (PixelInfo* pixel : m_CurrentPixelUpdating) // loop through all pixels that need weight updating
+	{
+		std::array<real, 3> distances{};
+
+		// distance: (up-left) - (up-right)
+		distances[0] = m_DistanceDiagnostic->FinalDataValDistance(pixel->DiagValue, pixel->RightNbr->DiagValue);
+
+		// distance: (up-left) - (down-left)
+		distances[1] = m_DistanceDiagnostic->FinalDataValDistance(pixel->DiagValue, pixel->DownNbr->DiagValue);
+
+		// distance: (up-left) - (down-right)
+			// The pixel's right neighbor is not on the rightmost border
+		distances[2] = m_DistanceDiagnostic->FinalDataValDistance(pixel->DiagValue, pixel->SEdiagNbr->DiagValue);
+
+		// Assign as weight the max of these three different distances
+		pixel->Weight = *std::max_element(distances.begin(), distances.end());
+		if (pixel->Weight > 0.0)
+		{
+			m_ActivePixels.push_back(pixel);
+		}
+	}
+
+	// Clear m_CurrentPixelUpdating
+	m_CurrentPixelUpdating.clear();
+
+	ScreenOutput("Done updating pixel weights.", OutputLevel::Level_3_ALLDETAIL);
+}
+
+
+SquareSubdivisionMeshV2::PixelInfo* SquareSubdivisionMeshV2::GetUp(PixelInfo* p, int subdiv)
+{
+	// p does not exist, it does not have the necessary neighbor,
+	// or the neighbor lives at a subdivision level that is too low
+	// Note that the up-neighbors are defined to be reciprocal with the down-neighbor,
+	// therefore we must check the NEIGHBOR's subdivide level (and not p's)!
+	if (!p || !p->UpNbr || p->UpNbr->SubdivideLevel < subdiv)
+		return nullptr;
+	else
+	{
+		if (p->UpNbr->SubdivideLevel == subdiv)
+		{
+			// The sought-after neighbor is precisely one step away
+			return p->UpNbr;
+		}
+		else
+		{
+			// Here, necessarily p->UpNbr->SubdivideLevel > subdiv
+			// This means p is subdivided to a higher level than we want
+			// In this case, we must travel over this finer grid to find the pixel we are looking for
+			return GetUp(GetUp(p, subdiv + 1), subdiv + 1);
+		}
+	}	
+}
+
+SquareSubdivisionMeshV2::PixelInfo* SquareSubdivisionMeshV2::GetDown(PixelInfo* p, int subdiv)
+{
+	// p does not exist, it does not have the necessary neighbor,
+	// or the neighbor lives at a subdivision level that is too low
+	if (!p || !p->DownNbr || p->SubdivideLevel < subdiv)
+		return nullptr;
+	else
+	{
+		if (p->SubdivideLevel == subdiv)
+		{
+			// The sought-after neighbor is precisely one step away
+			return p->DownNbr;
+		}
+		else
+		{
+			// Here, necessarily p->SubdivideLevel > subdiv
+			// This means p is subdivided to a higher level than we want
+			// In this case, we must travel over this finer grid to find the pixel we are looking for
+			return GetDown(GetDown(p, subdiv + 1), subdiv + 1);
+		}
+	}
+}
+
+SquareSubdivisionMeshV2::PixelInfo* SquareSubdivisionMeshV2::GetLeft(PixelInfo* p, int subdiv)
+{
+	// p does not exist, it does not have the necessary neighbor,
+	// or the neighbor lives at a subdivision level that is too low
+	// Note that the left-neighbors are defined to be reciprocal with the right-neighbor,
+	// therefore we must check the NEIGHBOR's subdivide level (and not p's)!
+	if (!p || !p->LeftNbr || p->LeftNbr->SubdivideLevel < subdiv)
+		return nullptr;
+	else
+	{
+		if (p->LeftNbr->SubdivideLevel == subdiv)
+		{
+			// The sought-after neighbor is precisely one step away
+			return p->LeftNbr;
+		}
+		else
+		{
+			// Here, necessarily p->LeftNbr->SubdivideLevel > subdiv
+			// This means p is subdivided to a higher level than we want
+			// In this case, we must travel over this finer grid to find the pixel we are looking for
+			return GetLeft(GetLeft(p, subdiv + 1), subdiv + 1);
+		}
+	}
+}
+
+SquareSubdivisionMeshV2::PixelInfo* SquareSubdivisionMeshV2::GetRight(PixelInfo* p, int subdiv)
+{
+	// p does not exist, it does not have the necessary neighbor,
+	// or the neighbor lives at a subdivision level that is too low
+	if (!p || !p->RightNbr || p->SubdivideLevel < subdiv)
+		return nullptr;
+	else
+	{
+		if (p->SubdivideLevel == subdiv)
+		{
+			// The sought-after neighbor is precisely one step away
+			return p->RightNbr;
+		}	
+		else
+		{
+			// Here, necessarily p->SubdivideLevel > subdiv
+			// This means p is subdivided to a higher level than we want
+			// In this case, we must travel over this finer grid to find the pixel we are looking for
+			return GetRight(GetRight(p, subdiv + 1), subdiv + 1);
+		}
+	}
+}
+
+
+
+// Helper function: subdivides the square with pixel m_ActivePixels[ind] in the upper-left corner,
+// and add (up to) 5 new pixels in the integration queue accordingly
+void SquareSubdivisionMeshV2::SubdivideAndQueue(largecounter ind)
+{
+	// The pixels are numbered as
+	// 1 2 3
+	// 4 5 6
+	// 7 8 9
+	// i.e. the initial square is given by (1, 3, 7, 9), and the new pixels are (2, 4, 5, 6, 8).
+	PixelInfo* pixel1 = m_ActivePixels[ind];
+	PixelInfo* pixel3 = pixel1->RightNbr;
+	PixelInfo* pixel7 = pixel1->DownNbr;
+	PixelInfo* pixel9 = pixel1->SEdiagNbr;
+
+	// We are subdividing this pixel, so we increase the subdivision level
+	int newsubdiv = pixel1->SubdivideLevel + 1;
+	pixelcoord row{}, col{};
+
+
+	//// PIXELS 1, 2, 4, 5: these are pixels who can subdivide again,
+	// so we need to set their current subdivision level to newsubdiv
+
+	// PIXEL 1
+	// The pixel itself now has the new subdivision level
+	pixel1->SubdivideLevel = newsubdiv;
+	if (newsubdiv < m_MaxSubdivide)
+		m_CurrentPixelUpdating.push_back(pixel1);
+
+	// PIXEL 2
+	// Does pixel 2 already exist? This could only be if it was created as part of a subdivided pixel
+	// at subdivision level newsubdiv immediately above the current pixel
+	PixelInfo* pixel2 = GetDown(GetRight(GetUp(pixel1, newsubdiv), newsubdiv), newsubdiv);
+	if (!pixel2) // pixel does not exist yet, so we need to create it and integrate it
+	{
+		row = pixel1->Index[0];
+		col = pixel1->Index[1] + ExpInt(2, m_MaxSubdivide - newsubdiv);
+		m_AllPixels.push_front(std::make_unique<PixelInfo>(ScreenIndex{ row, col }, newsubdiv));
+		pixel2 = m_AllPixels.front().get();
+		m_CurrentPixelQueue.push_back(pixel2);
+	}
+	else 
+	{
+		// pixel already exists, so just set its subdivision level now
+		// Note: pixel 2's correct subdivision level is always the one given by THIS subdivision (even if it had been created
+		// by a subdivision of a different pixel)
+		pixel2->SubdivideLevel = newsubdiv;
+	}
+	if (newsubdiv < m_MaxSubdivide)
+		m_CurrentPixelUpdating.push_back(pixel2);
+
+
+	// PIXEL 4
+	// Does pixel 4 already exist?
+	PixelInfo* pixel4 = GetRight(GetDown(GetLeft(pixel1, newsubdiv), newsubdiv), newsubdiv);
+	if (!pixel4) // pixel does not exist yet, so we need to create it and integrate it
+	{
+		row = pixel1->Index[0] + ExpInt(2, m_MaxSubdivide - newsubdiv);
+		col = pixel1->Index[1];
+		m_AllPixels.push_front(std::make_unique<PixelInfo>(ScreenIndex{ row, col }, newsubdiv));
+		pixel4 = m_AllPixels.front().get();
+		m_CurrentPixelQueue.push_back(pixel4);
+	}
+	else
+	{
+		// pixel already exists, so just set its subdivision level now
+		// Note: pixel 4's correct subdivision level is always the one given by THIS subdivision (even if it had been created
+		// by a subdivision of a different pixel)
+		pixel4->SubdivideLevel = newsubdiv;
+	}
+	if (newsubdiv < m_MaxSubdivide)
+		m_CurrentPixelUpdating.push_back(pixel4);
+
+	
+	// PIXEL 5
+	// Pixel 5 will never exist already!
+	row = pixel1->Index[0] + ExpInt(2, m_MaxSubdivide - newsubdiv);
+	col = pixel1->Index[1] + ExpInt(2, m_MaxSubdivide - newsubdiv);
+	m_AllPixels.push_front(std::make_unique<PixelInfo>(ScreenIndex{ row, col }, newsubdiv));
+	PixelInfo* pixel5 = m_AllPixels.front().get();
+	m_CurrentPixelQueue.push_back(pixel5);
+	if (newsubdiv < m_MaxSubdivide)
+		m_CurrentPixelUpdating.push_back(pixel5);
+
+
+	//// PIXELS 3, 7, 9: these pixels exist already and do NOT need new updating of subdivision level or right/down nbrs
+
+	//// PIXELS 6, 8: These pixels could need to be created, they are created at subdivision level 0
+
+	// PIXEL 6
+	// Does pixel 6 already exist?
+	PixelInfo* pixel6 = GetDown(pixel3, newsubdiv);
+	if (!pixel6) // pixel does not exist yet, so we need to create it and integrate it
+	{
+		row = pixel1->Index[0] +  ExpInt(2, m_MaxSubdivide - newsubdiv);
+		col = pixel1->Index[1] + 2 * ExpInt(2, m_MaxSubdivide - newsubdiv);
+		m_AllPixels.push_front(std::make_unique<PixelInfo>(ScreenIndex{ row, col }, 0));
+		pixel6 = m_AllPixels.front().get();
+		m_CurrentPixelQueue.push_back(pixel6);
+	}
+	// no else to update subdivision level and no putting pixel 6 in m_CurrentPixelUpdating!
+
+	// PIXEL 8
+	// Does pixel 8 already exist?
+	PixelInfo* pixel8 = GetRight(pixel7, newsubdiv);
+	if (!pixel8) // pixel does not exist yet, so we need to create it and integrate it
+	{
+		row = pixel1->Index[0] + 2 * ExpInt(2, m_MaxSubdivide - newsubdiv);
+		col = pixel1->Index[1] +  ExpInt(2, m_MaxSubdivide - newsubdiv);
+		m_AllPixels.push_front(std::make_unique<PixelInfo>(ScreenIndex{ row, col }, 0));
+		pixel8 = m_AllPixels.front().get();
+		m_CurrentPixelQueue.push_back(pixel8);
+	}
+	// no else to update subdivision level and no putting pixel 8 in m_CurrentPixelUpdating!
+
+
+	// Now all 9 pixels exist and have been put in the appropriate vectors (m_CurrentPixelQueue and/or m_CurrentPixelUpdating)
+	// We only need to create the new neighbor relations between these pixels;
+	// Remember: right/down/SEdiag neighbors are ONLY defined if the pixel is a pixel that can be subdivided;
+	// and left/up neighbors are defined to be correct reciprocally with right/down relations
+	// This means we only (re)define right/down/SEdiag neighbors for pixels 1, 2, 4, 5
+	// Pixel 1
+	pixel1->RightNbr = pixel2;
+	pixel2->LeftNbr = pixel1;
+	pixel1->DownNbr = pixel4;
+	pixel4->UpNbr = pixel1;
+	pixel1->SEdiagNbr = pixel5;
+	// Pixel 2
+	pixel2->RightNbr = pixel3;
+	pixel3->LeftNbr = pixel2;
+	pixel2->DownNbr = pixel5;
+	pixel5->UpNbr = pixel2;
+	pixel2->SEdiagNbr = pixel6;
+	// Pixel 4
+	pixel4->RightNbr = pixel5;
+	pixel5->LeftNbr = pixel4;
+	pixel4->DownNbr = pixel7;
+	pixel7->UpNbr = pixel4;
+	pixel4->SEdiagNbr = pixel8;
+	// Pixel 5
+	pixel5->RightNbr = pixel6;
+	pixel6->LeftNbr = pixel5;
+	pixel5->DownNbr = pixel8;
+	pixel8->UpNbr = pixel5;
+	pixel5->SEdiagNbr = pixel9;
+}
+
+
+
+// This function is called at the end of each integration iteration loop.
+// We must wrap up the current iteration and initialize the next one.
+void SquareSubdivisionMeshV2::EndCurrentLoop()
+{
+	///////////////////////////////////////////
+	//// Wrap up of current iteration loop ////
+
+	Utilities::Timer meshTimer;
+
+	// First, we make sure all geodesics have indeed been integrated
+	bool alldone{ true };
+	for (largecounter i = 0; i < m_CurrentPixelQueueDone.size() && alldone; ++i)
+	{
+		if (!m_CurrentPixelQueueDone[i])
+		{
+			alldone = false;
+		}
+	}
+	if (!alldone)
+		ScreenOutput("Not all pixels have been integrated!", OutputLevel::Level_0_WARNING);
+
+	m_PixelsIntegrated += static_cast<largecounter>(m_CurrentPixelQueue.size());
+
+	// All pixels in CurrentPixelQueue have been integrated, so pixel queue is now empty
+	m_CurrentPixelQueue.clear();
+	m_CurrentPixelQueueDone.clear();
+
+	ScreenOutput("Total integrated geodesic so far: " + std::to_string(m_PixelsIntegrated) + ".", OutputLevel::Level_2_SUBPROC);
+
+
+	//////////////////////////////////////////
+	//// Initializing next iteration loop ////
+
+	ScreenOutput("Calculating pixels to subdivide next...", OutputLevel::Level_2_SUBPROC);
+
+	// Now, we want to create a new pixel queue, but only if there are pixels left to integrate
+	if (m_InfinitePixels || m_PixelsLeft > 0)
+	{
+		// Update all neighbors and weights of existing pixels
+		UpdateAllWeights();
+		// Now, m_CurrentPixelUpdating has also been cleared
+
+		ScreenOutput("Selecting pixels for subdivision from " + std::to_string(m_ActivePixels.size()) + " active pixels...",
+			OutputLevel::Level_3_ALLDETAIL);
+
+		// UpdateWeights() has updated m_ActivePixels with the pixels that have weight > 0,
+		// so this vector contains all possible candidates to subdivide. We only need to select the best candidates now.
+		// Order the candidates according to how much we want to subdivide them (front is most important)
+		auto Comp = [this](PixelInfo* p1, PixelInfo* p2) -> bool // returns true if ind1 is more important than ind2
+		{
+			if (p1->Weight > p2->Weight)
+				return true;
+			else if (p1->Weight == p2->Weight
+				&& p1->SubdivideLevel < p2->SubdivideLevel)
+				return true; // In the case of equal weight, give precedence to less-subdivided pixels
+			else
+				return false;
+		};
+		std::sort(m_ActivePixels.begin(), m_ActivePixels.end(), Comp);
+
+		// Now we can actually subdivide the first m pixels
+		ScreenOutput("Setting up subdivided pixels for integration...", OutputLevel::Level_3_ALLDETAIL);
+		// At most, we will be creating 5x this number of new pixels to integrate
+		m_CurrentPixelQueue.reserve(5 * m_IterationPixels);
+		// Populate the queue with <=5*m_IterationPixels to integrate
+		largecounter subdivlim = std::min(static_cast<largecounter>(m_ActivePixels.size()), m_IterationPixels);
+		for (largecounter ind = 0; ind < subdivlim; ++ind)
+		{
+			SubdivideAndQueue(ind);
+		}
+		// Erase the elements that we have subdivided from the active pixels
+		m_ActivePixels.erase(m_ActivePixels.begin(), m_ActivePixels.begin() + subdivlim);
+
+
+		// If the total queue we have created is too large, truncate it
+		// We choose to delete the last elements. These should be the least important in the queue due to the ordering process above.
+		if (!m_InfinitePixels && m_CurrentPixelQueue.size() > m_PixelsLeft)
+			m_CurrentPixelQueue.erase(m_CurrentPixelQueue.begin() + m_PixelsLeft, m_CurrentPixelQueue.end());
+
+		// Queue is constructed now, make sure to subtract the pixels in the queue from the total we have left
+		if (!m_InfinitePixels)
+		{
+
+			m_PixelsLeft -= static_cast<largecounter>(m_CurrentPixelQueue.size());
+			ScreenOutput("Still max. " + std::to_string(m_PixelsLeft) +
+				" left to integrate after the currently queued " + std::to_string(m_CurrentPixelQueue.size()) + ".",
+				OutputLevel::Level_2_SUBPROC);
+		}
+		// Initialize m_CurrentPixelQueueDone
+		m_CurrentPixelQueueDone = std::vector<bool>(m_CurrentPixelQueue.size(), false);
+	}
+
+	ScreenOutput("Done calculating next iteration of pixels (time taken: " + std::to_string(meshTimer.elapsed()) + "s).",
+		OutputLevel::Level_2_SUBPROC);
 	// Our queue is ready for integration now!
 	// if no pixels are left to integrate, the queue will have remained empty (and IsFinished() will now return true)
 	// (the same is true if we have not actually managed to "create" any new pixels in the subdivision process)

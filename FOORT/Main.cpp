@@ -331,9 +331,10 @@ int main(int argc, char* argv[])
                 Point initpos;
                 OneIndex initvel;
                 ScreenIndex scrindex;
-                // This call to ViewScreen MUST be done one thread at a time as the ViewScreen/Mesh changes its internal structure
-                // every time it returns a geodesic initial condition
-#pragma omp critical   
+                
+                // Note that SetNewInitialConditions is a const member function, both of ViewScreen
+                // and (called within) of the underlying Mesh objects; it only accesses ViewScreen/Mesh data without changing
+                // anything. Therefore this does not need to be called with #pragma omp critical
                 theView->SetNewInitialConditions(static_cast<largecounter>(index), initpos, initvel, scrindex);
 
                 // Create the geodesic with given initial conditions!

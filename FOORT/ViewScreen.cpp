@@ -7,7 +7,7 @@
 /// </summary>
 
 
-void ViewScreen::SetNewInitialConditions(largecounter index, Point& pos, OneIndex& vel, ScreenIndex &scrIndex)
+void ViewScreen::SetNewInitialConditions(largecounter index, Point& pos, OneIndex& vel, ScreenIndex &scrIndex) const
 {
 	// Helper function for the sign of a real number
 	auto sign = [](real arg)->real {return (arg > 0) ? +1 : ((arg < 0) ? -1 : 0); };
