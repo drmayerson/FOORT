@@ -76,6 +76,7 @@ public:
 	bool IsFinished() const; // Does the ViewScreen (i.e. the Mesh) want to integrate more geodesics or not?
 	largecounter getCurNrGeodesics() const; // Current number of geodesics in this iteration
 	void EndCurrentLoop(); // The current iteration of geodesics is finished; prepare the next one
+	// NOTE: despite not being const, this function has been designed to be threadsafe!
 	void GeodesicFinished(largecounter index, std::vector<real> finalValues); // This geodesic has been integrated, returning its final "values"
 
 	// Description string getter (spaces allowed), also will contain information about the Mesh

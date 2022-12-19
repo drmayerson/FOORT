@@ -206,6 +206,10 @@ void SquareSubdivisionMesh::getNewInitConds(largecounter index, ScreenPoint& new
 
 void SquareSubdivisionMesh::GeodesicFinished(largecounter index, std::vector<real> finalValues)
 {
+	// NOTE: this function must be thread-safe!
+	// This means all the changes it makes are to values in a vector, never re-shaping the vector!
+	// "Concurrently accessing or modifying different elements is safe." (from cplusplus.com std::vector::operator[])
+	
 	// Set this pixel's values to the returned values
 	m_CurrentPixelQueue[index].DiagValue = finalValues;
 	// This pixels is now done
@@ -669,6 +673,10 @@ void SquareSubdivisionMeshV2::getNewInitConds(largecounter index, ScreenPoint& n
 
 void SquareSubdivisionMeshV2::GeodesicFinished(largecounter index, std::vector<real> finalValues)
 {
+	// NOTE: this function must be thread-safe!
+	// This means all the changes it makes are to values in a vector, never re-shaping the vector!
+	// "Concurrently accessing or modifying different elements is safe." (from cplusplus.com std::vector::operator[])
+	
 	// Set this pixel's values to the returned values
 	m_CurrentPixelQueue[index]->DiagValue = finalValues;
 	// This pixels is now done

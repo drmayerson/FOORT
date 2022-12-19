@@ -42,6 +42,7 @@ public:
 	virtual void getNewInitConds(largecounter index, ScreenPoint& newunitpoint, ScreenIndex& newscreenindex) const = 0;
 
 	// When a geodesic is finished integrating, it tells the Mesh and passes on its final "value"
+	// NOTE: despite being a non-const member function, this must be designed to be thread-safe!
 	virtual void GeodesicFinished(largecounter index, std::vector<real> finalValues) = 0;
 
 	// This is called when the current iteration is finished. The Mesh can now evaluate whether to continue or not

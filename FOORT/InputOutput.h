@@ -61,10 +61,15 @@ public:
 		largecounter geodperfile = LARGECOUNTER_MAX,
 		std::string firstlineinfo="");
 
+	// This tells the OutputHandler to prepare for this many geodesic outputs to arrive;
+	// the internal state needs to be prepared such that they can come in without providing a data race
+	void PrepareForOutput(largecounter nrOutputToCome);
+
 	// A new vector of output strings from a (single) Geodesic;
 	// the length of the vector should be m_DiagNames.size()+1, since the first entry
 	// is the screen index
-	void NewGeodesicOutput(std::vector<std::string> theOutput);
+	// NOTE: this procedure needs to be thread-safe!
+	void NewGeodesicOutput(largecounter index, std::vector<std::string> theOutput);
 
 	// Calling this indicates that there is no further output to be expected;
 	// this means we will write all remaining cached output to file
@@ -101,6 +106,9 @@ private:
 	// If this is false, then we are writing to file(s). At any time, if a file I/O error occurs,
 	// the output handler switches to outputting everything to the console
 	bool m_WriteToConsole{ false };
+
+	// How many outputs are already cached in m_nrOutputsToCache before the current iteration of output
+	largecounter m_PrevCached{ 0 };
 
 	// The number of geodesics already written to the current file
 	// (once this hits m_nrGeodesicsPerFile, this file is full)

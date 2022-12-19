@@ -58,24 +58,33 @@ GeodesicOutputHandler::GeodesicOutputHandler(std::string FilePrefix, std::string
 	// If no prefix has been set, or we are allowed zero geodesics per file, then we necessarily output to the console
 	if (m_FilePrefix == "" || m_nrGeodesicsPerFile == 0)
 		m_WriteToConsole = true;
+}
 
-	// Reserve an appropriate amount in the cached data vector
-	// Don't reserve the entire m_nrOutputsToCache if it is huge, do this 100k at a time
-	m_AllCachedData.reserve( std::min(m_nrOutputsToCache + 1, static_cast<largecounter>(100000)) );
+void GeodesicOutputHandler::PrepareForOutput(largecounter nrOutputToCome)
+{
+	// If the output that is coming will put us over the caching limit, first write the cached data to file
+	if (m_AllCachedData.size() + nrOutputToCome > m_nrOutputsToCache)
+	{
+		WriteCachedOutputToFile();
+	}
+
+	// This many outputs are already stored in the cached data, so we need to offset the incoming data by this much
+	m_PrevCached = m_AllCachedData.size();
+
+	// We prepare our vector of cache data to receive the output: we must create dummy vectors of strings
+	// so that the received output will simply overwrite these (instead of placing a new vector of strings into
+	// m_AllCachedData, which would introduce data races)
+	m_AllCachedData.insert(m_AllCachedData.end(), nrOutputToCome, std::vector<std::string>{});
 }
 
 
-void GeodesicOutputHandler::NewGeodesicOutput(std::vector<std::string> theOutput)
+void GeodesicOutputHandler::NewGeodesicOutput(largecounter index, std::vector<std::string> theOutput)
 {
-	// First, we put this current output in the cached data
-	m_AllCachedData.push_back(theOutput);
-	// Now, check if we have cached (one) too many outputs, if so, we want to write all the cached output to file
-	if (m_AllCachedData.size() > m_nrOutputsToCache)
-		WriteCachedOutputToFile();
-
-	// Check if we should reserve more room in the cache (do this 100k at a time)
-	if (m_AllCachedData.size() == m_AllCachedData.capacity())
-		m_AllCachedData.reserve( std::min(static_cast<size_t>(m_nrOutputsToCache + 1), m_AllCachedData.capacity() + 100000) );
+	// NOTE: this must be thread-safe! Indeed, we are only overwriting an existing element of m_AllCachedData
+	
+	// We put this current output in the cached data
+	// Note the offset by m_PrevCached
+	m_AllCachedData[m_PrevCached + index] = theOutput;
 }
 
 void GeodesicOutputHandler::OutputFinished()
@@ -86,6 +95,10 @@ void GeodesicOutputHandler::OutputFinished()
 
 void GeodesicOutputHandler::WriteCachedOutputToFile()
 {
+	// Check if there is anything to do
+	if (m_AllCachedData.size() == 0)
+		return;
+
 	if (!m_WriteToConsole)	// We are writing to files
 	{
 		ScreenOutput("Writing cached geodesic output to file(s)...", OutputLevel::Level_2_SUBPROC);
@@ -222,7 +235,6 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 	// Whether we have written all output to file or to console, in any case we have outputted all cached data,
 	// so empty the cache now
 	m_AllCachedData.clear();
-	m_AllCachedData.reserve(std::min(m_nrOutputsToCache + 1, static_cast<largecounter>(100000)));
 }
 
 std::string GeodesicOutputHandler::GetFileName(int diagnr, unsigned short filenr) const

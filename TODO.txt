@@ -3,7 +3,10 @@ TODO and wishlist:
 
 *** TOP PRIORITY:
 
---- Mesh: more efficient making new subdividing (don't go through every pixel again!?), also neighbors?
+--- CUDA/GPU:
+- Notes:
+--- Following https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html
+--- Version Windows 10 x86_64 (Cuda 12.0.0)
 
 --------------------------------
 

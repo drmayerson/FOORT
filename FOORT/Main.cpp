@@ -311,12 +311,15 @@ int main(int argc, char* argv[])
 
 #pragma omp parallel // start up threads!
         { 
-#pragma omp master // only output start message and reset timer in master thread (other threads do not need to wait for master!)
+#pragma omp single // only output start message and reset timer in single thread; other threads need to wait until OutputHandler is ready!
             {
                 ScreenOutput("Integrating " + std::to_string(CurNrGeod) + " geodesics on "
                     + std::to_string(omp_get_num_threads()) + " threads...",
                     OutputLevel::Level_1_PROC);
                 IterationTimer.reset();
+
+                // Prepare the output handler for the output to come
+                theOutputHandler->PrepareForOutput(static_cast<largecounter>(CurNrGeod));
             }
 
             /////////
@@ -354,14 +357,12 @@ int main(int argc, char* argv[])
                 // The geodesic has finished integrating.
                 // We tell the ViewScreen it is finished and give it the "values" to associate to the geodesic.
                 // We pass the geodesics' output to the Output Handler
-                // Note: both of these calls must be done by ONE thread at a time, since both
-                // ViewScreen/Mesh and GeodesicOutputHandler change their internal state
-                // in these calls!
-#pragma omp critical
-                {
-                    theView->GeodesicFinished(static_cast<largecounter>(index), theGeod.getDiagnosticFinalValue());
-                    theOutputHandler->NewGeodesicOutput(theGeod.getAllOutputStr());
-                }
+                // Note: both of these calls involve a change of internal state of ViewScreen/Mesh and OutputHandler.
+                // However, they have been set up to be thread-safe, i.e. these calls will modify values in existing
+                // vectors but never reshape the underlying objects!
+                // Since they are thread-safe, no omp critical directive is necessary here.
+                theView->GeodesicFinished(static_cast<largecounter>(index), theGeod.getDiagnosticFinalValue());
+                theOutputHandler->NewGeodesicOutput(static_cast<largecounter>(index), theGeod.getAllOutputStr());
 
             } // end parallel distributed for loop over all geodesics to integrate
 
