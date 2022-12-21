@@ -14,15 +14,17 @@ void ViewScreen::SetNewInitialConditions(largecounter index, Point& pos, OneInde
 
 	// The position of all geodesics is the same: the position of the camera
 	pos = m_Pos;
+	// Adjust r coordinate if using logarithmic coordinate
+	pos[1] = m_rLogScale ? log(pos[1]) : pos[1];
 
 	// Get a new screen point (with (x,y) coordinates between 0 and 1)
 	// from the Mesh
 	ScreenPoint UnitScreenPos{};
 	m_theMesh->getNewInitConds(index,UnitScreenPos,scrIndex);
 	// Rescale these into our alpha and beta;
-	// alpha runs from -screenwidth/2 to screenwidth/2 and beta similarly with screenheight
-	real alpha = m_ScreenSize[0] * (UnitScreenPos[0] - 0.5);
-	real beta = m_ScreenSize[1] * (UnitScreenPos[1] - 0.5);
+	// alpha runs from screencenter_x-screenwidth/2 to screencenter_y+screenwidth/2 and beta similarly with screenheight
+	real alpha = m_ScreenCenter[0] +  m_ScreenSize[0] * (UnitScreenPos[0] - 0.5);
+	real beta = m_ScreenCenter[1] + m_ScreenSize[1] * (UnitScreenPos[1] - 0.5);
 
 	// Note: currently only radially inpointing camera is supported (we do not check m_Direction)
 

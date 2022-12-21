@@ -101,7 +101,7 @@ void LoadPrecompiledOptions(std::unique_ptr<Metric> &theM, std::unique_ptr<Sourc
             dynamic_cast<SphericalHorizonMetric*>(theM.get())->getHorizonRadius(), false, 0.01, 1 });
     }
     BoundarySphereTermination::TermOptions =
-        std::unique_ptr<BoundarySphereTermOptions>(new BoundarySphereTermOptions{ 1000, 1 });
+        std::unique_ptr<BoundarySphereTermOptions>(new BoundarySphereTermOptions{ 1000, false, 1 });
     TimeOutTermination::TermOptions =
         std::unique_ptr<TimeOutTermOptions>(new TimeOutTermOptions{ 1000000, 1 });
 
@@ -124,6 +124,7 @@ void LoadPrecompiledOptions(std::unique_ptr<Metric> &theM, std::unique_ptr<Sourc
         { 0.0, 1000.0, 0.2966972222222, 0.0 }, // position
         { 0.0, -1.0, 0.0, 0.0 }, // direction
         { 15, 15 }, // screen size
+        { 0, 0 }, // screen center
         std::move(theMesh), // R-value of Mesh --- ViewScreen becomes owner!
         theM.get())); // (non-owner) pointer to Metric
 

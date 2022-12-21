@@ -230,13 +230,13 @@ public:
 struct HorizonTermOptions : public TerminationOptions
 {
 public:
-	HorizonTermOptions(real HorizonRadius, bool rLogScale, real AtHorizonEps, largecounter Nsteps) :
-		m_HorizonRadius{ HorizonRadius }, m_AtHorizonEps{ AtHorizonEps }, m_rLogScale{ rLogScale }, TerminationOptions(Nsteps)
+	HorizonTermOptions(real theHorizonRadius, bool therLogScale, real theAtHorizonEps, largecounter Nsteps) :
+		HorizonRadius{ theHorizonRadius }, AtHorizonEps{ theAtHorizonEps }, rLogScale{ therLogScale }, TerminationOptions(Nsteps)
 	{}
 
-	const real m_HorizonRadius;
-	const real m_AtHorizonEps;
-	const bool m_rLogScale;
+	const real HorizonRadius;
+	const real AtHorizonEps;
+	const bool rLogScale;
 };
 
 
@@ -244,10 +244,12 @@ public:
 struct BoundarySphereTermOptions : public TerminationOptions
 {
 public:
-	BoundarySphereTermOptions(real theRadius, largecounter Nsteps) : SphereRadius{theRadius}, TerminationOptions(Nsteps)
+	BoundarySphereTermOptions(real theRadius, bool therLogScale, largecounter Nsteps) : SphereRadius{theRadius}, rLogScale{therLogScale},
+		TerminationOptions(Nsteps)
 	{}
 
 	const real SphereRadius;
+	const bool rLogScale;
 };
 
 // Options class for TimeOut; has to keep track of the max. number of integration steps allowed

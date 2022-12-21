@@ -577,6 +577,12 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 			real radius{ 1000 };
 			AllTermSettings["BoundarySphere"].lookupValue("SphereRadius", radius);
 
+			// Check if metric is a spherical horizon metric with integration set to a logarithmic r coordinate,
+			// if so, pass this along to the options struct
+			bool rlogradius{ false };
+			const SphericalHorizonMetric* sphermetric = dynamic_cast<const SphericalHorizonMetric*>(theMetric);
+			if (sphermetric && sphermetric->getrLogScale())
+				rlogradius = true;
 
 			// By default, this Termination updates every step
 			// Check to see if a different update frequency has been specified
@@ -585,7 +591,7 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 
 			// Initialize the (static) TerminationOptions for BoundarySphere!
 			BoundarySphereTermination::TermOptions =
-				std::unique_ptr<BoundarySphereTermOptions>(new BoundarySphereTermOptions{ radius, updatefreq });
+				std::unique_ptr<BoundarySphereTermOptions>(new BoundarySphereTermOptions{ radius, rlogradius, updatefreq });
 		}
 
 		// TimeOut
@@ -647,7 +653,9 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 			Output_Important_Default);
 		allterms= Term_BoundarySphere | Term_TimeOut;
 		BoundarySphereTermination::TermOptions =
-			std::unique_ptr<BoundarySphereTermOptions>(new BoundarySphereTermOptions{ 1000, 1 });
+			std::unique_ptr<BoundarySphereTermOptions>(new BoundarySphereTermOptions{ 1000,
+				dynamic_cast<const SphericalHorizonMetric*>(theMetric)
+				&& (dynamic_cast<const SphericalHorizonMetric*>(theMetric))->getrLogScale(), 1});
 		TimeOutTermination::TermOptions =
 			std::unique_ptr<TimeOutTermOptions>(new TimeOutTermOptions{ 10000, 1 });
 	}
@@ -666,7 +674,8 @@ std::unique_ptr<ViewScreen> Config::GetViewScreen(const ConfigObject& theCfg, Di
 	// DEFAULTS set here
 	Point pos{ 0,1000,pi/2.0,0 };
 	OneIndex dir{ 0,-1,0,0 };
-	std::array<real, dimension - 2> screensize{ 10.0,10.0 };
+	ScreenPoint screensize{ 10.0,10.0 };
+	ScreenPoint screencenter{ 0.0, 0.0 };
 
 	try
 	{
@@ -699,6 +708,11 @@ std::unique_ptr<ViewScreen> Config::GetViewScreen(const ConfigObject& theCfg, Di
 			ViewSettings["ScreenSize"].lookupValue("x", screensize[0]);
 			ViewSettings["ScreenSize"].lookupValue("y", screensize[1]);
 		}
+		if (ViewSettings.exists("ScreenCenter"))
+		{
+			ViewSettings["ScreenCenter"].lookupValue("x", screencenter[0]);
+			ViewSettings["ScreenCenter"].lookupValue("y", screencenter[1]);
+		}
 	}
 	catch (SettingError& e)
 	{
@@ -710,7 +724,7 @@ std::unique_ptr<ViewScreen> Config::GetViewScreen(const ConfigObject& theCfg, Di
 	std::unique_ptr<Mesh> theMesh{ Config::GetMesh(theCfg,valdiag)};
 
 	// Create the ViewScreen!
-	std::unique_ptr<ViewScreen> theViewScreen{ new ViewScreen(pos, dir, screensize,
+	std::unique_ptr<ViewScreen> theViewScreen{ new ViewScreen(pos, dir, screensize, screencenter,
 		std::move(theMesh),theMetric) };
 
 	return theViewScreen;

@@ -8,13 +8,16 @@ TODO and wishlist:
 --- Following https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html
 --- Version Windows 10 x86_64 (Cuda 12.0.0)
 
+DONE ViewScreen off-center
+DONE emphasize configurations all in config file
+DONE log radius - automatic adaptation of boundary sphere & viewscreen!
+DONE libconfig++-dev instead of without ++ (installation guide) (so sudo apt-get install -y libconfig++-dev)
+
 --------------------------------
 
 *** PRIORITY:
 
 --- ViewScreen procedures: flat to locally flat; stationary/axisymmetric implementation
-
---- makefile flag -lstdc++fs vs -lstdc++ (always ok to use fs? needed for cluster)
 
 --------------------------------
 

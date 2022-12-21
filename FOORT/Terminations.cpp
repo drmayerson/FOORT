@@ -92,10 +92,10 @@ Term HorizonTermination::CheckTermination()
 		// Check to see if radius is almost at horizon;
 		// if we are using a logarithmic r scale (u=log(r)) then first exponentiate to get true radius
 		real thegeodesicr = (m_OwnerGeodesic->getCurrentPos())[1];
-		real r = TermOptions->m_rLogScale ? exp(thegeodesicr) : thegeodesicr;
+		real r = TermOptions->rLogScale ? exp(thegeodesicr) : thegeodesicr;
 		// Check if we are almost at the horizon; the second check is for horizons which are at r=0
-		if ( (r < TermOptions->m_HorizonRadius * (1 + TermOptions->m_AtHorizonEps))
-			|| (TermOptions->m_HorizonRadius == 0.0 && r < TermOptions->m_AtHorizonEps) )
+		if ( (r < TermOptions->HorizonRadius * (1 + TermOptions->AtHorizonEps))
+			|| (TermOptions->HorizonRadius == 0.0 && r < TermOptions->AtHorizonEps) )
 		{
 			ret = Term::Horizon;
 		}
@@ -107,7 +107,7 @@ Term HorizonTermination::CheckTermination()
 std::string HorizonTermination::getFullDescriptionStr() const
 {
 	// Full description string
-	return "Horizon (stop at " + std::to_string(1 + TermOptions->m_AtHorizonEps) + "x(horizon radius))";
+	return "Horizon (stop at " + std::to_string(1 + TermOptions->AtHorizonEps) + "x(horizon radius))";
 }
 
 /// <summary>
@@ -123,7 +123,10 @@ Term BoundarySphereTermination::CheckTermination()
 	if (DecideUpdate(TermOptions->UpdateEveryNSteps))
 	{
 		// Check to see if we reached (past) the boundary sphere
-		if ((m_OwnerGeodesic->getCurrentPos())[1] > TermOptions->SphereRadius)
+		// if we are using a logarithmic r scale (u=log(r)) then first exponentiate to get true radius
+		real thegeodesicr = (m_OwnerGeodesic->getCurrentPos())[1];
+		real r = TermOptions->rLogScale ? exp(thegeodesicr) : thegeodesicr;
+		if (r > TermOptions->SphereRadius)
 			ret = Term::BoundarySphere;
 	}
 

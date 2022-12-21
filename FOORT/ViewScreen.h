@@ -41,10 +41,13 @@ public:
 	// - the Mesh used (ViewScreen must become a owner of this object!)
 	// - the Metric used (ViewScreen is NOT the owner of the Metric)
 	// - the geodesic type to be integrated (null, timelike, spacelike)
-	ViewScreen(Point pos, OneIndex dir, std::array<real, dimension - 2> screensize,
+	ViewScreen(Point pos, OneIndex dir, ScreenPoint screensize, ScreenPoint screencenter,
 		std::unique_ptr<Mesh> theMesh, const Metric* const theMetric, GeodesicType thegeodtype=GeodesicType::Null) 
-		: m_Pos{ pos }, m_Direction{ dir }, m_ScreenSize{ screensize }, m_theMesh{ std::move(theMesh) },
-		m_theMetric{theMetric},	m_GeodType{ thegeodtype }
+		: m_Pos{ pos }, m_Direction{ dir }, m_ScreenSize{ screensize }, m_ScreenCenter{ screencenter },
+		m_theMesh{ std::move(theMesh) },
+		m_theMetric{theMetric},	m_GeodType{ thegeodtype },
+		m_rLogScale{ dynamic_cast<const SphericalHorizonMetric*>(theMetric) 
+			&& (dynamic_cast<const SphericalHorizonMetric*>(theMetric))->getrLogScale() }
 	{
 		// At the moment, we don't even use the direction; we are always pointed towards the origin
 		if (m_Direction != Point{ 0,-1,0,0 })
@@ -88,6 +91,11 @@ private:
 	const OneIndex m_Direction;
 	// The screensize (in physical units of length)
 	const ScreenPoint m_ScreenSize;
+	// The screen center
+	const ScreenPoint m_ScreenCenter;
+
+	// Whether the metric uses a logarithmic r coordinate or not
+	const bool m_rLogScale;
 
 	// const pointer to const Metric
 	const Metric* const m_theMetric;
