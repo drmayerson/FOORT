@@ -69,7 +69,7 @@ void GeodesicOutputHandler::PrepareForOutput(largecounter nrOutputToCome)
 	}
 
 	// This many outputs are already stored in the cached data, so we need to offset the incoming data by this much
-	m_PrevCached = m_AllCachedData.size();
+	m_PrevCached = static_cast<largecounter>(m_AllCachedData.size());
 
 	// We prepare our vector of cache data to receive the output: we must create dummy vectors of strings
 	// so that the received output will simply overwrite these (instead of placing a new vector of strings into
@@ -106,7 +106,7 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 		// Check if we will be breaking the cached output into multiple files
 		unsigned short nrfiles{ 1 };
 		// Note that the constructor has checked that indeed m_nrGeodesicsPerFile > 0
-		while (m_AllCachedData.size() > nrfiles * m_nrGeodesicsPerFile)
+		while (m_CurrentGeodesicsInFile + m_AllCachedData.size() > nrfiles * m_nrGeodesicsPerFile)
 			++nrfiles;
 
 		// Keeps track of the current file we are working in; note that this will be offset by the number of

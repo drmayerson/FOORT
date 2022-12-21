@@ -280,9 +280,8 @@ real GeodesicPositionDiagnostic::FinalDataValDistance(const std::vector<real>& v
 		return 0;
 	}
 	
-	// This has not been implemented correctly yet!!
-	ScreenOutput("Using GeodesicPositionDiagnostic::FinalDataValDistance without implementation!", OutputLevel::Level_0_WARNING);
-	return abs((val1[0] - val1[0]) * (val1[0] - val1[0]) + (val1[1] - val1[1]) * (val1[1] - val1[1]));
+	// Return the arc length between these two points
+	return acos( cos(val1[0]) * cos(val2[0]) + sin(val1[0]) * sin(val2[0]) * cos(val1[1] - val2[1]) );
 }
 
 std::string GeodesicPositionDiagnostic::getNameStr() const
