@@ -310,11 +310,6 @@ public:
 		if constexpr (dimension != 4)
 			ScreenOutput("SquareSubdivisionMeshV2 only defined in 4D!", OutputLevel::Level_0_WARNING);
 
-		// DEBUG message for constructor (can delete)
-		ScreenOutput("SquareSubdivisionMeshV2 constructed: maxPixels: " + (m_InfinitePixels ? "infinite" : std::to_string(maxPixels))
-			+ "; m_InitialPixels: "
-			+ std::to_string(m_InitialPixels) + "; m_RowColumnSize: " + std::to_string(m_RowColumnSize), OutputLevel::Level_4_DEBUG);
-
 		// Initialize the initial square, equally spaced grid
 		InitializeFirstGrid();
 	}
@@ -362,8 +357,8 @@ private:
 		// Constructor with its ScreenIndex and current subdivision level
 		PixelInfo(ScreenIndex ind, int subdiv) : Index{ ind }, SubdivideLevel{ subdiv } {}
 
-		// The pixel's screenindex
-		ScreenIndex Index{};
+		// The pixel's screenindex: this gets set by the constructor and cannot change anymore
+		const ScreenIndex Index{};
 
 		// The level at which the pixel has been subdivided
 		// Note: initial grid pixels are at 1; pixels at 0 are pixels that cannot be subdivided
@@ -411,10 +406,10 @@ private:
 
 	// Helper functions that return the appropriate neighbor of p, ONLY if this neighbor exists at the subdivision level specified
 	// Returns nullptr otherwise; also return nullptr if p==nullptr
-	PixelInfo* GetUp(PixelInfo* p, int subdiv);
-	PixelInfo* GetDown(PixelInfo* p, int subdiv);
-	PixelInfo* GetRight(PixelInfo* p, int subdiv);
-	PixelInfo* GetLeft(PixelInfo* p, int subdiv);
+	PixelInfo* GetUp(PixelInfo* p, int subdiv) const;
+	PixelInfo* GetDown(PixelInfo* p, int subdiv) const;
+	PixelInfo* GetRight(PixelInfo* p, int subdiv) const;
+	PixelInfo* GetLeft(PixelInfo* p, int subdiv) const;
 
 
 	// This will take the pixel m_AllPixels[ind] and subdivide it,
@@ -424,7 +419,7 @@ private:
 	// Helper function to exponentiate an int to an int
 	// Note: the result can be larger than fits in an int, but the base is always 2 and the exp is always
 	// a number <=m_MaxSubdivide (which is an int)
-	pixelcoord ExpInt(int base, int exp);
+	pixelcoord ExpInt(int base, int exp) const;
 };
 
 

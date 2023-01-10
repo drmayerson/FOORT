@@ -50,8 +50,7 @@ namespace Utilities
     // This returns the full string to be written to every output file as its first line
     // It contains information about all the settings used to produce the output
     std::string GetFirstLineInfoString(const Metric* theMetric, const Source* theSource,
-        DiagBitflag alldiags, DiagBitflag valdiag, TermBitflag allterms, const ViewScreen* theView,
-        GeodesicIntegratorFunc theIntegrator);
+        DiagBitflag alldiags, DiagBitflag valdiag, TermBitflag allterms, const ViewScreen* theView);
 }
 
 #endif

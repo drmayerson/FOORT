@@ -4,6 +4,7 @@
 #include "InputOutput.h" // for ScreenOutput()
 
 #include <algorithm> // needed for std::rotate()
+#include <cmath> // needed for cos, sin, acos
 
 /// <summary>
 /// Diagnostic helper function
@@ -89,6 +90,11 @@ DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag
 /// Diagnostic (abstract base class) functions
 /// </summary>
 
+void Diagnostic::Reset()
+{
+	// Reset steps to 0 for starting a new geodesic
+	m_StepsSinceUpdated = 0;
+}
 
 // This helper function returns true if the Diagnostic should update its internal status. Should be called from within
 // UpdateData() with the appropriate DiagnosticOptions::theUpdateFrequency
@@ -130,6 +136,13 @@ std::string Diagnostic::getFullDescriptionStr() const
 /// <summary>
 /// FourColorScreen functions
 /// </summary>
+
+void FourColorScreenDiagnostic::Reset()
+{
+	// Reset the quadrant to its default option; also call base class Reset function
+	m_quadrant = 0;
+	Diagnostic::Reset();
+}
 
 void FourColorScreenDiagnostic::UpdateData()
 {
@@ -205,6 +218,13 @@ std::string FourColorScreenDiagnostic::getFullDescriptionStr() const
 /// <summary>
 /// GeodesicPositionDiagnostic functions
 /// </summary>
+
+void GeodesicPositionDiagnostic::Reset()
+{
+	// Empty out vector of points; also call base class Reset function
+	m_AllSavedPoints.clear();
+	Diagnostic::Reset();
+}
 
 void GeodesicPositionDiagnostic::UpdateData()
 {
@@ -301,6 +321,14 @@ std::string GeodesicPositionDiagnostic::getFullDescriptionStr() const
 /// <summary>
 /// EquatorialPassesDiagnostic functions
 /// </summary>
+
+void EquatorialPassesDiagnostic::Reset()
+{
+	// Reset internal variables to default (initial) values; also call base class Reset function
+	m_EquatPasses = 0;
+	m_PrevTheta = -1;
+	Diagnostic::Reset();
+}
 
 
 void EquatorialPassesDiagnostic::UpdateData()

@@ -54,6 +54,13 @@ TerminationUniqueVector CreateTerminationVector(TermBitflag termflags, Geodesic 
 /// Termination (abstract base class) functions
 /// </summary>
 
+
+void Termination::Reset()
+{
+	// Reset to 0 to start integrating new geodesic
+	m_StepsSinceUpdated = 0;
+}
+
 // This helper function returns true if the Termination should update its internal status. Should be called from within
 // CheckTermination() with the appropriate TermOptions::UpdateEveryNSteps
 bool Termination::DecideUpdate(largecounter UpdateNSteps)
@@ -143,6 +150,14 @@ std::string BoundarySphereTermination::getFullDescriptionStr() const
 /// <summary>
 /// TimeOutTermination functions
 /// </summary>
+
+void TimeOutTermination::Reset()
+{
+	// Reset to 0 for new geodesic
+	m_CurNrSteps = 0;
+	// Call base class implementation to reset base class member variables
+	Termination::Reset();
+}
 
 // Check to see if enough steps have been taken to time out, if so return Term::TimeOut
 Term TimeOutTermination::CheckTermination()

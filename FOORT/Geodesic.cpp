@@ -30,6 +30,33 @@ std::string NoSource::getFullDescriptionStr() const
 /// Geodesic (and descendant classes) functions
 /// </summary>
 
+void Geodesic::Reset(ScreenIndex scrindex, Point initpos, OneIndex initvel)
+{
+	// Set screen index, initial position/velocity
+	m_ScreenIndex = scrindex;
+	m_CurrentPos = initpos;
+	m_CurrentVel = initvel;
+
+	// Start at 0.0 affine parameter
+	m_curLambda = 0.0;
+
+	// Geodesic is set up to be integrated
+	m_TermCond = Term::Continue;
+
+	// Start: loop through all diagnostics to reset and update at starting position
+	for (const auto& d : m_AllDiagnostics)
+	{
+		d->Reset();
+		d->UpdateData();
+	}
+
+	// Also reset all terminations
+	for (const auto& t : m_AllTerminations)
+	{
+		t->Reset();
+	}
+}
+
 
 Term Geodesic::Update()
 {
@@ -100,12 +127,12 @@ std::vector<std::string> Geodesic::getAllOutputStr() const
 		// We don't use the toString() function to avoid extraneous parentheses and commas therein
 		strScreenIndex += std::to_string(m_ScreenIndex[i]) + " ";
 	}
-	theOutput.push_back(strScreenIndex);
+	theOutput.push_back(std::move(strScreenIndex));
 
 	// The rest of the strings are the output strings as given by each of the Diagnostics
 	for (const auto& d : m_AllDiagnostics)
 	{
-		theOutput.push_back(d->getFullDataStr());
+		theOutput.push_back(std::move(d->getFullDataStr()));
 	}
 
 	return theOutput;

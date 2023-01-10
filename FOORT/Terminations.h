@@ -46,6 +46,7 @@ constexpr TermBitflag Term_MyTerm				{ 0b0000'0000'0000'1000 };
 // Possible termination conditions that can be set by Terminations
 enum class Term
 {
+	Uninitialized = -1,	// Geodesic has not been properly initialized yet with initial position/velocity
 	Continue = 0,		// All is right, continue integrating geodesic
 	Horizon,			// STOP, encountered horizon (set by HorizonTermination)
 	Singularity,		// STOP, encountered singularity/center (set by SingularityTermination --- DOES NOT EXIST YET)
@@ -76,6 +77,12 @@ public:
 	Termination() = delete;
 	Termination(Geodesic* const theGeodesic) : m_OwnerGeodesic{ theGeodesic }
 	{}
+
+	// Resets Termination object. This is called when the owner Geodesic is reset in order to start integrating
+	// a new geodesic.
+	// The base class implementation only resets m_StepsSinceUpdated
+	// Descendants can override this if they need to reset additional internal variables
+	virtual void Reset();
 
 	// virtual destructor to ensure correct destruction of descendants
 	virtual ~Termination() = default;
@@ -163,6 +170,9 @@ public:
 	// Basic constructor only passes on Geodesic pointer to base class constructor
 	TimeOutTermination(Geodesic* const theGeodesic) : Termination(theGeodesic) {}
 
+	// This descendant needs to override Reset in order to also reset m_CurNrSteps
+	void Reset() final;
+
 	// Check if we have already taken too many steps
 	Term CheckTermination() final;
 
@@ -188,6 +198,11 @@ class MyTermination final : public Termination // good practice to make the clas
 public:
 	// Constructor must at least pass on Geodesic pointer to base class constructor
 	MyTermination(Geodesic* const theGeodesic) : Termination(theGeodesic) {}
+
+	// Do you need to reset any internal variables specific to MyTermination? If so, override Reset() (This is not mandatory)
+	// Note: make sure to call the base class implementation Termination::Reset()
+	// from within your implementation of MyTermination::Reset(), so that the base class internal variable is also reset!
+	void Reset() final;
 
 	// Check the specific termination condition
 	Term CheckTermination() final;

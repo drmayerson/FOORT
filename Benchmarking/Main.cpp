@@ -10,11 +10,90 @@
 #include<array>
 #include<string>
 
+#include<omp.h>
+
 
 constexpr int nrtests = 5;
 constexpr int nrouterloops = 100;
 
 int main()
+{
+    std::vector<std::vector<std::string>> vecvecstring{};
+
+    Timer thetimer;
+
+#pragma omp parallel // start up threads!
+    {
+
+#pragma omp single
+        {
+            vecvecstring.clear();
+            thetimer.reset();
+        }
+#pragma omp for
+        for (unsigned int i = 0; i < 30000000; ++i)
+        {
+#pragma omp critical
+            {
+                vecvecstring.push_back(std::vector<std::string>({ "test", std::to_string(i) }));
+            }
+        }
+#pragma omp single
+        {
+            std::cout << std::to_string(thetimer.elapsed()) << "s for pushing back 30M\n";
+        }
+
+#pragma omp single
+        {
+            vecvecstring.clear();
+            thetimer.reset();
+            vecvecstring.insert(vecvecstring.end(), 30000000, std::vector<std::string>{});
+        }
+#pragma omp for
+        for (unsigned int i = 0; i < 30000000; ++i)
+        {
+            vecvecstring[i] = std::vector<std::string>({ "test", std::to_string(i) });
+        }
+#pragma omp single
+        {
+            std::cout << std::to_string(thetimer.elapsed()) << "s for pre-allocating 30M\n";
+        }
+
+
+#pragma omp single
+        {
+
+            vecvecstring.clear();
+            thetimer.reset();
+            for (unsigned int i = 0; i < 30000000; ++i)
+            {
+                vecvecstring.push_back(std::vector<std::string>({ "test", std::to_string(i) }));
+            }
+            std::cout << std::to_string(thetimer.elapsed()) << "s for pushing back 30M single thread\n";
+        }
+
+
+#pragma omp single
+        {
+            vecvecstring.clear();
+            thetimer.reset();
+            vecvecstring.insert(vecvecstring.end(), 30000000, std::vector<std::string>{});
+            for (unsigned int i = 0; i < 30000000; ++i)
+            {
+                vecvecstring[i] = std::vector<std::string>({ "test", std::to_string(i) });
+            }
+            std::cout << std::to_string(thetimer.elapsed()) << "s for pre-allocating 30M\n";
+        }
+
+
+
+    }
+
+
+    return 0;
+}
+
+int main_calls()
 {
     // INITIALIZATION
     /////////////////

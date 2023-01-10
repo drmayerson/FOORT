@@ -44,21 +44,27 @@ std::vector<std::string> Utilities::GetDiagNameStrings(DiagBitflag alldiags, Dia
 	// Then we fill up the vector of names
 	thediagstrings.reserve(tempDiags.size());
 	for (const auto& d : tempDiags)
-		thediagstrings.push_back(d->getNameStr());
+		thediagstrings.push_back(std::move(d->getNameStr()));
 
 	return thediagstrings;
 }
 
 std::string Utilities::GetFirstLineInfoString(const Metric* theMetric, const Source* theSource,
-	[[maybe_unused]] DiagBitflag alldiags,
-	[[maybe_unused]] DiagBitflag valdiag,
-	TermBitflag allterms, const ViewScreen* theView,
-	[[maybe_unused]] GeodesicIntegratorFunc theIntegrator)
+	DiagBitflag alldiags, DiagBitflag valdiag,
+	TermBitflag allterms, const ViewScreen* theView)
 {
 	// This returns a descriptive string that is outputted on the first line of every file
 	
-	// We do not give Diagnostic information: every file is already dedicated to a Diagnostic
-	// and has the Diagnostic name in its file name
+	// Create a string for all Diagnostics information
+	std::string fulldiagstring{ "Diagnostics: " };
+	{ // temp scope to create/destroy this diagnostic vector
+		// We simply pass nullptr as the owner Geodesic pointer
+		DiagnosticUniqueVector tempdiagvec{ CreateDiagnosticVector(alldiags,valdiag, nullptr) };
+		for (auto& d : tempdiagvec)
+		{
+			fulldiagstring += d->getFullDescriptionStr() + ", ";
+		}
+	}
 
 	// Create a string for all Termination information
 	std::string fulltermstring{ "Terminations: " };
@@ -70,9 +76,10 @@ std::string Utilities::GetFirstLineInfoString(const Metric* theMetric, const Sou
 			fulltermstring += t->getFullDescriptionStr() + ", ";
 		}
 	}
+	
 
-	// Full string contains information about the Metric, Source, Terminations, and ViewScreen
+	// Full string contains information about the Metric, Source, Diagnostics, Terminations, ViewScreen, Integrators
 	return "Metric: " + theMetric->getFullDescriptionStr() + "; "
-		+ "Source: " + theSource->getFullDescriptionStr() + "; "
-		+ fulltermstring + "; " + theView->getFullDescriptionStr();
+		+ "Source: " + theSource->getFullDescriptionStr() + "; " + fulldiagstring + "; "
+		+ fulltermstring + "; " + theView->getFullDescriptionStr() + "; " + Integrators::GetFullIntegratorDescription();
 }

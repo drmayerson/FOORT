@@ -45,9 +45,6 @@ inline constexpr real pi{ 3.1415926535 };
 // The spacetime dimension
 inline constexpr int dimension{ 4 };
 
-// The amount of any coordinate that we shift to calculate derivatives (using central difference)
-inline constexpr real DERIVATIVE_hval{ 1e-7 };
-
 
 /// <summary>
 /// TENSOR DEFINITIONS

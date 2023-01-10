@@ -54,6 +54,8 @@ void LoadPrecompiledOptions(std::unique_ptr<Metric> &theM, std::unique_ptr<Sourc
 {
     //// Screen output level ////
     SetOutputLevel(OutputLevel::Level_4_DEBUG);
+    // Frequency of messages during each integration loop
+    SetLoopMessageFrequency(LARGECOUNTER_MAX);
 
 
     ///// Metric ////
@@ -130,7 +132,8 @@ void LoadPrecompiledOptions(std::unique_ptr<Metric> &theM, std::unique_ptr<Sourc
 
 
     //// Integrator ////
-    theIntegrator = Integrators::IntegrateGeodesicStep_RK4; // at the moment, only RK4 available
+    theIntegrator = Integrators::IntegrateGeodesicStep_RK4; // IntegrateGeodesicStep_RK4 or IntegrateGeodesicStep_Verlet
+    Integrators::IntegratorDescription = "RK4";
     Integrators::epsilon = 0.03; // base step size that is used (is adapted dynamically)
 
 
@@ -143,8 +146,7 @@ void LoadPrecompiledOptions(std::unique_ptr<Metric> &theM, std::unique_ptr<Sourc
         Utilities::GetDiagNameStrings(AllDiags, ValDiag), // strings of names of all Diagnostics turned on
         200000, // nr geodesics to cache
         200000, // nr geodesics per file
-        Utilities::GetFirstLineInfoString(theM.get(), theS.get(), AllDiags, ValDiag, AllTerms, theView.get(),
-            theIntegrator) // first line info
+        Utilities::GetFirstLineInfoString(theM.get(), theS.get(), AllDiags, ValDiag, AllTerms, theView.get()) // first line info
     ));
 }
 
@@ -229,8 +231,7 @@ int main(int argc, char* argv[])
 
     // Initialize Output Handler
     // First we get the info string to place at the first line of every output file
-    std::string FirstLineInfo{ Utilities::GetFirstLineInfoString(theM.get(), theS.get(), AllDiags, ValDiag, AllTerms, theView.get(),
-        theIntegrator) };
+    std::string FirstLineInfo{ Utilities::GetFirstLineInfoString(theM.get(), theS.get(), AllDiags, ValDiag, AllTerms, theView.get()) };
     std::unique_ptr<GeodesicOutputHandler> theOutputHandler = Config::GetOutputHandler(cfgObject, AllDiags, ValDiag, FirstLineInfo);
 
     // Done initializing everything!
@@ -262,9 +263,13 @@ int main(int argc, char* argv[])
     // Now, we proceed to list all objects that have been initialized (using their description string)
 
     OutputLevel listallobjects = OutputLevel::Level_2_SUBPROC;
+    ScreenOutput("\n--------------------------------", listallobjects);
+    ScreenOutput("LIST OF ALL INITIALIZED OBJECTS:", listallobjects);
 
     ScreenOutput("Metric: " + theM->getFullDescriptionStr() + ".", listallobjects);
+
     ScreenOutput("Geodesic source: " + theS->getFullDescriptionStr() + ".", listallobjects);
+
     ScreenOutput("Diagnostics turned on: ", listallobjects);
     ScreenOutput("<begin list>", listallobjects);
     { // temp scope to create/destroy this Diagnostic vector
@@ -275,6 +280,7 @@ int main(int argc, char* argv[])
         }
     }
     ScreenOutput("<end list>", listallobjects);
+
     ScreenOutput("Terminations turned on:", listallobjects);
     ScreenOutput("<begin list>", listallobjects);
     { // temp scope to create/destroy this Termination vector
@@ -285,9 +291,14 @@ int main(int argc, char* argv[])
         }
         ScreenOutput("<end list>", listallobjects);
     }
+
     ScreenOutput(theView->getFullDescriptionStr() + ".", listallobjects);
-    ScreenOutput("Integrator selected. Default step size: " + std::to_string(Integrators::epsilon) + ".", listallobjects);
-    ScreenOutput("Geodesic output handler initialized.", listallobjects);
+
+    ScreenOutput(Integrators::GetFullIntegratorDescription(), listallobjects);
+    
+    ScreenOutput(theOutputHandler->getFullDescriptionStr(), listallobjects);
+
+    ScreenOutput("--------------------------------\n", listallobjects);
 
 
     // totalTimer keeps track of the total time elapsed in integration
@@ -310,9 +321,12 @@ int main(int argc, char* argv[])
         // OpenMP distributed for loops demand a SIGNED integral type as the loop iterator
         long long CurNrGeod = static_cast<long long>(theView->getCurNrGeodesics());
 
+        // Counter of number of geodesics already integrated in thread 0
+        long long masterIndexCounter{ 0 };
+
 #pragma omp parallel // start up threads!
         { 
-#pragma omp single // only output start message and reset timer in single thread; other threads need to wait until OutputHandler is ready!
+#pragma omp single // only output start message and reset timer in single thread; other threads wait until OutputHandler is ready!
             {
                 ScreenOutput("Integrating " + std::to_string(CurNrGeod) + " geodesics on "
                     + std::to_string(omp_get_num_threads()) + " threads...",
@@ -327,10 +341,39 @@ int main(int argc, char* argv[])
             // BEGIN GEODESIC DISTRIBUTION METHOD NO INTERNAL THREAD CACHING
             ////////
 
+            // Create one Geodesic instance per thread to work with
+            Geodesic theGeod(theM.get(), theS.get(), // Metric and Source (non-owner pointers!)
+                AllDiags, ValDiag,      // Bitflags for Diagnostics
+                AllTerms,               // Bitflag for Terminations
+                theIntegrator);         // Function to use to integrate geodesic equation
+
+
             // distribute for loop iterations over threads
 #pragma omp for     
             for (long long index = 0; index < CurNrGeod; ++index)
             {
+
+                // Keep count of number of geodesics integrated in thread 0 and
+                // output loop progress message if applicable
+                if (omp_get_thread_num() == 0)
+                {
+                    ++masterIndexCounter;
+
+                    int numthreads{ omp_get_num_threads() };
+                    if (masterIndexCounter > 0 && masterIndexCounter % (GetLoopMessageFrequency() / numthreads) == 0)
+                    {
+                        double speed = masterIndexCounter * numthreads / IterationTimer.elapsed();
+                        ScreenOutput("Approx. at geodesic "
+                            + std::to_string(masterIndexCounter * numthreads)
+                            + " ("
+                            + std::to_string(IterationTimer.elapsed()) + "s elapsed; speed: "
+                            + std::to_string(static_cast<long>(speed)) + " geod/s; est. loop time remaining: "
+                            + std::to_string((CurNrGeod - masterIndexCounter * numthreads) / speed)
+                            + "s)..."
+                            , OutputLevel::Level_2_SUBPROC);
+                    }
+                }
+
                 // Set up initial conditions for a geodesic
                 Point initpos;
                 OneIndex initvel;
@@ -341,13 +384,8 @@ int main(int argc, char* argv[])
                 // anything. Therefore this does not need to be called with #pragma omp critical
                 theView->SetNewInitialConditions(static_cast<largecounter>(index), initpos, initvel, scrindex);
 
-                // Create the geodesic with given initial conditions!
-                Geodesic theGeod(scrindex,  // screen index
-                    initpos, initvel,       // initial position & velocity
-                    theM.get(), theS.get(), // Metric and Source (non-owner pointers!)
-                    AllDiags, ValDiag,      // Bitflags for Diagnostics
-                    AllTerms,               // Bitflag for Terminations
-                    theIntegrator);         // Function to use to integrate geodesic equation
+                // Set the Geodesic to the current screen index and initial position/velocity
+                theGeod.Reset(scrindex, initpos, initvel);
 
                 // Loop integrating the geodesic step by step until finished
                 while (theGeod.getTermCondition() == Term::Continue)
@@ -362,8 +400,8 @@ int main(int argc, char* argv[])
                 // However, they have been set up to be thread-safe, i.e. these calls will modify values in existing
                 // vectors but never reshape the underlying objects!
                 // Since they are thread-safe, no omp critical directive is necessary here.
-                theView->GeodesicFinished(static_cast<largecounter>(index), theGeod.getDiagnosticFinalValue());
-                theOutputHandler->NewGeodesicOutput(static_cast<largecounter>(index), theGeod.getAllOutputStr());
+                theView->GeodesicFinished(static_cast<largecounter>(index), std::move(theGeod.getDiagnosticFinalValue()));
+                theOutputHandler->NewGeodesicOutput(static_cast<largecounter>(index), std::move(theGeod.getAllOutputStr()));
 
             } // end parallel distributed for loop over all geodesics to integrate
 

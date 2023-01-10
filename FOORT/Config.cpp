@@ -88,7 +88,7 @@ bool Config::lookupValuelargecounter(const ConfigSetting& theSetting, const char
 }
 
 
-// Initialize screen output
+// Initialize screen output options
 void Config::InitializeScreenOutput(const ConfigObject& theCfg)
 {
 	// DEFAULT: highest level output allowed
@@ -98,12 +98,19 @@ void Config::InitializeScreenOutput(const ConfigObject& theCfg)
 	if (root.exists("Output"))
 	{
 		ConfigSetting& OutputSettings = root["Output"];
+
+		// Screen output level (overall)
 		int scroutputint{ static_cast<int>(OutputLevel::Level_4_DEBUG) };
 		OutputSettings.lookupValue("ScreenOutputLevel", scroutputint);
 		// We do these checks to make sure the int we have read in can indeed be interpreted as an OutputLevel
 		scroutputint = std::max(scroutputint, static_cast<int>(OutputLevel::Level_0_WARNING));
 		scroutputint = std::min(scroutputint, static_cast<int>(OutputLevel::MaxLevel));
 		SetOutputLevel(static_cast<OutputLevel>(scroutputint));
+
+		// Retrieve loop message frequency (within every integration loop)
+		largecounter loopmessagefrequency{ GetLoopMessageFrequency() };
+		lookupValuelargecounter(OutputSettings, "LoopMessageFrequency", loopmessagefrequency);
+		SetLoopMessageFrequency(loopmessagefrequency);
 	}
 }
 
@@ -855,6 +862,8 @@ GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigObject& theCfg)
 	// SET DEFAULTS HERE: RK4 integrator and stepsize=0.03
 	GeodesicIntegratorFunc TheFunc = Integrators::IntegrateGeodesicStep_RK4;
 	real stepsize{ Integrators::epsilon };
+	real hval{ Integrators::Derivative_hval };
+	real smalleststep{ Integrators::SmallestPossibleStepsize };
 	std::string DefaultString{ "RK4 integrator" };
 
 	// Get the root collection
@@ -869,6 +878,25 @@ GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigObject& theCfg)
 		}
 		// Go to the Integrator settings
 		ConfigSetting& IntegratorSettings = root["Integrator"];
+
+		// Look up the integrator step size
+		if (!IntegratorSettings.lookupValue("StepSize", stepsize))
+		{
+			ScreenOutput("Using default integrator stepsize: " + std::to_string(Integrators::epsilon) + ".",
+				Output_Other_Default);
+		}
+		else
+		{
+			Integrators::epsilon = stepsize;
+		}
+
+		// Look up derivative h value (no default message necessary)
+		IntegratorSettings.lookupValue("DerivativeH", hval);
+		Integrators::Derivative_hval = hval;
+
+		// Look up smallest possible step size (no default message necessary)
+		IntegratorSettings.lookupValue("SmallestPossibleStepsize", smalleststep);
+		Integrators::SmallestPossibleStepsize = smalleststep;
 
 		// Check to see that the Integrator type has been specified
 		if (!IntegratorSettings.lookupValue("Type", IntegratorType))
@@ -885,17 +913,18 @@ GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigObject& theCfg)
 		{
 			// Set the integrator function
 			TheFunc = Integrators::IntegrateGeodesicStep_RK4;
-
-			// Look up the integrator step size
-			if (!IntegratorSettings.lookupValue("StepSize", stepsize))
-			{
-				ScreenOutput("Using default integrator stepsize: " + std::to_string(Integrators::epsilon) + ".",
-					Output_Other_Default);
-			}
-			else
-			{
-				Integrators::epsilon = stepsize;
-			}
+			Integrators::IntegratorDescription = "RK4";
+		}
+		else if (IntegratorType == "verlet")
+		{
+			// Set the integrator function
+			TheFunc = Integrators::IntegrateGeodesicStep_Verlet;
+			Integrators::IntegratorDescription = "Verlet";
+			
+			// Get the velocity tolerance (fractional difference in intermediate and final velocities for a step)
+			real verlettolerance{ Integrators::VerletVelocityTolerance };
+			IntegratorSettings.lookupValue("VerletVelocityTolerance", verlettolerance);
+			Integrators::VerletVelocityTolerance = verlettolerance;
 		}
 		// else if ... (other integrators here)
 		else // no match found: must be incorrect integrator type specified in configuration file
@@ -924,7 +953,7 @@ std::unique_ptr<GeodesicOutputHandler> Config::GetOutputHandler(const ConfigObje
 	DiagBitflag alldiags, DiagBitflag valdiag, std::string FirstLineInfo)
 {
 	// First populate a helper vector of strings of the names of all diagnostics
-	std::vector<std::string>diagstrings{ Utilities::GetDiagNameStrings(alldiags, valdiag) };
+	std::vector<std::string>diagstrings{ std::move(Utilities::GetDiagNameStrings(alldiags, valdiag)) };
 
 	// DEFAULTS
 	std::unique_ptr<GeodesicOutputHandler> TheHandler{ new GeodesicOutputHandler("","","",diagstrings)};
@@ -961,7 +990,7 @@ std::unique_ptr<GeodesicOutputHandler> Config::GetOutputHandler(const ConfigObje
 		std::string TimeStampStr{ "" };
 		if (TimeStamp)
 		{
-			TimeStampStr = Utilities::GetTimeStampString();
+			TimeStampStr = std::move(Utilities::GetTimeStampString());
 		}
 
 		// Max number of geodesics to cache

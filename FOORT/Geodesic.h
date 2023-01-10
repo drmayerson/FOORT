@@ -70,33 +70,26 @@ public:
 	Geodesic(const Geodesic&) = delete;
 	Geodesic& operator=(const Geodesic&) = delete;
 
-	// Constructor which initializes the Geodesic
-	// Takes the following arguments which initialize the private member variables
-	// - ScreenIndex
-	// - Initial position
-	// - Initial velocity
+	// Constructor which creates the Geodesic object
+	// Takes the following arguments which initialize the private member variables that remain the same over all geodesics
 	// - Metric (pointer)
 	// - Source (pointer)
 	// - Diagnostic bitflag (& value Diagnostic bitflag) (used to create a vector of new instances of Diagnostics)
 	// - Termination bitflag (used to create a vector of new instances of Terminations)
 	// - Geodesic integrator function to use for integrating geodesic equation
-	Geodesic(ScreenIndex scrindex, Point initpos, OneIndex initvel,
-		const Metric* const theMetric, const Source* const theSource,
+	Geodesic(const Metric* const theMetric, const Source* const theSource,
 		DiagBitflag diagbit, DiagBitflag valdiagbit,
 		TermBitflag termbit, GeodesicIntegratorFunc theIntegrator) : 
-		m_ScreenIndex{ scrindex },
-		m_CurrentPos { initpos }, m_CurrentVel{ initvel },
 		m_theMetric{ theMetric }, m_theSource{ theSource },
 		m_AllDiagnostics{ CreateDiagnosticVector(diagbit,valdiagbit,this) },
 		m_AllTerminations{ CreateTerminationVector(termbit,this) },
 		m_theIntegrator{ theIntegrator }
-	{
-		// Start: loop through all diagnostics to update at starting position
-		for (const auto& d : m_AllDiagnostics)
-		{
-			d->UpdateData();
-		}
-	}
+	{	}
+
+	// This initializes/resets the geodesic with a given ScreenIndex, initial position, and initial velocity
+	// Also resets all Diagnostics and Terminations, resets the TermCondition to Term::Continue,
+	// and puts the Geodesic back to lambda = 0.0.
+	void Reset(ScreenIndex scrindex, Point initpos, OneIndex initvel);
 
 	// This makes the Geodesic integrate itself one step; then the Geodesic loops through all Terminations and Diagnostics to update
 	Term Update();
@@ -118,15 +111,15 @@ public:
 
 private:
 	// These variables define its internal state
-	Term m_TermCond{Term::Continue}; // As long as this is Term::Continue, not done integrating yet
-	Point m_CurrentPos; // Current position
-	OneIndex m_CurrentVel; // Current proper velocity 
+	Term m_TermCond{Term::Uninitialized}; // As long as this is Term::Continue, not done integrating yet
+	Point m_CurrentPos{}; // Current position
+	OneIndex m_CurrentVel{}; // Current proper velocity 
 	real m_curLambda{ 0.0 }; // Current value of affine parameter (starts at 0.0)
 
 
 	// The Geodesic keeps track of what index it has been assigned;
 	// it outputs this information in its final output string
-	const ScreenIndex m_ScreenIndex;
+	ScreenIndex m_ScreenIndex{};
 
 	// These are const pointers (or const vectors of pointers) that contain all the information the Geodesic needs
 	const Metric* const m_theMetric; // Metric is needed to evaluate the geodesic equation

@@ -1,7 +1,7 @@
 #include "Metric.h" // we are defining the Metric functions here
 
 #include "InputOutput.h" // needed for ScreenOutput()
-#include "Integrators.h" // needed for the constant DERIVATIVE_hval
+#include "Integrators.h" // needed for Integrators::Derivative_hval
 
 #include <cmath> // needed for sqrt() and sin() etc (only on Linux)
 #include <algorithm> // needed for std::find
@@ -26,8 +26,8 @@ ThreeIndex Metric::getChristoffel_udd(const Point& p) const
 			// The metric does not have a symmetry in the coordinate coord, so we calculate the derivative of the metric
 			// wrt this coordinate by central difference
 			Point pShift{};
-			pShift[coord] = DERIVATIVE_hval;
-			metric_dd_der[coord] = (getMetric_dd(p + pShift) - getMetric_dd(p - pShift)) / (2 * DERIVATIVE_hval);
+			pShift[coord] = Integrators::Derivative_hval;
+			metric_dd_der[coord] = (getMetric_dd(p + pShift) - getMetric_dd(p - pShift)) / (2 * Integrators::Derivative_hval);
 		}
 	}
 

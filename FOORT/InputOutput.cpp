@@ -11,11 +11,27 @@
 // This is the output level; default is 1. Note: variable only accessible in this code file!
 static OutputLevel theOutputLevel{ OutputLevel::Level_1_PROC };
 
+// Frequency of messages during each integration loop.  Note: variable only accessible in this code file!
+static largecounter theLoopMessageFrequency{ LARGECOUNTER_MAX };
+
 // Set the output level
 void SetOutputLevel(OutputLevel theLvl)
 {
 	theOutputLevel = theLvl;
 }
+
+// Set the frequency of messages during integration loops
+void SetLoopMessageFrequency(largecounter thefreq)
+{
+	theLoopMessageFrequency = thefreq;
+}
+
+// Get the frequency of messages during integration loops
+largecounter GetLoopMessageFrequency()
+{
+	return theLoopMessageFrequency;
+}
+
 
 // Outputs line to screen console, contingent on it being allowed by the set outputlevel
 // Defaults are lvl = OutputLevel::Level_3_ALLDETAIL and newLine = true
@@ -60,6 +76,15 @@ GeodesicOutputHandler::GeodesicOutputHandler(std::string FilePrefix, std::string
 		m_WriteToConsole = true;
 }
 
+std::string GeodesicOutputHandler::getFullDescriptionStr() const
+{
+	// Descriptive string with all options
+	return "Output Handler: Basic (value diagnostic) file name: " + GetFileName(0, 1)
+		+ ", caching outputs: " + std::to_string(m_nrOutputsToCache)
+		+ ", geodesics per file: " + std::to_string(m_nrGeodesicsPerFile)
+		+ ", printing first line info: " + std::to_string(m_PrintFirstLineInfo);
+}
+
 void GeodesicOutputHandler::PrepareForOutput(largecounter nrOutputToCome)
 {
 	// If the output that is coming will put us over the caching limit, first write the cached data to file
@@ -84,7 +109,8 @@ void GeodesicOutputHandler::NewGeodesicOutput(largecounter index, std::vector<st
 	
 	// We put this current output in the cached data
 	// Note the offset by m_PrevCached
-	m_AllCachedData[m_PrevCached + index] = theOutput;
+	// Move semantics to avoid copying the entire vector of string
+	m_AllCachedData[m_PrevCached + index] = std::move(theOutput);
 }
 
 void GeodesicOutputHandler::OutputFinished()
@@ -127,8 +153,7 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 			// Starting a new file (for each diagnostic), so open it for the first time
 			for (int i = 0; i < nrdiags && !m_WriteToConsole; ++i)
 			{
-				std::string outputfile{ GetFileName(i,m_CurrentFullFiles + curfile) };
-				OpenForFirstTime(outputfile);
+				OpenForFirstTime( GetFileName(i, m_CurrentFullFiles + curfile) );
 			}
 		}
 
@@ -189,8 +214,7 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 				// We will be starting a new file (for each diagnostic), so open it for the first time
 				for (int i = 0; i < nrdiags && !m_WriteToConsole; ++i)
 				{
-					std::string outputfile{ GetFileName(i,m_CurrentFullFiles + curfile) };
-					OpenForFirstTime(outputfile);
+					OpenForFirstTime( GetFileName(i, m_CurrentFullFiles + curfile) );
 				}
 			}
 			else // curfile > nrfiles, so we just did the last file
@@ -215,7 +239,12 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 			lastfilecount = 0;
 		}
 		// Set how many geodesics have already been written to in the current (non-full) file
-		m_CurrentGeodesicsInFile = lastfilecount;
+		// If nrfiles == 1, then we have written more into the already existing file, so we increment
+		// m_CurrentGeodesicsInFile by lastfilecount; otherwise m_CurrentGeodesicsInFile is equal to the lastfilecount
+		if (nrfiles == 1)
+			m_CurrentGeodesicsInFile += lastfilecount;
+		else
+			m_CurrentGeodesicsInFile = lastfilecount;
 
 		ScreenOutput("Done writing cached geodesic output to file(s).", OutputLevel::Level_2_SUBPROC);
 	} // end if (!m_WriteToConsole)
@@ -262,7 +291,7 @@ std::string GeodesicOutputHandler::GetFileName(int diagnr, unsigned short filenr
 	return FullFileName;
 }
 
-void GeodesicOutputHandler::OpenForFirstTime(std::string filename)
+void GeodesicOutputHandler::OpenForFirstTime(const std::string& filename)
 {
 	// We check here to see if the files are being put in a (sub)directory;
 	// if so, we create the directory/directories first to make sure creating/opening the file
@@ -276,7 +305,7 @@ void GeodesicOutputHandler::OpenForFirstTime(std::string filename)
 	}
 
 	// Open the file, effectively overwriting the file
-	std::ofstream outf{ filename, std::ios::out | std::ios::trunc };
+	std::ofstream outf{ filename, std::ios::out | std::ios::trunc};
 
 	if (!outf) // Trigger writing to console if failed to open file
 	{

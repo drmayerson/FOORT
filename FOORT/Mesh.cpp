@@ -678,10 +678,12 @@ void SquareSubdivisionMeshV2::GeodesicFinished(largecounter index, std::vector<r
 	// "Concurrently accessing or modifying different elements is safe." (from cplusplus.com std::vector::operator[])
 	
 	// Set this pixel's values to the returned values
-	m_CurrentPixelQueue[index]->DiagValue = finalValues;
+	m_CurrentPixelQueue[index]->DiagValue = std::move(finalValues);
 	// This pixels is now done
 	m_CurrentPixelQueueDone[index] = true;
 }
+
+
 
 // Note: definition of SquareSubdivisionMeshV2::EndCurrentLoop() is below
 
@@ -699,11 +701,12 @@ std::string SquareSubdivisionMeshV2::getFullDescriptionStr() const
 		+ std::to_string(m_MaxSubdivide) + "; pixels subdivided per iteration: " + std::to_string(m_IterationPixels)
 		+ "; max total pixels: " + (m_InfinitePixels ? "infinite" : std::to_string(m_MaxPixels))
 		+ "; if pixel is initially subdivided, will continue to max: " + std::to_string(m_InitialSubDividideToFinal)
+		+ "; row/column size: " + std::to_string(m_RowColumnSize)
 		+ ")";
 }
 
 // Helper (private) member function
-pixelcoord SquareSubdivisionMeshV2::ExpInt(int base, int exp)
+pixelcoord SquareSubdivisionMeshV2::ExpInt(int base, int exp) const
 {
 	// Helper function to exponentiate ints; note: the result may be larger than fits in an int, but
 	// this is only called with int arguments
@@ -837,7 +840,7 @@ void SquareSubdivisionMeshV2::UpdateAllWeights()
 }
 
 
-SquareSubdivisionMeshV2::PixelInfo* SquareSubdivisionMeshV2::GetUp(PixelInfo* p, int subdiv)
+SquareSubdivisionMeshV2::PixelInfo* SquareSubdivisionMeshV2::GetUp(PixelInfo* p, int subdiv) const
 {
 	// p does not exist, it does not have the necessary neighbor,
 	// or the neighbor lives at a subdivision level that is too low
@@ -862,7 +865,7 @@ SquareSubdivisionMeshV2::PixelInfo* SquareSubdivisionMeshV2::GetUp(PixelInfo* p,
 	}	
 }
 
-SquareSubdivisionMeshV2::PixelInfo* SquareSubdivisionMeshV2::GetDown(PixelInfo* p, int subdiv)
+SquareSubdivisionMeshV2::PixelInfo* SquareSubdivisionMeshV2::GetDown(PixelInfo* p, int subdiv) const
 {
 	// p does not exist, it does not have the necessary neighbor,
 	// or the neighbor lives at a subdivision level that is too low
@@ -885,7 +888,7 @@ SquareSubdivisionMeshV2::PixelInfo* SquareSubdivisionMeshV2::GetDown(PixelInfo* 
 	}
 }
 
-SquareSubdivisionMeshV2::PixelInfo* SquareSubdivisionMeshV2::GetLeft(PixelInfo* p, int subdiv)
+SquareSubdivisionMeshV2::PixelInfo* SquareSubdivisionMeshV2::GetLeft(PixelInfo* p, int subdiv) const
 {
 	// p does not exist, it does not have the necessary neighbor,
 	// or the neighbor lives at a subdivision level that is too low
@@ -910,7 +913,7 @@ SquareSubdivisionMeshV2::PixelInfo* SquareSubdivisionMeshV2::GetLeft(PixelInfo* 
 	}
 }
 
-SquareSubdivisionMeshV2::PixelInfo* SquareSubdivisionMeshV2::GetRight(PixelInfo* p, int subdiv)
+SquareSubdivisionMeshV2::PixelInfo* SquareSubdivisionMeshV2::GetRight(PixelInfo* p, int subdiv) const
 {
 	// p does not exist, it does not have the necessary neighbor,
 	// or the neighbor lives at a subdivision level that is too low

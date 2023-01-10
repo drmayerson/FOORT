@@ -9,7 +9,7 @@
 
 #include "Geometry.h" // for basic tensor objects
 
-#include <string_view> // std::string_view used in ScreenOutput()
+#include <string_view> // std::string_view
 #include <iostream> // needed for file and console output
 #include <fstream> // needed for file ouput
 #include <string> // std::string used in various places
@@ -36,6 +36,10 @@ void SetOutputLevel(OutputLevel theLvl);
 
 // Outputs line to screen console), contingent on it being allowed by the set outputlevel
 void ScreenOutput(std::string_view theOutput, OutputLevel lvl = OutputLevel::Level_3_ALLDETAIL, bool newLine = true);
+
+// Set and Get for the loop message frequency (messages indicating progress during each integration loop)
+void SetLoopMessageFrequency(largecounter thefreq);
+largecounter GetLoopMessageFrequency();
 
 
 /////////////////////
@@ -75,13 +79,16 @@ public:
 	// this means we will write all remaining cached output to file
 	void OutputFinished();
 
+	// Returns full description string of output handler
+	std::string getFullDescriptionStr() const;
+
 private:
 	// Helper function: write everything that is cached to file now (clear the cache)
 	void WriteCachedOutputToFile();
 
 	// Helper function: open the file with name filename for the first time, preparing it to write
 	// This will effectively clear this file of any pre-existing content.
-	void OpenForFirstTime(std::string filename);
+	void OpenForFirstTime(const std::string& filename);
 
 	// Helper function: return the full file name for the n-th output file
 	// for the Diagnostic diagnr (this is an entry in m_DiagNames)

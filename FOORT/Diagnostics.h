@@ -66,6 +66,12 @@ public:
 	Diagnostic(Geodesic* const theGeodesic) : m_OwnerGeodesic{ theGeodesic }
 	{}
 
+	// Resets Diagnostic object. This is called when the owner Geodesic is reset in order to start integrating
+	// a new geodesic.
+	// The base class implementation only resets m_StepsSinceUpdated
+	// Descendants can override this if they need to reset additional internal variables
+	virtual void Reset();
+
 	// virtual destructor to ensure correct destruction of descendants
 	virtual ~Diagnostic() = default;
 
@@ -127,6 +133,9 @@ public:
 	// Basic constructor only passes on Geodesic pointer to base class constructor
 	FourColorScreenDiagnostic(Geodesic* const theGeodesic) : Diagnostic(theGeodesic) {}
 
+	// Reset needs to be overridden in order to also reset m_quadrant
+	void Reset() final;
+
 	// Sets the quadrant to the appropriate value, IF the boundary sphere has been reached
 	void UpdateData() override;
 
@@ -158,6 +167,9 @@ class GeodesicPositionDiagnostic final : public Diagnostic
 public:
 	// Basic constructor only passes on Geodesic pointer to base class constructor
 	GeodesicPositionDiagnostic(Geodesic* const theGeodesic) : Diagnostic(theGeodesic) {}
+
+	// Override Reset to also clear m_AllSavedPoints
+	void Reset() final;
 
 	// Stores the current position of the geodesic
 	void UpdateData() final;
@@ -192,6 +204,9 @@ class EquatorialPassesDiagnostic final : public Diagnostic
 public:
 	// Basic constructor only passes on Geodesic pointer to base class constructor
 	EquatorialPassesDiagnostic(Geodesic* const theGeodesic) : Diagnostic(theGeodesic) {}
+
+	// Override Reset to also reset m_EquatPasses and m_PrevTheta
+	void Reset() final;
 
 	// Checks to see if we have a new cross over the equatorial plane
 	void UpdateData() final;
@@ -229,6 +244,12 @@ class MyDiagnostic final : public Diagnostic // good practice to make the class 
 {
 	// constructor must at least take and pass along the const pointer to the owner Geodesic
 	MyDiagnostic(Geodesic* const theGeodesic) : Diagnostic(theGeodesic) {}
+
+	// If you have MyDiagnostic-specific member variables, then they probably need to be reset at the beginning
+	// of integration for each new geodesic; in that case, you need to override Reset() to do so.
+	// Note: make sure to call the base class implementation Diagnostic::Reset()
+	// from within your implementation of MyDiagnostic::Reset(), so that the base class internal variable is also reset!
+	void Reset() final;
 
 	// This is the heart of the Diagnostic: here the Diagnostic updates its internal state according to
 	// the owner Geodesic's current state

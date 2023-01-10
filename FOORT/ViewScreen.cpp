@@ -95,7 +95,7 @@ void ViewScreen::EndCurrentLoop()
 void ViewScreen::GeodesicFinished(largecounter index, std::vector<real> finalValues)
 {
 	// pass on information to the Mesh
-	m_theMesh->GeodesicFinished(index, finalValues);
+	m_theMesh->GeodesicFinished(index, std::move(finalValues));
 }
 
 std::string ViewScreen::getFullDescriptionStr() const
