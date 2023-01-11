@@ -368,4 +368,118 @@ std::string RasheedLarsenMetric::getFullDescriptionStr() const
 		+ (m_rLogScale ? "using logarithmic r coord" : "using normal r coord") + ")";
 }
 
+
+/// <summary>
+/// JohannsenMetric functions (implementation by Seppe Staelens)
+/// </summary>
+
+// Constructor, must be passed the five Joh parameters and whether we are using a logarithmic radial scale
+// We always have a M = 1 BH
+JohannsenMetric::JohannsenMetric(real aParam, real alpha13Param, real alpha22Param, real alpha52Param, real eps3Param, bool rLogScale)
+	: m_aParam{ aParam },
+	m_alpha13Param{ alpha13Param },
+	m_alpha22Param{ alpha22Param },
+	m_alpha52Param{ alpha52Param },
+	m_eps3Param{ eps3Param },
+	// initialize base class with Kerr horizon radius and rLogScale
+	SphericalHorizonMetric(1 + sqrt(1 - aParam * aParam), rLogScale) // initialize base class with horizon radius and rLogScale
+{
+	// Make sure we are in four spacetime dimensions
+	if constexpr (dimension != 4)
+	{
+		ScreenOutput("Johannsen is only defined in four dimensions!", OutputLevel::Level_0_WARNING);
+	}
+
+	// Check to see if the parameter values are within the correct ranges
+	real horizon_radius = 1.0 + sqrt(1.0 - m_aParam * m_aParam);
+	if (m_aParam * m_aParam > 1.0
+		|| m_alpha52Param <= -horizon_radius * horizon_radius
+		|| m_eps3Param <= -horizon_radius * horizon_radius * horizon_radius
+		|| m_alpha13Param <= -horizon_radius * horizon_radius * horizon_radius)
+	{
+		ScreenOutput("Johannsen metric parameters outside of allowed range! Parameters given: a = " + std::to_string(m_aParam) + ", alpha13 = " + std::to_string(m_alpha13Param)
+			+ ", alpha22 = " + std::to_string(m_alpha22Param) + ", alpha52 = " + std::to_string(m_alpha52Param) + ", epsilon3 = " + std::to_string(m_eps3Param) + ".",
+			OutputLevel::Level_0_WARNING);
+	}
+
+	// Johannsen has a Killing vector along t and phi, so we initialize the symmetries accordingly
+	m_Symmetries = { 0,3 };
+}
+
+TwoIndex JohannsenMetric::getMetric_dd(const Point& p) const
+{
+	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
+	real r = m_rLogScale ? exp(p[1]) : p[1];
+
+	real theta = p[2];
+	real sint = sin(theta);
+	real cost = cos(theta);
+
+	real A1 = 1. + m_alpha13Param / (r * r * r);
+	real A2 = 1. + m_alpha22Param / (r * r);
+	real A5 = 1. + m_alpha52Param / (r * r);
+	real eps_f = m_eps3Param / r;
+
+	real rho2 = r * r + m_aParam * m_aParam * cost * cost + eps_f; // Sigma tilde in paper
+	real delta = r * r + m_aParam * m_aParam - 2. * r;
+
+	// Covariant metric elements
+	real g00 = -rho2 * (delta - m_aParam * m_aParam * A2 * A2 * sint * sint) / pow((r * r + m_aParam * m_aParam) * A1 - m_aParam * m_aParam * A2 * sint * sint, 2.);
+	real g11 = rho2 / (delta * A5);
+	real g22 = rho2;
+	real g33 = rho2 * sint * sint * (pow((r * r + m_aParam * m_aParam) * A1, 2.) - m_aParam * m_aParam * delta * sint * sint) / pow((r * r + m_aParam * m_aParam) * A1 - m_aParam * m_aParam * A2 * sint * sint, 2.);
+	real g03 = -m_aParam * ((r * r + m_aParam * m_aParam) * A1 * A2 - delta) * rho2 * sint * sint / pow((r * r + m_aParam * m_aParam) * A1 - m_aParam * m_aParam * A2 * sint * sint, 2.);
+
+	// If the log scale is set on, the true coordinate we are calculating the metric in is u = log(r), so dr = r du
+	if (m_rLogScale)
+	{
+		g11 *= (r * r);
+	}
+
+	return TwoIndex{ {{g00, 0,0, g03 }, {0,g11,0,0}, {0,0,g22,0},{g03,0,0,g33}} };
+}
+
+TwoIndex JohannsenMetric::getMetric_uu(const Point& p) const
+{
+	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
+	real r = m_rLogScale ? exp(p[1]) : p[1];
+
+	real r2 = r * r;
+
+	real theta = p[2];
+	real sint = sin(theta);
+	real cost = cos(theta);
+
+	real A1 = 1. + m_alpha13Param / (r * r * r);
+	real A2 = 1. + m_alpha22Param / (r * r);
+	real A5 = 1. + m_alpha52Param / (r * r);
+	real eps_f = m_eps3Param / r;
+
+	real rho2 = r * r + m_aParam * m_aParam * cost * cost + eps_f; // Sigma tilde in paper
+	real delta = r * r + m_aParam * m_aParam - 2. * r;
+
+	// Contravariant metric elements
+	real g00 = (-1. * pow((r * r + m_aParam * m_aParam) * A1, 2.) + m_aParam * m_aParam * delta * sint * sint) / (delta * rho2);
+	real g11 = delta * A5 / rho2;
+	real g22 = 1. / rho2;
+	real g33 = (-m_aParam * m_aParam * A2 * A2 * sint * sint + delta) / (delta * rho2 * sint * sint);
+	real g03 = -m_aParam * (A2 * A1 * (r * r + m_aParam * m_aParam) - delta) / (delta * rho2);
+
+	// If the log scale is set on, the true coordinate we are calculating the metric in is u = log(r), so , so dr = r du
+	if (m_rLogScale)
+	{
+		g11 *= 1.0 / (r * r);
+	}
+
+	return TwoIndex{ {{g00, 0,0, g03 }, {0,g11,0,0}, {0,0,g22,0},{g03,0,0,g33}} };
+}
+
+// Johannsen description string; also gives a parameter value and whether we are using logarithmic radial coordinate
+std::string JohannsenMetric::getFullDescriptionStr() const
+{
+	return "Johannsen (a = " + std::to_string(m_aParam) + ", alpha13 = " + std::to_string(m_alpha13Param)
+		+ ", alpha22 = " + std::to_string(m_alpha22Param) + ", alpha52 = " + std::to_string(m_alpha52Param) + ", epsilon3 = " + std::to_string(m_eps3Param) + ", "
+		+ (m_rLogScale ? "using logarithmic r coord" : "using normal r coord") + ")";
+}
+
 //// (New Metric classes can define their member functions here)

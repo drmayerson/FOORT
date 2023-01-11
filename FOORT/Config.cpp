@@ -216,6 +216,51 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 			// All settings complete; create Metric object!
 			TheMetric = std::unique_ptr<Metric>(new RasheedLarsenMetric(RLm, RLa, RLp, RLq, rLogScale ) );
 		}
+		else if (MetricName == "johannsen")
+		{
+			// The Johannsen black hole (implementation by Seppe Staelens)
+
+			// Look up five parameters of BH
+			double JOHa{ 0.7 };
+			double JOHa13{ 2.0 };
+			double JOHa22{ 0. };
+			double JOHa52{ 0. };
+			double JOHe3{ 0. };
+			if (!MetricSettings.lookupValue("a", JOHa))
+			{
+				ScreenOutput("Johannsen: no value for a given. Using default: " + std::to_string(JOHa) + ".",
+					Output_Other_Default);
+			}
+			if (!MetricSettings.lookupValue("alpha13", JOHa13))
+			{
+				ScreenOutput("Johannsen: no value for alpha13 given. Using default: " + std::to_string(JOHa13) + ".",
+					Output_Other_Default);
+			}
+			if (!MetricSettings.lookupValue("alpha22", JOHa22))
+			{
+				ScreenOutput("Johannsen: no value for alpha22 given. Using default: " + std::to_string(JOHa22) + ".",
+					Output_Other_Default);
+			}
+			if (!MetricSettings.lookupValue("alpha52", JOHa52))
+			{
+				ScreenOutput("Johannsen: no value for alpha52 given. Using default: " + std::to_string(JOHa52) + ".",
+					Output_Other_Default);
+			}
+			if (!MetricSettings.lookupValue("epsilon3", JOHe3))
+			{
+				ScreenOutput("Johannsen: no value for epsilon3 given. Using default: " + std::to_string(JOHe3) + ".",
+					Output_Other_Default);
+			}
+
+
+			// Second setting to look up: using a logarithmic r coordinate or not.
+			// Don't need to output message if setting not found
+			bool rLogScale{ false };
+			MetricSettings.lookupValue("RLogScale", rLogScale);
+
+			// All settings complete; create Metric object!
+			TheMetric = std::unique_ptr<Metric>(new JohannsenMetric(JOHa, JOHa13, JOHa22, JOHa52, JOHe3, rLogScale));
+		}
 		//// METRIC ADD POINT B ////
 		// Add an else if clause to check for your new Metric object!
 		// To look for additional options in the metric configuration, use

@@ -113,6 +113,7 @@ public:
 	std::string getFullDescriptionStr() const final;
 };
 
+// Rasheed-Larsen black hole
 class RasheedLarsenMetric final : public SphericalHorizonMetric
 {
 private:
@@ -135,6 +136,32 @@ public:
 	// The override of the description string getter
 	std::string getFullDescriptionStr() const final;
 };
+
+// Johanssen black hole metric (implementation by Seppe Staelens)
+class JohannsenMetric final : public SphericalHorizonMetric 
+{
+private:
+	// Johannsen up to first order in deviation function is specified by five parameters (if M=1)
+	const real m_aParam;
+	const real m_alpha13Param;
+	const real m_alpha22Param;
+	const real m_alpha52Param;
+	const real m_eps3Param;
+public:
+	// No default constructor allowed, must specify parameters
+	JohannsenMetric() = delete;
+
+	// Constructor setting parameter a
+	JohannsenMetric(real aParam, real alpha13Param, real alpha22Param, real alpha52Param, real eps3Param, bool rLogScale = false);
+
+	// The override of the basic metric getter functions
+	TwoIndex getMetric_dd(const Point& p) const final;
+	TwoIndex getMetric_uu(const Point& p) const final;
+
+	// The override of the description string getter
+	std::string getFullDescriptionStr() const final;
+};
+
 
 //// METRIC ADD POINT A ////
 // Declare your new Metric class here, publically inheriting from the base class Metric
