@@ -337,10 +337,6 @@ int main(int argc, char* argv[])
                 theOutputHandler->PrepareForOutput(static_cast<largecounter>(CurNrGeod));
             }
 
-            /////////
-            // BEGIN GEODESIC DISTRIBUTION METHOD NO INTERNAL THREAD CACHING
-            ////////
-
             // Create one Geodesic instance per thread to work with
             Geodesic theGeod(theM.get(), theS.get(), // Metric and Source (non-owner pointers!)
                 AllDiags, ValDiag,      // Bitflags for Diagnostics
@@ -404,74 +400,6 @@ int main(int argc, char* argv[])
                 theOutputHandler->NewGeodesicOutput(static_cast<largecounter>(index), std::move(theGeod.getAllOutputStr()));
 
             } // end parallel distributed for loop over all geodesics to integrate
-
-            /////////
-            // END GEODESIC INTEGRATION METHOD NO INTERNAL THREAD CACHING
-            ////////
-
-            /////////
-            // UNUSED - METHOD WITH INTERNAL THREAD CACHING
-            ////////
-            /*
-
-            // Cache all geodesic initial conditions first
-            int mythread = omp_get_thread_num();
-            int totalthreads = omp_get_num_threads();
-            ThreadIntermediateCacher myCacher{ CurNrGeod / totalthreads  };
-            for (int i = 0; i < CurNrGeod; ++i)
-            {
-                if (i % totalthreads == mythread)
-                {
-                    int tempindex{};
-                    Point temppos{};
-                    OneIndex tempvel{};
-                    ScreenIndex tempscrind{};
-#pragma omp critical
-                    theView->SetNewInitialConditions(tempindex, temppos, tempvel, tempscrind);
-
-                    myCacher.CacheInitialConditions(tempindex, temppos, tempvel, tempscrind);
-                }
-            }
-
-            // Now loop through integrating all geodesics (no pragma omp critical needed!)
-            int nrThreadGeod{ myCacher.GetNrInitialConds() };
-            for (int i = 0; i < nrThreadGeod; ++i)
-            {
-                int tempindex{};
-                Point temppos{};
-                OneIndex tempvel{};
-                ScreenIndex tempscrind{};
-                myCacher.SetNewInitialConditions(tempindex, temppos, tempvel, tempscrind);
-                Geodesic TheGeod(tempscrind, temppos, tempvel, theM.get(), theS.get(), AllDiags, ValDiag, AllTerms, theIntegrator);
-
-                // Loop geodesic until finished
-                while (TheGeod.GetTermCondition() == Term::Continue)
-                {
-                    TheGeod.Update();
-                }
-
-                myCacher.CacheGeodesicOutput(tempindex, TheGeod.GetDiagnosticFinalValue(), TheGeod.getAllOutputStr());
-            }
-
-            // All geodesics have been integrated. De-cache all geodesic outputs
-            if (nrThreadGeod != myCacher.GetNrGeodesicOutputs())
-                ScreenOutput("Did not get equal number of outputs!", OutputLevel::Level_0_WARNING);
-            for (int i = 0; i < nrThreadGeod; ++i)
-            {
-                int tempindex{};
-                std::vector<real> tempvals{};
-                std::vector<std::string> tempoutput{};
-                myCacher.SetGeodesicOutput(tempindex, tempvals, tempoutput);
-#pragma omp critical
-                {
-                    theView->GeodesicFinished(tempindex, tempvals);
-                    theOutputHandler->NewGeodesicOutput(tempoutput);
-                }
-            }
-            */
-            /////////
-            // END (UNUSED) METHOD WITH INTERNAL THREAD CACHING
-            ////////
 
             
 #pragma omp barrier // To make sure all threads are done before we output that we are done!

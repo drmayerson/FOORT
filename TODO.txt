@@ -1,8 +1,9 @@
 TODO and wishlist:
 ------------------
 
-*** RECENTLY DONE:
+*** STILL TO INVESTIGATE:
 X Pre-allocating output vector slower?? --> benchmark tests with push vs pre-allocate+random access in MULTIPLE threads!
+http://igoro.com/archive/gallery-of-processor-cache-effects/
 
 
 *** TOP PRIORITY:
@@ -16,8 +17,6 @@ X Pre-allocating output vector slower?? --> benchmark tests with push vs pre-all
 --------------------------------
 
 *** PRIORITY:
-
---- ViewScreen procedures: flat to locally flat; stationary/axisymmetric implementation
 
 --------------------------------
 
@@ -42,7 +41,7 @@ X Pre-allocating output vector slower?? --> benchmark tests with push vs pre-all
 X (SquareSubdivisionMesh is obsolete; Index is const in V2) SquareSubdivisionMesh::PixelInfo::Index is not const but should be. However, if const, then operations between m_CurrentPixelQueue and m_AllPixels need to implement move instead of copy operations! (Unknown if this will introduce more or less overhead?!)
 
 ****** ViewScreen.h & ViewScreen.cpp
---- support for other types of geodesics; correct/general initialization
+--- support for other types of geodesics
 
 --------------------------------
 

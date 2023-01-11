@@ -73,6 +73,44 @@ using FourIndex = std::array<ThreeIndex, dimension>;
 /// <summary>
 /// PRINTING TENSORS TO STRING
 /// </summary>
+ 
+// Base case for single index tensor of unsigned integers (ScreenIndex).
+// We do not want toString(ScreenIndex) to convert its entries to reals and use the
+// implementation for a single index tensor of reals, because we do not want decimal points in our
+// string for the ints!
+template<size_t TensorDim>
+std::string toString(const std::array<largecounter, TensorDim>& theTensor)
+{
+	std::string theStr{ "(" }; // no spaces for the innermost brackets
+	for (int i = 0; i < TensorDim - 1; ++i)
+	{
+		// Here we use the std::to_string to convert the real to string
+		theStr += std::to_string(theTensor[i]);
+		theStr += ", ";
+	}
+	theStr += std::to_string(theTensor[TensorDim - 1]);
+	theStr += ")"; // no spaces for the innermost brackets
+
+	return theStr;
+}
+
+// Base case for single index tensor of reals (Point, OneIndex, ScreenPoint)
+template<size_t TensorDim>
+std::string toString(const std::array<real, TensorDim>& theTensor)
+{
+	std::string theStr{ "(" }; // no spaces for the innermost brackets
+
+	for (int i = 0; i < TensorDim - 1; ++i)
+	{
+		// Here we use the std::to_string to convert the real to string
+		theStr += std::to_string(theTensor[i]);
+		theStr += ", ";
+	}
+	theStr += std::to_string(theTensor[TensorDim - 1]);
+	theStr += ")"; // no spaces for the innermost brackets
+
+	return theStr;
+}
 
 // General printing function for a tensor (TwoIndex, ThreeIndex, FourInedex);
 // recursively calls the lower rank tensor to print itself
@@ -89,44 +127,6 @@ std::string toString(const std::array<Tensor, TensorDim> &theTensor)
 	theStr += toString(theTensor[TensorDim - 1]); // the last element doesn't have a comma after it
 
 	theStr += " )"; // All but the innermost brackets have an extra space padding the bracket
-
-	return theStr;
-}
-
-// Base case for single index tensor of reals (Point, OneIndex, ScreenPoint)
-template<size_t TensorDim>
-std::string toString(const std::array<real, TensorDim> &theTensor)
-{
-	std::string theStr{"("}; // no spaces for the innermost brackets
-
-	for (int i = 0; i < TensorDim - 1; ++i)
-	{
-		// Here we use the std::to_string to convert the real to string
-		theStr += std::to_string(theTensor[i]);
-		theStr += ", ";
-	}
-	theStr += std::to_string(theTensor[TensorDim - 1]);
-	theStr += ")"; // no spaces for the innermost brackets
-
-	return theStr;
-}
-
-// Base case for single index tensor of unsigned integers (ScreenIndex).
-// We do not want toString(ScreenIndex) to convert its entries to reals and use the above
-// implementation for a single index tensor of reals, because we do not want decimal points in our
-// string for the ints!
-template<size_t TensorDim>
-std::string toString(const std::array<largecounter, TensorDim>& theTensor)
-{
-	std::string theStr{"("}; // no spaces for the innermost brackets
-	for (int i = 0; i < TensorDim - 1; ++i)
-	{
-		// Here we use the std::to_string to convert the real to string
-		theStr += std::to_string(theTensor[i]);
-		theStr += ", ";
-	}
-	theStr += std::to_string(theTensor[TensorDim - 1]);
-	theStr += ")"; // no spaces for the innermost brackets
 
 	return theStr;
 }
