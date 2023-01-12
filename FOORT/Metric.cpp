@@ -444,8 +444,6 @@ TwoIndex JohannsenMetric::getMetric_uu(const Point& p) const
 	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
 	real r = m_rLogScale ? exp(p[1]) : p[1];
 
-	real r2 = r * r;
-
 	real theta = p[2];
 	real sint = sin(theta);
 	real cost = cos(theta);
@@ -481,5 +479,158 @@ std::string JohannsenMetric::getFullDescriptionStr() const
 		+ ", alpha22 = " + std::to_string(m_alpha22Param) + ", alpha52 = " + std::to_string(m_alpha52Param) + ", epsilon3 = " + std::to_string(m_eps3Param) + ", "
 		+ (m_rLogScale ? "using logarithmic r coord" : "using normal r coord") + ")";
 }
+
+/// <summary>
+/// MankoNovikovMetric functions (implementation by Seppe Staelens)
+/// </summary>
+
+// Constructor, must be passed the two MaNo parameters and whether we are using a logarithmic radial scale
+// We always have a M = 1 BH; the parameter a gives the angular momentum a = J/M^2
+// The horizon is at r = M + k
+MankoNovikovMetric::MankoNovikovMetric(real aParam, real alpha3Param, bool rLogScale)
+	: m_aParam{ aParam },
+	m_alpha3Param{ alpha3Param },
+	m_alphaParam{ (aParam == 0.0) ? 0.0 : (-1. + sqrt(1. - aParam * aParam)) / aParam },
+	m_kParam{ sqrt(1. - aParam * aParam) },
+	// initialize base class with Kerr horizon radius and rLogScale
+	SphericalHorizonMetric(1 + sqrt(1. - aParam * aParam), rLogScale) // initialize base class with horizon radius and rLogScale
+{
+	// Make sure we are in four spacetime dimensions
+	if constexpr (dimension != 4)
+	{
+		ScreenOutput("Manko-Novikov is only defined in four dimensions!", OutputLevel::Level_0_WARNING);
+	}
+
+	// Check to see if the parameter values are within the correct ranges
+	// Not applicable to this metric
+
+	// Manko-Novikov BH has a Killing vector along t and phi, so we initialize the symmetries accordingly
+	m_Symmetries = { 0,3 };
+}
+
+TwoIndex MankoNovikovMetric::getMetric_dd(const Point& p) const
+{
+
+	// spherical coordinates
+	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
+	real r = m_rLogScale ? exp(p[1]) : p[1];
+
+	real theta = p[2];
+	real sint = sin(theta);
+	real cost = cos(theta);
+
+	// auxiliary functions
+	real xx = (r - 1.) / m_kParam;
+	real yy = cost;
+
+	real R = sqrt(xx * xx + yy * yy - 1.);
+
+	real P1 = xx * yy / R;
+	real P2 = 0.5 * (3. * xx * xx * yy * yy / (R * R) - 1.);
+	real P3 = 0.5 * (5. * pow(xx * yy / R, 3.) - 3. * xx * yy / R);
+	real P4 = 0.125 * (35. * pow(xx * yy / R, 4.) - 30. * xx * xx * yy * yy / (R * R) + 3.);
+
+	real aa = -m_alphaParam * exp(2. * m_alpha3Param * (1. - (xx - yy) * (1. / R + P1 / (R * R) + P2 / (R * R * R) + P3 / (R * R * R * R))));
+	real bb = m_alphaParam * exp(2. * m_alpha3Param * (-1. + (xx + yy) * (1. / R - P1 / (R * R) + P2 / (R * R * R) - P3 / (R * R * R * R))));
+
+	real AA = (xx * xx - 1.) * (1. + aa * bb) * (1. + aa * bb) - (1. - yy * yy) * (bb - aa) * (bb - aa);
+	real BB = pow((xx + 1. + (xx - 1.) * aa * bb), 2.) + pow(((1. + yy) * aa + (1. - yy) * bb), 2.);
+	real CC = (xx * xx - 1.) * (1. + aa * bb) * (bb - aa - yy * (aa + bb)) + (1. - yy * yy) * (bb - aa) * (1. + aa * bb + xx * (1. - aa * bb));
+
+	real psi = m_alpha3Param * P3 / (R * R * R * R);
+	real gamma_prime = 2. * m_alpha3Param * m_alpha3Param * (P4 * P4 - P3 * P3) / (pow(R, 8.)) + 2. * m_alpha3Param * (-yy + xx * P1 / R - yy * P2 / (R * R) + xx * P3 / (R * R * R)) / R;
+
+	real f = exp(2. * psi) * AA / BB;
+	real exp_2gamma = exp(2. * gamma_prime) * AA / ((xx * xx - yy * yy) * (1. - m_alphaParam * m_alphaParam) * (1. - m_alphaParam * m_alphaParam));
+	real omega = 2. * m_kParam * exp(-2. * psi) * CC / AA - 4. * m_kParam * m_alphaParam / (1. - m_alphaParam * m_alphaParam);
+
+	real rho_sq = (r - 1.) * (r - 1.) - m_kParam * m_kParam * cost * cost;
+	real delta = (r - 1.) * (r - 1.) - m_kParam * m_kParam;
+
+	// covariant metric components
+	real g00 = -f;
+	real g22 = exp_2gamma * rho_sq / f;
+	real g11 = g22 / delta;
+	real g33 = -f * omega * omega + delta * sint * sint / f;
+	real g03 = omega * f;
+
+	// If the log scale is set on, the true coordinate we are calculating the metric in is u = log(r), so dr = r du
+	if (m_rLogScale)
+	{
+		g11 *= (r * r);
+	}
+
+	return TwoIndex{ {{g00, 0,0, g03 }, {0,g11,0,0}, {0,0,g22,0},{g03,0,0,g33}} };
+}
+
+//done up to here
+
+TwoIndex MankoNovikovMetric::getMetric_uu(const Point& p) const
+{
+	// spherical coordinates
+	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
+	real r = m_rLogScale ? exp(p[1]) : p[1];
+
+	real theta = p[2];
+	real sint = sin(theta);
+	real cost = cos(theta);
+
+	// auxiliary functions
+	real xx = (r - 1.) / m_kParam;
+	real yy = cost;
+
+	real R = sqrt(xx * xx + yy * yy - 1.);
+
+	real P1 = xx * yy / R;
+	real P2 = 0.5 * (3. * xx * xx * yy * yy / (R * R) - 1.);
+	real P3 = 0.5 * (5. * pow(xx * yy / R, 3.) - 3. * xx * yy / R);
+	real P4 = 0.125 * (35. * pow(xx * yy / R, 4.) - 30. * xx * xx * yy * yy / (R * R) + 3.);
+
+	real aa = -m_alphaParam * exp(2. * m_alpha3Param * (1. - (xx - yy) * (1. / R + P1 / (R * R) + P2 / (R * R * R) + P3 / (R * R * R * R))));
+	real bb = m_alphaParam * exp(2. * m_alpha3Param * (-1. + (xx + yy) * (1. / R - P1 / (R * R) + P2 / (R * R * R) - P3 / (R * R * R * R))));
+
+	real AA = (xx * xx - 1.) * (1. + aa * bb) * (1. + aa * bb) - (1. - yy * yy) * (bb - aa) * (bb - aa);
+	real BB = pow((xx + 1. + (xx - 1.) * aa * bb), 2.) + pow(((1. + yy) * aa + (1. - yy) * bb), 2.);
+	real CC = (xx * xx - 1.) * (1. + aa * bb) * (bb - aa - yy * (aa + bb)) + (1. - yy * yy) * (bb - aa) * (1. + aa * bb + xx * (1. - aa * bb));
+
+	real psi = m_alpha3Param * P3 / (R * R * R * R);
+	real gamma_prime = 2. * m_alpha3Param * m_alpha3Param * (P4 * P4 - P3 * P3) / (pow(R, 8.)) + 2. * m_alpha3Param * (-yy + xx * P1 / R - yy * P2 / (R * R) + xx * P3 / (R * R * R)) / R;
+
+	real f = exp(2. * psi) * AA / BB;
+	real exp_2gamma = exp(2. * gamma_prime) * AA / ((xx * xx - yy * yy) * (1. - m_alphaParam * m_alphaParam) * (1. - m_alphaParam * m_alphaParam));
+	real omega = 2. * m_kParam * exp(-2. * psi) * CC / AA - 4. * m_kParam * m_alphaParam / (1. - m_alphaParam * m_alphaParam);
+
+	real rho_sq = (r - 1.) * (r - 1.) - m_kParam * m_kParam * cost * cost;
+	real delta = (r - 1.) * (r - 1.) - m_kParam * m_kParam;
+
+	// metric functions
+	real beta_d = omega * f;
+	real gamma_dd = -f * omega * omega + delta * sint * sint / f;
+	real beta_u = beta_d / gamma_dd;
+	real alpha_sq = beta_u * beta_d + f;
+
+	// contravariant metric components
+	real g00 = -1. / alpha_sq;
+	real g22 = f / (exp_2gamma * rho_sq);
+	real g11 = delta * g22;
+	real g33 = 1. / gamma_dd - beta_u * beta_u / alpha_sq;
+	real g03 = beta_u / alpha_sq;
+
+	// If the log scale is set on, the true coordinate we are calculating the metric in is u = log(r), so , so dr = r du
+	if (m_rLogScale)
+	{
+		g11 *= 1.0 / (r * r);
+	}
+
+	return TwoIndex{ {{g00, 0,0, g03 }, {0,g11,0,0}, {0,0,g22,0},{g03,0,0,g33}} };
+}
+
+// Manko-Novikov description string; also gives a parameter value and whether we are using logarithmic radial coordinate
+std::string MankoNovikovMetric::getFullDescriptionStr() const
+{
+	return "Manko-Novikov (a = " + std::to_string(m_aParam) + ", alpha3 = " + std::to_string(m_alpha3Param)
+		+ ", " + (m_rLogScale ? "using logarithmic r coord" : "using normal r coord") + ")";
+}
+
 
 //// (New Metric classes can define their member functions here)

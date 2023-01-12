@@ -162,6 +162,32 @@ public:
 	std::string getFullDescriptionStr() const final;
 };
 
+// Manko-Novikov metric (with angular momentum and M3 parameter turned on) (implementation by Seppe Staelens)
+class MankoNovikovMetric final : public SphericalHorizonMetric
+{
+private:
+	// Manko-Novikov metric with only alpha3 as symmetry breaking parameter
+	const real m_aParam;
+	const real m_alpha3Param;
+
+	// These are convenient derived quantities from a
+	const real m_alphaParam;
+	const real m_kParam;
+public:
+	// No default constructor allowed, must specify parameters
+	MankoNovikovMetric() = delete;
+
+	// Constructor setting parameter a and alpha3
+	MankoNovikovMetric(real aParam, real alpha3Param, bool rLogScale = false);
+
+	// The override of the basic metric getter functions
+	TwoIndex getMetric_dd(const Point& p) const final;
+	TwoIndex getMetric_uu(const Point& p) const final;
+
+	// The override of the description string getter
+	std::string getFullDescriptionStr() const final;
+};
+
 
 //// METRIC ADD POINT A ////
 // Declare your new Metric class here, publically inheriting from the base class Metric
