@@ -34,6 +34,7 @@ constexpr DiagBitflag Diag_None					{ 0b0000'0000'0000'0000 };
 constexpr DiagBitflag Diag_GeodesicPosition		{ 0b0000'0000'0000'0001 };
 constexpr DiagBitflag Diag_FourColorScreen		{ 0b0000'0000'0000'0010 };
 constexpr DiagBitflag Diag_EquatorialPasses 	{ 0b0000'0000'0000'0100 };
+constexpr DiagBitflag Diag_ClosestRadius		{ 0b0000'0000'0000'1000 };
 
 //// DIAGNOSTIC ADD POINT B ////
 // Add a DiagBitflag for your new diagnostic. Make sure you use a bitflag that has not been used before!
@@ -233,6 +234,30 @@ private:
 	real m_PrevTheta{ -1 };
 };
 
+struct ClosestRadiusOptions;
+class ClosestRadiusDiagnostic final : public Diagnostic
+{
+public:
+	ClosestRadiusDiagnostic(Geodesic* const theGeodesic) : Diagnostic(theGeodesic) {}
+
+	void Reset() final;
+
+	void UpdateData() final;
+
+	std::string getFullDataStr() const final;
+	std::vector<real> getFinalDataVal() const final;
+
+	real FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const final;
+
+	std::string getNameStr() const final;
+	std::string getFullDescriptionStr() const final;
+
+	static std::unique_ptr<ClosestRadiusOptions> DiagOptions;
+
+private:
+	real m_ClosestRadius{ -1 };
+};
+
 //// DIAGNOSTIC ADD POINT A1 ////
 // Declare your Diagnostic class here, inheriting from Diagnostic.
 // Sample code:
@@ -242,6 +267,7 @@ struct DiagnosticOptions;
 // class definition
 class MyDiagnostic final : public Diagnostic // good practice to make the class final unless descendant classes are possible
 {
+public:
 	// constructor must at least take and pass along the const pointer to the owner Geodesic
 	MyDiagnostic(Geodesic* const theGeodesic) : Diagnostic(theGeodesic) {}
 
@@ -320,6 +346,16 @@ public:
 	{}
 
 	const real Threshold;
+};
+
+struct ClosestRadiusOptions : public DiagnosticOptions
+{
+public:
+	ClosestRadiusOptions(bool rlog, UpdateFrequency thefrequency) : RLogScale{rlog},
+		DiagnosticOptions(thefrequency)
+	{}
+
+	const bool RLogScale;
 };
 
 //// DIAGNOSTIC ADD POINT A2 (optional) ////

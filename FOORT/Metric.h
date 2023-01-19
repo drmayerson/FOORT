@@ -199,6 +199,7 @@ public:
 /*
 class MyMetric final : public Metric // good practice to make the class final unless descendant classes are possible
 {
+public:
 	// Constructor which will be called to initialize all parameters of the metric
 	MyMetric(args...);
 

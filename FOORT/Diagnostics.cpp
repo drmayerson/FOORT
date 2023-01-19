@@ -61,6 +61,18 @@ DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag
 			std::rotate(theDiagVector.begin(), theDiagVector.begin() + 1, theDiagVector.end());
 		}
 	}
+	// Is ClosestRadius turned on?
+	if (diagflags & Diag_ClosestRadius)
+	{
+		theDiagVector.emplace_back(new ClosestRadiusDiagnostic{ theGeodesic });
+		// If this is the value Diagnostic, we want it to be the first Diagnostic.
+		// Since at the moment it is the last element of the array, we perform a simple rotate right
+		// on the current array to place the Diagnostic in the front.
+		if (valdiag & Diag_ClosestRadius)
+		{
+			std::rotate(theDiagVector.begin(), theDiagVector.begin() + 1, theDiagVector.end());
+		}
+	}
 
 	//// GEODESIC ADD POINT C ////
 	// Add an if statement that checks if your Diagnostic's DiagBitflag is turned on, if so add a new instance of it
@@ -393,6 +405,69 @@ std::string EquatorialPassesDiagnostic::getFullDescriptionStr() const
 {
 	// More descriptive string (with spaces)
 	return "Equatorial passes (threshold = " + std::to_string(DiagOptions->Threshold) + ")";
+}
+
+
+/// <summary>
+/// ClosestRadiusDiagnostic functions
+/// </summary>
+
+void ClosestRadiusDiagnostic::Reset()
+{
+	// Reset internal variables to default (initial) values; also call base class Reset function
+	m_ClosestRadius = -1;
+	Diagnostic::Reset();
+}
+
+void ClosestRadiusDiagnostic::UpdateData()
+{
+	// This checks to see if we want to update the data now (and increments the step counter if necessary)
+	if (DecideUpdate(DiagOptions->theUpdateFrequency))
+	{
+		// Get the current r coordinate of the geodesic
+		real curR{ DiagOptions->RLogScale ? exp(m_OwnerGeodesic->getCurrentPos()[1]) : m_OwnerGeodesic->getCurrentPos()[1] };
+
+		// Update the closest radius if it is currently < 0 (indicating the first step of the geodesic)
+		// or if we have reached a new closest radius
+		if (m_ClosestRadius < 0 || curR < m_ClosestRadius)
+			m_ClosestRadius = curR;
+	}
+
+	// If the geodesic is finished integrating and we finish inside the horizon, the geodesic will reach r = 0!
+	if (m_OwnerGeodesic->getTermCondition() == Term::Horizon)
+	{
+		m_ClosestRadius = 0.0;
+	}
+}
+
+std::string ClosestRadiusDiagnostic::getFullDataStr() const
+{
+	// Returns a string of closest radius
+	return std::to_string(m_ClosestRadius);
+}
+
+std::vector<real> ClosestRadiusDiagnostic::getFinalDataVal() const
+{
+	// Simple vector of size one containing the closest radius
+	return std::vector<real> { m_ClosestRadius };
+}
+
+real ClosestRadiusDiagnostic::FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const
+{
+	// Returns the simple distance between two geodesics as the (radial) distance between their closest point
+	return abs(val1[0] - val2[0]);
+}
+
+std::string ClosestRadiusDiagnostic::getNameStr() const
+{
+	// Simple name string without spaces
+	return  "ClosestRadius";
+}
+
+std::string ClosestRadiusDiagnostic::getFullDescriptionStr() const
+{
+	// More descriptive string (with spaces)
+	return "Closest radius";
 }
 
 

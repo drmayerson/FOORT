@@ -75,7 +75,7 @@ namespace Config
 	// Use configuration to set the Diagnostics bitflag appropriately;
 	// initialize all DiagnosticOptions for all Diagnostics that are turned on;
 	// and set bitflag for diagnostic to be used for coarseness evaluating in Mesh
-	void InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alldiags, DiagBitflag& valdiag);
+	void InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alldiags, DiagBitflag& valdiag, const Metric* const theMetric);
 
 	// Use configuration to set the Terminations bitflag appropriately;
 	// initialize all TerminationOptions for all Terminations that are turned on;

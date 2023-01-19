@@ -216,7 +216,7 @@ int main(int argc, char* argv[])
     // Initialize Diagnostics (InitializeDiagnostics returns the bitflags and initializes the appropriate
     // static DiagnosticOptions structs)
     DiagBitflag AllDiags, ValDiag;
-    Config::InitializeDiagnostics(cfgObject, AllDiags, ValDiag);
+    Config::InitializeDiagnostics(cfgObject, AllDiags, ValDiag, theM.get());
 
     // Initialize Terminations (InitializeTerminations returns the bitflags and initializes the appropriate
     // static TerminationOptions structs)

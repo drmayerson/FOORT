@@ -10,6 +10,7 @@
 // DECLARATION OF ALL static DiagnosticOptions (for all types of Diagnostics) needed here!
 std::unique_ptr<GeodesicPositionOptions> GeodesicPositionDiagnostic::DiagOptions;
 std::unique_ptr<EquatorialPassesOptions> EquatorialPassesDiagnostic::DiagOptions;
+std::unique_ptr<ClosestRadiusOptions> ClosestRadiusDiagnostic::DiagOptions;
 
 //// DIAGNOSTIC ADD POINT D.1 ////
 // Declare your Diagnostic's static DiagnosticOptions struct here!
@@ -388,7 +389,7 @@ std::unique_ptr<Source> Config::GetSource(const ConfigObject& theCfg, const Metr
 /// initialize all DiagnosticOptions for all Diagnostics that are turned on;
 /// and set bitflag for diagnostic to be used for coarseness evaluating in Mesh
 /// </summary>
-void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alldiags, DiagBitflag& valdiag)
+void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alldiags, DiagBitflag& valdiag, const Metric* const theMetric)
 {
 	// First set these flags to all zeros
 	alldiags = Diag_None;
@@ -496,6 +497,40 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 			{
 				// Use this Diagnostic for the Mesh values
 				valdiag = Diag_EquatorialPasses;
+			}
+		}
+		// ClosestRadius
+		if (CheckIfDiagOn("ClosestRadius"))
+		{
+			alldiags |= Diag_ClosestRadius;
+
+			largecounter updatensteps = 1;
+			bool updatestart{ true };
+			bool updatefinish{ true };
+			lookupValuelargecounter(AllDiagSettings["ClosestRadius"], "UpdateFrequency", updatensteps);
+			if (updatensteps == 0)
+			{
+				AllDiagSettings["ClosestRadius"].lookupValue("UpdateStart", updatestart);
+				AllDiagSettings["ClosestRadius"].lookupValue("UpdateFinish", updatefinish);
+			}
+
+			// Check if metric is a spherical horizon metric with integration set to a logarithmic r coordinate,
+			// if so, pass this along to the options struct
+			bool rlogradius{ false };
+			const SphericalHorizonMetric* sphermetric = dynamic_cast<const SphericalHorizonMetric*>(theMetric);
+			if (sphermetric && sphermetric->getrLogScale())
+				rlogradius = true;
+
+
+			ClosestRadiusDiagnostic::DiagOptions =
+				std::unique_ptr<ClosestRadiusOptions>(new ClosestRadiusOptions(rlogradius, UpdateFrequency{ updatensteps,
+					updatestart,updatefinish }));
+
+			bool isVal{ false };
+			if (valdiag == Diag_None && AllDiagSettings["ClosestRadius"].lookupValue("UseForMesh", isVal) && isVal)
+			{
+				// Use this Diagnostic for the Mesh values
+				valdiag = Diag_ClosestRadius;
 			}
 		}
 
