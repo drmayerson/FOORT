@@ -166,11 +166,14 @@ void FourColorScreenDiagnostic::UpdateData()
 	{
 		// Position of the terminated geodesic
 		Point pos{ m_OwnerGeodesic->getCurrentPos() };
-		// Rework phi coordinate to be between 0 and 2pi
-		while (pos[3] > 2 * pi)
-			pos[3] -= 2 * pi;
-		while (pos[3] < 0)
-			pos[3] += 2 * pi;
+		// Rework phi coordinate to be between 0 and 2pi;
+		// check if phi coordinate is meaningful first, so that this while loop does not take forever
+		// (otherwise a "random" quadrant will be returned)
+		if (abs(pos[3]) < 2 * pi * 1e5) // 
+			while (pos[3] > 2 * pi)
+				pos[3] -= 2 * pi;
+			while (pos[3] < 0)
+				pos[3] += 2 * pi;
 
 		// Check which quadrant the geodesic is in
 		int quadrant{ 0 };

@@ -25,6 +25,7 @@ std::unique_ptr<DiagnosticOptions> MyDiagnostic::DiagOptions; // change Diagnost
 std::unique_ptr<HorizonTermOptions> HorizonTermination::TermOptions;
 std::unique_ptr<BoundarySphereTermOptions> BoundarySphereTermination::TermOptions;
 std::unique_ptr<TimeOutTermOptions> TimeOutTermination::TermOptions;
+std::unique_ptr<ThetaSingularityTermOptions> ThetaSingularityTermination::TermOptions;
 
 //// TERMINATION ADD POINT D.1 ////
 // Declare your Termination's static TerminationOptions struct here!
@@ -726,6 +727,26 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 			TimeOutTermination::TermOptions =
 				std::unique_ptr<TimeOutTermOptions>(new TimeOutTermOptions{ timeoutsteps,
 					updatefreq });
+		}
+
+		// ThetaSingularity
+		if (CheckIfTermOn("ThetaSingularity"))
+		{
+			// Theta singularity check on! Add to bitflag
+			allterms |= Term_ThetaSingularity;
+
+			// get the tolerance for how much theta is allowed to get near the poles; default 1e-5
+			real epsilon{ 1e-5 };
+			AllTermSettings["ThetaSingularity"].lookupValue("Epsilon", epsilon);
+
+			// By default, this Termination updates every step
+			// Check to see if a different update frequency has been specified
+			largecounter updatefreq = 1;
+			lookupValuelargecounter(AllTermSettings["ThetaSingularity"], "UpdateFrequency", updatefreq);
+
+			// Initialize the (static) TerminationOptions for ThetaSingularity!
+			ThetaSingularityTermination::TermOptions =
+				std::unique_ptr<ThetaSingularityTermOptions>(new ThetaSingularityTermOptions{ epsilon, updatefreq });
 		}
 
 		//// TERMINATION ADD POINT D.2. ////

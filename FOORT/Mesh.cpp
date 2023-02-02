@@ -92,7 +92,7 @@ Mesh(valdiag)
 	OutputLevel outputlvl{ OutputLevel::Level_0_WARNING };
 
 	// First, output the total screen size
-	ScreenOutput(prefix + " Screen is a square with width/height = " + std::to_string(m_RowColumnSize) + ".",
+	ScreenOutput(prefix + "Screen is a square with width/height = " + std::to_string(m_RowColumnSize) + ".",
 		outputlvl);
 
 	// Keep asking for new input as long as the user does not want to stop
@@ -101,7 +101,8 @@ Mesh(valdiag)
 	{
 		// Get new coordinates from the user
 		// If user enters negative number somewhere, then this signifies wanting to stop inputting pixels
-		pixelcoord newx{}, newy{};
+		// use long long (to allow negative numbers!) and later convert to pixelcoord
+		long long newx{}, newy{};
 		ScreenOutput(prefix + "Please enter coordinates for a pixel (x and y, separated by space); coordinates must lie between 0 and "
 			+ std::to_string(m_RowColumnSize - 1) + " (enter negative number to stop): ", outputlvl);
 		std::cin >> newx;
@@ -125,7 +126,7 @@ Mesh(valdiag)
 		{
 			// The inputted pixel coordinates are valid. Add this to the list of pixels to integrate
 			++m_TotalPixels;
-			m_PixelsToIntegrate.push_back(ScreenIndex{ newx,newy });
+			m_PixelsToIntegrate.push_back(ScreenIndex{ static_cast<pixelcoord>(newx),static_cast<pixelcoord>(newy) });
 			ScreenOutput(prefix + "Pixel (" + std::to_string(newx) + ", " + std::to_string(newy) + ") added.",
 				outputlvl);
 		}

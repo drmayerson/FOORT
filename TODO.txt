@@ -1,51 +1,25 @@
 TODO and wishlist:
 ------------------
+*** PRIORITY (before publication):
 
-*** STILL TO INVESTIGATE:
-X Pre-allocating output vector slower?? --> benchmark tests with push vs pre-allocate+random access in MULTIPLE threads!
-http://igoro.com/archive/gallery-of-processor-cache-effects/
+--- Output/graphing etc. pipelines (python, Mathematica)
+---> incl starry sky picture from GeodesicPositionDiagnostic value/output
 
-
-*** TOP PRIORITY:
-
-
---- CUDA/GPU:
-- Notes:
---- Following https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html
---- Version Windows 10 x86_64 (Cuda 12.0.0)
-
---------------------------------
-
-*** PRIORITY:
-
---------------------------------
-
-*** ALSO TODO:
-
---- Other metrics? (Pierre?)
-
---- Starry sky picture from GeodesicPositionDiagnostic value/output
+--- radiative transfer (basic a la GLM equatorial emission models)
 
 --- document other “add” procedures (for Mesh, Source)
 
---- (unit) testing
+--- delete mesh v1
 
---------------------------------
+--- Other metrics: Pierre topological star (+others?)
 
-*** ISSUES:
 
-****** Metric.h & Metric.cpp
---- make checks that always returning good numbers (not nan)??
+------------------------------
+*** WISHLIST FUTURE:
 
-****** Mesh.h & Mesh.cpp
-X (SquareSubdivisionMesh is obsolete; Index is const in V2) SquareSubdivisionMesh::PixelInfo::Index is not const but should be. However, if const, then operations between m_CurrentPixelQueue and m_AllPixels need to implement move instead of copy operations! (Unknown if this will introduce more or less overhead?!)
+--- make checks that (Metric) always returning good numbers (not nan)??
 
-****** ViewScreen.h & ViewScreen.cpp
---- support for other types of geodesics
-
---------------------------------
-
-*** WISHLIST:
+--- (ViewScreen) support for other types of geodesics
 
 --- Mesh intermediate saving/loading functions?
 
@@ -54,3 +28,12 @@ X (SquareSubdivisionMesh is obsolete; Index is const in V2) SquareSubdivisionMes
 --- >4D metric but 4D asymptotics (so still 2D viewscreen) -- like Pierre's solitons!
 
 --- Code own config handler?
+
+--- "Script" to go from symbolic metric to C++ code
+
+--- (unit) testing
+
+--- CUDA/GPU version:
+- Notes:
+--- Following https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html
+--- Version Windows 10 x86_64 (Cuda 12.0.0)

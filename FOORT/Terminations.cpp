@@ -33,6 +33,11 @@ TerminationUniqueVector CreateTerminationVector(TermBitflag termflags, Geodesic 
 	{
 		theTermVector.emplace_back(new TimeOutTermination{ theGeodesic });
 	}
+	// Is ThetaSingularity turned on?
+	if (termflags & Term_ThetaSingularity)
+	{
+		theTermVector.emplace_back(new ThetaSingularityTermination{ theGeodesic });
+	}
 	//// TERMINATION ADD POINT C ////
 	// Add an if statement that checks if your Termination's TermBitflag is turned on, if so add a new instance of it
 	// to theTermVector.
@@ -184,6 +189,34 @@ std::string TimeOutTermination::getFullDescriptionStr() const
 {
 	// Full description string
 	return "Time out (max integration steps: " + std::to_string(TermOptions->MaxSteps) + ")";
+}
+
+
+/// <summary>
+/// ThetaSingularityTermination functions
+/// </summary>
+
+// Check to see if enough steps have been taken to time out, if so return Term::TimeOut
+Term ThetaSingularityTermination::CheckTermination()
+{
+	Term ret = Term::Continue;
+
+	if (DecideUpdate(TermOptions->UpdateEveryNSteps))
+	{
+		// Check to see if theta is too close to a pole
+		real theta{ m_OwnerGeodesic->getCurrentPos()[2] };
+		real eps{ TermOptions->ThetaSingEpsilon };
+		if (abs(theta) < eps || abs(pi - theta) < eps)
+			ret = Term::ThetaSingularity;
+	}
+
+	return ret;
+}
+
+std::string ThetaSingularityTermination::getFullDescriptionStr() const
+{
+	// Full description string
+	return "Theta singularity (epsilon: " + std::to_string(TermOptions->ThetaSingEpsilon) + ")";
 }
 
 

@@ -13,6 +13,7 @@
 #include <string> // needed for toString(...) to convert tensors to strings
 #include <array> // needed to define tensors as fixed-size arrays of real or pixelcoord
 
+
 // A real number.
 // (Could be changed to use arbitrary precision in the future.)
 using real = double;
@@ -181,5 +182,6 @@ std::array<t, TensorDim> operator/(const std::array<t, TensorDim>& t1, real lamb
 {
 	return t1 * (1 / lambda);
 }
+
 
 #endif

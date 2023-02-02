@@ -79,10 +79,17 @@ GeodesicOutputHandler::GeodesicOutputHandler(std::string FilePrefix, std::string
 std::string GeodesicOutputHandler::getFullDescriptionStr() const
 {
 	// Descriptive string with all options
-	return "Output Handler: Basic (value diagnostic) file name: " + GetFileName(0, 1)
-		+ ", caching outputs: " + std::to_string(m_nrOutputsToCache)
-		+ ", geodesics per file: " + std::to_string(m_nrGeodesicsPerFile)
-		+ ", printing first line info: " + std::to_string(m_PrintFirstLineInfo);
+	if (!m_WriteToConsole)
+	{
+		return "Output Handler: Basic (value diagnostic) file name: " + GetFileName(0, 1)
+			+ ", caching outputs: " + std::to_string(m_nrOutputsToCache)
+			+ ", geodesics per file: " + std::to_string(m_nrGeodesicsPerFile)
+			+ ", printing first line info: " + std::to_string(m_PrintFirstLineInfo);
+	}
+	else
+	{
+		return "Output Handler: Writing to console, caching outputs: " + std::to_string(m_nrOutputsToCache);
+	}
 }
 
 void GeodesicOutputHandler::PrepareForOutput(largecounter nrOutputToCome)

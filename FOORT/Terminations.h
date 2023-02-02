@@ -30,6 +30,7 @@ constexpr TermBitflag Term_None					{ 0b0000'0000'0000'0000 };
 constexpr TermBitflag Term_BoundarySphere		{ 0b0000'0000'0000'0001 };
 constexpr TermBitflag Term_TimeOut				{ 0b0000'0000'0000'0010 };
 constexpr TermBitflag Term_Horizon				{ 0b0000'0000'0000'0100 };
+constexpr TermBitflag Term_ThetaSingularity		{ 0b0000'0000'0000'1000 };
 
 //// TERMINATION ADD POINT B1 ////
 // Add a TermBitflag for your new Termination. Make sure you use a bitflag that has not been used before!
@@ -46,12 +47,13 @@ constexpr TermBitflag Term_MyTerm				{ 0b0000'0000'0000'1000 };
 // Possible termination conditions that can be set by Terminations
 enum class Term
 {
-	Uninitialized = -1,	// Geodesic has not been properly initialized yet with initial position/velocity
-	Continue = 0,		// All is right, continue integrating geodesic
-	Horizon,			// STOP, encountered horizon (set by HorizonTermination)
-	Singularity,		// STOP, encountered singularity/center (set by SingularityTermination --- DOES NOT EXIST YET)
-	BoundarySphere,		// STOP, encountered boundary sphere (set by BoundarySphereTermination)
-	TimeOut,			// STOP, taken too many steps (set by TimeOutTermination)
+	Uninitialized = -1,		// Geodesic has not been properly initialized yet with initial position/velocity
+	Continue = 0,			// All is right, continue integrating geodesic
+	Horizon,				// STOP, encountered horizon (set by HorizonTermination)
+	BoundarySphere,			// STOP, encountered boundary sphere (set by BoundarySphereTermination)
+	TimeOut,				// STOP, taken too many steps (set by TimeOutTermination)
+	ThetaSingularity,		// STOP, too close to polar coordinate singularity (theta = 0 or theta = pi/2)
+
 
 	//// TERMINATION ADD POINT B2 ////
 	// Add a new Termination condition that your new Termination can set
@@ -187,6 +189,26 @@ private:
 	largecounter m_CurNrSteps{ 0 };
 };
 
+// Forward declaration needed before Termination
+struct ThetaSingularityTermOptions;
+class ThetaSingularityTermination final : public Termination
+{
+public:
+	ThetaSingularityTermination(Geodesic* const theGeodesic) : Termination(theGeodesic) {}
+
+	// No override of Reset() necessary
+
+	// Check the specific termination condition
+	Term CheckTermination() final;
+
+	// Description string
+	std::string getFullDescriptionStr() const final;
+
+	// The options that the Termination keeps (will probably be a descendant struct instead, which specifies
+	// any additional options the Termination needs)
+	static std::unique_ptr<ThetaSingularityTermOptions> TermOptions;
+};
+
 //// TERMINATION ADD POINT A1 /////
 // Declare your Termination class here, inheriting from Termination.
 // Sample code:
@@ -277,6 +299,15 @@ public:
 	const largecounter MaxSteps;
 };
 
+// Options class for ThetaSingularityTermination
+struct ThetaSingularityTermOptions : public TerminationOptions
+{
+public:
+	ThetaSingularityTermOptions(real epsilon, largecounter Nsteps) : ThetaSingEpsilon{ epsilon }, TerminationOptions(Nsteps)
+	{}
+
+	const real ThetaSingEpsilon;
+};
 
 //// TERMINATION ADD POINT A2 ////
 // Add your new TerminationOptions struct here, inheriting from TerminationOptions (if needed)

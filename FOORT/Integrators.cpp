@@ -139,7 +139,8 @@ void Integrators::IntegrateGeodesicStep_Verlet(Point curpos, OneIndex curvel,
 	nextvel = curvel + h / 2.0 * (accelcur + accelstep);
 
 	// Check fractional error, if above tolerance than iterate velocity again
-	while (cartvecsq(nextvel - velintermed) / cartvecsq(nextvel) > VerletVelocityTolerance * VerletVelocityTolerance)
+	while (VerletVelocityTolerance > 0.0 
+		&& cartvecsq(nextvel - velintermed) / cartvecsq(nextvel) > VerletVelocityTolerance * VerletVelocityTolerance)
 	{
 		velintermed = nextvel;
 		accelstep = geoRHS(nextpos, velintermed);
