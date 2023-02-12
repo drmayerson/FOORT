@@ -206,7 +206,7 @@ Term ThetaSingularityTermination::CheckTermination()
 		// Check to see if theta is too close to a pole
 		real theta{ m_OwnerGeodesic->getCurrentPos()[2] };
 		real eps{ TermOptions->ThetaSingEpsilon };
-		if (abs(theta) < eps || abs(pi - theta) < eps)
+		if (fabs(theta) < eps || fabs(pi - theta) < eps)
 			ret = Term::ThetaSingularity;
 	}
 

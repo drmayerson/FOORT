@@ -35,11 +35,11 @@ real Integrators::GetAdaptiveStep(Point curpos, OneIndex curvel)
 {
 	//// Determine the (affine parameter) step size to take
 	// algorithm as in Raptor (eqs (21)-(24)), which is taken from Noble et al. (2007) & Dolence et al. (2009)
-	real dlambda_x1 = epsilon / (std::abs(curvel[1]) + delta_nodiv0);
-	real dlambda_x2 = epsilon * std::min(curpos[2], pi - curpos[2]) / (std::abs(curvel[2]) + delta_nodiv0);
-	real dlambda_x3 = epsilon / (std::abs(curvel[3] + delta_nodiv0));
+	real dlambda_x1 = epsilon / (std::fabs(curvel[1]) + delta_nodiv0);
+	real dlambda_x2 = epsilon * std::min(curpos[2], pi - curpos[2]) / (std::fabs(curvel[2]) + delta_nodiv0);
+	real dlambda_x3 = epsilon / (std::fabs(curvel[3] + delta_nodiv0));
 
-	real h = 1 / (1 / std::abs(dlambda_x1) + 1 / std::abs(dlambda_x2) + 1 / std::abs(dlambda_x3));
+	real h = 1 / (1 / std::fabs(dlambda_x1) + 1 / std::fabs(dlambda_x2) + 1 / std::fabs(dlambda_x3));
 	// Make sure we take at least the smallest allowed step size
 	h = std::max(h, SmallestPossibleStepsize);
 

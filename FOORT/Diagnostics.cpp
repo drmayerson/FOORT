@@ -74,7 +74,7 @@ DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag
 		}
 	}
 
-	//// GEODESIC ADD POINT C ////
+	//// DIAGNOSTIC ADD POINT C ////
 	// Add an if statement that checks if your Diagnostic's DiagBitflag is turned on, if so add a new instance of it
 	// to theDiagVector. Then check if valdiag is your Diagnostic and rotate theDiagVector accordingly if it is.
 	// Sample code:
@@ -92,7 +92,7 @@ DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag
 		}
 	}
 	*/
-	//// END GEODESIC ADD POINT C ////
+	//// END DIAGNOSTIC ADD POINT C ////
 
 
 	return theDiagVector;
@@ -169,11 +169,13 @@ void FourColorScreenDiagnostic::UpdateData()
 		// Rework phi coordinate to be between 0 and 2pi;
 		// check if phi coordinate is meaningful first, so that this while loop does not take forever
 		// (otherwise a "random" quadrant will be returned)
-		if (abs(pos[3]) < 2 * pi * 1e5) // 
+		if (fabs(pos[3]) < 2 * pi * 1e5)
+		{
 			while (pos[3] > 2 * pi)
 				pos[3] -= 2 * pi;
 			while (pos[3] < 0)
 				pos[3] += 2 * pi;
+		}
 
 		// Check which quadrant the geodesic is in
 		int quadrant{ 0 };
@@ -212,7 +214,7 @@ std::vector<real> FourColorScreenDiagnostic::getFinalDataVal() const
 real FourColorScreenDiagnostic::FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const
 {
 	// Discrete metric for distance: returns 0 if the quadrants are the same, 1 if they are not
-	if (abs(val1[0] - val2[0]) < 1) // use <1 instead of == 0.0 to avoid floating point round-off errors
+	if (fabs(val1[0] - val2[0]) < 1.0) // use <1 instead of == 0.0 to avoid floating point round-off errors
 		return 0;
 	else
 		return 1;
@@ -356,7 +358,7 @@ void EquatorialPassesDiagnostic::UpdateData()
 
 		// We only do anything (check for a pass and/or update the past theta) if the geodesic has
 		// passed over a threshold around the equatorial plane
-		if ( abs(curTheta - pi / 2.0) > pi / 2.0 * DiagOptions->Threshold )
+		if ( fabs(curTheta - pi / 2.0) > pi / 2.0 * DiagOptions->Threshold )
 		{
 			// This checks to see if we have crossed the equatorial plane by comparing the previous theta coordinate
 			// with the current theta coordinate
@@ -458,7 +460,7 @@ std::vector<real> ClosestRadiusDiagnostic::getFinalDataVal() const
 real ClosestRadiusDiagnostic::FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const
 {
 	// Returns the simple distance between two geodesics as the (radial) distance between their closest point
-	return abs(val1[0] - val2[0]);
+	return fabs(val1[0] - val2[0]);
 }
 
 std::string ClosestRadiusDiagnostic::getNameStr() const
