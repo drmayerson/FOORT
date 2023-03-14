@@ -11,6 +11,8 @@
 std::unique_ptr<GeodesicPositionOptions> GeodesicPositionDiagnostic::DiagOptions;
 std::unique_ptr<EquatorialPassesOptions> EquatorialPassesDiagnostic::DiagOptions;
 std::unique_ptr<ClosestRadiusOptions> ClosestRadiusDiagnostic::DiagOptions;
+std::unique_ptr<EquatorialEmissionOptions> EquatorialEmissionDiagnostic::DiagOptions;
+
 
 //// DIAGNOSTIC ADD POINT D.1 ////
 // Declare your Diagnostic's static DiagnosticOptions struct here!
@@ -534,6 +536,128 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 				valdiag = Diag_ClosestRadius;
 			}
 		}
+		// EquatorialEmission
+		if (CheckIfDiagOn("EquatorialEmission"))
+		{
+			alldiags |= Diag_EquatorialEmission;
+
+			// We don't want EquatorialPasses to be on! It is superfluous (EquatorialEmission also keeps track of equatorial passes
+			// and this would give issues with the EquatorialPassesOptions struct (see below)
+			if (alldiags & Diag_EquatorialPasses)
+			{
+				ScreenOutput("Configuration indicates equatorial emission and equatorial passes turned on. Turning off equatorial passes.",
+					Output_Important_Default);
+				alldiags = alldiags & ~Diag_EquatorialPasses;
+				if (valdiag & Diag_EquatorialPasses)
+				{
+					ScreenOutput("Changing value mesh diagnostic to equatorial emission instead of equatorial passes.",
+						Output_Important_Default);
+					valdiag = Diag_EquatorialEmission;
+				}
+			}
+
+			// Basic frequency settings
+			largecounter updatensteps = 1;
+			bool updatestart{ true };
+			bool updatefinish{ true };
+			lookupValuelargecounter(AllDiagSettings["EquatorialEmission"], "UpdateFrequency", updatensteps);
+			if (updatensteps == 0)
+			{
+				AllDiagSettings["EquatorialEmission"].lookupValue("UpdateStart", updatestart);
+				AllDiagSettings["EquatorialEmission"].lookupValue("UpdateFinish", updatefinish);
+			}
+
+			// Check if metric is a spherical horizon metric with integration set to a logarithmic r coordinate,
+			// if so, pass this along to the options struct
+			bool rlogradius{ false };
+			const SphericalHorizonMetric* sphermetric = dynamic_cast<const SphericalHorizonMetric*>(theMetric);
+			if (sphermetric && sphermetric->getrLogScale())
+				rlogradius = true;
+
+			// Looking up overall options for emission
+
+			real threshold{ 0.01 };
+			AllDiagSettings["EquatorialEmission"].lookupValue("Threshold", threshold);
+
+			real fudgefactor{ 1.0 };
+			AllDiagSettings["EquatorialEmission"].lookupValue("GeometricFudgeFactor", fudgefactor);
+
+			int equatupper{ 0 };
+			AllDiagSettings["EquatorialEmission"].lookupValue("EquatPassUpperBound", equatupper);
+
+			int redshiftpower{ 3 };
+			AllDiagSettings["EquatorialEmission"].lookupValue("RedshiftPower", redshiftpower);
+
+
+			//// Emission model selection and initialization ////
+
+			// Default emission model and parameters
+			real defaultmu{ sphermetric ? sphermetric->getHorizonRadius() : 1.0 };
+			real defaultgamma{ 0.0 };
+			real defaultsigma{ 1.0 };
+			std::unique_ptr<EmissionModel> theEmission{ new GLMJohnsonSUEmission(defaultmu, defaultgamma, defaultsigma) };
+
+			// Read in emission model
+			std::string emitmodelstring{ "" };
+			AllDiagSettings["EquatorialEmission"].lookupValue("EmissionModel", emitmodelstring);
+			if (emitmodelstring == "GLMJohnsonSU")
+			{
+				real mu{ defaultmu };
+				real gamma{ defaultgamma };
+				real sigma{ defaultsigma };
+				AllDiagSettings["EquatorialEmission"].lookupValue("mu", mu);
+				AllDiagSettings["EquatorialEmission"].lookupValue("gamma", gamma);
+				AllDiagSettings["EquatorialEmission"].lookupValue("sigma", sigma);
+				theEmission = std::unique_ptr<EmissionModel>{ new GLMJohnsonSUEmission(mu, gamma, sigma) };
+			}
+			// Other emission models can be checked for here...
+
+
+			//// Fluid four-velocity model selection and initialization ////
+
+			// Default fluid model and default parameters
+			real defaultxi{ 1.0 };
+			real defaultbetar{ 1.0 };
+			real defaultbetaphi{ 1.0 };
+			std::unique_ptr<FluidVelocityModel> theFluidModel{ new GeneralCircularRadialFluid(defaultxi, defaultbetar, defaultbetaphi, theMetric) };
+
+			// Read in fluid velocity model
+			std::string fluidmodelstring{ "" };
+			AllDiagSettings["EquatorialEmission"].lookupValue("FluidVelocityModel", fluidmodelstring);
+			if (fluidmodelstring == "GeneralCircularRadial")
+			{
+				real subKeplerianparam{ defaultxi };
+				real betaR{ defaultbetar };
+				real betaPhi{ defaultbetaphi };
+				AllDiagSettings["EquatorialEmission"].lookupValue("xi", subKeplerianparam);
+				AllDiagSettings["EquatorialEmission"].lookupValue("betar", betaR);
+				AllDiagSettings["EquatorialEmission"].lookupValue("betaphi", betaPhi);
+				
+				theFluidModel = std::unique_ptr<FluidVelocityModel>{ new GeneralCircularRadialFluid(subKeplerianparam,betaR,betaPhi,theMetric) };
+			}
+			// Other fluid velocity models can be checked for here...
+
+
+			// Set EquatorialEmissionDiagnostic options struct
+			EquatorialEmissionDiagnostic::DiagOptions =
+				std::unique_ptr<EquatorialEmissionOptions>(new EquatorialEmissionOptions(
+					fudgefactor, equatupper, std::move(theEmission), std::move(theFluidModel),
+					rlogradius, redshiftpower, threshold, UpdateFrequency{ updatensteps,updatestart,updatefinish } ));
+
+			// We also need to set EquatorialPassesDiagnostic options struct correctly!
+			// EquatorialEmissionDiagnostic::UpdateData() calls its base class
+			// implementation EquatorialPassesDiagnostic::UpdateData(), which uses this struct
+			EquatorialPassesDiagnostic::DiagOptions =
+				std::unique_ptr<EquatorialPassesOptions>(new EquatorialPassesOptions(threshold, UpdateFrequency{ updatensteps,
+					updatestart,updatefinish }));
+
+			bool isVal{ false };
+			if (valdiag == Diag_None && AllDiagSettings["EquatorialEmission"].lookupValue("UseForMesh", isVal) && isVal)
+			{
+				// Use this Diagnostic for the Mesh values
+				valdiag = Diag_EquatorialEmission;
+			}
+		}
 
 		//// DIAGNOSTIC ADD POINT D.2 ////
 		// Add a check to see if your new Diagnostic is turned on here. If it is, check any further options it needs and
@@ -549,7 +673,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 			// If it does not, or if it carries additional options (in a descendant struct of DiagnosticOptions),
 			// then update this accordingly
 			largecounter updatensteps = 1;
-			bool updatestart{ true };
+			bool updatestart{ true }; 
 			bool updatefinish{ true };
 			lookupValuelargecounter(AllDiagSettings["MyDiagnostic"], "UpdateFrequency", updatensteps);
 			if (updatensteps == 0)

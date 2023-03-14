@@ -8,6 +8,10 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 
 #include "Geometry.h" // for tensors
+#include "Metric.h" // for metric
+#include "InputOutput.h" // for ScreenOutput
+
+#include "Diagnostics_Emission.h" // Emission models
 
 #include <cstdint> // for std::uint16_t
 #include <string> // for strings
@@ -35,6 +39,7 @@ constexpr DiagBitflag Diag_GeodesicPosition		{ 0b0000'0000'0000'0001 };
 constexpr DiagBitflag Diag_FourColorScreen		{ 0b0000'0000'0000'0010 };
 constexpr DiagBitflag Diag_EquatorialPasses 	{ 0b0000'0000'0000'0100 };
 constexpr DiagBitflag Diag_ClosestRadius		{ 0b0000'0000'0000'1000 };
+constexpr DiagBitflag Diag_EquatorialEmission	{ 0b0000'0000'0001'0000 };
 
 //// DIAGNOSTIC ADD POINT B ////
 // Add a DiagBitflag for your new diagnostic. Make sure you use a bitflag that has not been used before!
@@ -200,62 +205,115 @@ private:
 // Forward declaration needed before Diagnostic
 struct EquatorialPassesOptions;
 // Diagnostic for counting number of passes through equatorial plane
-class EquatorialPassesDiagnostic final : public Diagnostic
+class EquatorialPassesDiagnostic : public Diagnostic
 {
 public:
 	// Basic constructor only passes on Geodesic pointer to base class constructor
 	EquatorialPassesDiagnostic(Geodesic* const theGeodesic) : Diagnostic(theGeodesic) {}
 
 	// Override Reset to also reset m_EquatPasses and m_PrevTheta
-	void Reset() final;
+	void Reset() override;
 
 	// Checks to see if we have a new cross over the equatorial plane
-	void UpdateData() final;
+	void UpdateData() override;
 
 	// Returns the number of passes over the equatorial plane
+	std::string getFullDataStr() const override;
+	std::vector<real> getFinalDataVal() const override;
+
+	// Simple absolute value of difference of passes
+	real FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const override;
+
+	// Description string getters
+	std::string getNameStr() const override;
+	std::string getFullDescriptionStr() const override;
+
+	// Needs the extra option of a threshold
+	static std::unique_ptr<EquatorialPassesOptions> DiagOptions;
+
+protected:
+	// Keeps track of how many passes have been made
+	int m_EquatPasses{ 0 };
+
+private:
+	// Keeps track of the previous theta angle, so that we can compare with current theta angle
+	real m_PrevTheta{ -1 };
+};
+
+// Forward declaration needed before Diagnostic
+struct ClosestRadiusOptions;
+// Diagnostic keeps track of the closes radius that the geodesic passes through
+// Note: always keeps track of true radius, not log radius
+class ClosestRadiusDiagnostic final : public Diagnostic
+{
+public:
+	// Basic constructor only passes on Geodesic pointer to base class constructor
+	ClosestRadiusDiagnostic(Geodesic* const theGeodesic) : Diagnostic(theGeodesic) {}
+
+	// re-initialize closest radius
+	void Reset() final;
+
+	// Check to see if we have travelled closer
+	void UpdateData() final;
+
+	// Return closest radius travelled
 	std::string getFullDataStr() const final;
 	std::vector<real> getFinalDataVal() const final;
 
-	// Simple absolute value of difference of passes
+	// Returns the absolute value of the difference between closest radii
 	real FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const final;
 
 	// Description string getters
 	std::string getNameStr() const final;
 	std::string getFullDescriptionStr() const final;
 
-	// Needs the extra option of a threshold
-	static std::unique_ptr<EquatorialPassesOptions> DiagOptions;
-
-private:
-	// Keeps track of how many passes have been made
-	int m_EquatPasses{ 0 };
-
-	// Keeps track of the previous theta angle, so that we can compare with current theta angle
-	real m_PrevTheta{ -1 };
-};
-
-struct ClosestRadiusOptions;
-class ClosestRadiusDiagnostic final : public Diagnostic
-{
-public:
-	ClosestRadiusDiagnostic(Geodesic* const theGeodesic) : Diagnostic(theGeodesic) {}
-
-	void Reset() final;
-
-	void UpdateData() final;
-
-	std::string getFullDataStr() const final;
-	std::vector<real> getFinalDataVal() const final;
-
-	real FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const final;
-
-	std::string getNameStr() const final;
-	std::string getFullDescriptionStr() const final;
-
+	// Option struct to keep track of RLogScale of Metric
 	static std::unique_ptr<ClosestRadiusOptions> DiagOptions;
 
 private:
+	// Keeps track of closest radius travelled
 	real m_ClosestRadius{ -1 };
+};
+
+
+// Forward declaration needed before Diagnostic
+struct EquatorialEmissionOptions;
+// Diagnostic that calculates brightness intensity for the geodesic, based on
+// a specified equatorial disc emission model
+// (intensity profile and fluid velocity profile, both specified in the options struct)
+// Note that EquatorialEmissionDiagnostic inherits from EquatorialPassesDiagnostic, 
+// since it needs to keep track of when it passes through the equatorial plane.
+// As a result it also keeps track of the number of equatorial passes
+class EquatorialEmissionDiagnostic final : public EquatorialPassesDiagnostic
+{
+public:
+	// Basic constructor only passes on Geodesic pointer to parent class constructor
+	EquatorialEmissionDiagnostic(Geodesic* const theGeodesic) : EquatorialPassesDiagnostic(theGeodesic) {}
+
+	// Reset intensity back to 0.0, and call parent class Reset()
+	void Reset() final;
+
+	// Use parent class UpdateData() to decide whether the update the intensity
+	// using the specified emission model
+	void UpdateData() final;
+
+	// Returns total intensity and total number of equatorial passes (i.e. normal output from EquatorialPassesDiagnostic)
+	std::string getFullDataStr() const final;
+	std::vector<real> getFinalDataVal() const final;
+
+	// Distance is difference in intensities multiplied by a factor magnifying difference in equatorial passes
+	real FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const final;
+
+	// Description string getters
+	std::string getNameStr() const final;
+	std::string getFullDescriptionStr() const final;
+
+	// Option struct to keep track emission model specifics
+	static std::unique_ptr<EquatorialEmissionOptions> DiagOptions;
+
+private:
+	// Brightness intensity of the geodesic
+	real m_Intensity{ 0.0 };
 };
 
 //// DIAGNOSTIC ADD POINT A1 ////
@@ -327,7 +385,7 @@ public:
 	const UpdateFrequency theUpdateFrequency;
 };
 
-// GeodesicPositionDiagnostic needs more options
+// GeodesicPositionDiagnostic needs to keep track of number of steps to output
 struct GeodesicPositionOptions : public DiagnosticOptions
 {
 public:
@@ -338,6 +396,7 @@ public:
 	const largecounter OutputNrSteps;
 };
 
+// EquatorialPassesDiagnostic needs to keep track of the threshold
 struct EquatorialPassesOptions : public DiagnosticOptions
 {
 public:
@@ -348,6 +407,7 @@ public:
 	const real Threshold;
 };
 
+// ClosestRadiusOptions needs to keep track of whether we are using r or log(r) radial coordinate
 struct ClosestRadiusOptions : public DiagnosticOptions
 {
 public:
@@ -357,6 +417,42 @@ public:
 
 	const bool RLogScale;
 };
+
+// Forward declarations of abstract EmissionModel and FluidVelocityModel classes.
+// See Diagnostics_Emission.h and .cpp for declarations and definitions of these and their descendant classes!
+struct EmissionModel;
+struct FluidVelocityModel;
+// EquatorialEmissionDiagnostic needs to keep track of all tuneable parameters of the emission
+// Note that this inherits from EquatorialPassesOptions
+struct EquatorialEmissionOptions : public EquatorialPassesOptions
+{
+public:
+	EquatorialEmissionOptions(real thefudgefactor, int equatupper,
+		std::unique_ptr<EmissionModel> theemission, std::unique_ptr<FluidVelocityModel> thefluidmodel,
+		bool rlog, int theredshiftpower, real thethreshold, UpdateFrequency thefrequency) :
+		RedShiftPower{ theredshiftpower }, RLogScale{ rlog }, GeometricFudgeFactor{ thefudgefactor },
+		EquatPassUpperBound{ equatupper },
+		TheEmissionModel{ std::move(theemission) }, TheFluidVelocityModel{ std::move(thefluidmodel) },
+		EquatorialPassesOptions(thethreshold, thefrequency) // constructor for parent class
+	{}
+
+	// Geometric fudge factor for n>0 passes
+	const real GeometricFudgeFactor;
+	// Upper bound allowed for contribution to intensity
+	const int EquatPassUpperBound;
+
+	// Logarithmic radius scale used or not
+	const bool RLogScale;
+
+	// Power of redshift in intensity contribution (should be 3 or 4)
+	const int RedShiftPower;
+
+	// The emission model used (see Diagnostics_Emission.h and .cpp for specific models)
+	const std::unique_ptr<EmissionModel> TheEmissionModel;
+	// The fluid velocity model used (see Diagnostics_Emission.h and .cpp for specific models)
+	const std::unique_ptr<FluidVelocityModel> TheFluidVelocityModel;
+};
+
 
 //// DIAGNOSTIC ADD POINT A2 (optional) ////
 // if necessary, define your new DiagnosticOptions class here

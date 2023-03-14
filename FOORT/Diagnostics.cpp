@@ -1,10 +1,13 @@
 #include "Diagnostics.h" // We are defining Diagnostic member functions here
+#include "Diagnostics_Emission.h" // Emission models defined here
 
 #include "Geodesic.h" // We need member functions of the Geodesic class here
 #include "InputOutput.h" // for ScreenOutput()
 
+#include "Integrators.h" // using delta_nodiv0
+
 #include <algorithm> // needed for std::rotate()
-#include <cmath> // needed for cos, sin, acos
+#include <cmath> // needed for cos, sin, acos, asinh, pow
 
 /// <summary>
 /// Diagnostic helper function
@@ -69,6 +72,18 @@ DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag
 		// Since at the moment it is the last element of the array, we perform a simple rotate right
 		// on the current array to place the Diagnostic in the front.
 		if (valdiag & Diag_ClosestRadius)
+		{
+			std::rotate(theDiagVector.begin(), theDiagVector.begin() + 1, theDiagVector.end());
+		}
+	}
+	// Is EquatorialEmission turned on?
+	if (diagflags & Diag_EquatorialEmission)
+	{
+		theDiagVector.emplace_back(new EquatorialEmissionDiagnostic{ theGeodesic });
+		// If this is the value Diagnostic, we want it to be the first Diagnostic.
+		// Since at the moment it is the last element of the array, we perform a simple rotate right
+		// on the current array to place the Diagnostic in the front.
+		if (valdiag & Diag_EquatorialEmission)
 		{
 			std::rotate(theDiagVector.begin(), theDiagVector.begin() + 1, theDiagVector.end());
 		}
@@ -474,6 +489,110 @@ std::string ClosestRadiusDiagnostic::getFullDescriptionStr() const
 	// More descriptive string (with spaces)
 	return "Closest radius";
 }
+
+
+/// <summary>
+/// EquatorialEmissionDiagnostic functions
+/// </summary>
+
+
+void EquatorialEmissionDiagnostic::Reset()
+{
+	// Reset internal variables to default (initial) values; further call parent class Reset function
+	m_Intensity = 0.0;
+	EquatorialPassesDiagnostic::Reset();
+}
+
+void EquatorialEmissionDiagnostic::UpdateData()
+{
+	// Call parent class UpdateData()
+	int oldPasses{ m_EquatPasses };
+	EquatorialPassesDiagnostic::UpdateData();
+	// Update emission if we just passed through the equator now
+	if (m_EquatPasses > oldPasses)
+	{
+		// Calculate fudge factor: this can give the equatorial passes a boost for n>0
+		// Also can truncate emission after a certain number of equatorial passes
+		// (used to avoid unresolved higher order rings in image)
+		real Fudge{ m_EquatPasses > 1 ? DiagOptions->GeometricFudgeFactor : 1.0 };
+		if (DiagOptions->EquatPassUpperBound > 0 && DiagOptions->EquatPassUpperBound < m_EquatPasses)
+			Fudge = 0.0;
+
+		// Calculate local emitted intensity from emission model at this position
+		// Note that emission model always takes true coordinates (not log r)!
+		Point curpos{ m_OwnerGeodesic->getCurrentPos() };
+		if (DiagOptions->RLogScale)
+			curpos[1] = exp(curpos[1]);
+		real LocalSourceIntensity{ DiagOptions->TheEmissionModel->GetEmission(curpos) };
+
+		// Calculate local velocity of emitting fluid (needed for redshift factor)
+		// Note: local velocity is calculated in the coordinates that are being used, whether r or log(r)
+		OneIndex FluidVelocityd{ DiagOptions->TheFluidVelocityModel->GetFourVelocityd(m_OwnerGeodesic->getCurrentPos()) };
+
+		// Get current velocity of geodesic
+		// Extra minus sign because we are integrating backwards in time, i.e. the geodesic velocity is past-pointing!
+		OneIndex CurVel{ -1.0 * m_OwnerGeodesic->getCurrentVel() };
+
+		// Redshift is negative of inverse of dot product of geodesic velocity and local fluid velocity
+		real pdotu{};
+		for (int i = 0; i < dimension; ++i)
+			pdotu += FluidVelocityd[i] * CurVel[i];
+		real ObservedRedshift{ -1.0/pdotu };
+		
+		// Total added intensity is fudge factor times power of the redshift times local emitted intensity!
+		m_Intensity += Fudge * pow(ObservedRedshift, DiagOptions->RedShiftPower) * LocalSourceIntensity;
+	}
+}
+
+std::string EquatorialEmissionDiagnostic::getFullDataStr() const
+{
+	// Returns intensity and equatorial passes
+	return std::to_string(m_Intensity) + " " + std::to_string(m_EquatPasses);
+}
+
+std::vector<real> EquatorialEmissionDiagnostic::getFinalDataVal() const
+{
+	// Vector returns intensity and number of equatorial passes
+	return std::vector<real> { m_Intensity, static_cast<real>(m_EquatPasses)  };
+}
+
+real EquatorialEmissionDiagnostic::FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const
+{
+	// Difference in equatorial passes
+	real EquatPassDiff{ fabs(val1[1] - val2[1]) };
+	// Difference in intensities
+	real IntensitiesDiff{ fabs(val1[0] - val2[0]) };
+
+	// Distance is difference in intensities multiplied by a factor magnifying difference in equatorial passes
+	return IntensitiesDiff * (EquatPassDiff + 1.0);
+}
+
+std::string EquatorialEmissionDiagnostic::getNameStr() const
+{
+	// Simple name string without spaces
+	return "EquatorialEmission";
+}
+
+std::string EquatorialEmissionDiagnostic::getFullDescriptionStr() const
+{
+	// More descriptive string (with spaces)
+	return "Equatorial emission (threshold = " + std::to_string(DiagOptions->Threshold)
+		+ ", geometric fudge factor = " + std::to_string(DiagOptions->GeometricFudgeFactor)
+		+ ", max. equatorial passes = " + (DiagOptions->EquatPassUpperBound>0 ? std::to_string(DiagOptions->EquatPassUpperBound) : "infinite")
+		+ ", redshift power = " + std::to_string(DiagOptions->RedShiftPower)
+		+ ", emission model: " + DiagOptions->TheEmissionModel->getFullDescriptionStr()
+		+ ", fluid velocity model: " + DiagOptions->TheFluidVelocityModel->getFullDescriptionStr()
+		+ ")";
+}
+
+
+
+
+
+
+
+
+
 
 
 //// (New Diagnostic classes can define their member functions here)
