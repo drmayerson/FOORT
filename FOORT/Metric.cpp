@@ -633,4 +633,99 @@ std::string MankoNovikovMetric::getFullDescriptionStr() const
 }
 
 
+
+/// <summary>
+/// KerrSchildMetric functions
+/// </summary>
+
+// Constructor, must be passed the Kerr a parameter and whether we are using a logarithmic radial scale
+KerrSchildMetric::KerrSchildMetric(real aParam, bool rLogScale)
+	: m_aParam{ aParam },
+	SphericalHorizonMetric(1 + sqrt(1 - aParam * aParam), rLogScale) // initialize base class with horizon radius and rLogScale
+{
+	// Make sure we are in four spacetime dimensions
+	if constexpr (dimension != 4)
+	{
+		ScreenOutput("Kerr-Schild is only defined in four dimensions!", OutputLevel::Level_0_WARNING);
+	}
+
+	// Check on parameters
+	if (m_aParam * m_aParam > 1.0)
+		ScreenOutput("Kerr-Schild metric a parameter given (" + std::to_string(m_aParam) + ") is not within the allowed range -1 < a < 1!",
+			OutputLevel::Level_0_WARNING);
+
+	// Kerr has a Killing vector along t and phi, so we initialize the symmetries accordingly
+	m_Symmetries = { 0,3 };
+}
+
+// Kerr-Schild metric getter, indices down
+TwoIndex KerrSchildMetric::getMetric_dd(const Point& p) const
+{
+	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
+	real r = m_rLogScale ? exp(p[1]) : p[1];
+
+	// Shorthands
+	real theta = p[2];
+	real sint = sin(theta);
+	real cost = cos(theta);
+	real sigma = r * r + m_aParam * m_aParam * cost * cost;
+
+	// Covariant metric elements
+	real g00 = -(1.0 - 2.0 * r / sigma);
+	real g03 = -1.0 * (-(1. - 2. * r / sigma) + 1.0) * m_aParam * sint * sint;
+	real g01 = 1.0;
+	real g13 = -1.0 * m_aParam * sint * sint;
+	real g22 = sigma;
+	real g33 = (-(1. - 2. * r / sigma) + 2.0) * m_aParam * m_aParam * sint * sint * sint * sint + sigma * sint * sint;
+
+	// If the log scale is set on, the true coordinate we are calculating the metric in is u = log(r), so dr = r du
+	if (m_rLogScale)
+	{
+		g01 *= r;
+		g13 *= r;
+	}
+
+	return TwoIndex{ {{g00, g01 ,0, g03 }, {g01, 0, 0, g13}, {0, 0, g22, 0},{g03, g13, 0, g33}} };
+}
+
+// Kerr-Schild metric getter, indices up
+TwoIndex KerrSchildMetric::getMetric_uu(const Point& p) const
+{
+	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
+	real r = m_rLogScale ? exp(p[1]) : p[1];
+
+	// Shorthands
+	real theta = p[2];
+	real sint = sin(theta);
+	real cost = cos(theta);
+	real sigma = r * r + m_aParam * m_aParam * cost * cost;
+
+	// Contravariant metric elements
+	real g00 = m_aParam * m_aParam * sint * sint / sigma;
+	real g01 = 1 + m_aParam * m_aParam * sint * sint / sigma;
+	real g03 = -1.0 * -m_aParam / sigma;
+	real g11 = (-2. * r + sigma + m_aParam * m_aParam * sint * sint) / sigma;
+	real g13 = -1.0 * -m_aParam / sigma;
+	real g22 = 1. / sigma;
+	real g33 = 1 / sigma / sint / sint;
+	
+
+	// If the log scale is set on, the true coordinate we are calculating the metric in is u = log(r), so , so dr = r du
+	if (m_rLogScale)
+	{
+		g01 *= 1.0 / r;
+		g13 *= 1.0 / r;
+		g11 *= 1.0 / (r * r);
+	}
+
+	return TwoIndex{ {{g00, g01, 0, g03 }, {g01,g11,0,g13}, {0,0,g22,0},{g03,g13,0,g33}} };
+}
+
+// Kerr-Schild description string; also gives a parameter value and whether we are using logarithmic radial coordinate
+std::string KerrSchildMetric::getFullDescriptionStr() const
+{
+	return "Kerr-Schild (a = " + std::to_string(m_aParam) + ", " + (m_rLogScale ? "using logarithmic r coord" : "using normal r coord") + ")";
+}
+
+
 //// (New Metric classes can define their member functions here)

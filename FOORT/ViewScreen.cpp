@@ -33,24 +33,24 @@ void ViewScreen::ConstructVielbein()
 	};
 
 	// Construct vielbein
-	// First t
-	m_Vielbein[0] = guu[0];
+	// First t - use that d/dt is asymptotic timelike Killing vector
+	m_Vielbein[0] = OneIndex{ 1,0,0,0 };
 	real thenorm = innerprod(m_Vielbein[0], m_Vielbein[0]);
 	signs[0] = (thenorm < 0) ? -1 : 1;
-	m_Vielbein[0] = signs[0] * m_Vielbein[0] / sqrt(signs[0] * thenorm);
+	m_Vielbein[0] = m_Vielbein[0] / sqrt(signs[0] * thenorm);
 
-	// Then phi
-	m_Vielbein[3] = guu[3] - signs[0] * innerprod(guu[3], m_Vielbein[0]) * m_Vielbein[0];
+	// Then phi - use that d/dphi is asymptotic spacelike Killing vector
+	m_Vielbein[3] = OneIndex{ 0,0,0,1 } - signs[0] * innerprod(OneIndex{ 0,0,0,1 }, m_Vielbein[0]) * m_Vielbein[0];
 	thenorm = innerprod(m_Vielbein[3], m_Vielbein[3]);
 	signs[3] = (thenorm < 0) ? -1 : 1;
-	m_Vielbein[3] = signs[3] * m_Pos[1] * sin(m_Pos[2]) * m_Vielbein[3] / sqrt(signs[3] * thenorm);
+	m_Vielbein[3] = m_Pos[1] * sin(m_Pos[2]) * m_Vielbein[3] / sqrt(signs[3] * thenorm);
 
 	// Then r
 	m_Vielbein[1] = guu[1] - signs[0] * innerprod(guu[1], m_Vielbein[0]) * m_Vielbein[0]
 		- signs[3] * innerprod(guu[1], m_Vielbein[3]) * m_Vielbein[3];
 	thenorm = innerprod(m_Vielbein[1], m_Vielbein[1]);
 	signs[1] = (thenorm < 0) ? -1 : 1;
-	m_Vielbein[1] = signs[1] * m_Vielbein[1] / sqrt(signs[1] * thenorm);
+	m_Vielbein[1] = m_Vielbein[1] / sqrt(signs[1] * thenorm);
 
 	// Then theta
 	m_Vielbein[2] = guu[2] - signs[0] * innerprod(guu[2], m_Vielbein[0]) * m_Vielbein[0]
@@ -58,7 +58,7 @@ void ViewScreen::ConstructVielbein()
 	-signs[1] * innerprod(guu[2], m_Vielbein[1]) * m_Vielbein[1];
 	thenorm = innerprod(m_Vielbein[2], m_Vielbein[2]);
 	signs[2] = (thenorm < 0) ? -1 : 1;
-	m_Vielbein[2] = signs[2] * m_Pos[1] * m_Vielbein[2] / sqrt(signs[2] * thenorm);
+	m_Vielbein[2] = m_Pos[1] * m_Vielbein[2] / sqrt(signs[2] * thenorm);
 
 	// Vielbein has been constructed
 	// Do some checks

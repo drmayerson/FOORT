@@ -291,6 +291,26 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 		// All settings complete; create Metric object!
 		TheMetric = std::unique_ptr<Metric>(new MankoNovikovMetric(MNa, MNalpha3, rLogScale));
 		}
+		if (MetricName == "kerrschild" || MetricName == "kerr-schild")
+		{
+			// Kerr-Schild
+
+			// First setting to look up: the a parameter
+			double theKerra{ 0.5 };
+			if (!MetricSettings.lookupValue("a", theKerra))
+			{
+				ScreenOutput("Kerr-Schild: no value for a given. Using default: " + std::to_string(theKerra) + ".",
+					Output_Other_Default);
+			}
+
+			// Second setting to look up: using a logarithmic r coordinate or not.
+			// Don't need to output message if setting not found
+			bool rLogScale{ false };
+			MetricSettings.lookupValue("RLogScale", rLogScale);
+
+			// All settings complete; create Metric object!
+			TheMetric = std::unique_ptr<Metric>(new KerrSchildMetric{ theKerra, rLogScale });
+		}
 		//// METRIC ADD POINT B ////
 		// Add an else if clause to check for your new Metric object!
 		// To look for additional options in the metric configuration, use

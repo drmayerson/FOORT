@@ -188,6 +188,31 @@ public:
 	std::string getFullDescriptionStr() const final;
 };
 
+// The Kerr metric in Kerr-Schild coordinates (normalized so that M = 1)
+class KerrSchildMetric final : public SphericalHorizonMetric
+{
+private:
+	// Rotation parameter for Kerr
+	// Note that this should be between -1 and 1 since M=1
+	const real m_aParam;
+
+public:
+	// No default constructor allowed, must specify a
+	KerrSchildMetric() = delete;
+
+	// Constructor setting parameter a
+	KerrSchildMetric(real aParam, bool rLogScale = false);
+
+	// The override of the basic metric getter functions
+	TwoIndex getMetric_dd(const Point& p) const final;
+	TwoIndex getMetric_uu(const Point& p) const final;
+
+	// The override of the description string getter
+	std::string getFullDescriptionStr() const final;
+};
+
+
+
 
 //// METRIC ADD POINT A ////
 // Declare your new Metric class here, publically inheriting from the base class Metric

@@ -3,15 +3,25 @@ TODO and wishlist:
 *** PRIORITY (before publication):
 
 --- Output/graphing etc. pipelines (python, Mathematica)
----> incl starry sky picture from GeodesicPositionDiagnostic value/output
+--- incl starry sky picture from GeodesicPositionDiagnostic value/output
+---> finish Python PhotonRingAnalysis scripts (test on Kerr for visamp?!)
+---> finish Python plotting scripts
 
---- radiative transfer (basic a la GLM equatorial emission models)
+--- document Python scripts (in output section in FOORT documentation)
+
+--- FOORT Physics documentation (integrations, adaptive mesh, diagnostics (four-color, emission, visamps), metrics)
 
 --- document other “add” procedures (for Mesh, Source)
 
 --- delete mesh v1
 
---- Other metrics: Pierre topological star (+others?)
+--- Other metrics:
+**** Restructure log r!
+---> Pierre topological star (+others?)
+---> Schwarzschild "scalarwall" and bubbled resolution?
+---> SUSY BH + 2-center FB + ring FB
+
+
 
 
 ------------------------------
