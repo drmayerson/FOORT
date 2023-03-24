@@ -99,6 +99,7 @@ public:
 	Point getCurrentPos() const; // Current position
 	OneIndex getCurrentVel() const; // Current velocity
 	real getCurrentLambda() const; // Current value of affine parameter
+	ScreenIndex getScreenIndex() const; // screen index
 
 	// Output getters, to be called after the Geodesic terminates
 	// This gets the complete output that should be written to the output files;

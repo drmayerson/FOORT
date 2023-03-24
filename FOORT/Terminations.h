@@ -31,6 +31,7 @@ constexpr TermBitflag Term_BoundarySphere		{ 0b0000'0000'0000'0001 };
 constexpr TermBitflag Term_TimeOut				{ 0b0000'0000'0000'0010 };
 constexpr TermBitflag Term_Horizon				{ 0b0000'0000'0000'0100 };
 constexpr TermBitflag Term_ThetaSingularity		{ 0b0000'0000'0000'1000 };
+constexpr TermBitflag Term_NaN					{ 0b0000'0000'0001'0000 };
 
 //// TERMINATION ADD POINT B1 ////
 // Add a TermBitflag for your new Termination. Make sure you use a bitflag that has not been used before!
@@ -53,6 +54,7 @@ enum class Term
 	BoundarySphere,			// STOP, encountered boundary sphere (set by BoundarySphereTermination)
 	TimeOut,				// STOP, taken too many steps (set by TimeOutTermination)
 	ThetaSingularity,		// STOP, too close to polar coordinate singularity (theta = 0 or theta = pi/2)
+	NaN,					// STOP, NaN encountered in geodesic position or velocity
 
 
 	//// TERMINATION ADD POINT B2 ////
@@ -209,6 +211,25 @@ public:
 	static std::unique_ptr<ThetaSingularityTermOptions> TermOptions;
 };
 
+// Forward declaration needed before Termination
+struct NaNTermOptions;
+// NaN termination: terminate geodesics if position or velocity contains a nan
+class NaNTermination final : public Termination
+{
+public:
+	// Basic constructor only passes on Geodesic pointer to base class constructor
+	NaNTermination(Geodesic* const theGeodesic) : Termination(theGeodesic) {}
+
+	// Check if we are too close to the horizon
+	Term CheckTermination() final;
+
+	// Description string
+	std::string getFullDescriptionStr() const final;
+
+	// Options (contains horizon radius, if we are using logarithmic r coordinate, and distance allowed from the horizon)
+	static std::unique_ptr<NaNTermOptions> TermOptions;
+};
+
 //// TERMINATION ADD POINT A1 /////
 // Declare your Termination class here, inheriting from Termination.
 // Sample code:
@@ -307,6 +328,16 @@ public:
 	{}
 
 	const real ThetaSingEpsilon;
+};
+
+// Options class for TimeOut; has to keep track of the max. number of integration steps allowed
+struct NaNTermOptions : public TerminationOptions
+{
+public:
+	NaNTermOptions(bool consoleoutputon, largecounter Nsteps) : OutputToConsole{ consoleoutputon }, TerminationOptions(Nsteps)
+	{}
+
+	const bool OutputToConsole;
 };
 
 //// TERMINATION ADD POINT A2 ////

@@ -10,6 +10,10 @@
 /// Metric (abstract base class) functions
 /// </summary>
 
+
+Metric::Metric(bool rlogscale) : m_rLogScale{ rlogscale }
+{}
+
 // Christoffel symbols of the metric (indices up, down, down)
 ThreeIndex Metric::getChristoffel_udd(const Point& p) const
 {
@@ -78,8 +82,11 @@ std::string Metric::getFullDescriptionStr() const
 	return "Metric (no override description specified)";
 }
 
-
-
+// Getter for radial log scale
+bool Metric::getrLogScale() const
+{
+	return m_rLogScale;
+}
 
 /// <summary>
 /// SphericalHorizonMetric functions
@@ -87,19 +94,13 @@ std::string Metric::getFullDescriptionStr() const
 
 // Constructor, to be called with the horizon radius and a bool indicating whether we are using a logarithmic radial scale
 SphericalHorizonMetric::SphericalHorizonMetric(real HorizonRadius, bool rLogScale)
-	: m_rLogScale{ rLogScale }, m_HorizonRadius{ HorizonRadius }
+	: m_HorizonRadius{ HorizonRadius }, Metric(rLogScale)
 { }
 
 // Getter for horizon radius
 real SphericalHorizonMetric::getHorizonRadius() const
 {
 	return m_HorizonRadius;
-}
-
-// Getter for radial log scale
-bool SphericalHorizonMetric::getrLogScale() const
-{
-	return m_rLogScale;
 }
 
 
@@ -202,7 +203,7 @@ std::string KerrMetric::getFullDescriptionStr() const
 /// </summary>
 
 // Basic constructor (no arguments necessary)
-FlatSpaceMetric::FlatSpaceMetric()
+FlatSpaceMetric::FlatSpaceMetric(bool rlogscale) : Metric(rlogscale)
 {
 	// Make sure we are in four spacetime dimensions
 	if constexpr (dimension != 4)
@@ -231,7 +232,7 @@ TwoIndex FlatSpaceMetric::getMetric_uu(const Point& p) const
 // Description string for flat space
 std::string FlatSpaceMetric::getFullDescriptionStr() const
 {
-	return "Flat space";
+	return "Flat space (" + std::string((m_rLogScale ? "using logarithmic r coord" : "using normal r coord")) + ")";
 }
 
 
@@ -726,6 +727,211 @@ std::string KerrSchildMetric::getFullDescriptionStr() const
 {
 	return "Kerr-Schild (a = " + std::to_string(m_aParam) + ", " + (m_rLogScale ? "using logarithmic r coord" : "using normal r coord") + ")";
 }
+
+
+/// <summary>
+/// ST3CrMetric functions
+/// </summary>
+
+
+
+ST3CrMetric::ST3CrMetric(real P, real q0, real lambda, bool rlogscale)
+	: m_P{ P },
+	m_q0{ q0 },
+	m_lambda{ lambda },
+	Metric(rlogscale)
+{
+	// Make sure we are in four spacetime dimensions
+	if constexpr (dimension != 4)
+	{
+		ScreenOutput("ST3Cr is only defined in four dimensions!", OutputLevel::Level_0_WARNING);
+	}
+
+	// Check on parameters
+	if (m_P * m_P * m_P - m_q0 > 0.0)
+		ScreenOutput("ST3Cr metric parameters P and q0 given (" + std::to_string(m_P) + ") and (" + std::to_string(m_q0) + ") not allowed! P^3 - q0 < 0 must hold.",
+			OutputLevel::Level_0_WARNING);
+	if (m_q0 * m_q0 / pow(1. - (1. - 3. * m_P * m_P) * m_lambda, 2) - 4. * pow(m_P, 6) < 0)
+		ScreenOutput("ST3Cr metric parameter lambda given (" + std::to_string(m_lambda) + ") not allowed!",
+			OutputLevel::Level_0_WARNING);
+
+	// Killing vector along t and phi, so we initialize the symmetries accordingly
+	m_Symmetries = { 0,3 };
+}
+
+//Get omega given r_ij, theta_ij, l_ij
+real ST3CrMetric::get_omega(real r, real theta, real l) const
+{
+	real cost = cos(theta);
+
+	real omega = (r * r - l * l) / sqrt(r * r * r * r + l * l * l * l - 2. * r * r * l * l * cos(2. * theta)) - 1. - (r * cost - l) / sqrt(r * r + l * l - 2 * r * l * cost) + (r * cost + l) / sqrt(r * r + l * l + 2. * r * l * cost);
+
+	return omega;
+}
+
+// Numerically integrate part of omega_phi over 0,pi
+
+// function for prefactor * dphi' for ring
+real ST3CrMetric::f_phi(real phi, real r, real theta, real l, real R) const
+{
+	real f_phi = m_q0 / (2. * pi * sqrt(R * R + l * l)) * (-(r * sqrt(l * l + R * R) * sin(theta) * (R * cos(phi) * (l - r * cos(theta)) - l * r * sin(theta))) / (l * l * R * R - 2 * l * r * R * R * cos(theta) + r * r * R * R * cos(theta) * cos(theta) - 2 * l * r * R * cos(phi) * (l - r * cos(theta)) * sin(theta) + l * l * r * r * cos(phi) * cos(phi) * sin(theta) * sin(theta) + l * l * r * r * sin(phi) * sin(phi) * sin(theta) * sin(theta) + r * r * R * R * sin(phi) * sin(phi) * sin(theta) * sin(theta)));
+	return f_phi;
+}
+
+// omega_phi ring functions
+real ST3CrMetric::f_om_phi(real phi, real r, real theta, real l, real R) const
+{
+	real r_ac = 1. / 4. * sqrt(l * l + 16. * r * r + 4. * R * R - 8. * l * r * cos(theta) + 8. * r * R * sin(phi - theta) - 8. * r * R * sin(phi + theta));
+	real theta_ac = acos((-l * l + 4. * R * R + 4. * l * r * cos(theta) - 8. * r * R * cos(phi) * sin(theta)) / (sqrt(l * l + 4. * R * R) * sqrt(l * l + 16. * r * r + 4. * R * R - 8. * l * r * cos(theta) - 16. * r * R * cos(phi) * sin(theta))));
+	real theta_bc = acos((-l * l + 4. * R * R - 4. * l * r * cos(theta) - 8. * r * R * cos(phi) * sin(theta)) / (sqrt(l * l + 4. * R * R) * sqrt(l * l + 16. * r * r + 4. * R * R + 8. * l * r * cos(theta) - 16. * r * R * cos(phi) * sin(theta))));
+	real r_bc = 1. / 4. * sqrt(l * l + 16. * r * r + 4. * R * R + 8. * l * r * cos(theta) + 8. * r * R * sin(phi - theta) - 8. * r * R * sin(phi + theta));
+
+	real om_ac = get_omega(r_ac, theta_ac, sqrt(R * R + l * l / 4.));
+	real f_phi_ac = f_phi(phi, r, theta, l / 2., R);
+	real omega_phi_ac = om_ac * f_phi_ac;
+
+	real om_bc = get_omega(r_bc, theta_bc, sqrt(R * R + l * l / 4.));
+	real f_phi_bc = -f_phi(phi, r, theta, -l / 2., R);
+	real omega_phi_bc = om_bc * f_phi_bc;
+
+	real f = omega_phi_ac + omega_phi_bc;
+
+	return f;
+}
+
+// ST3Cr metric getter, indices down
+TwoIndex ST3CrMetric::getMetric_dd(const Point& p) const
+{
+	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
+	real r = m_rLogScale ? exp(p[1]) : p[1];
+
+	// Shorthands
+	real theta = p[2];
+	real sint = sin(theta);
+	real cost = cos(theta);
+
+	real l = 8. * m_P * m_P * m_P * m_lambda;
+	real R = 2. * m_lambda * sqrt(m_q0 * m_q0 / pow(1. - (1. - 3. * m_P * m_P) * m_lambda, 2) - 4. * pow(m_P, 6));
+
+	real r1 = sqrt(r * r + l * l / 4. - r * l * cost);
+	real r2 = sqrt(r * r + l * l / 4. + r * l * cost);
+	real r3 = sqrt(r * r + R * R + 2. * r * R * sint);
+
+	
+	real cei = std::comp_ellint_1(sqrt(4. * r * R * sint / (r3 * r3)));
+	real MD0 = -2. * m_q0 / (pi * r3) * cei;
+
+	real om_ab = get_omega(r, theta, l / 2.);
+	real omega_phi_ab = -4. * m_P * m_P * m_P / l * om_ab;
+
+	// Integrate with Simpson's rule
+	int ni = 15;
+	real h = pi / static_cast<real>(ni);
+
+	// Integral sample points, there should be n - 1 of them
+	real omega_phi = omega_phi_ab;
+	real sum_odds = 0.0;
+	for (int i = 1; i < ni; i += 2)
+		sum_odds += f_om_phi(static_cast<real>(i) * h, r, theta, l, R);
+	real sum_evens = 0.0;
+	for (int i = 2; i < ni; i += 2)
+		sum_evens += f_om_phi(static_cast<real>(i) * h, r, theta, l, R);
+	omega_phi += (f_om_phi(0.0, r, theta, l, R) + f_om_phi(pi, r, theta, l, R) + 2. * sum_evens + 4. * sum_odds) * h / 3. / pi;
+
+	real K = 1. + m_P * (1. / r1 + 1. / r2);
+	real M = -1. / 2. + (m_P * m_P * m_P) / 2. * (1. / r1 + 1. / r2) + MD0;
+	//	real M = -1./2. + (m_P*m_P*m_P)/2. * (1./r1 + 1./r2) - m_q0/r;
+	real V = 1. / r1 - 1. / r2;
+	real L = -m_P * m_P * (1. / r1 - 1. / r2);
+	real Q = -2. * pow(K, 3.) * M + pow(L, 3.) * V + 3. / 4. * L * L * K * K - M * M * V * V - 3. * M * V * K * L;
+
+	// Covariant metric elements
+	real g00 = -1. / sqrt(Q);
+	real g11 = sqrt(Q);
+	real g22 = sqrt(Q) * r * r;
+	real g33 = sqrt(Q) * r * r * sint * sint - 1. / sqrt(Q) * omega_phi * omega_phi;
+	real g03 = -omega_phi / sqrt(Q);
+
+	// If the log scale is set on, the true coordinate we are calculating the metric in is u = log(r), so dr = r du
+	if (m_rLogScale)
+	{
+		g11 *= (r * r);
+	}
+
+
+	return TwoIndex{ {{g00, 0, 0, g03}, {0, g11, 0, 0}, {0, 0, g22, 0},{g03, 0, 0, g33}} };
+}
+
+// ST3Cr metric getter, indices up
+TwoIndex ST3CrMetric::getMetric_uu(const Point& p) const
+{
+	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
+	real r = m_rLogScale ? exp(p[1]) : p[1];
+
+	// Shorthands
+	real theta = p[2];
+	real sint = sin(theta);
+	real cost = cos(theta);
+
+	real l = 8. * m_P * m_P * m_P * m_lambda;
+	real R = 2. * m_lambda * sqrt(m_q0 * m_q0 / pow(1. - (1. - 3. * m_P * m_P) * m_lambda, 2) - 4. * pow(m_P, 6));
+
+	real r1 = sqrt(r * r + l * l / 4. - r * l * cost);
+	real r2 = sqrt(r * r + l * l / 4. + r * l * cost);
+	real r3 = sqrt(r * r + R * R + 2. * r * R * sint);
+
+	real cei = std::comp_ellint_1(sqrt(4. * r * R * sint / (r3 * r3)));
+	real MD0 = -2. * m_q0 / (pi * r3) * cei;
+
+	real om_ab = get_omega(r, theta, l / 2.);
+	real omega_phi_ab = -4. * m_P * m_P * m_P / l * om_ab;
+
+	// Integrate with Simpson's rule
+	int ni = 15;
+	real h = pi / static_cast<real>(ni);
+
+	// Integral sample points, there should be n - 1 of them
+
+	real omega_phi = omega_phi_ab;
+	real sum_odds = 0.0;
+	for (int i = 1; i < ni; i += 2)
+		sum_odds += f_om_phi(static_cast<real>(i) * h, r, theta, l, R);
+	real sum_evens = 0.0;
+	for (int i = 2; i < ni; i += 2)
+		sum_evens += f_om_phi(static_cast<real>(i) * h, r, theta, l, R);
+	omega_phi += (f_om_phi(0.0, r, theta, l, R) + f_om_phi(pi, r, theta, l, R) + 2. * sum_evens + 4. * sum_odds) * h / 3. / pi;
+
+	real K = 1. + m_P * (1. / r1 + 1. / r2);
+	real M = -1. / 2. + (m_P * m_P * m_P) / 2. * (1. / r1 + 1. / r2) + MD0;
+	//        real M = -1./2. + (m_P*m_P*m_P)/2. * (1./r1 + 1./r2) - m_q0/r;
+
+	real V = 1. / r1 - 1. / r2;
+	real L = -m_P * m_P * (1. / r1 - 1. / r2);
+	real Q = -2. * pow(K, 3.) * M + pow(L, 3.) * V + 3. / 4. * L * L * K * K - M * M * V * V - 3. * M * V * K * L;
+
+	// Contravariant metric elements
+	real g00 = (omega_phi * omega_phi - Q * r * r * sint * sint) / (sqrt(Q) * r * r * sint * sint);
+	real g11 = 1. / sqrt(Q);
+	real g22 = 1. / (sqrt(Q) * r * r);
+	real g33 = 1. / (sqrt(Q) * r * r * sint * sint);
+	real g03 = -omega_phi / (sqrt(Q) * r * r * sint * sint);
+
+	// If the log scale is set on, the true coordinate we are calculating the metric in is u = log(r), so , so dr = r du
+	if (m_rLogScale)
+	{
+		g11 *= 1.0 / (r * r);
+	}
+
+	return TwoIndex{ {{g00, 0,0, g03}, {0,g11,0,0}, {0,0,g22,0},{g03,0,0,g33}} };
+}
+
+// ST3Cr description string; also gives a parameter value and whether we are using logarithmic radial coordinate
+std::string ST3CrMetric::getFullDescriptionStr() const
+{
+	return "ST3Cr (P = " + std::to_string(m_P) + ", q0 = " + std::to_string(m_q0) + ", lambda = " + std::to_string(m_lambda) 
+		+ ", " + (m_rLogScale ? "using logarithmic r coord" : "using normal r coord") + ")";
+}
+
 
 
 //// (New Metric classes can define their member functions here)

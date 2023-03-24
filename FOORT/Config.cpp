@@ -28,6 +28,7 @@ std::unique_ptr<HorizonTermOptions> HorizonTermination::TermOptions;
 std::unique_ptr<BoundarySphereTermOptions> BoundarySphereTermination::TermOptions;
 std::unique_ptr<TimeOutTermOptions> TimeOutTermination::TermOptions;
 std::unique_ptr<ThetaSingularityTermOptions> ThetaSingularityTermination::TermOptions;
+std::unique_ptr<NaNTermOptions> NaNTermination::TermOptions;
 
 //// TERMINATION ADD POINT D.1 ////
 // Declare your Termination's static TerminationOptions struct here!
@@ -144,6 +145,10 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 		// Go to the Metric settings
 		ConfigSetting& MetricSettings = root["Metric"];
 
+		// Check log r setting first
+		bool rLogScale{ false };
+		MetricSettings.lookupValue("RLogScale", rLogScale);
+
 		// Check to see that the Metric's name has been specified
 		if (!MetricSettings.lookupValue("Name", MetricName))
 		{
@@ -168,19 +173,15 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 					Output_Other_Default);
 			}
 
-			// Second setting to look up: using a logarithmic r coordinate or not.
-			// Don't need to output message if setting not found
-			bool rLogScale{ false };
-			MetricSettings.lookupValue("RLogScale", rLogScale);
 
 			// All settings complete; create Metric object!
-			TheMetric = std::unique_ptr<Metric>(new KerrMetric{ theKerra, rLogScale });
+			TheMetric = std::unique_ptr<Metric>(new KerrMetric( theKerra, rLogScale ));
 		}
 		else if (MetricName == "flatspace")
 		{
 			// (4D) flat space in spherical coordinates; no options necessary
 			// Create Metric object!
-			TheMetric = std::unique_ptr<Metric>(new FlatSpaceMetric{});
+			TheMetric = std::unique_ptr<Metric>(new FlatSpaceMetric(rLogScale));
 		}
 		else if (MetricName == "rasheedlarsen" || MetricName == "rasheed-larsen")
 		{
@@ -211,11 +212,6 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 				ScreenOutput("Rasheed-Larsen: no value for q given. Using default: " + std::to_string(RLq) + ".",
 					Output_Other_Default);
 			}
-
-			// Second setting to look up: using a logarithmic r coordinate or not.
-			// Don't need to output message if setting not found
-			bool rLogScale{ false };
-			MetricSettings.lookupValue("RLogScale", rLogScale);
 
 			// All settings complete; create Metric object!
 			TheMetric = std::unique_ptr<Metric>(new RasheedLarsenMetric(RLm, RLa, RLp, RLq, rLogScale ) );
@@ -256,42 +252,31 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 					Output_Other_Default);
 			}
 
-
-			// Second setting to look up: using a logarithmic r coordinate or not.
-			// Don't need to output message if setting not found
-			bool rLogScale{ false };
-			MetricSettings.lookupValue("RLogScale", rLogScale);
-
 			// All settings complete; create Metric object!
 			TheMetric = std::unique_ptr<Metric>(new JohannsenMetric(JOHa, JOHa13, JOHa22, JOHa52, JOHe3, rLogScale));
 		}
 		else if (MetricName == "mankonovikov" || MetricName == "manko-novikov")
 		{
-		// The Manko-Novikov black hole with alpha3
+			// The Manko-Novikov black hole with alpha3
 
-		// Look up two parameters of BH
-		double MNa{ 0. };
-		double MNalpha3{ 5.0 };
-		if (!MetricSettings.lookupValue("a", MNa))
-		{
-			ScreenOutput("Manko-Novikov: no value for a given. Using default: " + std::to_string(MNa) + ".",
-				Output_Other_Default);
-		}
-		if (!MetricSettings.lookupValue("alpha3", MNalpha3))
-		{
-			ScreenOutput("Manko-Novikov: no value for alpha3 given. Using default: " + std::to_string(MNalpha3) + ".",
-				Output_Other_Default);
-		}
+			// Look up two parameters of BH
+			double MNa{ 0. };
+			double MNalpha3{ 5.0 };
+			if (!MetricSettings.lookupValue("a", MNa))
+			{
+				ScreenOutput("Manko-Novikov: no value for a given. Using default: " + std::to_string(MNa) + ".",
+					Output_Other_Default);
+			}
+			if (!MetricSettings.lookupValue("alpha3", MNalpha3))
+			{
+				ScreenOutput("Manko-Novikov: no value for alpha3 given. Using default: " + std::to_string(MNalpha3) + ".",
+					Output_Other_Default);
+			}
 
-		// Third setting to look up: using a logarithmic r coordinate or not.
-		// Don't need to output message if setting not found
-		bool rLogScale{ false };
-		MetricSettings.lookupValue("RLogScale", rLogScale);
-
-		// All settings complete; create Metric object!
-		TheMetric = std::unique_ptr<Metric>(new MankoNovikovMetric(MNa, MNalpha3, rLogScale));
+			// All settings complete; create Metric object!
+			TheMetric = std::unique_ptr<Metric>(new MankoNovikovMetric(MNa, MNalpha3, rLogScale));
 		}
-		if (MetricName == "kerrschild" || MetricName == "kerr-schild")
+		else if (MetricName == "kerrschild" || MetricName == "kerr-schild")
 		{
 			// Kerr-Schild
 
@@ -303,13 +288,34 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 					Output_Other_Default);
 			}
 
-			// Second setting to look up: using a logarithmic r coordinate or not.
-			// Don't need to output message if setting not found
-			bool rLogScale{ false };
-			MetricSettings.lookupValue("RLogScale", rLogScale);
-
 			// All settings complete; create Metric object!
 			TheMetric = std::unique_ptr<Metric>(new KerrSchildMetric{ theKerra, rLogScale });
+		}
+		else if (MetricName == "st3cr")
+		{
+			// Ring fuzzball
+
+			real ST3CrP{ 2. };
+			real ST3Crq0{ 50. };
+			real ST3Crlambda{ 0.19 };
+
+			if (!MetricSettings.lookupValue("P", ST3CrP))
+			{
+				ScreenOutput("ST3Cr: no value for P given. Using default: " + std::to_string(ST3CrP) + ".",
+					Output_Other_Default);
+			}
+			if (!MetricSettings.lookupValue("q0", ST3Crq0))
+			{
+				ScreenOutput("ST3Cr: no value for q0 given. Using default: " + std::to_string(ST3Crq0) + ".",
+					Output_Other_Default);
+			}
+			if (!MetricSettings.lookupValue("lambda", ST3Crlambda))
+			{
+				ScreenOutput("ST3Cr: no value for lambda given. Using default: " + std::to_string(ST3Crlambda) + ".",
+					Output_Other_Default);
+			}
+
+			TheMetric = std::unique_ptr<Metric>(new ST3CrMetric( ST3CrP, ST3Crq0, ST3Crlambda, rLogScale ));
 		}
 		//// METRIC ADD POINT B ////
 		// Add an else if clause to check for your new Metric object!
@@ -539,11 +545,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 
 			// Check if metric is a spherical horizon metric with integration set to a logarithmic r coordinate,
 			// if so, pass this along to the options struct
-			bool rlogradius{ false };
-			const SphericalHorizonMetric* sphermetric = dynamic_cast<const SphericalHorizonMetric*>(theMetric);
-			if (sphermetric && sphermetric->getrLogScale())
-				rlogradius = true;
-
+			bool rlogradius{ theMetric->getrLogScale()};
 
 			ClosestRadiusDiagnostic::DiagOptions =
 				std::unique_ptr<ClosestRadiusOptions>(new ClosestRadiusOptions(rlogradius, UpdateFrequency{ updatensteps,
@@ -589,10 +591,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 
 			// Check if metric is a spherical horizon metric with integration set to a logarithmic r coordinate,
 			// if so, pass this along to the options struct
-			bool rlogradius{ false };
-			const SphericalHorizonMetric* sphermetric = dynamic_cast<const SphericalHorizonMetric*>(theMetric);
-			if (sphermetric && sphermetric->getrLogScale())
-				rlogradius = true;
+			bool rlogradius{ theMetric->getrLogScale() };
 
 			// Looking up overall options for emission
 
@@ -612,6 +611,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 			//// Emission model selection and initialization ////
 
 			// Default emission model and parameters
+			const SphericalHorizonMetric* sphermetric{ dynamic_cast<const SphericalHorizonMetric*>(theMetric) };
 			real defaultmu{ sphermetric ? sphermetric->getHorizonRadius() : 1.0 };
 			real defaultgamma{ 0.0 };
 			real defaultsigma{ 1.0 };
@@ -837,10 +837,7 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 
 			// Check if metric is a spherical horizon metric with integration set to a logarithmic r coordinate,
 			// if so, pass this along to the options struct
-			bool rlogradius{ false };
-			const SphericalHorizonMetric* sphermetric = dynamic_cast<const SphericalHorizonMetric*>(theMetric);
-			if (sphermetric && sphermetric->getrLogScale())
-				rlogradius = true;
+			bool rlogradius{ theMetric->getrLogScale() };
 
 			// By default, this Termination updates every step
 			// Check to see if a different update frequency has been specified
@@ -893,6 +890,27 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 				std::unique_ptr<ThetaSingularityTermOptions>(new ThetaSingularityTermOptions{ epsilon, updatefreq });
 		}
 
+		// NaN
+		if (CheckIfTermOn("NaN"))
+		{
+			// Theta singularity check on! Add to bitflag
+			allterms |= Term_NaN;
+
+			// output information of geodesic that hits a nan or not
+			bool outputconsole{ true };
+			AllTermSettings["NaN"].lookupValue("ConsoleOutput", outputconsole);
+
+
+			// By default, this Termination updates every step
+			// Check to see if a different update frequency has been specified
+			largecounter updatefreq = 1;
+			lookupValuelargecounter(AllTermSettings["NaN"], "UpdateFrequency", updatefreq);
+
+			// Initialize the (static) TerminationOptions for ThetaSingularity!
+			NaNTermination::TermOptions =
+				std::unique_ptr<NaNTermOptions>(new NaNTermOptions{ outputconsole, updatefreq });
+		}
+
 		//// TERMINATION ADD POINT D.2. ////
 		// Check to see if your new Termination has been turned on, and if so, add it to the allterms bitflag
 		// and set its options accordingly.
@@ -932,8 +950,7 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 		allterms= Term_BoundarySphere | Term_TimeOut;
 		BoundarySphereTermination::TermOptions =
 			std::unique_ptr<BoundarySphereTermOptions>(new BoundarySphereTermOptions{ 1000,
-				dynamic_cast<const SphericalHorizonMetric*>(theMetric)
-				&& (dynamic_cast<const SphericalHorizonMetric*>(theMetric))->getrLogScale(), 1});
+				theMetric->getrLogScale(), 1});
 		TimeOutTermination::TermOptions =
 			std::unique_ptr<TimeOutTermOptions>(new TimeOutTermOptions{ 10000, 1 });
 	}

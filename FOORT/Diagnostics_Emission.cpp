@@ -102,8 +102,7 @@ std::string GeneralCircularRadialFluid::getFullDescriptionStr() const
 	// Full description string; contains ISCO radius (calculated in constructor)
 
 	real trueISCOradius{ m_ISCOr };
-	const SphericalHorizonMetric* sphermetric = dynamic_cast<const SphericalHorizonMetric*>(m_theMetric);
-	if (sphermetric && sphermetric->getrLogScale())
+	if (m_theMetric->getrLogScale())
 		trueISCOradius = exp(m_ISCOr);
 
 	return "Circular/radial flow (sub-Keplerian parameter xi = " + std::to_string(m_subKeplerParam)

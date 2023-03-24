@@ -38,6 +38,11 @@ TerminationUniqueVector CreateTerminationVector(TermBitflag termflags, Geodesic 
 	{
 		theTermVector.emplace_back(new ThetaSingularityTermination{ theGeodesic });
 	}
+	// Is ThetaSingularity turned on?
+	if (termflags & Term_NaN)
+	{
+		theTermVector.emplace_back(new NaNTermination{ theGeodesic });
+	}
 	//// TERMINATION ADD POINT C ////
 	// Add an if statement that checks if your Termination's TermBitflag is turned on, if so add a new instance of it
 	// to theTermVector.
@@ -217,6 +222,44 @@ std::string ThetaSingularityTermination::getFullDescriptionStr() const
 {
 	// Full description string
 	return "Theta singularity (epsilon: " + std::to_string(TermOptions->ThetaSingEpsilon) + ")";
+}
+
+/// <summary>
+/// NaNTermination functions
+/// </summary>
+
+Term NaNTermination::CheckTermination()
+{
+	Term ret = Term::Continue;
+
+	if (DecideUpdate(TermOptions->UpdateEveryNSteps))
+	{
+		// Check to see if nan encountered
+		Point pos{ m_OwnerGeodesic->getCurrentPos() };
+		OneIndex vel{ m_OwnerGeodesic->getCurrentVel() };
+
+		for (int i = 0; i < dimension && ret == Term::Continue; ++i)
+		{
+			if (isnan(pos[i]) || isnan(vel[i]))
+				ret = Term::NaN;
+		}
+		if (ret == Term::NaN && TermOptions->OutputToConsole)
+		{
+			ScreenOutput("NaN encountered for geodesic with screen index " + toString(m_OwnerGeodesic->getScreenIndex())
+				+ ", position: " + toString(pos) + ", velocity: " + toString(vel)
+				+ ", lambda = " + std::to_string(m_OwnerGeodesic->getCurrentLambda()) + ".",
+				OutputLevel::Level_0_WARNING);
+		}
+	}
+
+	return ret;
+}
+
+std::string NaNTermination::getFullDescriptionStr() const
+{
+	// Full description string
+	return "NaN checker ("
+		+ std::string(TermOptions->OutputToConsole ? "outputting to console" : "no output to console") + ")";
 }
 
 

@@ -107,6 +107,11 @@ real Geodesic::getCurrentLambda() const
 	return m_curLambda;
 }
 
+ScreenIndex Geodesic::getScreenIndex() const
+{
+	return m_ScreenIndex;
+}
+
 
 std::vector<std::string> Geodesic::getAllOutputStr() const
 {

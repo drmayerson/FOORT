@@ -20,6 +20,8 @@ class Metric
 public:
 	// Virtual destructor to ensure correct destruction of descendants
 	virtual ~Metric() = default;
+
+	Metric(bool rlogscale = false);
 	
 	// Basic functions that return the metric with indices down or up:
 	// pure virtual as they must be defined in the descendant classes.
@@ -46,9 +48,12 @@ public:
 	// There is a base class implementation of this function returning an undescriptive string
 	virtual std::string getFullDescriptionStr() const;
 
+	bool getrLogScale() const;
 protected:
 	// The symmetries (coordinate Killing vectors) of the metric. Should be set by descendant constructor.
 	std::vector<int> m_Symmetries{};
+	// Are we using a logarithmic r coordinate?
+	const bool m_rLogScale;
 };
 
 
@@ -63,13 +68,10 @@ public:
 
 	// Getter functions for the two member variables
 	real getHorizonRadius() const;
-	bool getrLogScale() const;
 
 protected:
 	// Radius of the horizon
 	const real m_HorizonRadius;
-	// Are we using a logarithmic r coordinate?
-	const bool m_rLogScale;
 };
 
 
@@ -103,7 +105,7 @@ class FlatSpaceMetric final : public Metric
 {
 public:
 	// Simple (default) constructor is all that is needed
-	FlatSpaceMetric();
+	FlatSpaceMetric(bool rlogscale = false);
 
 	// The override of the basic metric getter functions
 	TwoIndex getMetric_dd(const Point& p) const final;
@@ -209,6 +211,32 @@ public:
 
 	// The override of the description string getter
 	std::string getFullDescriptionStr() const final;
+};
+
+
+
+// Ring fuzzball (implementation Lies Van Dael)
+class ST3CrMetric final : public Metric
+{
+public:
+	// Constructor which will be called to initialize all parameters of the metric
+	ST3CrMetric(real P, real q0, real lambda, bool rlogscale=false);
+
+	// The basic getter functions
+	TwoIndex getMetric_dd(const Point& p) const final;
+	TwoIndex getMetric_uu(const Point& p) const final;
+
+	// The description string getter
+	std::string getFullDescriptionStr() const final;
+
+private:
+	const real m_P;
+	const real m_q0;
+	const real m_lambda;
+
+	real get_omega(real r, real theta, real l) const;
+	real f_phi(real phi, real r, real theta, real l, real R) const;
+	real f_om_phi(real phi, real r, real theta, real l, real R) const;
 };
 
 

@@ -46,8 +46,7 @@ public:
 		: m_Pos{ pos }, m_Direction{ dir }, m_ScreenSize{ screensize }, m_ScreenCenter{ screencenter },
 		m_theMesh{ std::move(theMesh) },
 		m_theMetric{theMetric},	m_GeodType{ thegeodtype },
-		m_rLogScale{ dynamic_cast<const SphericalHorizonMetric*>(theMetric) 
-			&& (dynamic_cast<const SphericalHorizonMetric*>(theMetric))->getrLogScale() }
+		m_rLogScale{ theMetric->getrLogScale() }
 	{
 		// At the moment, we don't even use the direction; we are always pointed towards the origin
 		if (m_Direction != Point{ 0,-1,0,0 })
