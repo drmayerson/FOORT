@@ -786,11 +786,11 @@ real ST3CrMetric::f_om_phi(real phi, real r, real theta, real l, real R) const
 	real theta_bc = acos((-l * l + 4. * R * R - 4. * l * r * cos(theta) - 8. * r * R * cos(phi) * sin(theta)) / (sqrt(l * l + 4. * R * R) * sqrt(l * l + 16. * r * r + 4. * R * R + 8. * l * r * cos(theta) - 16. * r * R * cos(phi) * sin(theta))));
 	real r_bc = 1. / 4. * sqrt(l * l + 16. * r * r + 4. * R * R + 8. * l * r * cos(theta) + 8. * r * R * sin(phi - theta) - 8. * r * R * sin(phi + theta));
 
-	real om_ac = get_omega(r_ac, theta_ac, sqrt(R * R + l * l / 4.));
+	real om_ac = get_omega(r_ac, theta_ac, sqrt(R * R + l * l / 4.) / 2.0);
 	real f_phi_ac = f_phi(phi, r, theta, l / 2., R);
 	real omega_phi_ac = om_ac * f_phi_ac;
 
-	real om_bc = get_omega(r_bc, theta_bc, sqrt(R * R + l * l / 4.));
+	real om_bc = get_omega(r_bc, theta_bc, sqrt(R * R + l * l / 4.) / 2.0);
 	real f_phi_bc = -f_phi(phi, r, theta, -l / 2., R);
 	real omega_phi_bc = om_bc * f_phi_bc;
 
@@ -825,7 +825,7 @@ TwoIndex ST3CrMetric::getMetric_dd(const Point& p) const
 	real omega_phi_ab = -4. * m_P * m_P * m_P / l * om_ab;
 
 	// Integrate with Simpson's rule
-	int ni = 15;
+	int ni = 16;
 	real h = pi / static_cast<real>(ni);
 
 	// Integral sample points, there should be n - 1 of them
@@ -836,11 +836,10 @@ TwoIndex ST3CrMetric::getMetric_dd(const Point& p) const
 	real sum_evens = 0.0;
 	for (int i = 2; i < ni; i += 2)
 		sum_evens += f_om_phi(static_cast<real>(i) * h, r, theta, l, R);
-	omega_phi += (f_om_phi(0.0, r, theta, l, R) + f_om_phi(pi, r, theta, l, R) + 2. * sum_evens + 4. * sum_odds) * h / 3. / pi;
+	omega_phi += 2. * (f_om_phi(0.0, r, theta, l, R) + f_om_phi(pi, r, theta, l, R) + 2. * sum_evens + 4. * sum_odds) * h / 3.;
 
 	real K = 1. + m_P * (1. / r1 + 1. / r2);
 	real M = -1. / 2. + (m_P * m_P * m_P) / 2. * (1. / r1 + 1. / r2) + MD0;
-	//	real M = -1./2. + (m_P*m_P*m_P)/2. * (1./r1 + 1./r2) - m_q0/r;
 	real V = 1. / r1 - 1. / r2;
 	real L = -m_P * m_P * (1. / r1 - 1. / r2);
 	real Q = -2. * pow(K, 3.) * M + pow(L, 3.) * V + 3. / 4. * L * L * K * K - M * M * V * V - 3. * M * V * K * L;
@@ -887,7 +886,7 @@ TwoIndex ST3CrMetric::getMetric_uu(const Point& p) const
 	real omega_phi_ab = -4. * m_P * m_P * m_P / l * om_ab;
 
 	// Integrate with Simpson's rule
-	int ni = 15;
+	int ni = 16;
 	real h = pi / static_cast<real>(ni);
 
 	// Integral sample points, there should be n - 1 of them
@@ -899,12 +898,10 @@ TwoIndex ST3CrMetric::getMetric_uu(const Point& p) const
 	real sum_evens = 0.0;
 	for (int i = 2; i < ni; i += 2)
 		sum_evens += f_om_phi(static_cast<real>(i) * h, r, theta, l, R);
-	omega_phi += (f_om_phi(0.0, r, theta, l, R) + f_om_phi(pi, r, theta, l, R) + 2. * sum_evens + 4. * sum_odds) * h / 3. / pi;
+	omega_phi += 2.0 * (f_om_phi(0.0, r, theta, l, R) + f_om_phi(pi, r, theta, l, R) + 2. * sum_evens + 4. * sum_odds) * h / 3.;
 
 	real K = 1. + m_P * (1. / r1 + 1. / r2);
 	real M = -1. / 2. + (m_P * m_P * m_P) / 2. * (1. / r1 + 1. / r2) + MD0;
-	//        real M = -1./2. + (m_P*m_P*m_P)/2. * (1./r1 + 1./r2) - m_q0/r;
-
 	real V = 1. / r1 - 1. / r2;
 	real L = -m_P * m_P * (1. / r1 - 1. / r2);
 	real Q = -2. * pow(K, 3.) * M + pow(L, 3.) * V + 3. / 4. * L * L * K * K - M * M * V * V - 3. * M * V * K * L;

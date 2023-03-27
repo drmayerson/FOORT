@@ -6,6 +6,7 @@
 #include "InputOutput.h" // for ScreenOutput
 
 #include <string> // for strings
+#include <cmath> // for fmax, fmin
 
 // Here we declare the emission and fluid velocity models used for equatorial disc emission
 
@@ -112,7 +113,7 @@ private:
 	const real m_betaPhi;
 
 	// Helper function to get circular (sub)Keplerian velocity outside the ISCO
-	OneIndex GetOutsideISCOCircularVelocityd(const Point& p, bool subKeplerianOn = true) const;
+	OneIndex GetCircularVelocityd(const Point& p, bool subKeplerianOn = true) const;
 	// Helper function to get circular and infalling (sub)Keplerian velocity inside ISCO
 	// (according to prescription of Cunningham)
 	OneIndex GetInsideISCOCircularVelocityd(const Point& p) const;
@@ -123,6 +124,7 @@ private:
 	// Helper function to find the ISCO (called in Constructor)
 	void FindISCO();
 	// ISCO radius and momentum (index down) components
+	bool m_ISCOexists{ false };
 	real m_ISCOr{ -1.0 };
 	real m_ISCOpt{};
 	real m_ISCOpphi{};
