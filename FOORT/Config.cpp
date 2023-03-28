@@ -29,6 +29,7 @@ std::unique_ptr<BoundarySphereTermOptions> BoundarySphereTermination::TermOption
 std::unique_ptr<TimeOutTermOptions> TimeOutTermination::TermOptions;
 std::unique_ptr<ThetaSingularityTermOptions> ThetaSingularityTermination::TermOptions;
 std::unique_ptr<NaNTermOptions> NaNTermination::TermOptions;
+std::unique_ptr<GeneralSingularityTermOptions> GeneralSingularityTermination::TermOptions;
 
 //// TERMINATION ADD POINT D.1 ////
 // Declare your Termination's static TerminationOptions struct here!
@@ -906,9 +907,48 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 			largecounter updatefreq = 1;
 			lookupValuelargecounter(AllTermSettings["NaN"], "UpdateFrequency", updatefreq);
 
-			// Initialize the (static) TerminationOptions for ThetaSingularity!
+			// Initialize the (static) TerminationOptions for NaN!
 			NaNTermination::TermOptions =
-				std::unique_ptr<NaNTermOptions>(new NaNTermOptions{ outputconsole, updatefreq });
+				std::unique_ptr<NaNTermOptions>(new NaNTermOptions( outputconsole, updatefreq ));
+		}
+
+		// General singularities
+		if (CheckIfTermOn("GeneralSingularity"))
+		{
+			// Make sure metric is of the singularity type!
+			const SingularityMetric* singmetric = dynamic_cast<const SingularityMetric*>(theMetric);
+			if (!singmetric)
+			{
+				ScreenOutput("General singularity Termination turned on but metric does not have singularities! Turning off General singularity Termination.",
+					Output_Important_Default);
+			}
+			else
+			{
+				// General singularities on! Add to bitflag
+				allterms |= Term_GeneralSingularity;
+
+				std::vector<Singularity> thesings{ singmetric->getSingularities() };
+
+				bool rLogScale = singmetric->getrLogScale();
+
+				// get the tolerance for how close we are allowed to get (in coordinates) to the singularity
+				real epsilon{ 1e-3 };
+				AllTermSettings["GeneralSingularity"].lookupValue("Epsilon", epsilon);
+
+				// output information of geodesic that hits a nan or not
+				bool outputconsole{ false };
+				AllTermSettings["GeneralSingularity"].lookupValue("ConsoleOutput", outputconsole);
+
+				// By default, this Termination updates every step
+				// Check to see if a different update frequency has been specified
+				largecounter updatefreq = 1;
+				lookupValuelargecounter(AllTermSettings["GeneralSingularity"], "UpdateFrequency", updatefreq);
+
+				// Initialize the (static) TerminationOptions for GeneralSingularity!
+				GeneralSingularityTermination::TermOptions =
+					std::unique_ptr<GeneralSingularityTermOptions>(new GeneralSingularityTermOptions(std::move(thesings),
+						epsilon, outputconsole, rLogScale, updatefreq));
+			}
 		}
 
 		//// TERMINATION ADD POINT D.2. ////

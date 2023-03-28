@@ -63,7 +63,7 @@ class SphericalHorizonMetric : public Metric
 public:
 	// No default construction allowed, must specify horizon radius
 	SphericalHorizonMetric() = delete;
-	// Constructor that initializes radius and distance to horizon necessary for termination
+	// Constructor that initializes horizon radius
 	SphericalHorizonMetric(real HorizonRadius, bool rLogScale);
 
 	// Getter functions for the two member variables
@@ -214,9 +214,24 @@ public:
 };
 
 
+// Abstract base class for a metric with an arbitrary number of singularities (of arbitrary codimension)
+class SingularityMetric : public Metric
+{
+public:
+	// Constructor that initializes singularities
+	SingularityMetric(std::vector<Singularity> thesings, bool rLogScale);
+
+	// Getter functions for the two member variables
+	std::vector<Singularity> getSingularities() const;
+
+protected:
+	// All singularities of the metric
+	const std::vector<Singularity> m_AllSingularities;
+};
+
 
 // Ring fuzzball (implementation Lies Van Dael)
-class ST3CrMetric final : public Metric
+class ST3CrMetric final : public SingularityMetric
 {
 public:
 	// Constructor which will be called to initialize all parameters of the metric
@@ -244,7 +259,7 @@ private:
 
 //// METRIC ADD POINT A ////
 // Declare your new Metric class here, publically inheriting from the base class Metric
-// (or SphericalHorizonMetric if your Metric has a horizon)
+// (or SphericalHorizonMetric if your Metric has a horizon, or SingularityMetric if your Metric has other, arbitrary singularities)
 // Give definitions (implementation) of these functions in Metric.cpp (or other source code file)
 // Don't forget to set m_Symmetries appropriately (in the constructor),
 // if your metric has any symmetry (e.g. stationarity, axisymmetry)!
