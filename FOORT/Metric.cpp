@@ -728,6 +728,21 @@ std::string KerrSchildMetric::getFullDescriptionStr() const
 	return "Kerr-Schild (a = " + std::to_string(m_aParam) + ", " + (m_rLogScale ? "using logarithmic r coord" : "using normal r coord") + ")";
 }
 
+/// <summary>
+/// SingularityMetric functions
+/// </summary>
+
+// Constructor, to be called with the horizon radius and a bool indicating whether we are using a logarithmic radial scale
+SingularityMetric::SingularityMetric(std::vector<Singularity> thesings, bool rLogScale)
+	: m_AllSingularities{ thesings }, Metric(rLogScale)
+{ }
+
+// Getter for horizon radius
+std::vector<Singularity> SingularityMetric::getSingularities() const
+{
+	return m_AllSingularities;
+}
+
 
 /// <summary>
 /// ST3CrMetric functions
@@ -739,7 +754,14 @@ ST3CrMetric::ST3CrMetric(real P, real q0, real lambda, bool rlogscale)
 	: m_P{ P },
 	m_q0{ q0 },
 	m_lambda{ lambda },
-	Metric(rlogscale)
+	SingularityMetric({
+		// z = l/2 center	
+		Singularity({SingularityCoord(1, (8. * P * P * P * lambda) / 2.0), SingularityCoord(2, 0.0)}),
+		// z = -l/2 center
+		Singularity({SingularityCoord(1, (8. * P * P * P * lambda) / 2.0), SingularityCoord(2, pi)}), 
+		// x^2+y^2 = R^2 at z = 0 ring
+		Singularity({SingularityCoord(1, 2. * lambda * sqrt(q0 * q0 / pow(1. - (1. - 3. * P * P) * lambda, 2) - 4. * pow(P, 6))), SingularityCoord(2,pi / 2.0)})
+		} ,rlogscale)
 {
 	// Make sure we are in four spacetime dimensions
 	if constexpr (dimension != 4)

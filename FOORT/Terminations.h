@@ -12,6 +12,7 @@
 #include <cstdint> // for std::uint16_t
 #include <memory> // for std::unique_ptr
 #include <vector> // for std::vector
+#include <utility> // for std::pair
 
 // Forward declaration of Geodesic class needed here, since Diagnostics are passed a pointer to their owner Geodesic
 // (note "Geodesic.h" is NOT included to avoid header loop, and we do not need Geodesic member functions here!)
@@ -32,6 +33,7 @@ constexpr TermBitflag Term_TimeOut				{ 0b0000'0000'0000'0010 };
 constexpr TermBitflag Term_Horizon				{ 0b0000'0000'0000'0100 };
 constexpr TermBitflag Term_ThetaSingularity		{ 0b0000'0000'0000'1000 };
 constexpr TermBitflag Term_NaN					{ 0b0000'0000'0001'0000 };
+constexpr TermBitflag Term_GeneralSingularity	{ 0b0000'0000'0010'0000 };
 
 //// TERMINATION ADD POINT B1 ////
 // Add a TermBitflag for your new Termination. Make sure you use a bitflag that has not been used before!
@@ -55,6 +57,7 @@ enum class Term
 	TimeOut,				// STOP, taken too many steps (set by TimeOutTermination)
 	ThetaSingularity,		// STOP, too close to polar coordinate singularity (theta = 0 or theta = pi/2)
 	NaN,					// STOP, NaN encountered in geodesic position or velocity
+	GeneralSingularity,		// STOP, singularity encountered (of any codimension)
 
 
 	//// TERMINATION ADD POINT B2 ////
@@ -230,6 +233,28 @@ public:
 	static std::unique_ptr<NaNTermOptions> TermOptions;
 };
 
+// Forward declaration needed before Termination
+struct GeneralSingularityTermOptions;
+// General singularity: terminate geodesic if it comes too close to one of a given number of (arbitrary codimension) singularities
+class GeneralSingularityTermination final : public Termination
+{
+public:
+	// Basic constructor only passes on Geodesic pointer to base class constructor
+	GeneralSingularityTermination(Geodesic* const theGeodesic) : Termination(theGeodesic) {}
+
+	// Check if we are too close to the horizon
+	Term CheckTermination() final;
+
+	// Description string
+	std::string getFullDescriptionStr() const final;
+
+	// Options (contains horizon radius, if we are using logarithmic r coordinate, and distance allowed from the horizon)
+	static std::unique_ptr<GeneralSingularityTermOptions> TermOptions;
+
+private:
+	std::string SingularityToString(int singnr) const;
+};
+
 //// TERMINATION ADD POINT A1 /////
 // Declare your Termination class here, inheriting from Termination.
 // Sample code:
@@ -338,6 +363,21 @@ public:
 	{}
 
 	const bool OutputToConsole;
+};
+
+struct GeneralSingularityTermOptions : public TerminationOptions
+{
+public:
+	GeneralSingularityTermOptions(std::vector<Singularity> sings,
+		real eps, bool consoleoutputon, bool therlogscale, largecounter Nsteps)
+		: Singularities{ std::move(sings) }, Epsilon{eps}, OutputToConsole{consoleoutputon},
+		rLogScale{therlogscale},
+		TerminationOptions(Nsteps) {}
+
+	const std::vector<Singularity> Singularities;
+	const real Epsilon;
+	const bool OutputToConsole;
+	const bool rLogScale;
 };
 
 //// TERMINATION ADD POINT A2 ////

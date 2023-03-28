@@ -38,10 +38,15 @@ TerminationUniqueVector CreateTerminationVector(TermBitflag termflags, Geodesic 
 	{
 		theTermVector.emplace_back(new ThetaSingularityTermination{ theGeodesic });
 	}
-	// Is ThetaSingularity turned on?
+	// Is NaN turned on?
 	if (termflags & Term_NaN)
 	{
 		theTermVector.emplace_back(new NaNTermination{ theGeodesic });
+	}
+	// Is GeneralSingularity turned on?
+	if (termflags & Term_GeneralSingularity)
+	{
+		theTermVector.emplace_back(new GeneralSingularityTermination{ theGeodesic });
 	}
 	//// TERMINATION ADD POINT C ////
 	// Add an if statement that checks if your Termination's TermBitflag is turned on, if so add a new instance of it
@@ -259,6 +264,93 @@ std::string NaNTermination::getFullDescriptionStr() const
 {
 	// Full description string
 	return "NaN checker ("
+		+ std::string(TermOptions->OutputToConsole ? "outputting to console" : "no output to console") + ")";
+}
+
+
+/// <summary>
+/// GeneralSingularityTermination functions
+/// </summary>
+
+Term GeneralSingularityTermination::CheckTermination()
+{
+	Term ret = Term::Continue;
+
+	if (DecideUpdate(TermOptions->UpdateEveryNSteps))
+	{
+		Point pos{ m_OwnerGeodesic->getCurrentPos() };
+		// Correct for log r scale if applicable
+		pos[1] = TermOptions->rLogScale ? exp(pos[1]) : pos[1];
+
+		for (unsigned int i = 0; i < TermOptions->Singularities.size() && ret == Term::Continue; ++i)
+		{
+			real distsq{};
+			for (int j = 0; j < TermOptions->Singularities[i].size(); ++j)
+			{
+				distsq += pow(pos[TermOptions->Singularities[i][j].first] - TermOptions->Singularities[i][j].second, 2);
+			}
+			if (distsq <= TermOptions->Epsilon * TermOptions->Epsilon)
+			{
+				ret = Term::GeneralSingularity;
+
+				if (TermOptions->OutputToConsole)
+				{
+					ScreenOutput("Geodesic hitting singularity at " + SingularityToString(i)
+						+ " (screen index " + toString(m_OwnerGeodesic->getScreenIndex())
+						+ ", position: " + toString(pos) + ", velocity: " + toString(m_OwnerGeodesic->getCurrentVel())
+						+ ", lambda = " + std::to_string(m_OwnerGeodesic->getCurrentLambda()) + ").",
+						OutputLevel::Level_0_WARNING);
+				}
+			}
+		}
+	}
+
+	return ret;
+}
+
+std::string GeneralSingularityTermination::SingularityToString(int singnr) const
+{
+	std::string singstring{ "(" };
+	for (int j = 0; j < TermOptions->Singularities[singnr].size(); ++j)
+	{
+		switch (TermOptions->Singularities[singnr][j].first)
+		{
+		case 0:
+			singstring += 't';
+			break;
+		case 1:
+			singstring += 'r';
+			break;
+		case 2:
+			singstring += "theta";
+			break;
+		case 3:
+			singstring += "phi";
+			break;
+		}
+		singstring += " = " + std::to_string(TermOptions->Singularities[singnr][j].second);
+		if (j < TermOptions->Singularities[singnr].size() - 1)
+			singstring += ", ";
+	}
+	singstring += ")";
+	return singstring;
+}
+
+std::string GeneralSingularityTermination::getFullDescriptionStr() const
+{
+	// Full description string
+
+	std::string singstring{"{ "};
+	for (unsigned int i = 0; i < TermOptions->Singularities.size(); ++i)
+	{
+		singstring += SingularityToString(i);
+		if (i < TermOptions->Singularities.size() - 1)
+			singstring += ", ";
+	}
+	singstring += " }";
+
+	return "Singularities (" + std::to_string(TermOptions->Singularities.size()) +  " singularities at: "
+		+ singstring + ", epsilon = " + std::to_string(TermOptions->Epsilon) + ", "
 		+ std::string(TermOptions->OutputToConsole ? "outputting to console" : "no output to console") + ")";
 }
 

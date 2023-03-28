@@ -12,6 +12,8 @@
 #include <limits> // for std::numeric_limits
 #include <string> // needed for toString(...) to convert tensors to strings
 #include <array> // needed to define tensors as fixed-size arrays of real or pixelcoord
+#include <utility> // needed for std::pair
+#include <vector> // for std::vector
 
 
 // A real number.
@@ -69,6 +71,12 @@ using TwoIndex = std::array<OneIndex, dimension>;
 using ThreeIndex = std::array<TwoIndex, dimension>;
 // Object with four indices is an array of ThreeIndex objects
 using FourIndex = std::array<ThreeIndex, dimension>;
+
+// Definition used to define singularity of arbitrary codimension
+// SingularityCoord: pair of (coordinate number, coordinate value)
+using SingularityCoord = std::pair<int, real>;
+// Singularity: a number of SingularityCoords together that define a arbitrary codimension surface/line/point
+using Singularity = std::vector<SingularityCoord>;
 
 
 /// <summary>
