@@ -134,7 +134,7 @@ OneIndex GeneralCircularRadialFluid::GetFourVelocityd(const Point& p) const
 		p_down_fin = p_down_rad;
 	}
 
-	if (isnan(p_down_fin[0]) || isnan(p_down_fin[1]) || isnan(p_down_fin[3]) || p_down_fin[0]>=0.0)
+	if (std::isnan(p_down_fin[0]) || std::isnan(p_down_fin[1]) || std::isnan(p_down_fin[3]) || p_down_fin[0]>=0.0)
 		p_down_fin = p_down_rad;
 
 	return p_down_fin;
@@ -274,7 +274,7 @@ OneIndex GeneralCircularRadialFluid::GetInsideISCOCircularVelocityd(const Point&
 
 	real pr{ -1.0 / sqrt(g_uu[1][1]) * sqrt(fmax(temp_sq,0.0)) };
 
-	if (!isnan(pr))
+	if (!std::isnan(pr))
 		return OneIndex{ m_ISCOpt, pr, 0.0, m_ISCOpphi };
 	else
 		return {};

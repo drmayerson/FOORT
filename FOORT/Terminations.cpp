@@ -245,7 +245,7 @@ Term NaNTermination::CheckTermination()
 
 		for (int i = 0; i < dimension && ret == Term::Continue; ++i)
 		{
-			if (isnan(pos[i]) || isnan(vel[i]))
+			if (std::isnan(pos[i]) || std::isnan(vel[i]))
 				ret = Term::NaN;
 		}
 		if (ret == Term::NaN && TermOptions->OutputToConsole)

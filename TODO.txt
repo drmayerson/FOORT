@@ -1,3 +1,32 @@
+
+
+
+Theory
+"equations"
+
+Code - "basic" features
+--- geodesic initialization
+--- integration schemes
+---> tests: circular orbit, spherical orbits (look at Fabio's paper  2018 n1)
+---> performance (scaling with threads)
+
+
+Code - specific / new features
+--- output & analysis, diagnostics, terminations
+--- adaptive mesh
+--- radiative transfer (disc), equatorial passes (discuss non equatorial metrics) -> visamps
+
+
+Demonstration / applications
+--- fuzzball flex, BHs
+
+
+documentation not in paper
+metrics where?? either appendix or in documentation??
+
+
+
+
 TODO and wishlist:
 ------------------
 *** PRIORITY (before publication):
@@ -16,18 +45,16 @@ TODO and wishlist:
 --- delete mesh v1
 
 --- Other metrics:
-**** Restructure log r!
 ---> Pierre topological star (+others?)
 ---> Schwarzschild "scalarwall" and bubbled resolution?
 ---> SUSY BH + 2-center FB + ring FB
+---> boson star??
 
 
 
 
 ------------------------------
 *** WISHLIST FUTURE:
-
---- make checks that (Metric) always returning good numbers (not nan)??
 
 --- (ViewScreen) support for other types of geodesics
 
