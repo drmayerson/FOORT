@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -std=c++17 -fopenmp -Ofast -Wno-unused-result
+CFLAGS = -std=c++17 -fopenmp -O3 -Wno-unused-result
 LDFLAGS = -lm -lstdc++fs -lconfig++
 
 
