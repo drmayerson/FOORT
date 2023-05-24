@@ -366,7 +366,8 @@ void EquatorialPassesDiagnostic::Reset()
 void EquatorialPassesDiagnostic::UpdateData()
 {
 	// This checks to see if we want to update the data now (and increments the step counter if necessary)
-	if (DecideUpdate(DiagOptions->theUpdateFrequency))
+	// We only update if the geodesic has not finished integrating (otherwise we might pick up problems in last step)
+	if (DecideUpdate(DiagOptions->theUpdateFrequency) && m_OwnerGeodesic->getTermCondition() == Term::Continue)
 	{
 		// Get the current theta coordinate of the geodesic
 		real curTheta{ m_OwnerGeodesic->getCurrentPos()[2] };
@@ -533,14 +534,17 @@ void EquatorialEmissionDiagnostic::UpdateData()
 		// Extra minus sign because we are integrating backwards in time, i.e. the geodesic velocity is past-pointing!
 		OneIndex CurVel{ -1.0 * m_OwnerGeodesic->getCurrentVel() };
 
+
 		// Redshift is negative of inverse of dot product of geodesic velocity and local fluid velocity
 		real pdotu{};
 		for (int i = 0; i < dimension; ++i)
 			pdotu += FluidVelocityd[i] * CurVel[i];
 		real ObservedRedshift{ -1.0/pdotu };
+
 		
 		// Total added intensity is fudge factor times power of the redshift times local emitted intensity!
 		m_Intensity += Fudge * pow(ObservedRedshift, DiagOptions->RedShiftPower) * LocalSourceIntensity;
+
 	}
 }
 
