@@ -1,6 +1,7 @@
 #include "ConfigReader.h"
 
 #include <ios> // for std::scientific
+#include <type_traits> // for std::is_same_v
 
 using namespace	ConfigReader;
 
@@ -261,7 +262,9 @@ void ConfigCollection::DisplaySetting(std::ostream& OutputStream, int SettingInd
 		std::visit(
 			[&OutputStream](auto&& arg)
 			{
-				OutputStream << arg;
+				using intType = std::decay_t<decltype(arg)>;
+				if constexpr (std::is_same_v<intType, int> || std::is_same_v<intType, long> || std::is_same_v<intType, long long>)
+					OutputStream << arg;
 			},
 			m_Settings[SettingIndex].SettingValue);
 	}
