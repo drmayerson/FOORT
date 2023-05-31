@@ -9,6 +9,7 @@
 #include <variant> // needed for std::variant
 #include <stdexcept> // needed for exceptions
 #include <limits> // for std::numeric_limits
+#include <memory> // for std::unique_ptr
 
 
 // Namespace to put all ConfigReader objects
