@@ -45,69 +45,19 @@ std::unique_ptr<MyTermOptions> MyTermination::DiagOptions;
 #ifdef CONFIGURATION_MODE
 
 
-// Helper function to look up largecounter
-bool Config::lookupValuelargecounter(const ConfigSetting& theSetting, const char* name, largecounter& value)
-{
-	// the libconfig function lookupValue() only has overloads to return unsigned int and long long (so not unsigned long
-	// which is currently used for largecounter!)
-	// So instead, we get the setting as a long long and then convert it to a largecounter
-	// We need to test various versions of lookupValue because libconfig
-	// does not automatically convert integers between smaller/larger types...
-
-	long long intermedvalLL{};
-	bool ret{ theSetting.lookupValue(name,intermedvalLL) };
-	if (!ret)
-	{
-		// try getting a unsigned int instead
-		unsigned int intermedvalUI{};
-		ret = theSetting.lookupValue(name, intermedvalUI);
-		if (!ret)
-		{
-			// try getting an int instead
-			int intermedvalI{};
-			ret = theSetting.lookupValue(name, intermedvalUI);
-			if (ret)
-			{
-				// as long as it's >=0, it will fit in a largecounter
-				if (intermedvalI >= 0)
-					value = static_cast<largecounter>(intermedvalI);
-			}
-		}
-		else
-		{
-			// unsigned int will fit in a largecounter
-			value = static_cast<largecounter>(intermedvalUI);
-		}
-	}
-	else
-	{
-		// if the long long is too big to fit in a largecounter, then we scale it down to its max value
-		if (intermedvalLL > LARGECOUNTER_MAX)
-		{
-			intermedvalLL = LARGECOUNTER_MAX;
-		}
-		if (intermedvalLL >= 0)
-			value = static_cast<largecounter>(intermedvalLL);
-	}
-
-	return ret;
-}
-
-
 // Initialize screen output options
-void Config::InitializeScreenOutput(const ConfigObject& theCfg)
+void Config::InitializeScreenOutput(const ConfigCollection& theCfg)
 {
 	// DEFAULT: highest level output allowed
 	SetOutputLevel(OutputLevel::Level_4_DEBUG);
-	// Get the root collection
-	ConfigSetting& root = theCfg.getRoot();
-	if (root.exists("Output"))
+
+	if (theCfg.Exists("Output"))
 	{
-		ConfigSetting& OutputSettings = root["Output"];
+		const ConfigCollection& OutputSettings = theCfg["Output"];
 
 		// Screen output level (overall)
 		int scroutputint{ static_cast<int>(OutputLevel::Level_4_DEBUG) };
-		OutputSettings.lookupValue("ScreenOutputLevel", scroutputint);
+		OutputSettings.LookupValueInteger("ScreenOutputLevel", scroutputint);
 		// We do these checks to make sure the int we have read in can indeed be interpreted as an OutputLevel
 		scroutputint = std::max(scroutputint, static_cast<int>(OutputLevel::Level_0_WARNING));
 		scroutputint = std::min(scroutputint, static_cast<int>(OutputLevel::MaxLevel));
@@ -115,7 +65,7 @@ void Config::InitializeScreenOutput(const ConfigObject& theCfg)
 
 		// Retrieve loop message frequency (within every integration loop)
 		largecounter loopmessagefrequency{ GetLoopMessageFrequency() };
-		lookupValuelargecounter(OutputSettings, "LoopMessageFrequency", loopmessagefrequency);
+		OutputSettings.LookupValueInteger("LoopMessageFrequency", loopmessagefrequency);
 		SetLoopMessageFrequency(loopmessagefrequency);
 	}
 }
@@ -124,7 +74,7 @@ void Config::InitializeScreenOutput(const ConfigObject& theCfg)
 /// <summary>
 /// Config::GetMetric():  Use configuration to create the correct Metric with specified parameters
 /// </summary>
-std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
+std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection& theCfg)
 {
 	std::string MetricName{};
 
@@ -132,26 +82,23 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 	std::unique_ptr<Metric> TheMetric{ new KerrMetric{0.5} };
 	std::string DefaultString{ "Kerr with a = 0.5" };
 
-	// Get the root collection
-	ConfigSetting& root = theCfg.getRoot();
-
 	try
 	{
 		// Check to see that there are Metric settings at all
-		if (!root.exists("Metric"))
+		if (!theCfg.Exists("Metric"))
 		{
 			throw SettingError("No metric settings found.");
 		}
 
 		// Go to the Metric settings
-		ConfigSetting& MetricSettings = root["Metric"];
+		const ConfigCollection& MetricSettings = theCfg["Metric"];
 
 		// Check log r setting first
 		bool rLogScale{ false };
-		MetricSettings.lookupValue("RLogScale", rLogScale);
+		MetricSettings.LookupValue("RLogScale", rLogScale);
 
 		// Check to see that the Metric's name has been specified
-		if (!MetricSettings.lookupValue("Name", MetricName))
+		if (!MetricSettings.LookupValue("Name", MetricName))
 		{
 			throw SettingError("No metric settings found.");
 		}
@@ -168,7 +115,7 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 			
 			// First setting to look up: the a parameter
 			double theKerra{ 0.5 };
-			if (!MetricSettings.lookupValue("a", theKerra))
+			if (!MetricSettings.LookupValue("a", theKerra))
 			{
 				ScreenOutput("Kerr: no value for a given. Using default: " + std::to_string(theKerra) + ".",
 					Output_Other_Default);
@@ -193,22 +140,22 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 			double RLa{ 0.5 };
 			double RLp{ 2.0 };
 			double RLq{ 2.0 };
-			if (!MetricSettings.lookupValue("m", RLm))
+			if (!MetricSettings.LookupValue("m", RLm))
 			{
 				ScreenOutput("Rasheed-Larsen: no value for m given. Using default: " + std::to_string(RLm) + ".",
 					Output_Other_Default);
 			}
-			if (!MetricSettings.lookupValue("a", RLa))
+			if (!MetricSettings.LookupValue("a", RLa))
 			{
 				ScreenOutput("Rasheed-Larsen: no value for a given. Using default: " + std::to_string(RLa) + ".",
 					Output_Other_Default);
 			}
-			if (!MetricSettings.lookupValue("p", RLp))
+			if (!MetricSettings.LookupValue("p", RLp))
 			{
 				ScreenOutput("Rasheed-Larsen: no value for p given. Using default: " + std::to_string(RLp) + ".",
 					Output_Other_Default);
 			}
-			if (!MetricSettings.lookupValue("q", RLq))
+			if (!MetricSettings.LookupValue("q", RLq))
 			{
 				ScreenOutput("Rasheed-Larsen: no value for q given. Using default: " + std::to_string(RLq) + ".",
 					Output_Other_Default);
@@ -227,27 +174,27 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 			double JOHa22{ 0. };
 			double JOHa52{ 0. };
 			double JOHe3{ 0. };
-			if (!MetricSettings.lookupValue("a", JOHa))
+			if (!MetricSettings.LookupValue("a", JOHa))
 			{
 				ScreenOutput("Johannsen: no value for a given. Using default: " + std::to_string(JOHa) + ".",
 					Output_Other_Default);
 			}
-			if (!MetricSettings.lookupValue("alpha13", JOHa13))
+			if (!MetricSettings.LookupValue("alpha13", JOHa13))
 			{
 				ScreenOutput("Johannsen: no value for alpha13 given. Using default: " + std::to_string(JOHa13) + ".",
 					Output_Other_Default);
 			}
-			if (!MetricSettings.lookupValue("alpha22", JOHa22))
+			if (!MetricSettings.LookupValue("alpha22", JOHa22))
 			{
 				ScreenOutput("Johannsen: no value for alpha22 given. Using default: " + std::to_string(JOHa22) + ".",
 					Output_Other_Default);
 			}
-			if (!MetricSettings.lookupValue("alpha52", JOHa52))
+			if (!MetricSettings.LookupValue("alpha52", JOHa52))
 			{
 				ScreenOutput("Johannsen: no value for alpha52 given. Using default: " + std::to_string(JOHa52) + ".",
 					Output_Other_Default);
 			}
-			if (!MetricSettings.lookupValue("epsilon3", JOHe3))
+			if (!MetricSettings.LookupValue("epsilon3", JOHe3))
 			{
 				ScreenOutput("Johannsen: no value for epsilon3 given. Using default: " + std::to_string(JOHe3) + ".",
 					Output_Other_Default);
@@ -263,12 +210,12 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 			// Look up two parameters of BH
 			double MNa{ 0. };
 			double MNalpha3{ 5.0 };
-			if (!MetricSettings.lookupValue("a", MNa))
+			if (!MetricSettings.LookupValue("a", MNa))
 			{
 				ScreenOutput("Manko-Novikov: no value for a given. Using default: " + std::to_string(MNa) + ".",
 					Output_Other_Default);
 			}
-			if (!MetricSettings.lookupValue("alpha3", MNalpha3))
+			if (!MetricSettings.LookupValue("alpha3", MNalpha3))
 			{
 				ScreenOutput("Manko-Novikov: no value for alpha3 given. Using default: " + std::to_string(MNalpha3) + ".",
 					Output_Other_Default);
@@ -283,7 +230,7 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 
 			// First setting to look up: the a parameter
 			double theKerra{ 0.5 };
-			if (!MetricSettings.lookupValue("a", theKerra))
+			if (!MetricSettings.LookupValue("a", theKerra))
 			{
 				ScreenOutput("Kerr-Schild: no value for a given. Using default: " + std::to_string(theKerra) + ".",
 					Output_Other_Default);
@@ -300,17 +247,17 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 			real ST3Crq0{ 50. };
 			real ST3Crlambda{ 0.19 };
 
-			if (!MetricSettings.lookupValue("P", ST3CrP))
+			if (!MetricSettings.LookupValue("P", ST3CrP))
 			{
 				ScreenOutput("ST3Cr: no value for P given. Using default: " + std::to_string(ST3CrP) + ".",
 					Output_Other_Default);
 			}
-			if (!MetricSettings.lookupValue("q0", ST3Crq0))
+			if (!MetricSettings.LookupValue("q0", ST3Crq0))
 			{
 				ScreenOutput("ST3Cr: no value for q0 given. Using default: " + std::to_string(ST3Crq0) + ".",
 					Output_Other_Default);
 			}
-			if (!MetricSettings.lookupValue("lambda", ST3Crlambda))
+			if (!MetricSettings.LookupValue("lambda", ST3Crlambda))
 			{
 				ScreenOutput("ST3Cr: no value for lambda given. Using default: " + std::to_string(ST3Crlambda) + ".",
 					Output_Other_Default);
@@ -321,15 +268,15 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 		//// METRIC ADD POINT B ////
 		// Add an else if clause to check for your new Metric object!
 		// To look for additional options in the metric configuration, use
-		// MetricSettings.lookupValue("OptionName", optionvar);
+		// MetricSettings.LookupValue("OptionName", optionvar);
 		// Sample code:
 		/*
 		else if (MetricName == "mymetric") // remember to use all lower case!
 		{
 			type myparam{ defaultsetting }; 
 			// Note: if this option is not present in the configuration file, then myparam will not be changed
-			// by the call to lookupValue
-			MetricSettings.lookupValue("MyParameter", myparam);
+			// by the call to LookupValue
+			MetricSettings.LookupValue("MyParameter", myparam);
 
 			TheMetric = std::unique_ptr<Metric>(new MyMetric{ myparam }); // put your additional parameters needed in the constructor
 		}
@@ -355,7 +302,7 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigObject& theCfg)
 /// <summary>
 /// Config::GetSource():  Use configuration to create the correct Source with specified parameters
 /// </summary>
-std::unique_ptr<Source> Config::GetSource(const ConfigObject& theCfg, const Metric* const theMetric)
+std::unique_ptr<Source> Config::GetSource(const ConfigCollection& theCfg, const Metric* const theMetric)
 {
 	std::string SourceName{};
 
@@ -363,22 +310,19 @@ std::unique_ptr<Source> Config::GetSource(const ConfigObject& theCfg, const Metr
 	std::unique_ptr<Source> TheSource{ new NoSource(theMetric) };
 	std::string DefaultString{ "No source." };
 
-	// Get the root collection
-	ConfigSetting& root = theCfg.getRoot();
-
 	try
 	{
 		// Check to see that there are Source settings at all
-		if (!root.exists("Source"))
+		if (!theCfg.Exists("Source"))
 		{
 			throw SettingError("No geodesic source settings found.");
 		}
 
 		// Go to the Source settings
-		ConfigSetting& SourceSettings = root["Source"];
+		const ConfigCollection& SourceSettings = theCfg["Source"];
 
 		// Check to see that the Source's name has been specified
-		if (!SourceSettings.lookupValue("Name", SourceName))
+		if (!SourceSettings.LookupValue("Name", SourceName))
 		{
 			throw SettingError("No source settings found.");
 		}
@@ -419,25 +363,23 @@ std::unique_ptr<Source> Config::GetSource(const ConfigObject& theCfg, const Metr
 /// initialize all DiagnosticOptions for all Diagnostics that are turned on;
 /// and set bitflag for diagnostic to be used for coarseness evaluating in Mesh
 /// </summary>
-void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alldiags, DiagBitflag& valdiag, const Metric* const theMetric)
+void Config::InitializeDiagnostics(const ConfigCollection& theCfg, DiagBitflag& alldiags, DiagBitflag& valdiag, const Metric* const theMetric)
 {
 	// First set these flags to all zeros
 	alldiags = Diag_None;
 	valdiag = Diag_None;
 
-	// Get the root configuration settings
-	ConfigSetting& root = theCfg.getRoot();
 
 	try
 	{
 		// Check to see that there are Diagnostics settings at all
-		if (!root.exists("Diagnostics"))
+		if (!theCfg.Exists("Diagnostics"))
 		{
 			throw SettingError("No diagnostic settings found.");
 		}
 
 		// Go to the Diagnostics settings
-		ConfigSetting& AllDiagSettings = root["Diagnostics"];
+		const ConfigCollection& AllDiagSettings = theCfg["Diagnostics"];
 
 		// Helper function: checks to see if a particular Diagnostic (with name Diagname)
 		// is present in the Diagnostics options; if the setting "on" is specified;
@@ -446,9 +388,8 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 		auto CheckIfDiagOn = [&AllDiagSettings](const std::string& DiagName)
 		{
 			bool diagison{ false };
-			return AllDiagSettings.exists(DiagName.c_str()) // note that g++ on Fabio's Linux requires the .c_str() everywhere
-				&& AllDiagSettings[DiagName.c_str()].exists("On")
-				&& AllDiagSettings[DiagName.c_str()].lookupValue("On", diagison)
+			return AllDiagSettings.Exists(DiagName.c_str()) // note that g++ on Fabio's Linux requires the .c_str() everywhere
+				&& AllDiagSettings[DiagName.c_str()].LookupValue("On", diagison)
 				&& diagison;
 		};
 
@@ -464,7 +405,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 			// and there is a option "UseForMesh" specied for this Diagnostic;
 			// and "UseForMesh" is set to true
 			bool isVal{ false };
-			if (valdiag == Diag_None && AllDiagSettings["FourColorScreen"].lookupValue("UseForMesh", isVal) && isVal)
+			if (valdiag == Diag_None && AllDiagSettings["FourColorScreen"].LookupValue("UseForMesh", isVal) && isVal)
 			{
 				// Use this Diagnostic for the Mesh values
 				valdiag = Diag_FourColorScreen;
@@ -478,22 +419,22 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 			largecounter updatensteps = 1;
 			bool updatestart{ false };
 			bool updatefinish{ true };
-			lookupValuelargecounter(AllDiagSettings["GeodesicPosition"], "UpdateFrequency", updatensteps);
+			AllDiagSettings["GeodesicPosition"].LookupValueInteger("UpdateFrequency", updatensteps);
 			if (updatensteps == 0)
 			{
-				AllDiagSettings["GeodesicPosition"].lookupValue("UpdateStart", updatestart);
-				AllDiagSettings["GeodesicPosition"].lookupValue("UpdateFinish", updatefinish);
+				AllDiagSettings["GeodesicPosition"].LookupValue("UpdateStart", updatestart);
+				AllDiagSettings["GeodesicPosition"].LookupValue("UpdateFinish", updatefinish);
 			}
 
 			largecounter outputsteps = 0; // keep all steps
-			lookupValuelargecounter(AllDiagSettings["GeodesicPosition"], "OutputSteps", outputsteps);
+			AllDiagSettings["GeodesicPosition"].LookupValueInteger("OutputSteps", outputsteps);
 
 			GeodesicPositionDiagnostic::DiagOptions = 
 				std::unique_ptr<GeodesicPositionOptions>(new GeodesicPositionOptions{ outputsteps,
 											UpdateFrequency{updatensteps,updatestart,updatefinish} });
 
 			bool isVal{ false };
-			if (valdiag == Diag_None && AllDiagSettings["GeodesicPosition"].lookupValue("UseForMesh", isVal) && isVal)
+			if (valdiag == Diag_None && AllDiagSettings["GeodesicPosition"].LookupValue("UseForMesh", isVal) && isVal)
 			{
 				// Use this Diagnostic for the Mesh values
 				valdiag = Diag_GeodesicPosition;
@@ -507,15 +448,15 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 			largecounter updatensteps = 1;
 			bool updatestart{ true };
 			bool updatefinish{ true };
-			lookupValuelargecounter(AllDiagSettings["EquatorialPasses"], "UpdateFrequency", updatensteps);
+			AllDiagSettings["EquatorialPasses"].LookupValueInteger("UpdateFrequency", updatensteps);
 			if (updatensteps == 0)
 			{
-				AllDiagSettings["EquatorialPasses"].lookupValue("UpdateStart", updatestart);
-				AllDiagSettings["EquatorialPasses"].lookupValue("UpdateFinish", updatefinish);
+				AllDiagSettings["EquatorialPasses"].LookupValue("UpdateStart", updatestart);
+				AllDiagSettings["EquatorialPasses"].LookupValue("UpdateFinish", updatefinish);
 			}
 
 			real threshold{ 0.01 };
-			AllDiagSettings["EquatorialPasses"].lookupValue("Threshold", threshold);
+			AllDiagSettings["EquatorialPasses"].LookupValue("Threshold", threshold);
 
 
 			EquatorialPassesDiagnostic::DiagOptions =
@@ -523,7 +464,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 					updatestart,updatefinish} ));
 
 			bool isVal{ false };
-			if (valdiag == Diag_None && AllDiagSettings["EquatorialPasses"].lookupValue("UseForMesh", isVal) && isVal)
+			if (valdiag == Diag_None && AllDiagSettings["EquatorialPasses"].LookupValue("UseForMesh", isVal) && isVal)
 			{
 				// Use this Diagnostic for the Mesh values
 				valdiag = Diag_EquatorialPasses;
@@ -537,11 +478,11 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 			largecounter updatensteps = 1;
 			bool updatestart{ true };
 			bool updatefinish{ true };
-			lookupValuelargecounter(AllDiagSettings["ClosestRadius"], "UpdateFrequency", updatensteps);
+			AllDiagSettings["ClosestRadius"].LookupValueInteger("UpdateFrequency", updatensteps);
 			if (updatensteps == 0)
 			{
-				AllDiagSettings["ClosestRadius"].lookupValue("UpdateStart", updatestart);
-				AllDiagSettings["ClosestRadius"].lookupValue("UpdateFinish", updatefinish);
+				AllDiagSettings["ClosestRadius"].LookupValue("UpdateStart", updatestart);
+				AllDiagSettings["ClosestRadius"].LookupValue("UpdateFinish", updatefinish);
 			}
 
 			// Check if metric is a spherical horizon metric with integration set to a logarithmic r coordinate,
@@ -553,7 +494,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 					updatestart,updatefinish }));
 
 			bool isVal{ false };
-			if (valdiag == Diag_None && AllDiagSettings["ClosestRadius"].lookupValue("UseForMesh", isVal) && isVal)
+			if (valdiag == Diag_None && AllDiagSettings["ClosestRadius"].LookupValue("UseForMesh", isVal) && isVal)
 			{
 				// Use this Diagnostic for the Mesh values
 				valdiag = Diag_ClosestRadius;
@@ -583,11 +524,11 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 			largecounter updatensteps = 1;
 			bool updatestart{ true };
 			bool updatefinish{ true };
-			lookupValuelargecounter(AllDiagSettings["EquatorialEmission"], "UpdateFrequency", updatensteps);
+			AllDiagSettings["EquatorialEmission"].LookupValueInteger("UpdateFrequency", updatensteps);
 			if (updatensteps == 0)
 			{
-				AllDiagSettings["EquatorialEmission"].lookupValue("UpdateStart", updatestart);
-				AllDiagSettings["EquatorialEmission"].lookupValue("UpdateFinish", updatefinish);
+				AllDiagSettings["EquatorialEmission"].LookupValue("UpdateStart", updatestart);
+				AllDiagSettings["EquatorialEmission"].LookupValue("UpdateFinish", updatefinish);
 			}
 
 			// Check if metric is a spherical horizon metric with integration set to a logarithmic r coordinate,
@@ -597,16 +538,16 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 			// Looking up overall options for emission
 
 			real threshold{ 0.01 };
-			AllDiagSettings["EquatorialEmission"].lookupValue("Threshold", threshold);
+			AllDiagSettings["EquatorialEmission"].LookupValue("Threshold", threshold);
 
 			real fudgefactor{ 1.0 };
-			AllDiagSettings["EquatorialEmission"].lookupValue("GeometricFudgeFactor", fudgefactor);
+			AllDiagSettings["EquatorialEmission"].LookupValue("GeometricFudgeFactor", fudgefactor);
 
 			int equatupper{ 0 };
-			AllDiagSettings["EquatorialEmission"].lookupValue("EquatPassUpperBound", equatupper);
+			AllDiagSettings["EquatorialEmission"].LookupValue("EquatPassUpperBound", equatupper);
 
 			int redshiftpower{ 3 };
-			AllDiagSettings["EquatorialEmission"].lookupValue("RedshiftPower", redshiftpower);
+			AllDiagSettings["EquatorialEmission"].LookupValue("RedshiftPower", redshiftpower);
 
 
 			//// Emission model selection and initialization ////
@@ -620,15 +561,15 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 
 			// Read in emission model
 			std::string emitmodelstring{ "" };
-			AllDiagSettings["EquatorialEmission"].lookupValue("EmissionModel", emitmodelstring);
+			AllDiagSettings["EquatorialEmission"].LookupValue("EmissionModel", emitmodelstring);
 			if (emitmodelstring == "GLMJohnsonSU")
 			{
 				real mu{ defaultmu };
 				real gamma{ defaultgamma };
 				real sigma{ defaultsigma };
-				AllDiagSettings["EquatorialEmission"].lookupValue("mu", mu);
-				AllDiagSettings["EquatorialEmission"].lookupValue("gamma", gamma);
-				AllDiagSettings["EquatorialEmission"].lookupValue("sigma", sigma);
+				AllDiagSettings["EquatorialEmission"].LookupValue("mu", mu);
+				AllDiagSettings["EquatorialEmission"].LookupValue("gamma", gamma);
+				AllDiagSettings["EquatorialEmission"].LookupValue("sigma", sigma);
 				theEmission = std::unique_ptr<EmissionModel>{ new GLMJohnsonSUEmission(mu, gamma, sigma) };
 			}
 			// Other emission models can be checked for here...
@@ -644,15 +585,15 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 
 			// Read in fluid velocity model
 			std::string fluidmodelstring{ "" };
-			AllDiagSettings["EquatorialEmission"].lookupValue("FluidVelocityModel", fluidmodelstring);
+			AllDiagSettings["EquatorialEmission"].LookupValue("FluidVelocityModel", fluidmodelstring);
 			if (fluidmodelstring == "GeneralCircularRadial")
 			{
 				real subKeplerianparam{ defaultxi };
 				real betaR{ defaultbetar };
 				real betaPhi{ defaultbetaphi };
-				AllDiagSettings["EquatorialEmission"].lookupValue("xi", subKeplerianparam);
-				AllDiagSettings["EquatorialEmission"].lookupValue("betar", betaR);
-				AllDiagSettings["EquatorialEmission"].lookupValue("betaphi", betaPhi);
+				AllDiagSettings["EquatorialEmission"].LookupValue("xi", subKeplerianparam);
+				AllDiagSettings["EquatorialEmission"].LookupValue("betar", betaR);
+				AllDiagSettings["EquatorialEmission"].LookupValue("betaphi", betaPhi);
 				
 				theFluidModel = std::unique_ptr<FluidVelocityModel>{ new GeneralCircularRadialFluid(subKeplerianparam,betaR,betaPhi,theMetric) };
 			}
@@ -673,7 +614,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 					updatestart,updatefinish }));
 
 			bool isVal{ false };
-			if (valdiag == Diag_None && AllDiagSettings["EquatorialEmission"].lookupValue("UseForMesh", isVal) && isVal)
+			if (valdiag == Diag_None && AllDiagSettings["EquatorialEmission"].LookupValue("UseForMesh", isVal) && isVal)
 			{
 				// Use this Diagnostic for the Mesh values
 				valdiag = Diag_EquatorialEmission;
@@ -696,11 +637,11 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 			largecounter updatensteps = 1;
 			bool updatestart{ true }; 
 			bool updatefinish{ true };
-			lookupValuelargecounter(AllDiagSettings["MyDiagnostic"], "UpdateFrequency", updatensteps);
+			AllDiagSettings["MyDiagnostic"].LookupValueInteger("UpdateFrequency", updatensteps);
 			if (updatensteps == 0)
 			{
-				AllDiagSettings["MyDiagnostic"].lookupValue("UpdateStart", updatestart);
-				AllDiagSettings["MyDiagnostic"].lookupValue("UpdateFinish", updatefinish);
+				AllDiagSettings["MyDiagnostic"].LookupValue("UpdateStart", updatestart);
+				AllDiagSettings["MyDiagnostic"].LookupValue("UpdateFinish", updatefinish);
 			}
 			// (look up any additional options here...)
 
@@ -709,7 +650,7 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 				updatestart,updatefinish} });
 
 			bool isVal{ false };
-			if (valdiag == Diag_None && AllDiagSettings["MyDiagnostic"].lookupValue("UseForMesh", isVal) && isVal)
+			if (valdiag == Diag_None && AllDiagSettings["MyDiagnostic"].LookupValue("UseForMesh", isVal) && isVal)
 			{
 				// Use this Diagnostic for the Mesh values
 				valdiag = Diag_MyDiagnostic; // use the flag you created at DIAGNOSTIC ADD POINT B.
@@ -759,24 +700,21 @@ void Config::InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alld
 /// Config::InitializeTerminations():  Use configuration to set the Termination bitflag appropriately;
 /// and initialize all TerminationOptions for all Terminations that are turned on.
 /// </summary>
-void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& allterms, const Metric* const theMetric)
+void Config::InitializeTerminations(const ConfigCollection& theCfg, TermBitflag& allterms, const Metric* const theMetric)
 {
 	// First set the flag to all zeros
 	allterms = Term_None;
 
-	// Get the root configuration settings
-	ConfigSetting& root = theCfg.getRoot();
-
 	try
 	{
 		// Check to see that there are Terminations settings at all
-		if (!root.exists("Terminations"))
+		if (!theCfg.Exists("Terminations"))
 		{
 			throw SettingError("No termination settings found.");
 		}
 
 		// Go to the Terminations settings
-		ConfigSetting& AllTermSettings = root["Terminations"];
+		const ConfigCollection& AllTermSettings = theCfg["Terminations"];
 
 		// Helper function: checks to see if a particular Termination (with name TermName)
 		// is present in the Terminations options; if the setting "on" is specified;
@@ -785,9 +723,8 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 		auto CheckIfTermOn = [&AllTermSettings](const std::string& TermName)
 		{
 			bool termison{ false };
-			return AllTermSettings.exists(TermName.c_str()) // note that g++ on Fabio's Linux requires the .c_str() everywhere
-				&& AllTermSettings[TermName.c_str()].exists("On")
-				&& AllTermSettings[TermName.c_str()].lookupValue("On", termison)
+			return AllTermSettings.Exists(TermName.c_str()) // note that g++ on Fabio's Linux requires the .c_str() everywhere
+				&& AllTermSettings[TermName.c_str()].LookupValue("On", termison)
 				&& termison;
 		};
 
@@ -812,12 +749,12 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 
 				// Setting to look up: (relative) radial distance to horizon before stopping integration
 				double epsHorizon{ 0.01 };
-				AllTermSettings["Horizon"].lookupValue("Epsilon_Horizon", epsHorizon);
+				AllTermSettings["Horizon"].LookupValue("Epsilon_Horizon", epsHorizon);
 
 				// By default, this Termination updates every step
 				// Check to see if a different update frequency has been specified
 				largecounter updatefreq = 1;
-				lookupValuelargecounter(AllTermSettings["Horizon"], "UpdateFrequency", updatefreq);
+				AllTermSettings["Horizon"].LookupValueInteger("UpdateFrequency", updatefreq);
 
 				// Initialize the (static) TerminationOptions for Horizon!
 				HorizonTermination::TermOptions =
@@ -834,7 +771,7 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 
 			// Get the radius of the boundary sphere. Default is 1000(M).
 			real radius{ 1000 };
-			AllTermSettings["BoundarySphere"].lookupValue("SphereRadius", radius);
+			AllTermSettings["BoundarySphere"].LookupValue("SphereRadius", radius);
 
 			// Check if metric is a spherical horizon metric with integration set to a logarithmic r coordinate,
 			// if so, pass this along to the options struct
@@ -843,7 +780,7 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 			// By default, this Termination updates every step
 			// Check to see if a different update frequency has been specified
 			largecounter updatefreq = 1;
-			lookupValuelargecounter(AllTermSettings["BoundarySphere"], "UpdateFrequency", updatefreq);
+			AllTermSettings["BoundarySphere"].LookupValueInteger("UpdateFrequency", updatefreq);
 
 			// Initialize the (static) TerminationOptions for BoundarySphere!
 			BoundarySphereTermination::TermOptions =
@@ -858,12 +795,12 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 
 			// Get the number of steps until time-out. Default is 10000
 			largecounter timeoutsteps { 10000 };
-			lookupValuelargecounter(AllTermSettings["TimeOut"], "MaxSteps", timeoutsteps);
+			AllTermSettings["TimeOut"].LookupValueInteger("MaxSteps", timeoutsteps);
 
 			// By default, this Termination updates every step
 			// Check to see if a different update frequency has been specified
 			largecounter updatefreq = 1;
-			lookupValuelargecounter(AllTermSettings["TimeOut"], "UpdateFrequency", updatefreq);
+			AllTermSettings["TimeOut"].LookupValueInteger("UpdateFrequency", updatefreq);
 
 			// Initialize the (static) TerminationOptions for TimeOut!
 			TimeOutTermination::TermOptions =
@@ -879,12 +816,12 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 
 			// get the tolerance for how much theta is allowed to get near the poles; default 1e-5
 			real epsilon{ 1e-5 };
-			AllTermSettings["ThetaSingularity"].lookupValue("Epsilon", epsilon);
+			AllTermSettings["ThetaSingularity"].LookupValue("Epsilon", epsilon);
 
 			// By default, this Termination updates every step
 			// Check to see if a different update frequency has been specified
 			largecounter updatefreq = 1;
-			lookupValuelargecounter(AllTermSettings["ThetaSingularity"], "UpdateFrequency", updatefreq);
+			AllTermSettings["ThetaSingularity"].LookupValueInteger("UpdateFrequency", updatefreq);
 
 			// Initialize the (static) TerminationOptions for ThetaSingularity!
 			ThetaSingularityTermination::TermOptions =
@@ -899,13 +836,13 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 
 			// output information of geodesic that hits a nan or not
 			bool outputconsole{ true };
-			AllTermSettings["NaN"].lookupValue("ConsoleOutput", outputconsole);
+			AllTermSettings["NaN"].LookupValue("ConsoleOutput", outputconsole);
 
 
 			// By default, this Termination updates every step
 			// Check to see if a different update frequency has been specified
 			largecounter updatefreq = 1;
-			lookupValuelargecounter(AllTermSettings["NaN"], "UpdateFrequency", updatefreq);
+			AllTermSettings["NaN"].LookupValueInteger("UpdateFrequency", updatefreq);
 
 			// Initialize the (static) TerminationOptions for NaN!
 			NaNTermination::TermOptions =
@@ -933,16 +870,16 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 
 				// get the tolerance for how close we are allowed to get (in coordinates) to the singularity
 				real epsilon{ 1e-3 };
-				AllTermSettings["GeneralSingularity"].lookupValue("Epsilon", epsilon);
+				AllTermSettings["GeneralSingularity"].LookupValue("Epsilon", epsilon);
 
 				// output information of geodesic that hits a nan or not
 				bool outputconsole{ false };
-				AllTermSettings["GeneralSingularity"].lookupValue("ConsoleOutput", outputconsole);
+				AllTermSettings["GeneralSingularity"].LookupValue("ConsoleOutput", outputconsole);
 
 				// By default, this Termination updates every step
 				// Check to see if a different update frequency has been specified
 				largecounter updatefreq = 1;
-				lookupValuelargecounter(AllTermSettings["GeneralSingularity"], "UpdateFrequency", updatefreq);
+				AllTermSettings["GeneralSingularity"].LookupValueInteger("UpdateFrequency", updatefreq);
 
 				// Initialize the (static) TerminationOptions for GeneralSingularity!
 				GeneralSingularityTermination::TermOptions =
@@ -965,7 +902,7 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 			// if it does not or has additional options (i.e. it has a descendant of TerminationOptions as its
 			// static struct), then update here accordingly.
 			largecounter updatefreq = 1;
-			lookupValuelargecounter(AllTermSettings["MyTermination"], "UpdateFrequency", updatefreq);
+			AllTermSettings["MyTermination"].LookupValueInteger("UpdateFrequency", updatefreq);
 
 			// Initialize the (static) TerminationOptions!
 			MyTermination::TermOptions =
@@ -1002,10 +939,8 @@ void Config::InitializeTerminations(const ConfigObject& theCfg, TermBitflag& all
 /// Config::GetViewScreen():  Use configuration to create the ViewScreen object;
 /// with options set according to the configuration.
 /// </summary>
-std::unique_ptr<ViewScreen> Config::GetViewScreen(const ConfigObject& theCfg, DiagBitflag valdiag, const Metric* const theMetric)
+std::unique_ptr<ViewScreen> Config::GetViewScreen(const ConfigCollection& theCfg, DiagBitflag valdiag, const Metric* const theMetric)
 {
-	ConfigSetting& root = theCfg.getRoot();
-
 	// DEFAULTS set here
 	Point pos{ 0,1000,pi/2.0,0 };
 	OneIndex dir{ 0,-1,0,0 };
@@ -1015,38 +950,38 @@ std::unique_ptr<ViewScreen> Config::GetViewScreen(const ConfigObject& theCfg, Di
 	try
 	{
 		// Check to see that there are ViewScreen settings at all
-		if (!root.exists("ViewScreen"))
+		if (!theCfg.Exists("ViewScreen"))
 		{
 			throw SettingError("No view screen settings found.");
 		}
 
 		// Go to the ViewScreen settings
-		ConfigSetting& ViewSettings = root["ViewScreen"];
+		const ConfigCollection& ViewSettings = theCfg["ViewScreen"];
 
 		// Look up camera position, direction, screen size
-		if (ViewSettings.exists("Position"))
+		if (ViewSettings.Exists("Position"))
 		{
-			ViewSettings["Position"].lookupValue("t", pos[0]);
-			ViewSettings["Position"].lookupValue("r", pos[1]);
-			ViewSettings["Position"].lookupValue("theta", pos[2]);
-			ViewSettings["Position"].lookupValue("phi", pos[3]);
+			ViewSettings["Position"].LookupValue("t", pos[0]);
+			ViewSettings["Position"].LookupValue("r", pos[1]);
+			ViewSettings["Position"].LookupValue("theta", pos[2]);
+			ViewSettings["Position"].LookupValue("phi", pos[3]);
 		}
-		if (ViewSettings.exists("Direction"))
+		if (ViewSettings.Exists("Direction"))
 		{
-			ViewSettings["Direction"].lookupValue("t", dir[0]);
-			ViewSettings["Direction"].lookupValue("r", dir[1]);
-			ViewSettings["Direction"].lookupValue("theta", dir[2]);
-			ViewSettings["Direction"].lookupValue("phi", dir[3]);
+			ViewSettings["Direction"].LookupValue("t", dir[0]);
+			ViewSettings["Direction"].LookupValue("r", dir[1]);
+			ViewSettings["Direction"].LookupValue("theta", dir[2]);
+			ViewSettings["Direction"].LookupValue("phi", dir[3]);
 		}
-		if (ViewSettings.exists("ScreenSize"))
+		if (ViewSettings.Exists("ScreenSize"))
 		{
-			ViewSettings["ScreenSize"].lookupValue("x", screensize[0]);
-			ViewSettings["ScreenSize"].lookupValue("y", screensize[1]);
+			ViewSettings["ScreenSize"].LookupValue("x", screensize[0]);
+			ViewSettings["ScreenSize"].LookupValue("y", screensize[1]);
 		}
-		if (ViewSettings.exists("ScreenCenter"))
+		if (ViewSettings.Exists("ScreenCenter"))
 		{
-			ViewSettings["ScreenCenter"].lookupValue("x", screencenter[0]);
-			ViewSettings["ScreenCenter"].lookupValue("y", screencenter[1]);
+			ViewSettings["ScreenCenter"].LookupValue("x", screencenter[0]);
+			ViewSettings["ScreenCenter"].LookupValue("y", screencenter[1]);
 		}
 	}
 	catch (SettingError& e)
@@ -1071,25 +1006,22 @@ std::unique_ptr<ViewScreen> Config::GetViewScreen(const ConfigObject& theCfg, Di
 /// with options set according to the configuration.
 /// Config::GetViewScreen() calls this when creating the ViewScreen object.
 /// </summary>
-std::unique_ptr<Mesh> Config::GetMesh(const ConfigObject& theCfg, DiagBitflag valdiag)
+std::unique_ptr<Mesh> Config::GetMesh(const ConfigCollection& theCfg, DiagBitflag valdiag)
 {
-	// Get the root configuration settings
-	ConfigSetting& root = theCfg.getRoot();
-
 	std::unique_ptr<Mesh> theMesh;
 
 	try
 	{
 		// Look for the Mesh setting under ViewScreen
-		if (!root.exists("ViewScreen") || !root["ViewScreen"].exists("Mesh"))
+		if (!theCfg.Exists("ViewScreen") || !theCfg["ViewScreen"].Exists("Mesh"))
 		{
 			throw SettingError("No Mesh settings found.");
 		}
-		ConfigSetting& MeshSettings = root["ViewScreen"]["Mesh"];
+		const ConfigCollection& MeshSettings = theCfg["ViewScreen"]["Mesh"];
 
 		// Look for the Type option under the Mesh header
 		std::string meshname{};
-		if (!MeshSettings.lookupValue("Type", meshname))
+		if (!MeshSettings.LookupValue("Type", meshname))
 		{
 			throw SettingError("No Mesh Type specified.");
 		}
@@ -1099,7 +1031,7 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigObject& theCfg, DiagBitflag va
 		{
 			// Simple Square Mesh!
 			largecounter totalpixels{ 100 * 100 };
-			lookupValuelargecounter(MeshSettings, "TotalPixels", totalpixels);
+			MeshSettings.LookupValueInteger("TotalPixels", totalpixels);
 
 			theMesh = std::unique_ptr<Mesh>(new SimpleSquareMesh(totalpixels, valdiag));
 		}
@@ -1108,7 +1040,7 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigObject& theCfg, DiagBitflag va
 			// This Mesh will ask the user to input pixels on the grid specified in the configuration file.
 			// (the Mesh will ask for input in its constructor, so here!)
 			largecounter totalpixels{ 100 * 100 };
-			lookupValuelargecounter(MeshSettings, "TotalPixels", totalpixels);
+			MeshSettings.LookupValueInteger("TotalPixels", totalpixels);
 
 			theMesh = std::unique_ptr<Mesh>(new InputCertainPixelsMesh(totalpixels, valdiag));
 		}
@@ -1119,10 +1051,10 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigObject& theCfg, DiagBitflag va
 			largecounter iterationpixels{ 100 };
 			int maxsubdivide{ 1 };
 			bool initialsubtofinal{ false };
-			lookupValuelargecounter(MeshSettings, "InitialPixels", initialpixels);
-			lookupValuelargecounter(MeshSettings, "MaxPixels", maxpixels);
-			lookupValuelargecounter(MeshSettings, "IterationPixels", iterationpixels);
-			MeshSettings.lookupValue("MaxSubdivide", maxsubdivide);
+			MeshSettings.LookupValueInteger("InitialPixels", initialpixels);
+			MeshSettings.LookupValueInteger("MaxPixels", maxpixels);
+			MeshSettings.LookupValueInteger("IterationPixels", iterationpixels);
+			MeshSettings.LookupValue("MaxSubdivide", maxsubdivide);
 			if (maxpixels < initialpixels)
 				maxpixels = initialpixels;
 			if (maxsubdivide < 1) // 1 is the minimum level (initial grid is level 1)
@@ -1130,7 +1062,7 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigObject& theCfg, DiagBitflag va
 				ScreenOutput("Invalid MaxSubdivide level given. Using MaxSubdivide = 1.", Output_Other_Default);
 				maxsubdivide = 1;
 			}
-			MeshSettings.lookupValue("InitialSubdivisionToFinal", initialsubtofinal);
+			MeshSettings.LookupValue("InitialSubdivisionToFinal", initialsubtofinal);
 
 			theMesh = std::unique_ptr<Mesh>(new SquareSubdivisionMesh(maxpixels,
 				initialpixels, maxsubdivide,
@@ -1143,10 +1075,10 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigObject& theCfg, DiagBitflag va
 			largecounter iterationpixels{ 100 };
 			int maxsubdivide{ 1 };
 			bool initialsubtofinal{ false };
-			lookupValuelargecounter(MeshSettings, "InitialPixels", initialpixels);
-			lookupValuelargecounter(MeshSettings, "MaxPixels", maxpixels);
-			lookupValuelargecounter(MeshSettings, "IterationPixels", iterationpixels);
-			MeshSettings.lookupValue("MaxSubdivide", maxsubdivide);
+			MeshSettings.LookupValueInteger("InitialPixels", initialpixels);
+			MeshSettings.LookupValueInteger("MaxPixels", maxpixels);
+			MeshSettings.LookupValueInteger("IterationPixels", iterationpixels);
+			MeshSettings.LookupValue("MaxSubdivide", maxsubdivide);
 			if (maxpixels < initialpixels)
 				maxpixels = initialpixels;
 			if (maxsubdivide < 1) // 1 is the minimum level (initial grid is level 1)
@@ -1154,7 +1086,7 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigObject& theCfg, DiagBitflag va
 				ScreenOutput("Invalid MaxSubdivide level given. Using MaxSubdivide = 1.", Output_Other_Default);
 				maxsubdivide = 1;
 			}
-			MeshSettings.lookupValue("InitialSubdivisionToFinal", initialsubtofinal);
+			MeshSettings.LookupValue("InitialSubdivisionToFinal", initialsubtofinal);
 
 			theMesh = std::unique_ptr<Mesh>(new SquareSubdivisionMeshV2(maxpixels,
 				initialpixels, maxsubdivide,
@@ -1183,7 +1115,7 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigObject& theCfg, DiagBitflag va
 /// Config::GetGeodesicIntegrator():  Returns a pointer to the integrator function to be used
 /// as specified in the configuration file.
 /// </summary>
-GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigObject& theCfg)
+GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigCollection& theCfg)
 {
 	std::string IntegratorType{};
 
@@ -1194,21 +1126,18 @@ GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigObject& theCfg)
 	real smalleststep{ Integrators::SmallestPossibleStepsize };
 	std::string DefaultString{ "RK4 integrator" };
 
-	// Get the root collection
-	ConfigSetting& root = theCfg.getRoot();
-
 	try
 	{
 		// Check to see that there is an integrator set
-		if (!root.exists("Integrator"))
+		if (!theCfg.Exists("Integrator"))
 		{
 			throw SettingError("No integrator settings found.");
 		}
 		// Go to the Integrator settings
-		ConfigSetting& IntegratorSettings = root["Integrator"];
+		const ConfigCollection& IntegratorSettings = theCfg["Integrator"];
 
 		// Look up the integrator step size
-		if (!IntegratorSettings.lookupValue("StepSize", stepsize))
+		if (!IntegratorSettings.LookupValue("StepSize", stepsize))
 		{
 			ScreenOutput("Using default integrator stepsize: " + std::to_string(Integrators::epsilon) + ".",
 				Output_Other_Default);
@@ -1219,15 +1148,15 @@ GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigObject& theCfg)
 		}
 
 		// Look up derivative h value (no default message necessary)
-		IntegratorSettings.lookupValue("DerivativeH", hval);
+		IntegratorSettings.LookupValue("DerivativeH", hval);
 		Integrators::Derivative_hval = hval;
 
 		// Look up smallest possible step size (no default message necessary)
-		IntegratorSettings.lookupValue("SmallestPossibleStepsize", smalleststep);
+		IntegratorSettings.LookupValue("SmallestPossibleStepsize", smalleststep);
 		Integrators::SmallestPossibleStepsize = smalleststep;
 
 		// Check to see that the Integrator type has been specified
-		if (!IntegratorSettings.lookupValue("Type", IntegratorType))
+		if (!IntegratorSettings.LookupValue("Type", IntegratorType))
 		{
 			throw SettingError("No integrator settings found.");
 		}
@@ -1251,7 +1180,7 @@ GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigObject& theCfg)
 			
 			// Get the velocity tolerance (fractional difference in intermediate and final velocities for a step)
 			real verlettolerance{ Integrators::VerletVelocityTolerance };
-			IntegratorSettings.lookupValue("VerletVelocityTolerance", verlettolerance);
+			IntegratorSettings.LookupValue("VerletVelocityTolerance", verlettolerance);
 			Integrators::VerletVelocityTolerance = verlettolerance;
 		}
 		// else if ... (other integrators here)
@@ -1277,7 +1206,7 @@ GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigObject& theCfg)
 /// Config::GetOutputHandler():  Creates the GeodesicOutputHandler object with options specified
 /// according to the configuration file, for handling of geodesic outputs.
 /// </summary>
-std::unique_ptr<GeodesicOutputHandler> Config::GetOutputHandler(const ConfigObject& theCfg,
+std::unique_ptr<GeodesicOutputHandler> Config::GetOutputHandler(const ConfigCollection& theCfg,
 	DiagBitflag alldiags, DiagBitflag valdiag, std::string FirstLineInfo)
 {
 	// First populate a helper vector of strings of the names of all diagnostics
@@ -1286,35 +1215,32 @@ std::unique_ptr<GeodesicOutputHandler> Config::GetOutputHandler(const ConfigObje
 	// DEFAULTS
 	std::unique_ptr<GeodesicOutputHandler> TheHandler{ new GeodesicOutputHandler("","","",diagstrings)};
 
-	// Get the root collection
-	ConfigSetting& root = theCfg.getRoot();
-
 	try
 	{
 		// Check to see that there are Output settings at all
-		if (!root.exists("Output"))
+		if (!theCfg.Exists("Output"))
 		{
 			throw SettingError("No output handler settings found.");
 		}
 
 		// Go to the Output settings
-		ConfigSetting& OutputSettings = root["Output"];
+		const ConfigCollection& OutputSettings = theCfg["Output"];
 
 
 		std::string FilePrefix{};
 		// Check to see that the output file name prefix has been specified
-		if (!OutputSettings.lookupValue("FilePrefix", FilePrefix))
+		if (!OutputSettings.LookupValue("FilePrefix", FilePrefix))
 		{
 			throw SettingError("No output file name prefix found.");
 		}
 
 		// File extension
 		std::string FileExtension{ "" };
-		OutputSettings.lookupValue("FileExtension", FileExtension);
+		OutputSettings.LookupValue("FileExtension", FileExtension);
 
 		// Print a time stamp in the file name or not
 		bool TimeStamp{ true };
-		OutputSettings.lookupValue("TimeStamp", TimeStamp);
+		OutputSettings.LookupValue("TimeStamp", TimeStamp);
 		std::string TimeStampStr{ "" };
 		if (TimeStamp)
 		{
@@ -1323,17 +1249,17 @@ std::unique_ptr<GeodesicOutputHandler> Config::GetOutputHandler(const ConfigObje
 
 		// Max number of geodesics to cache
 		largecounter nrToCache{ LARGECOUNTER_MAX-1 }; // default is essentially infinite
-		lookupValuelargecounter(OutputSettings, "GeodesicsToCache", nrToCache);
+		OutputSettings.LookupValueInteger("GeodesicsToCache", nrToCache);
 
 		// Max number of geodesics to write to file
 		largecounter GeodesicsPerFile{ LARGECOUNTER_MAX }; // default is essentially infinite
-		lookupValuelargecounter(OutputSettings, "GeodesicsPerFile", GeodesicsPerFile);
+		OutputSettings.LookupValueInteger("GeodesicsPerFile", GeodesicsPerFile);
 		if (GeodesicsPerFile == 0)
 			GeodesicsPerFile = LARGECOUNTER_MAX;
 
 		// Write a description line as the first line in every file or not
 		bool FirstLineInfoOn{ true };
-		OutputSettings.lookupValue("FirstLineInfo", FirstLineInfoOn);
+		OutputSettings.LookupValue("FirstLineInfo", FirstLineInfoOn);
 
 		std::string FirstLineInfoString{ "" };
 		if (FirstLineInfoOn)

@@ -36,10 +36,6 @@
 //// CONFIGURATION_MODE is set in Config.h!
 #include "Config.h"             // Processing configuration file (with libconfig)
 
-#ifdef CONFIGURATION_MODE       // This is set in Config.h!
-#include <libconfig.h++>         // Needed to load configuration file, if working in CONFIGURATION_MODE
-#endif
-
 
 
 
@@ -166,7 +162,7 @@ int main(int argc, char* argv[])
     ScreenOutput("FOORT compiled in configuration mode.", OutputLevel::Level_1_PROC);
 
     // We are in CONFIGURATION MODE, so we start by reading in the specified configuration file
-    Config::ConfigObject cfgObject;
+    Config::ConfigCollection cfgObject;
     if (argc < 2) // no configuration file given
     {
         ScreenOutput("No configuration file given. Exiting...\n", OutputLevel::Level_0_WARNING);
@@ -178,29 +174,27 @@ int main(int argc, char* argv[])
         try
         {
             // Try to open and read the configuration file
-            cfgObject.readFile(configpath.c_str());
+            if (!cfgObject.ReadFile(configpath.c_str()))
+            {
+                // File not found
+                std::cerr << "Config file not found at " << configpath << ".\n Exiting...\n";
+                exit(0);
+            }
         }
-        catch (const libconfig::FileIOException&)
-        {
-            // File not found
-            std::cerr << "Config file not found at " << configpath << ".\n Exiting...\n";
-            exit(0);
-        }
-        catch (const libconfig::ParseException& pex)
+        catch (const ConfigReader::ConfigReaderException& configex)
         {
             // Something is wrong in the configuration file (syntax error)
-            std::cerr << "Unable to parse config file correctly: parse error at "
-                << pex.getFile() << ":" << pex.getLine() << " - " << pex.getError() << ".\n"
-                << "Remember that all numbers must be given as values, e.g. \"3.14/2.0\" is now allowed.\nExiting...\n";
+            std::cerr << configex.what() << "\n"
+                << "Remember that all numbers must be given as values, e.g. \"3.14/2.0\" is not allowed.\nExiting...\n";
             exit(0);
         }
     }
     // If we have made it here, the configuration file is present and its syntax is correct,
     // so we can start reading it in.
     // In general, we always use the libconfig method:
-    // cfgObject.lookupValue("valuename", vartoput) -> returns false if valuename doesn't exist
+    // cfgObject.LookupValue("valuename", vartoput) -> returns false if valuename doesn't exist
     // to look up a certain configuration option. Note that if false is returned, vartoput
-    // remains unaltered from the state it was in before calling lookupValue
+    // remains unaltered from the state it was in before calling LookupValue
 
     ScreenOutput("Initializing all object using configuration file...", OutputLevel::Level_1_PROC);
 

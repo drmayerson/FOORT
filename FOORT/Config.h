@@ -3,7 +3,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////
 ////// CONFIG.H
-////// Functions that read the configuration file (with libconfig)
+////// Functions that read the configuration file
 ////// and initialize all objects.
 ////// All definitions in Config.cpp
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,8 @@
 #include <string> // std::string
 
 #include <exception> // needed to define our own configuration error
-#include <libconfig.h++> // needed for libconfig functionality
+
+#include "ConfigReader.h"
 
 
 // Namespace for all configuration functions that initialize objects based on configuration file
@@ -46,17 +47,11 @@ namespace Config
 	constexpr auto Output_Other_Default = OutputLevel::Level_1_PROC;
 
 	// Total configuration object, as loaded from configuration file
-	using ConfigObject = libconfig::Config;
-	// A setting within the configuration file
-	using ConfigSetting = libconfig::Setting;
+	using ConfigCollection = ConfigReader::ConfigCollection;
 
 	// An exception to throw whenever an important setting is not found
 	// Always should be caught and then reverted to default settings
 	using SettingError = std::invalid_argument;
-
-	// Helper function to look up largecounter options
-	bool lookupValuelargecounter(const ConfigSetting& theSetting, const char *name, largecounter &value);
-
 
 	//// Initialization functions ////
 	//////////////////////////////////
@@ -64,33 +59,33 @@ namespace Config
 	
 
 	// Use configuration to initialize the screen output level
-	void InitializeScreenOutput(const ConfigObject& theCfg);
+	void InitializeScreenOutput(const ConfigCollection& theCfg);
 
 	// Use configuration to create the correct Metric with specified parameters
-	std::unique_ptr<Metric> GetMetric(const ConfigObject& theCfg);
+	std::unique_ptr<Metric> GetMetric(const ConfigCollection& theCfg);
 
 	// Use configuration to create the correct Source with specified parameters
-	std::unique_ptr<Source> GetSource(const ConfigObject& theCfg, const Metric* const theMetric);
+	std::unique_ptr<Source> GetSource(const ConfigCollection& theCfg, const Metric* const theMetric);
 
 	// Use configuration to set the Diagnostics bitflag appropriately;
 	// initialize all DiagnosticOptions for all Diagnostics that are turned on;
 	// and set bitflag for diagnostic to be used for coarseness evaluating in Mesh
-	void InitializeDiagnostics(const ConfigObject& theCfg, DiagBitflag& alldiags, DiagBitflag& valdiag, const Metric* const theMetric);
+	void InitializeDiagnostics(const ConfigCollection& theCfg, DiagBitflag& alldiags, DiagBitflag& valdiag, const Metric* const theMetric);
 
 	// Use configuration to set the Terminations bitflag appropriately;
 	// initialize all TerminationOptions for all Terminations that are turned on;
-	void InitializeTerminations(const ConfigObject& theCfg, TermBitflag& allterms, const Metric* const theMetric);
+	void InitializeTerminations(const ConfigCollection& theCfg, TermBitflag& allterms, const Metric* const theMetric);
 
 	// Use configuration to create ViewScreen appropriately
-	std::unique_ptr<ViewScreen> GetViewScreen(const ConfigObject& theCfg, DiagBitflag valdiag, const Metric* const theMetric);
+	std::unique_ptr<ViewScreen> GetViewScreen(const ConfigCollection& theCfg, DiagBitflag valdiag, const Metric* const theMetric);
 	// GetViewScreen calls GetMesh to create the correct Mesh
-	std::unique_ptr<Mesh> GetMesh(const ConfigObject& theCfg, DiagBitflag valdiag);
+	std::unique_ptr<Mesh> GetMesh(const ConfigCollection& theCfg, DiagBitflag valdiag);
 
 	// Use configuration to return a pointer to the correct integration function to use
-	GeodesicIntegratorFunc GetGeodesicIntegrator(const ConfigObject& theCfg);
+	GeodesicIntegratorFunc GetGeodesicIntegrator(const ConfigCollection& theCfg);
 
 	// Use configuration to initialize the output handler
-	std::unique_ptr<GeodesicOutputHandler> GetOutputHandler(const ConfigObject& theCfg,
+	std::unique_ptr<GeodesicOutputHandler> GetOutputHandler(const ConfigCollection& theCfg,
 		DiagBitflag alldiags, DiagBitflag valdiag, std::string FirstLineInfo );
 
 } // end namespace Config

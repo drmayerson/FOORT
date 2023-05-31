@@ -155,6 +155,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Config.cpp" />
+    <ClCompile Include="ConfigReader.cpp" />
     <ClCompile Include="Diagnostics.cpp" />
     <ClCompile Include="Diagnostics_Emission.cpp" />
     <ClCompile Include="Geodesic.cpp" />
@@ -169,6 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config.h" />
+    <ClInclude Include="ConfigReader.h" />
     <ClInclude Include="Diagnostics.h" />
     <ClInclude Include="Diagnostics_Emission.h" />
     <ClInclude Include="Geodesic.h" />
