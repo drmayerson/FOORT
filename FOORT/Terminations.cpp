@@ -1,6 +1,6 @@
 #include "Terminations.h" // We are defining Termination member functions here
 
-#include "Geodesic.h" // // We need member functions of the Geodesic class here
+#include "Geodesic.h"	 // // We need member functions of the Geodesic class here
 #include "InputOutput.h" // for ScreenOutput()
 
 #include <cmath> // needed for sqrt(), sin(), exp() etc (only on Linux)
@@ -21,32 +21,32 @@ TerminationUniqueVector CreateTerminationVector(TermBitflag termflags, Geodesic 
 	// Is Horizon turned on?
 	if (termflags & Term_Horizon)
 	{
-		theTermVector.emplace_back(new HorizonTermination{ theGeodesic });
+		theTermVector.emplace_back(new HorizonTermination{theGeodesic});
 	}
 	// Is BoundarySphere turned on?
 	if (termflags & Term_BoundarySphere)
 	{
-		theTermVector.emplace_back(new BoundarySphereTermination{ theGeodesic });
+		theTermVector.emplace_back(new BoundarySphereTermination{theGeodesic});
 	}
 	// Is TimeOut turned on?
 	if (termflags & Term_TimeOut)
 	{
-		theTermVector.emplace_back(new TimeOutTermination{ theGeodesic });
+		theTermVector.emplace_back(new TimeOutTermination{theGeodesic});
 	}
 	// Is ThetaSingularity turned on?
 	if (termflags & Term_ThetaSingularity)
 	{
-		theTermVector.emplace_back(new ThetaSingularityTermination{ theGeodesic });
+		theTermVector.emplace_back(new ThetaSingularityTermination{theGeodesic});
 	}
 	// Is NaN turned on?
 	if (termflags & Term_NaN)
 	{
-		theTermVector.emplace_back(new NaNTermination{ theGeodesic });
+		theTermVector.emplace_back(new NaNTermination{theGeodesic});
 	}
 	// Is GeneralSingularity turned on?
 	if (termflags & Term_GeneralSingularity)
 	{
-		theTermVector.emplace_back(new GeneralSingularityTermination{ theGeodesic });
+		theTermVector.emplace_back(new GeneralSingularityTermination{theGeodesic});
 	}
 	//// TERMINATION ADD POINT C ////
 	// Add an if statement that checks if your Termination's TermBitflag is turned on, if so add a new instance of it
@@ -64,11 +64,9 @@ TerminationUniqueVector CreateTerminationVector(TermBitflag termflags, Geodesic 
 	return theTermVector;
 }
 
-
 /// <summary>
 /// Termination (abstract base class) functions
 /// </summary>
-
 
 void Termination::Reset()
 {
@@ -116,8 +114,7 @@ Term HorizonTermination::CheckTermination()
 		real thegeodesicr = (m_OwnerGeodesic->getCurrentPos())[1];
 		real r = TermOptions->rLogScale ? exp(thegeodesicr) : thegeodesicr;
 		// Check if we are almost at the horizon; the second check is for horizons which are at r=0
-		if ( (r < TermOptions->HorizonRadius * (1 + TermOptions->AtHorizonEps))
-			|| (TermOptions->HorizonRadius == 0.0 && r < TermOptions->AtHorizonEps) )
+		if ((r < TermOptions->HorizonRadius * (1 + TermOptions->AtHorizonEps)) || (TermOptions->HorizonRadius == 0.0 && r < TermOptions->AtHorizonEps))
 		{
 			ret = Term::Horizon;
 		}
@@ -137,7 +134,7 @@ std::string HorizonTermination::getFullDescriptionStr() const
 /// </summary>
 
 // Check to see if Boundary Sphere is reached, if so return Term::BoundarySphere
-Term BoundarySphereTermination::CheckTermination() 
+Term BoundarySphereTermination::CheckTermination()
 {
 	Term ret = Term::Continue;
 
@@ -160,7 +157,6 @@ std::string BoundarySphereTermination::getFullDescriptionStr() const
 	// Full description string
 	return "Boundary sphere (R = " + std::to_string(TermOptions->SphereRadius) + ")";
 }
-
 
 /// <summary>
 /// TimeOutTermination functions
@@ -201,7 +197,6 @@ std::string TimeOutTermination::getFullDescriptionStr() const
 	return "Time out (max integration steps: " + std::to_string(TermOptions->MaxSteps) + ")";
 }
 
-
 /// <summary>
 /// ThetaSingularityTermination functions
 /// </summary>
@@ -214,8 +209,8 @@ Term ThetaSingularityTermination::CheckTermination()
 	if (DecideUpdate(TermOptions->UpdateEveryNSteps))
 	{
 		// Check to see if theta is too close to a pole
-		real theta{ m_OwnerGeodesic->getCurrentPos()[2] };
-		real eps{ TermOptions->ThetaSingEpsilon };
+		real theta{m_OwnerGeodesic->getCurrentPos()[2]};
+		real eps{TermOptions->ThetaSingEpsilon};
 		if (fabs(theta) < eps || fabs(pi - theta) < eps)
 			ret = Term::ThetaSingularity;
 	}
@@ -240,8 +235,8 @@ Term NaNTermination::CheckTermination()
 	if (DecideUpdate(TermOptions->UpdateEveryNSteps))
 	{
 		// Check to see if nan encountered
-		Point pos{ m_OwnerGeodesic->getCurrentPos() };
-		OneIndex vel{ m_OwnerGeodesic->getCurrentVel() };
+		Point pos{m_OwnerGeodesic->getCurrentPos()};
+		OneIndex vel{m_OwnerGeodesic->getCurrentVel()};
 
 		for (int i = 0; i < dimension && ret == Term::Continue; ++i)
 		{
@@ -250,10 +245,8 @@ Term NaNTermination::CheckTermination()
 		}
 		if (ret == Term::NaN && TermOptions->OutputToConsole)
 		{
-			ScreenOutput("NaN encountered for geodesic with screen index " + toString(m_OwnerGeodesic->getScreenIndex())
-				+ ", position: " + toString(pos) + ", velocity: " + toString(vel)
-				+ ", lambda = " + std::to_string(m_OwnerGeodesic->getCurrentLambda()) + ".",
-				OutputLevel::Level_0_WARNING);
+			ScreenOutput("NaN encountered for geodesic with screen index " + toString(m_OwnerGeodesic->getScreenIndex()) + ", position: " + toString(pos) + ", velocity: " + toString(vel) + ", lambda = " + std::to_string(m_OwnerGeodesic->getCurrentLambda()) + ".",
+						 OutputLevel::Level_0_WARNING);
 		}
 	}
 
@@ -263,10 +256,8 @@ Term NaNTermination::CheckTermination()
 std::string NaNTermination::getFullDescriptionStr() const
 {
 	// Full description string
-	return "NaN checker ("
-		+ std::string(TermOptions->OutputToConsole ? "outputting to console" : "no output to console") + ")";
+	return "NaN checker (" + std::string(TermOptions->OutputToConsole ? "outputting to console" : "no output to console") + ")";
 }
-
 
 /// <summary>
 /// GeneralSingularityTermination functions
@@ -278,7 +269,7 @@ Term GeneralSingularityTermination::CheckTermination()
 
 	if (DecideUpdate(TermOptions->UpdateEveryNSteps))
 	{
-		Point pos{ m_OwnerGeodesic->getCurrentPos() };
+		Point pos{m_OwnerGeodesic->getCurrentPos()};
 		// Correct for log r scale if applicable
 		pos[1] = TermOptions->rLogScale ? exp(pos[1]) : pos[1];
 
@@ -295,11 +286,8 @@ Term GeneralSingularityTermination::CheckTermination()
 
 				if (TermOptions->OutputToConsole)
 				{
-					ScreenOutput("Geodesic hitting singularity at " + SingularityToString(i)
-						+ " (screen index " + toString(m_OwnerGeodesic->getScreenIndex())
-						+ ", position: " + toString(pos) + ", velocity: " + toString(m_OwnerGeodesic->getCurrentVel())
-						+ ", lambda = " + std::to_string(m_OwnerGeodesic->getCurrentLambda()) + ").",
-						OutputLevel::Level_0_WARNING);
+					ScreenOutput("Geodesic hitting singularity at " + SingularityToString(i) + " (screen index " + toString(m_OwnerGeodesic->getScreenIndex()) + ", position: " + toString(pos) + ", velocity: " + toString(m_OwnerGeodesic->getCurrentVel()) + ", lambda = " + std::to_string(m_OwnerGeodesic->getCurrentLambda()) + ").",
+								 OutputLevel::Level_0_WARNING);
 				}
 			}
 		}
@@ -310,7 +298,7 @@ Term GeneralSingularityTermination::CheckTermination()
 
 std::string GeneralSingularityTermination::SingularityToString(int singnr) const
 {
-	std::string singstring{ "(" };
+	std::string singstring{"("};
 	for (int j = 0; j < TermOptions->Singularities[singnr].size(); ++j)
 	{
 		switch (TermOptions->Singularities[singnr][j].first)
@@ -349,10 +337,7 @@ std::string GeneralSingularityTermination::getFullDescriptionStr() const
 	}
 	singstring += " }";
 
-	return "Singularities (" + std::to_string(TermOptions->Singularities.size()) +  " singularities at: "
-		+ singstring + ", epsilon = " + std::to_string(TermOptions->Epsilon) + ", "
-		+ std::string(TermOptions->OutputToConsole ? "outputting to console" : "no output to console") + ")";
+	return "Singularities (" + std::to_string(TermOptions->Singularities.size()) + " singularities at: " + singstring + ", epsilon = " + std::to_string(TermOptions->Epsilon) + ", " + std::string(TermOptions->OutputToConsole ? "outputting to console" : "no output to console") + ")";
 }
-
 
 //// (New Termination classes can define their member functions here)

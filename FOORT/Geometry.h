@@ -9,22 +9,20 @@
 ////// (No .cpp with implementations; all functions are inline)
 ///////////////////////////////////////////////////////////////////////////////////////
 
-#include <limits> // for std::numeric_limits
-#include <string> // needed for toString(...) to convert tensors to strings
-#include <array> // needed to define tensors as fixed-size arrays of real or pixelcoord
+#include <limits>  // for std::numeric_limits
+#include <string>  // needed for toString(...) to convert tensors to strings
+#include <array>   // needed to define tensors as fixed-size arrays of real or pixelcoord
 #include <utility> // needed for std::pair
-#include <vector> // for std::vector
-
+#include <vector>  // for std::vector
 
 // A real number.
 // (Could be changed to use arbitrary precision in the future.)
 using real = double;
 
-
 // Note: An unsigned long is guaranteed to be able to hold at least 4 294 967 295 (4.10^10).
 // An unsigned int is only guaranteed to be able to hold 65 535, although
 // many modern-day implementations will actually make the int 32-bit and so much larger
-// 
+//
 // This type is used to count geodesics integrated
 using largecounter = unsigned long;
 // A pixel coordinate: always >=0 and integer; we use the largecounter type
@@ -38,16 +36,14 @@ using pixelcoord = largecounter;
 #define PIXEL_MAX std::numeric_limits<pixelcoord>::max()
 #endif
 
-
 /// <summary>
 /// CONSTANTS
 /// </summary>
 
-inline constexpr real pi{ 3.1415926535 };
+inline constexpr real pi{3.1415926535};
 
 // The spacetime dimension
-inline constexpr int dimension{ 4 };
-
+inline constexpr int dimension{4};
 
 /// <summary>
 /// TENSOR DEFINITIONS
@@ -78,19 +74,18 @@ using SingularityCoord = std::pair<int, real>;
 // Singularity: a number of SingularityCoords together that define a arbitrary codimension surface/line/point
 using Singularity = std::vector<SingularityCoord>;
 
-
 /// <summary>
 /// PRINTING TENSORS TO STRING
 /// </summary>
- 
+
 // Base case for single index tensor of unsigned integers (ScreenIndex).
 // We do not want toString(ScreenIndex) to convert its entries to reals and use the
 // implementation for a single index tensor of reals, because we do not want decimal points in our
 // string for the ints!
-template<size_t TensorDim>
-std::string toString(const std::array<largecounter, TensorDim>& theTensor)
+template <size_t TensorDim>
+std::string toString(const std::array<largecounter, TensorDim> &theTensor)
 {
-	std::string theStr{ "(" }; // no spaces for the innermost brackets
+	std::string theStr{"("}; // no spaces for the innermost brackets
 	for (int i = 0; i < TensorDim - 1; ++i)
 	{
 		// Here we use the std::to_string to convert the real to string
@@ -104,10 +99,10 @@ std::string toString(const std::array<largecounter, TensorDim>& theTensor)
 }
 
 // Base case for single index tensor of reals (Point, OneIndex, ScreenPoint)
-template<size_t TensorDim>
-std::string toString(const std::array<real, TensorDim>& theTensor)
+template <size_t TensorDim>
+std::string toString(const std::array<real, TensorDim> &theTensor)
 {
-	std::string theStr{ "(" }; // no spaces for the innermost brackets
+	std::string theStr{"("}; // no spaces for the innermost brackets
 
 	for (int i = 0; i < TensorDim - 1; ++i)
 	{
@@ -123,12 +118,12 @@ std::string toString(const std::array<real, TensorDim>& theTensor)
 
 // General printing function for a tensor (TwoIndex, ThreeIndex, FourInedex);
 // recursively calls the lower rank tensor to print itself
-template<typename Tensor, size_t TensorDim>
+template <typename Tensor, size_t TensorDim>
 std::string toString(const std::array<Tensor, TensorDim> &theTensor)
 {
 	std::string theStr{"( "}; // All but the innermost brackets have an extra space padding the bracket
-	
-	for (int i = 0; i < TensorDim -1; ++i)
+
+	for (int i = 0; i < TensorDim - 1; ++i)
 	{
 		theStr += toString(theTensor[i]);
 		theStr += ", ";
@@ -140,16 +135,15 @@ std::string toString(const std::array<Tensor, TensorDim> &theTensor)
 	return theStr;
 }
 
-
 /// <summary>
 /// TENSOR ARITHMETIC: addition/subtraction of tensors, scalar multiplication/division
 /// </summary>
- 
+
 // Function to recursively call + on the lower rank tensor (OR the underlying reals/ints, if the tensor is rank 1)
-template<typename t, size_t TensorDim>
-std::array<t, TensorDim> operator+(const std::array<t, TensorDim>& a1, const std::array<t, TensorDim>& a2)
+template <typename t, size_t TensorDim>
+std::array<t, TensorDim> operator+(const std::array<t, TensorDim> &a1, const std::array<t, TensorDim> &a2)
 {
-	std::array<t, TensorDim> temp{ a1 };
+	std::array<t, TensorDim> temp{a1};
 	for (int i = 0; i < TensorDim; ++i)
 		temp[i] = temp[i] + a2[i];
 
@@ -157,10 +151,10 @@ std::array<t, TensorDim> operator+(const std::array<t, TensorDim>& a1, const std
 }
 
 // Function to recursively call - on the lower rank tensor (OR the underlying reals/ints, if the tensor is rank 1)
-template<typename t, size_t TensorDim>
-std::array<t, TensorDim> operator-(const std::array<t, TensorDim>& a1, const std::array<t, TensorDim>& a2)
+template <typename t, size_t TensorDim>
+std::array<t, TensorDim> operator-(const std::array<t, TensorDim> &a1, const std::array<t, TensorDim> &a2)
 {
-	std::array<t, TensorDim> temp{ a1 };
+	std::array<t, TensorDim> temp{a1};
 	for (int i = 0; i < TensorDim; ++i)
 		temp[i] = temp[i] - a2[i];
 
@@ -168,28 +162,27 @@ std::array<t, TensorDim> operator-(const std::array<t, TensorDim>& a1, const std
 }
 
 // Function to recursively scalar multiply the lower-rank tensors (OR the underlying reals/ints for the rank-1 tensor)
-template<typename t, size_t TensorDim>
-std::array<t, TensorDim> operator*(const std::array<t, TensorDim>& t1, real lambda)
+template <typename t, size_t TensorDim>
+std::array<t, TensorDim> operator*(const std::array<t, TensorDim> &t1, real lambda)
 {
-	std::array<t, TensorDim> temp{ t1 };
+	std::array<t, TensorDim> temp{t1};
 	for (int i = 0; i < TensorDim; ++i)
 		temp[i] = static_cast<t>(temp[i] * lambda); // static_cast necessary if t is integral type!
 	return temp;
 }
 
 // For multiplication with a scalar on the left, call the multiplication on the right defined above
-template<typename t, size_t TensorDim>
-std::array<t, TensorDim> operator*(real lambda, const std::array<t, TensorDim>& t1)
+template <typename t, size_t TensorDim>
+std::array<t, TensorDim> operator*(real lambda, const std::array<t, TensorDim> &t1)
 {
 	return t1 * lambda;
 }
 
 // For division with a scalar, call the multiplication defined above
-template<typename t, size_t TensorDim>
-std::array<t, TensorDim> operator/(const std::array<t, TensorDim>& t1, real lambda)
+template <typename t, size_t TensorDim>
+std::array<t, TensorDim> operator/(const std::array<t, TensorDim> &t1, real lambda)
 {
 	return t1 * (1 / lambda);
 }
-
 
 #endif

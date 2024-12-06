@@ -3,16 +3,15 @@
 
 #include "Geometry.h" // Needed for basic tensor objects etc.
 
+#include "spline.h"
 #include <string> // for strings
 #include <vector> // needed for the (non-fixed size) vector of symmetries in the metric
-
 
 ///////////////////////////////////////////////////////////////////////////////////////
 ////// METRIC.H
 ////// Declarations of abstract base Metric class and all its descendants.
 ////// All definitions in Metric.cpp
 ///////////////////////////////////////////////////////////////////////////////////////
-
 
 // The abstract base class for all Metrics.
 class Metric
@@ -22,26 +21,26 @@ public:
 	virtual ~Metric() = default;
 
 	Metric(bool rlogscale = false);
-	
+
 	// Basic functions that return the metric with indices down or up:
 	// pure virtual as they must be defined in the descendant classes.
-	// 
+	//
 	// Get the metric at Point p, indices down
-	virtual TwoIndex getMetric_dd(const Point& p) const = 0;	
+	virtual TwoIndex getMetric_dd(const Point &p) const = 0;
 	// Get the metric at Point p, indices up
-	virtual TwoIndex getMetric_uu(const Point& p) const = 0;	
+	virtual TwoIndex getMetric_uu(const Point &p) const = 0;
 
 	// The following functions return the Christoffel and other derivative quantities of the metric.
 	// They are implemented for this base class, BUT are left as virtual functions to allow for
 	// other metrics to implement their own (more efficient)
 	// way of calculating them, if so desired.
-	// 
+	//
 	// Get the Christoffel symbol, indices up-down-down
-	virtual ThreeIndex getChristoffel_udd(const Point& p) const;
+	virtual ThreeIndex getChristoffel_udd(const Point &p) const;
 	// Get the Riemann tensor, indices up-down-down-down
-	virtual FourIndex getRiemann_uddd(const Point& p) const;
+	virtual FourIndex getRiemann_uddd(const Point &p) const;
 	// Get the Kretschmann scalar
-	virtual real getKretschmann(const Point& p) const;
+	virtual real getKretschmann(const Point &p) const;
 
 	// Function to get the description of the metric
 	// (used for outputting to the screen while running and possibly to the output files)
@@ -49,13 +48,13 @@ public:
 	virtual std::string getFullDescriptionStr() const;
 
 	bool getrLogScale() const;
+
 protected:
 	// The symmetries (coordinate Killing vectors) of the metric. Should be set by descendant constructor.
 	std::vector<int> m_Symmetries{};
 	// Are we using a logarithmic r coordinate?
 	const bool m_rLogScale;
 };
-
 
 // Abstract base class for a metric that has a spherical horizon (i.e. horizon at constant radius r)
 class SphericalHorizonMetric : public Metric
@@ -74,31 +73,31 @@ protected:
 	const real m_HorizonRadius;
 };
 
-
-
 // The Kerr metric (normalized so that M = 1)
 class KerrMetric final : public SphericalHorizonMetric
 {
 private:
-	// Rotation parameter for Kerr
-	// Note that this should be between -1 and 1 since M=1
+	// Mass-rescaled rotation parameter for Kerr
+	// Note that this should be between -1 and 1.
 	const real m_aParam;
+
+	// Mass parameter for Kerr. Default is 1.
+	const real m_mParam;
 
 public:
 	// No default constructor allowed, must specify a
 	KerrMetric() = delete;
 
 	// Constructor setting parameter a
-	KerrMetric(real aParam, bool rLogScale=false);
+	KerrMetric(real aParam, bool rLogScale = false, real mParam = 1.);
 
 	// The override of the basic metric getter functions
-	TwoIndex getMetric_dd(const Point& p) const final;
-	TwoIndex getMetric_uu(const Point& p) const final;
+	TwoIndex getMetric_dd(const Point &p) const final;
+	TwoIndex getMetric_uu(const Point &p) const final;
 
 	// The override of the description string getter
 	std::string getFullDescriptionStr() const final;
 };
-
 
 // Flat space (4D)
 class FlatSpaceMetric final : public Metric
@@ -108,8 +107,8 @@ public:
 	FlatSpaceMetric(bool rlogscale = false);
 
 	// The override of the basic metric getter functions
-	TwoIndex getMetric_dd(const Point& p) const final;
-	TwoIndex getMetric_uu(const Point& p) const final;
+	TwoIndex getMetric_dd(const Point &p) const final;
+	TwoIndex getMetric_uu(const Point &p) const final;
 
 	// The override of the description string getter
 	std::string getFullDescriptionStr() const final;
@@ -124,6 +123,7 @@ private:
 	const real m_mParam;
 	const real m_pParam;
 	const real m_qParam;
+
 public:
 	// No default constructor allowed, must specify parameters
 	RasheedLarsenMetric() = delete;
@@ -132,15 +132,15 @@ public:
 	RasheedLarsenMetric(real mParam, real aParam, real pParam, real qParam, bool rLogScale = false);
 
 	// The override of the basic metric getter functions
-	TwoIndex getMetric_dd(const Point& p) const final;
-	TwoIndex getMetric_uu(const Point& p) const final;
+	TwoIndex getMetric_dd(const Point &p) const final;
+	TwoIndex getMetric_uu(const Point &p) const final;
 
 	// The override of the description string getter
 	std::string getFullDescriptionStr() const final;
 };
 
 // Johanssen black hole metric (implementation by Seppe Staelens)
-class JohannsenMetric final : public SphericalHorizonMetric 
+class JohannsenMetric final : public SphericalHorizonMetric
 {
 private:
 	// Johannsen up to first order in deviation function is specified by five parameters (if M=1)
@@ -149,6 +149,7 @@ private:
 	const real m_alpha22Param;
 	const real m_alpha52Param;
 	const real m_eps3Param;
+
 public:
 	// No default constructor allowed, must specify parameters
 	JohannsenMetric() = delete;
@@ -157,8 +158,8 @@ public:
 	JohannsenMetric(real aParam, real alpha13Param, real alpha22Param, real alpha52Param, real eps3Param, bool rLogScale = false);
 
 	// The override of the basic metric getter functions
-	TwoIndex getMetric_dd(const Point& p) const final;
-	TwoIndex getMetric_uu(const Point& p) const final;
+	TwoIndex getMetric_dd(const Point &p) const final;
+	TwoIndex getMetric_uu(const Point &p) const final;
 
 	// The override of the description string getter
 	std::string getFullDescriptionStr() const final;
@@ -175,6 +176,7 @@ private:
 	// These are convenient derived quantities from a
 	const real m_alphaParam;
 	const real m_kParam;
+
 public:
 	// No default constructor allowed, must specify parameters
 	MankoNovikovMetric() = delete;
@@ -183,8 +185,8 @@ public:
 	MankoNovikovMetric(real aParam, real alpha3Param, bool rLogScale = false);
 
 	// The override of the basic metric getter functions
-	TwoIndex getMetric_dd(const Point& p) const final;
-	TwoIndex getMetric_uu(const Point& p) const final;
+	TwoIndex getMetric_dd(const Point &p) const final;
+	TwoIndex getMetric_uu(const Point &p) const final;
 
 	// The override of the description string getter
 	std::string getFullDescriptionStr() const final;
@@ -206,13 +208,12 @@ public:
 	KerrSchildMetric(real aParam, bool rLogScale = false);
 
 	// The override of the basic metric getter functions
-	TwoIndex getMetric_dd(const Point& p) const final;
-	TwoIndex getMetric_uu(const Point& p) const final;
+	TwoIndex getMetric_dd(const Point &p) const final;
+	TwoIndex getMetric_uu(const Point &p) const final;
 
 	// The override of the description string getter
 	std::string getFullDescriptionStr() const final;
 };
-
 
 // Abstract base class for a metric with an arbitrary number of singularities (of arbitrary codimension)
 class SingularityMetric : public Metric
@@ -229,17 +230,16 @@ protected:
 	const std::vector<Singularity> m_AllSingularities;
 };
 
-
 // Ring fuzzball (implementation Lies Van Dael)
 class ST3CrMetric final : public SingularityMetric
 {
 public:
 	// Constructor which will be called to initialize all parameters of the metric
-	ST3CrMetric(real P, real q0, real lambda, bool rlogscale=false);
+	ST3CrMetric(real P, real q0, real lambda, bool rlogscale = false);
 
 	// The basic getter functions
-	TwoIndex getMetric_dd(const Point& p) const final;
-	TwoIndex getMetric_uu(const Point& p) const final;
+	TwoIndex getMetric_dd(const Point &p) const final;
+	TwoIndex getMetric_uu(const Point &p) const final;
 
 	// The description string getter
 	std::string getFullDescriptionStr() const final;
@@ -254,8 +254,24 @@ private:
 	real f_om_phi(real phi, real r, real theta, real l, real R) const;
 };
 
+// Boson star with solitonic potential (sigma = 0.06, phi_c = 0.044) (implementation by Seppe Staelens)
+class BosonStarMetric final : public Metric
+{
+public:
+	// Simple (default) constructor is all that is needed
+	BosonStarMetric(bool rLogScale = false);
+	// The override of the basic metric getter functions
+	TwoIndex getMetric_dd(const Point &p) const final;
+	TwoIndex getMetric_uu(const Point &p) const final;
+	// The override of the description string getter
+	std::string getFullDescriptionStr() const final;
 
-
+protected:
+	// The spline interpolator for Phi
+	tk::spline m_PhiSpline;
+	// The spline interpolator for m
+	tk::spline m_mSpline;
+};
 
 //// METRIC ADD POINT A ////
 // Declare your new Metric class here, publically inheriting from the base class Metric
@@ -284,12 +300,10 @@ public:
 private:
 	// good practice to have all const params (initialized in the constructor)
 	// since the metric cannot change after initialization
-	// const params...; 
+	// const params...;
 
 };
 */
 //// END METRIC ADD POINT A ////
-
-
 
 #endif

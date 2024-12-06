@@ -28,10 +28,10 @@ namespace Utilities
     private:
         // Type aliases to make accessing nested type easier
         using Clock = std::chrono::steady_clock;
-        using Second = std::chrono::duration<double, std::ratio<1> >;
+        using Second = std::chrono::duration<double, std::ratio<1>>;
 
         // begin time
-        std::chrono::time_point<Clock> m_beg{ Clock::now() };
+        std::chrono::time_point<Clock> m_beg{Clock::now()};
 
     public:
         // reset begin time
@@ -49,8 +49,8 @@ namespace Utilities
 
     // This returns the full string to be written to every output file as its first line
     // It contains information about all the settings used to produce the output
-    std::string GetFirstLineInfoString(const Metric* theMetric, const Source* theSource,
-        DiagBitflag alldiags, DiagBitflag valdiag, TermBitflag allterms, const ViewScreen* theView);
+    std::string GetFirstLineInfoString(const Metric *theMetric, const Source *theSource,
+                                       DiagBitflag alldiags, DiagBitflag valdiag, TermBitflag allterms, const ViewScreen *theView);
 }
 
 #endif

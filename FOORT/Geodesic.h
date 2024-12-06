@@ -8,11 +8,11 @@
 ////// All definitions in Geodesic.cpp
 ///////////////////////////////////////////////////////////////////////////////////////
 
-#include "Geometry.h" // for tensor objects
-#include "Metric.h" // for the metric
-#include "Diagnostics.h" // Geodesics own Diagnostics
+#include "Geometry.h"	  // for tensor objects
+#include "Metric.h"		  // for the metric
+#include "Diagnostics.h"  // Geodesics own Diagnostics
 #include "Terminations.h" // Geodesics own Terminations
-#include "Integrators.h" // Geodesics use an GeodesicIntegratorFunc to integrate itself
+#include "Integrators.h"  // Geodesics use an GeodesicIntegratorFunc to integrate itself
 
 #include <string> // for strings
 #include <vector> // for std::vector
@@ -25,7 +25,7 @@ class Source
 {
 public:
 	// Constructor initializes Metric
-	Source(const Metric* const theMetric) : m_theMetric{ theMetric } {}
+	Source(const Metric *const theMetric) : m_theMetric{theMetric} {}
 
 	// Virtual destructor to ensure correct descendant destruction
 	virtual ~Source() = default;
@@ -38,7 +38,7 @@ public:
 
 protected:
 	// A const pointer to a const metric
-	const Metric* const m_theMetric;
+	const Metric *const m_theMetric;
 };
 
 // NoSource: there is no source, i.e. the geodesic is indeed a geodesic (and feels no force)
@@ -46,7 +46,7 @@ class NoSource final : public Source
 {
 public:
 	// Simple constructor passes on the Metric pointer to the base constructor
-	NoSource(const Metric* const theMetric) : Source(theMetric) {}
+	NoSource(const Metric *const theMetric) : Source(theMetric) {}
 
 	// Returns zero source
 	OneIndex getSource(Point pos, OneIndex vel) const final;
@@ -67,8 +67,8 @@ public:
 	// Default constructor not allowed
 	Geodesic() = delete;
 	// Copy constructor or copy assignment not allowed
-	Geodesic(const Geodesic&) = delete;
-	Geodesic& operator=(const Geodesic&) = delete;
+	Geodesic(const Geodesic &) = delete;
+	Geodesic &operator=(const Geodesic &) = delete;
 
 	// Constructor which creates the Geodesic object
 	// Takes the following arguments which initialize the private member variables that remain the same over all geodesics
@@ -77,14 +77,14 @@ public:
 	// - Diagnostic bitflag (& value Diagnostic bitflag) (used to create a vector of new instances of Diagnostics)
 	// - Termination bitflag (used to create a vector of new instances of Terminations)
 	// - Geodesic integrator function to use for integrating geodesic equation
-	Geodesic(const Metric* const theMetric, const Source* const theSource,
-		DiagBitflag diagbit, DiagBitflag valdiagbit,
-		TermBitflag termbit, GeodesicIntegratorFunc theIntegrator) : 
-		m_theMetric{ theMetric }, m_theSource{ theSource },
-		m_AllDiagnostics{ CreateDiagnosticVector(diagbit,valdiagbit,this) },
-		m_AllTerminations{ CreateTerminationVector(termbit,this) },
-		m_theIntegrator{ theIntegrator }
-	{	}
+	Geodesic(const Metric *const theMetric, const Source *const theSource,
+			 DiagBitflag diagbit, DiagBitflag valdiagbit,
+			 TermBitflag termbit, GeodesicIntegratorFunc theIntegrator) : m_theMetric{theMetric}, m_theSource{theSource},
+																		  m_AllDiagnostics{CreateDiagnosticVector(diagbit, valdiagbit, this)},
+																		  m_AllTerminations{CreateTerminationVector(termbit, this)},
+																		  m_theIntegrator{theIntegrator}
+	{
+	}
 
 	// This initializes/resets the geodesic with a given ScreenIndex, initial position, and initial velocity
 	// Also resets all Diagnostics and Terminations, resets the TermCondition to Term::Continue,
@@ -95,10 +95,10 @@ public:
 	Term Update();
 
 	// Getters for properties of its internal state
-	Term getTermCondition() const; // Current termination condition (Term::Continue if not done integrating)
-	Point getCurrentPos() const; // Current position
-	OneIndex getCurrentVel() const; // Current velocity
-	real getCurrentLambda() const; // Current value of affine parameter
+	Term getTermCondition() const;		// Current termination condition (Term::Continue if not done integrating)
+	Point getCurrentPos() const;		// Current position
+	OneIndex getCurrentVel() const;		// Current velocity
+	real getCurrentLambda() const;		// Current value of affine parameter
 	ScreenIndex getScreenIndex() const; // screen index
 
 	// Output getters, to be called after the Geodesic terminates
@@ -113,18 +113,17 @@ public:
 private:
 	// These variables define its internal state
 	Term m_TermCond{Term::Uninitialized}; // As long as this is Term::Continue, not done integrating yet
-	Point m_CurrentPos{}; // Current position
-	OneIndex m_CurrentVel{}; // Current proper velocity 
-	real m_curLambda{ 0.0 }; // Current value of affine parameter (starts at 0.0)
-
+	Point m_CurrentPos{};				  // Current position
+	OneIndex m_CurrentVel{};			  // Current proper velocity
+	real m_curLambda{0.0};				  // Current value of affine parameter (starts at 0.0)
 
 	// The Geodesic keeps track of what index it has been assigned;
 	// it outputs this information in its final output string
 	ScreenIndex m_ScreenIndex{};
 
 	// These are const pointers (or const vectors of pointers) that contain all the information the Geodesic needs
-	const Metric* const m_theMetric; // Metric is needed to evaluate the geodesic equation
-	const Source* const m_theSource; // Source for the rhs of the geodesic equation
+	const Metric *const m_theMetric; // Metric is needed to evaluate the geodesic equation
+	const Source *const m_theSource; // Source for the rhs of the geodesic equation
 	// An instance of each Diagnostic and Termination is created for the Geodesic (in its constructor);
 	// so the Geodesic is the owner of these objects.
 	const DiagnosticUniqueVector m_AllDiagnostics;

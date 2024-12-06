@@ -1,18 +1,17 @@
 #include "InputOutput.h" // We are defining functions from here
 
-#include <algorithm> // needed for std::min etc
+#include <algorithm>  // needed for std::min etc
 #include <filesystem> // needed for std::filesystem::create_directories
-
 
 /// <summary>
 /// Screen output functions
 /// </summary>
 
 // This is the output level; default is 1. Note: variable only accessible in this code file!
-static OutputLevel theOutputLevel{ OutputLevel::Level_1_PROC };
+static OutputLevel theOutputLevel{OutputLevel::Level_1_PROC};
 
 // Frequency of messages during each integration loop.  Note: variable only accessible in this code file!
-static largecounter theLoopMessageFrequency{ LARGECOUNTER_MAX };
+static largecounter theLoopMessageFrequency{LARGECOUNTER_MAX};
 
 // Set the output level
 void SetOutputLevel(OutputLevel theLvl)
@@ -32,23 +31,22 @@ largecounter GetLoopMessageFrequency()
 	return theLoopMessageFrequency;
 }
 
-
 // Outputs line to screen console, contingent on it being allowed by the set outputlevel
 // Defaults are lvl = OutputLevel::Level_3_ALLDETAIL and newLine = true
 void ScreenOutput(std::string_view theOutput, OutputLevel lvl, bool newLine)
 {
-	if (static_cast<int>(lvl) <= static_cast<int>(theOutputLevel))	// Output is allowed at current set level
+	if (static_cast<int>(lvl) <= static_cast<int>(theOutputLevel)) // Output is allowed at current set level
 	{
-		if (lvl == OutputLevel::Level_0_WARNING)	// Print extra prefix to message for warnings
+		if (lvl == OutputLevel::Level_0_WARNING) // Print extra prefix to message for warnings
 		{
 			std::cout << "WARNING: ";
 		}
-		if (lvl == OutputLevel::Level_4_DEBUG)	// Print extra prefix to message for debug statements
+		if (lvl == OutputLevel::Level_4_DEBUG) // Print extra prefix to message for debug statements
 		{
 			std::cout << "DEBUG MSG: ";
 		}
 		std::cout << theOutput;
-		if (newLine)				// We want the line to end after the message
+		if (newLine) // We want the line to end after the message
 		{
 			std::cout << '\n';
 		}
@@ -61,15 +59,14 @@ void ScreenOutput(std::string_view theOutput, OutputLevel lvl, bool newLine)
 
 // Constructor initializes all const member variables using the arguments
 GeodesicOutputHandler::GeodesicOutputHandler(std::string FilePrefix, std::string TimeStamp, std::string FileExtension,
-	std::vector<std::string> DiagNames, largecounter nroutputstocache, largecounter geodperfile, std::string firstlineinfo) :
-	m_FilePrefix {FilePrefix}, m_TimeStamp{TimeStamp}, m_FileExtension{FileExtension}, m_DiagNames{DiagNames},
-	// Make sure that we only cache up to the max amount that fits in largecounter
-	// OR, if smaller, the max amount of elements that can be reserved in the cache vector
-	m_nrOutputsToCache{ static_cast<largecounter>( std::min({ static_cast<size_t>(nroutputstocache),
-													m_AllCachedData.max_size() - 1,
-													static_cast<size_t>(LARGECOUNTER_MAX - 1) }) ) },
-	m_nrGeodesicsPerFile{ geodperfile }, m_PrintFirstLineInfo{firstlineinfo != ""},
-	m_FirstLineInfoString{ firstlineinfo }
+											 std::vector<std::string> DiagNames, largecounter nroutputstocache, largecounter geodperfile, std::string firstlineinfo) : m_FilePrefix{FilePrefix}, m_TimeStamp{TimeStamp}, m_FileExtension{FileExtension}, m_DiagNames{DiagNames},
+																																									   // Make sure that we only cache up to the max amount that fits in largecounter
+																																									   // OR, if smaller, the max amount of elements that can be reserved in the cache vector
+																																									   m_nrOutputsToCache{static_cast<largecounter>(std::min({static_cast<size_t>(nroutputstocache),
+																																																							  m_AllCachedData.max_size() - 1,
+																																																							  static_cast<size_t>(LARGECOUNTER_MAX - 1)}))},
+																																									   m_nrGeodesicsPerFile{geodperfile}, m_PrintFirstLineInfo{firstlineinfo != ""},
+																																									   m_FirstLineInfoString{firstlineinfo}
 {
 	// If no prefix has been set, or we are allowed zero geodesics per file, then we necessarily output to the console
 	if (m_FilePrefix == "" || m_nrGeodesicsPerFile == 0)
@@ -81,10 +78,7 @@ std::string GeodesicOutputHandler::getFullDescriptionStr() const
 	// Descriptive string with all options
 	if (!m_WriteToConsole)
 	{
-		return "Output Handler: Basic (value diagnostic) file name: " + GetFileName(0, 1)
-			+ ", caching outputs: " + std::to_string(m_nrOutputsToCache)
-			+ ", geodesics per file: " + std::to_string(m_nrGeodesicsPerFile)
-			+ ", printing first line info: " + std::to_string(m_PrintFirstLineInfo);
+		return "Output Handler: Basic (value diagnostic) file name: " + GetFileName(0, 1) + ", caching outputs: " + std::to_string(m_nrOutputsToCache) + ", geodesics per file: " + std::to_string(m_nrGeodesicsPerFile) + ", printing first line info: " + std::to_string(m_PrintFirstLineInfo);
 	}
 	else
 	{
@@ -109,11 +103,10 @@ void GeodesicOutputHandler::PrepareForOutput(largecounter nrOutputToCome)
 	m_AllCachedData.insert(m_AllCachedData.end(), nrOutputToCome, std::vector<std::string>{});
 }
 
-
 void GeodesicOutputHandler::NewGeodesicOutput(largecounter index, std::vector<std::string> theOutput)
 {
 	// NOTE: this must be thread-safe! Indeed, we are only overwriting an existing element of m_AllCachedData
-	
+
 	// We put this current output in the cached data
 	// Note the offset by m_PrevCached
 	// Move semantics to avoid copying the entire vector of string
@@ -132,26 +125,26 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 	if (m_AllCachedData.size() == 0)
 		return;
 
-	if (!m_WriteToConsole)	// We are writing to files
+	if (!m_WriteToConsole) // We are writing to files
 	{
 		ScreenOutput("Writing cached geodesic output to file(s)...", OutputLevel::Level_2_SUBPROC);
 
 		// Check if we will be breaking the cached output into multiple files
-		unsigned short nrfiles{ 1 };
+		unsigned short nrfiles{1};
 		// Note that the constructor has checked that indeed m_nrGeodesicsPerFile > 0
 		while (m_CurrentGeodesicsInFile + m_AllCachedData.size() > nrfiles * m_nrGeodesicsPerFile)
 			++nrfiles;
 
 		// Keeps track of the current file we are working in; note that this will be offset by the number of
 		// full files when specifying the true file number to write to
-		unsigned short curfile{ 1 };
+		unsigned short curfile{1};
 		// The next geodesic (index in m_AllCachedData) that we need to output
-		largecounter curgeod{ 0 };
+		largecounter curgeod{0};
 		// The number of geodesics stored in the last file we will open for output
-		largecounter lastfilecount{ 0 };
+		largecounter lastfilecount{0};
 		// We are sure that the number of diagnostics fits in an int!
 		// Note that the first element of each output vector is the screen index
-		const int nrdiags{ static_cast<int>(m_AllCachedData[0].size()) - 1 };
+		const int nrdiags{static_cast<int>(m_AllCachedData[0].size()) - 1};
 
 		// Are we exactly at a point where we need to start a new file for the first file we write to?
 		// If so, open each of the necessary new output files for the first time
@@ -160,7 +153,7 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 			// Starting a new file (for each diagnostic), so open it for the first time
 			for (int i = 0; i < nrdiags && !m_WriteToConsole; ++i)
 			{
-				OpenForFirstTime( GetFileName(i, m_CurrentFullFiles + curfile) );
+				OpenForFirstTime(GetFileName(i, m_CurrentFullFiles + curfile));
 			}
 		}
 
@@ -168,7 +161,7 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 		// We now loop through all of the files we need to write to
 		while (curfile <= nrfiles && !m_WriteToConsole)
 		{
-			largecounter loopmax{ static_cast<largecounter>(m_AllCachedData.size()) };
+			largecounter loopmax{static_cast<largecounter>(m_AllCachedData.size())};
 			if (curfile == 1)
 			{
 				// if this is the first file we are writing to, then there could already be geodesics written
@@ -186,15 +179,14 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 			for (int curdiag = 0; curdiag < nrdiags; ++curdiag)
 			{
 				// open appropriate file for appending
-				std::string outputfile{ GetFileName(curdiag, m_CurrentFullFiles + curfile) };
-				std::ofstream outf{ outputfile, std::ios::out | std::ios::app };
+				std::string outputfile{GetFileName(curdiag, m_CurrentFullFiles + curfile)};
+				std::ofstream outf{outputfile, std::ios::out | std::ios::app};
 
 				// If something goes wrong in opening the file,
 				// then write to console from now on
 				if (!outf)
 				{
-					ScreenOutput("Output file error! Could not open " + GetFileName(curdiag, m_CurrentFullFiles + curfile)
-						+ ". Will write rest of output to console.", OutputLevel::Level_0_WARNING);
+					ScreenOutput("Output file error! Could not open " + GetFileName(curdiag, m_CurrentFullFiles + curfile) + ". Will write rest of output to console.", OutputLevel::Level_0_WARNING);
 					m_WriteToConsole = true;
 				}
 				else
@@ -221,7 +213,7 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 				// We will be starting a new file (for each diagnostic), so open it for the first time
 				for (int i = 0; i < nrdiags && !m_WriteToConsole; ++i)
 				{
-					OpenForFirstTime( GetFileName(i, m_CurrentFullFiles + curfile) );
+					OpenForFirstTime(GetFileName(i, m_CurrentFullFiles + curfile));
 				}
 			}
 			else // curfile > nrfiles, so we just did the last file
@@ -234,7 +226,7 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 			// this next file (for each geodesic) for writing by opening it already for the first time.
 		} // end while
 
-		// We are done writing all the output to files. Now, we update the internal counters 
+		// We are done writing all the output to files. Now, we update the internal counters
 		// We have filled up entirely nrfiles-1 files for sure.
 		m_CurrentFullFiles += nrfiles - 1;
 		// The last file may have been exactly filled, check this
@@ -256,9 +248,8 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 		ScreenOutput("Done writing cached geodesic output to file(s).", OutputLevel::Level_2_SUBPROC);
 	} // end if (!m_WriteToConsole)
 
-
-	if (m_WriteToConsole)	// write everything to console; note this is not an else from the previous if since in the previous if,
-							// we may encounter file I/O problems that sets this to true in the if block above
+	if (m_WriteToConsole) // write everything to console; note this is not an else from the previous if since in the previous if,
+						  // we may encounter file I/O problems that sets this to true in the if block above
 	{
 		for (int i = 0; i < m_AllCachedData.size(); ++i)
 		{
@@ -280,7 +271,7 @@ std::string GeodesicOutputHandler::GetFileName(int diagnr, unsigned short filenr
 
 	// This procedure construct a full output file name from the various parts of the file name stored
 	// in the member variables
-	std::string FullFileName{ m_FilePrefix + "_"};
+	std::string FullFileName{m_FilePrefix + "_"};
 
 	if (m_TimeStamp != "")
 		FullFileName += m_TimeStamp + "_";
@@ -298,7 +289,7 @@ std::string GeodesicOutputHandler::GetFileName(int diagnr, unsigned short filenr
 	return FullFileName;
 }
 
-void GeodesicOutputHandler::OpenForFirstTime(const std::string& filename)
+void GeodesicOutputHandler::OpenForFirstTime(const std::string &filename)
 {
 	// We check here to see if the files are being put in a (sub)directory;
 	// if so, we create the directory/directories first to make sure creating/opening the file
@@ -312,12 +303,11 @@ void GeodesicOutputHandler::OpenForFirstTime(const std::string& filename)
 	}
 
 	// Open the file, effectively overwriting the file
-	std::ofstream outf{ filename, std::ios::out | std::ios::trunc};
+	std::ofstream outf{filename, std::ios::out | std::ios::trunc};
 
 	if (!outf) // Trigger writing to console if failed to open file
 	{
-		ScreenOutput("Output file error! Could not open " + filename
-			+ ". Will write rest of output to console.", OutputLevel::Level_0_WARNING);
+		ScreenOutput("Output file error! Could not open " + filename + ". Will write rest of output to console.", OutputLevel::Level_0_WARNING);
 		m_WriteToConsole = true;
 	}
 	else

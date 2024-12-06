@@ -1,13 +1,13 @@
-#include "Diagnostics.h" // We are defining Diagnostic member functions here
+#include "Diagnostics.h"		  // We are defining Diagnostic member functions here
 #include "Diagnostics_Emission.h" // Emission models defined here
 
-#include "Geodesic.h" // We need member functions of the Geodesic class here
+#include "Geodesic.h"	 // We need member functions of the Geodesic class here
 #include "InputOutput.h" // for ScreenOutput()
 
 #include "Integrators.h" // using delta_nodiv0
 
 #include <algorithm> // needed for std::rotate()
-#include <cmath> // needed for cos, sin, acos, asinh, pow
+#include <cmath>	 // needed for cos, sin, acos, asinh, pow
 
 /// <summary>
 /// Diagnostic helper function
@@ -17,7 +17,7 @@
 DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag valdiag, Geodesic *const theGeodesic)
 {
 	// This should never happen if everything was set up correctly
-	if(diagflags == Diag_None)
+	if (diagflags == Diag_None)
 		ScreenOutput("No Diagnostics in bitflag!", OutputLevel::Level_0_WARNING);
 	if (valdiag == Diag_None)
 		ScreenOutput("No Diagnostics in bitflag!", OutputLevel::Level_0_WARNING);
@@ -31,7 +31,7 @@ DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag
 	// Is FourColorScreen turned on?
 	if (diagflags & Diag_FourColorScreen)
 	{
-		theDiagVector.emplace_back(new FourColorScreenDiagnostic{ theGeodesic });
+		theDiagVector.emplace_back(new FourColorScreenDiagnostic{theGeodesic});
 		// If this is the value Diagnostic, we want it to be the first Diagnostic.
 		// Since at the moment it is the last element of the array, we perform a simple rotate right
 		// on the current array to place the Diagnostic in the front.
@@ -43,7 +43,7 @@ DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag
 	// Is GeodesicPosition turned on?
 	if (diagflags & Diag_GeodesicPosition)
 	{
-		theDiagVector.emplace_back(new GeodesicPositionDiagnostic{ theGeodesic });
+		theDiagVector.emplace_back(new GeodesicPositionDiagnostic{theGeodesic});
 		// If this is the value Diagnostic, we want it to be the first Diagnostic.
 		// Since at the moment it is the last element of the array, we perform a simple rotate right
 		// on the current array to place the Diagnostic in the front.
@@ -55,7 +55,7 @@ DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag
 	// Is EquatorialPasses turned on?
 	if (diagflags & Diag_EquatorialPasses)
 	{
-		theDiagVector.emplace_back(new EquatorialPassesDiagnostic{ theGeodesic });
+		theDiagVector.emplace_back(new EquatorialPassesDiagnostic{theGeodesic});
 		// If this is the value Diagnostic, we want it to be the first Diagnostic.
 		// Since at the moment it is the last element of the array, we perform a simple rotate right
 		// on the current array to place the Diagnostic in the front.
@@ -67,7 +67,7 @@ DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag
 	// Is ClosestRadius turned on?
 	if (diagflags & Diag_ClosestRadius)
 	{
-		theDiagVector.emplace_back(new ClosestRadiusDiagnostic{ theGeodesic });
+		theDiagVector.emplace_back(new ClosestRadiusDiagnostic{theGeodesic});
 		// If this is the value Diagnostic, we want it to be the first Diagnostic.
 		// Since at the moment it is the last element of the array, we perform a simple rotate right
 		// on the current array to place the Diagnostic in the front.
@@ -79,7 +79,7 @@ DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag
 	// Is EquatorialEmission turned on?
 	if (diagflags & Diag_EquatorialEmission)
 	{
-		theDiagVector.emplace_back(new EquatorialEmissionDiagnostic{ theGeodesic });
+		theDiagVector.emplace_back(new EquatorialEmissionDiagnostic{theGeodesic});
 		// If this is the value Diagnostic, we want it to be the first Diagnostic.
 		// Since at the moment it is the last element of the array, we perform a simple rotate right
 		// on the current array to place the Diagnostic in the front.
@@ -109,7 +109,6 @@ DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag
 	*/
 	//// END DIAGNOSTIC ADD POINT C ////
 
-
 	return theDiagVector;
 }
 
@@ -125,7 +124,7 @@ void Diagnostic::Reset()
 
 // This helper function returns true if the Diagnostic should update its internal status. Should be called from within
 // UpdateData() with the appropriate DiagnosticOptions::theUpdateFrequency
-bool Diagnostic::DecideUpdate(const UpdateFrequency& myUpdateFrequency)
+bool Diagnostic::DecideUpdate(const UpdateFrequency &myUpdateFrequency)
 {
 	bool decideupdate = false;
 	// First, check if we are to update every so many steps
@@ -150,7 +149,7 @@ bool Diagnostic::DecideUpdate(const UpdateFrequency& myUpdateFrequency)
 	{
 		decideupdate = true;
 	}
-	
+
 	return decideupdate;
 }
 
@@ -180,7 +179,7 @@ void FourColorScreenDiagnostic::UpdateData()
 	if (m_OwnerGeodesic->getTermCondition() == Term::BoundarySphere)
 	{
 		// Position of the terminated geodesic
-		Point pos{ m_OwnerGeodesic->getCurrentPos() };
+		Point pos{m_OwnerGeodesic->getCurrentPos()};
 		// Rework phi coordinate to be between 0 and 2pi;
 		// check if phi coordinate is meaningful first, so that this while loop does not take forever
 		// (otherwise a "random" quadrant will be returned)
@@ -193,7 +192,7 @@ void FourColorScreenDiagnostic::UpdateData()
 		}
 
 		// Check which quadrant the geodesic is in
-		int quadrant{ 0 };
+		int quadrant{0};
 		if (pos[2] < pi / 2)
 		{
 			if (pos[3] < pi)
@@ -223,10 +222,10 @@ std::string FourColorScreenDiagnostic::getFullDataStr() const
 std::vector<real> FourColorScreenDiagnostic::getFinalDataVal() const
 {
 	// Return the quadrant as a vector (of size one)
-	return std::vector<real> {static_cast<real>(m_quadrant)};
+	return std::vector<real>{static_cast<real>(m_quadrant)};
 }
 
-real FourColorScreenDiagnostic::FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const
+real FourColorScreenDiagnostic::FinalDataValDistance(const std::vector<real> &val1, const std::vector<real> &val2) const
 {
 	// Discrete metric for distance: returns 0 if the quadrants are the same, 1 if they are not
 	if (fabs(val1[0] - val2[0]) < 1.0) // use <1 instead of == 0.0 to avoid floating point round-off errors
@@ -267,12 +266,11 @@ void GeodesicPositionDiagnostic::UpdateData()
 		m_AllSavedPoints.push_back(m_OwnerGeodesic->getCurrentPos());
 	}
 
-
 	// We also want extra behaviour at the end, when the geodesic is done integrating:
 	// at this point, we want to resize the vector of saved points if needed.
 	if (m_OwnerGeodesic->getTermCondition() != Term::Continue) // we are done integrating
 	{
-		largecounter nrstepstokeep{ DiagOptions->OutputNrSteps };
+		largecounter nrstepstokeep{DiagOptions->OutputNrSteps};
 
 		// check if we need to resize; note that nrstepstokeep == 0 if we keep all of the steps
 		if (nrstepstokeep > 0 && nrstepstokeep < m_AllSavedPoints.size())
@@ -303,9 +301,9 @@ std::string GeodesicPositionDiagnostic::getFullDataStr() const
 	// The full output string looks like this:
 	// "(total nr steps) ;; (step 1) (step 2) (step 3) ..."
 	// where each step is a (space-separated) output of the geodesic coordinates at that step
-	std::string outputstr{ std::to_string(m_AllSavedPoints.size()) + " ;; "};
+	std::string outputstr{std::to_string(m_AllSavedPoints.size()) + " ;; "};
 
-	for (auto& output : m_AllSavedPoints)
+	for (auto &output : m_AllSavedPoints)
 	{
 		// We are not using the toString() function since that contains extraneous brackets and commas that
 		// we don't want in our output
@@ -319,11 +317,11 @@ std::string GeodesicPositionDiagnostic::getFullDataStr() const
 std::vector<real> GeodesicPositionDiagnostic::getFinalDataVal() const
 {
 	// return the last (theta, phi) coordinates
-	Point lastpt{ m_AllSavedPoints.back() };
-	return std::vector<real>{lastpt[2],lastpt[3]};
+	Point lastpt{m_AllSavedPoints.back()};
+	return std::vector<real>{lastpt[2], lastpt[3]};
 }
 
-real GeodesicPositionDiagnostic::FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const
+real GeodesicPositionDiagnostic::FinalDataValDistance(const std::vector<real> &val1, const std::vector<real> &val2) const
 {
 	// Check to make sure we have the right size vectors passed
 	if (val1.size() != 2 || val2.size() != 2)
@@ -331,24 +329,23 @@ real GeodesicPositionDiagnostic::FinalDataValDistance(const std::vector<real>& v
 		ScreenOutput("Wrong values given to GeodesicPositionDiagnostic::FinalDataValDistance!", OutputLevel::Level_0_WARNING);
 		return 0;
 	}
-	
+
 	// Return the arc length between these two points
-	return acos( cos(val1[0]) * cos(val2[0]) + sin(val1[0]) * sin(val2[0]) * cos(val1[1] - val2[1]) );
+	return acos(cos(val1[0]) * cos(val2[0]) + sin(val1[0]) * sin(val2[0]) * cos(val1[1] - val2[1]));
 }
 
 std::string GeodesicPositionDiagnostic::getNameStr() const
 {
 	// Simple name string without spaces
-	return  "GeodesicPosition" ;
+	return "GeodesicPosition";
 }
 
 std::string GeodesicPositionDiagnostic::getFullDescriptionStr() const
 {
 	// Full description string; also contains information about how frequently it updates and how many steps it outputs at the end
-	return "Geodesic position (output " + std::to_string(DiagOptions->OutputNrSteps) + 
-		" steps, updates every " + std::to_string(DiagOptions->theUpdateFrequency.UpdateNSteps) + " steps)";
+	return "Geodesic position (output " + std::to_string(DiagOptions->OutputNrSteps) +
+		   " steps, updates every " + std::to_string(DiagOptions->theUpdateFrequency.UpdateNSteps) + " steps)";
 }
-
 
 /// <summary>
 /// EquatorialPassesDiagnostic functions
@@ -362,7 +359,6 @@ void EquatorialPassesDiagnostic::Reset()
 	Diagnostic::Reset();
 }
 
-
 void EquatorialPassesDiagnostic::UpdateData()
 {
 	// This checks to see if we want to update the data now (and increments the step counter if necessary)
@@ -370,11 +366,11 @@ void EquatorialPassesDiagnostic::UpdateData()
 	if (DecideUpdate(DiagOptions->theUpdateFrequency) && m_OwnerGeodesic->getTermCondition() == Term::Continue)
 	{
 		// Get the current theta coordinate of the geodesic
-		real curTheta{ m_OwnerGeodesic->getCurrentPos()[2] };
+		real curTheta{m_OwnerGeodesic->getCurrentPos()[2]};
 
 		// We only do anything (check for a pass and/or update the past theta) if the geodesic has
 		// passed over a threshold around the equatorial plane
-		if ( fabs(curTheta - pi / 2.0) > pi / 2.0 * DiagOptions->Threshold )
+		if (fabs(curTheta - pi / 2.0) > pi / 2.0 * DiagOptions->Threshold)
 		{
 			// This checks to see if we have crossed the equatorial plane by comparing the previous theta coordinate
 			// with the current theta coordinate
@@ -395,7 +391,6 @@ void EquatorialPassesDiagnostic::UpdateData()
 	}
 }
 
-
 std::string EquatorialPassesDiagnostic::getFullDataStr() const
 {
 	// Returns a string of how many times it passed across the equatorial plane
@@ -405,10 +400,10 @@ std::string EquatorialPassesDiagnostic::getFullDataStr() const
 std::vector<real> EquatorialPassesDiagnostic::getFinalDataVal() const
 {
 	// Simple vector of size one containing the number of equatorial passes
-	return std::vector<real> {static_cast<real>(m_EquatPasses)};
+	return std::vector<real>{static_cast<real>(m_EquatPasses)};
 }
 
-real EquatorialPassesDiagnostic::FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const
+real EquatorialPassesDiagnostic::FinalDataValDistance(const std::vector<real> &val1, const std::vector<real> &val2) const
 {
 	// Returns the simple distance between two geodesics. Note that
 	// a geodesic terminating inside the horizon has NEGATIVE number of equatorial passes, so a geodesic inside and outside
@@ -419,7 +414,7 @@ real EquatorialPassesDiagnostic::FinalDataValDistance(const std::vector<real>& v
 std::string EquatorialPassesDiagnostic::getNameStr() const
 {
 	// Simple name string without spaces
-	return  "EquatPasses";
+	return "EquatPasses";
 }
 
 std::string EquatorialPassesDiagnostic::getFullDescriptionStr() const
@@ -427,7 +422,6 @@ std::string EquatorialPassesDiagnostic::getFullDescriptionStr() const
 	// More descriptive string (with spaces)
 	return "Equatorial passes (threshold = " + std::to_string(DiagOptions->Threshold) + ")";
 }
-
 
 /// <summary>
 /// ClosestRadiusDiagnostic functions
@@ -446,7 +440,7 @@ void ClosestRadiusDiagnostic::UpdateData()
 	if (DecideUpdate(DiagOptions->theUpdateFrequency))
 	{
 		// Get the current r coordinate of the geodesic
-		real curR{ DiagOptions->RLogScale ? exp(m_OwnerGeodesic->getCurrentPos()[1]) : m_OwnerGeodesic->getCurrentPos()[1] };
+		real curR{DiagOptions->RLogScale ? exp(m_OwnerGeodesic->getCurrentPos()[1]) : m_OwnerGeodesic->getCurrentPos()[1]};
 
 		// Update the closest radius if it is currently < 0 (indicating the first step of the geodesic)
 		// or if we have reached a new closest radius
@@ -470,10 +464,10 @@ std::string ClosestRadiusDiagnostic::getFullDataStr() const
 std::vector<real> ClosestRadiusDiagnostic::getFinalDataVal() const
 {
 	// Simple vector of size one containing the closest radius
-	return std::vector<real> { m_ClosestRadius };
+	return std::vector<real>{m_ClosestRadius};
 }
 
-real ClosestRadiusDiagnostic::FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const
+real ClosestRadiusDiagnostic::FinalDataValDistance(const std::vector<real> &val1, const std::vector<real> &val2) const
 {
 	// Returns the simple distance between two geodesics as the (radial) distance between their closest point
 	return fabs(val1[0] - val2[0]);
@@ -482,7 +476,7 @@ real ClosestRadiusDiagnostic::FinalDataValDistance(const std::vector<real>& val1
 std::string ClosestRadiusDiagnostic::getNameStr() const
 {
 	// Simple name string without spaces
-	return  "ClosestRadius";
+	return "ClosestRadius";
 }
 
 std::string ClosestRadiusDiagnostic::getFullDescriptionStr() const
@@ -491,11 +485,9 @@ std::string ClosestRadiusDiagnostic::getFullDescriptionStr() const
 	return "Closest radius";
 }
 
-
 /// <summary>
 /// EquatorialEmissionDiagnostic functions
 /// </summary>
-
 
 void EquatorialEmissionDiagnostic::Reset()
 {
@@ -507,7 +499,7 @@ void EquatorialEmissionDiagnostic::Reset()
 void EquatorialEmissionDiagnostic::UpdateData()
 {
 	// Call parent class UpdateData()
-	int oldPasses{ m_EquatPasses };
+	int oldPasses{m_EquatPasses};
 	EquatorialPassesDiagnostic::UpdateData();
 	// Update emission if we just passed through the equator now
 	if (m_EquatPasses > oldPasses)
@@ -515,36 +507,33 @@ void EquatorialEmissionDiagnostic::UpdateData()
 		// Calculate fudge factor: this can give the equatorial passes a boost for n>0
 		// Also can truncate emission after a certain number of equatorial passes
 		// (used to avoid unresolved higher order rings in image)
-		real Fudge{ m_EquatPasses > 1 ? DiagOptions->GeometricFudgeFactor : 1.0 };
+		real Fudge{m_EquatPasses > 1 ? DiagOptions->GeometricFudgeFactor : 1.0};
 		if (DiagOptions->EquatPassUpperBound > 0 && DiagOptions->EquatPassUpperBound < m_EquatPasses)
 			Fudge = 0.0;
 
 		// Calculate local emitted intensity from emission model at this position
 		// Note that emission model always takes true coordinates (not log r)!
-		Point curpos{ m_OwnerGeodesic->getCurrentPos() };
+		Point curpos{m_OwnerGeodesic->getCurrentPos()};
 		if (DiagOptions->RLogScale)
 			curpos[1] = exp(curpos[1]);
-		real LocalSourceIntensity{ DiagOptions->TheEmissionModel->GetEmission(curpos) };
+		real LocalSourceIntensity{DiagOptions->TheEmissionModel->GetEmission(curpos)};
 
 		// Calculate local velocity of emitting fluid (needed for redshift factor)
 		// Note: local velocity is calculated in the coordinates that are being used, whether r or log(r)
-		OneIndex FluidVelocityd{ DiagOptions->TheFluidVelocityModel->GetFourVelocityd(m_OwnerGeodesic->getCurrentPos()) };
+		OneIndex FluidVelocityd{DiagOptions->TheFluidVelocityModel->GetFourVelocityd(m_OwnerGeodesic->getCurrentPos())};
 
 		// Get current velocity of geodesic
 		// Extra minus sign because we are integrating backwards in time, i.e. the geodesic velocity is past-pointing!
-		OneIndex CurVel{ -1.0 * m_OwnerGeodesic->getCurrentVel() };
-
+		OneIndex CurVel{-1.0 * m_OwnerGeodesic->getCurrentVel()};
 
 		// Redshift is negative of inverse of dot product of geodesic velocity and local fluid velocity
 		real pdotu{};
 		for (int i = 0; i < dimension; ++i)
 			pdotu += FluidVelocityd[i] * CurVel[i];
-		real ObservedRedshift{ -1.0/pdotu };
+		real ObservedRedshift{-1.0 / pdotu};
 
-		
 		// Total added intensity is fudge factor times power of the redshift times local emitted intensity!
 		m_Intensity += Fudge * pow(ObservedRedshift, DiagOptions->RedShiftPower) * LocalSourceIntensity;
-
 	}
 }
 
@@ -557,15 +546,15 @@ std::string EquatorialEmissionDiagnostic::getFullDataStr() const
 std::vector<real> EquatorialEmissionDiagnostic::getFinalDataVal() const
 {
 	// Vector returns intensity and number of equatorial passes
-	return std::vector<real> { m_Intensity, static_cast<real>(m_EquatPasses)  };
+	return std::vector<real>{m_Intensity, static_cast<real>(m_EquatPasses)};
 }
 
-real EquatorialEmissionDiagnostic::FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const
+real EquatorialEmissionDiagnostic::FinalDataValDistance(const std::vector<real> &val1, const std::vector<real> &val2) const
 {
 	// Difference in equatorial passes
-	real EquatPassDiff{ fabs(val1[1] - val2[1]) };
+	real EquatPassDiff{fabs(val1[1] - val2[1])};
 	// Difference in intensities
-	real IntensitiesDiff{ fabs(val1[0] - val2[0]) };
+	real IntensitiesDiff{fabs(val1[0] - val2[0])};
 
 	// Distance is difference in intensities multiplied by a factor magnifying difference in equatorial passes
 	return IntensitiesDiff * (EquatPassDiff + 1.0);
@@ -580,25 +569,7 @@ std::string EquatorialEmissionDiagnostic::getNameStr() const
 std::string EquatorialEmissionDiagnostic::getFullDescriptionStr() const
 {
 	// More descriptive string (with spaces)
-	return "Equatorial emission (threshold = " + std::to_string(DiagOptions->Threshold)
-		+ ", geometric fudge factor = " + std::to_string(DiagOptions->GeometricFudgeFactor)
-		+ ", max. equatorial passes = " + (DiagOptions->EquatPassUpperBound>0 ? std::to_string(DiagOptions->EquatPassUpperBound) : "infinite")
-		+ ", redshift power = " + std::to_string(DiagOptions->RedShiftPower)
-		+ ", emission model: " + DiagOptions->TheEmissionModel->getFullDescriptionStr()
-		+ ", fluid velocity model: " + DiagOptions->TheFluidVelocityModel->getFullDescriptionStr()
-		+ ")";
+	return "Equatorial emission (threshold = " + std::to_string(DiagOptions->Threshold) + ", geometric fudge factor = " + std::to_string(DiagOptions->GeometricFudgeFactor) + ", max. equatorial passes = " + (DiagOptions->EquatPassUpperBound > 0 ? std::to_string(DiagOptions->EquatPassUpperBound) : "infinite") + ", redshift power = " + std::to_string(DiagOptions->RedShiftPower) + ", emission model: " + DiagOptions->TheEmissionModel->getFullDescriptionStr() + ", fluid velocity model: " + DiagOptions->TheFluidVelocityModel->getFullDescriptionStr() + ")";
 }
 
-
-
-
-
-
-
-
-
-
-
 //// (New Diagnostic classes can define their member functions here)
-
-

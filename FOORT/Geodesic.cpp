@@ -1,4 +1,4 @@
-#include"Geodesic.h" // We are implementing Source & Geodesic member functions declared here
+#include "Geodesic.h" // We are implementing Source & Geodesic member functions declared here
 
 #include "InputOutput.h" // for ScreenOutput()
 
@@ -15,7 +15,7 @@ std::string Source::getFullDescriptionStr() const
 OneIndex NoSource::getSource([[maybe_unused]] Point pos, [[maybe_unused]] OneIndex vel) const
 {
 	// no rhs for the geodesic equation: no force felt by geodesic
-	return OneIndex{ 0,0,0,0 };
+	return OneIndex{0, 0, 0, 0};
 }
 
 std::string NoSource::getFullDescriptionStr() const
@@ -23,8 +23,6 @@ std::string NoSource::getFullDescriptionStr() const
 	// Full description string
 	return "No source";
 }
-
-
 
 /// <summary>
 /// Geodesic (and descendant classes) functions
@@ -44,19 +42,18 @@ void Geodesic::Reset(ScreenIndex scrindex, Point initpos, OneIndex initvel)
 	m_TermCond = Term::Continue;
 
 	// Start: loop through all diagnostics to reset and update at starting position
-	for (const auto& d : m_AllDiagnostics)
+	for (const auto &d : m_AllDiagnostics)
 	{
 		d->Reset();
 		d->UpdateData();
 	}
 
 	// Also reset all terminations
-	for (const auto& t : m_AllTerminations)
+	for (const auto &t : m_AllTerminations)
 	{
 		t->Reset();
 	}
 }
-
 
 Term Geodesic::Update()
 {
@@ -71,7 +68,7 @@ Term Geodesic::Update()
 	m_CurrentVel = newvel;
 
 	// Check all possible termination conditions
-	for (const auto& t : m_AllTerminations)
+	for (const auto &t : m_AllTerminations)
 	{
 		m_TermCond = t->CheckTermination();
 		if (m_TermCond != Term::Continue)
@@ -79,7 +76,7 @@ Term Geodesic::Update()
 	}
 
 	// No matter if we terminate now or not, loop through all Diagnostics to update them
-	for (const auto& d : m_AllDiagnostics)
+	for (const auto &d : m_AllDiagnostics)
 	{
 		d->UpdateData();
 	}
@@ -112,13 +109,11 @@ ScreenIndex Geodesic::getScreenIndex() const
 	return m_ScreenIndex;
 }
 
-
 std::vector<std::string> Geodesic::getAllOutputStr() const
 {
 	// The Geodesic should have terminated if this is called!
 	if (m_TermCond == Term::Continue)
 		ScreenOutput("Geodesic not terminated yet but getAllOutputStr() is called!", OutputLevel::Level_0_WARNING);
-
 
 	// This gets the complete output that should be written to the output file
 	// Every Diagnostic returns a string, PLUS the FIRST string is the screen index
@@ -126,7 +121,7 @@ std::vector<std::string> Geodesic::getAllOutputStr() const
 	theOutput.reserve(m_AllDiagnostics.size() + 1);
 
 	// First string is the screen index of the Geodesic
-	std::string strScreenIndex{ "" };
+	std::string strScreenIndex{""};
 	for (int i = 0; i < m_ScreenIndex.size(); ++i)
 	{
 		// We don't use the toString() function to avoid extraneous parentheses and commas therein
@@ -135,7 +130,7 @@ std::vector<std::string> Geodesic::getAllOutputStr() const
 	theOutput.push_back(std::move(strScreenIndex));
 
 	// The rest of the strings are the output strings as given by each of the Diagnostics
-	for (const auto& d : m_AllDiagnostics)
+	for (const auto &d : m_AllDiagnostics)
 	{
 		theOutput.push_back(std::move(d->getFullDataStr()));
 	}

@@ -10,14 +10,13 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 
 #include "Geometry.h" // For basic tensor objects
-#include "Metric.h" // For the Metric object
-#include "Mesh.h" // For the Mesh object
+#include "Metric.h"	  // For the Metric object
+#include "Mesh.h"	  // For the Mesh object
 
-#include <memory> // std::unique_ptr
+#include <memory>  // std::unique_ptr
 #include <utility> // std::move
-#include <array> // std::array
-#include <string> // strings
-
+#include <array>   // std::array
+#include <string>  // strings
 
 // Type of geodesic being integrated. NOTE: only Null supported/implemented at the moment!
 enum class GeodesicType
@@ -42,23 +41,23 @@ public:
 	// - the Metric used (ViewScreen is NOT the owner of the Metric)
 	// - the geodesic type to be integrated (null, timelike, spacelike)
 	ViewScreen(Point pos, OneIndex dir, ScreenPoint screensize, ScreenPoint screencenter,
-		std::unique_ptr<Mesh> theMesh, const Metric* const theMetric, GeodesicType thegeodtype=GeodesicType::Null) 
-		: m_Pos{ pos }, m_Direction{ dir }, m_ScreenSize{ screensize }, m_ScreenCenter{ screencenter },
-		m_theMesh{ std::move(theMesh) },
-		m_theMetric{theMetric},	m_GeodType{ thegeodtype },
-		m_rLogScale{ theMetric->getrLogScale() }
+			   std::unique_ptr<Mesh> theMesh, const Metric *const theMetric, GeodesicType thegeodtype = GeodesicType::Null)
+		: m_Pos{pos}, m_Direction{dir}, m_ScreenSize{screensize}, m_ScreenCenter{screencenter},
+		  m_theMesh{std::move(theMesh)},
+		  m_theMetric{theMetric}, m_GeodType{thegeodtype},
+		  m_rLogScale{theMetric->getrLogScale()}
 	{
 		// At the moment, we don't even use the direction; we are always pointed towards the origin
-		if (m_Direction != Point{ 0,-1,0,0 })
+		if (m_Direction != Point{0, -1, 0, 0})
 		{
 			ScreenOutput("ViewScreen is only supported pointing inwards at the moment; Direction = {0, -1, 0, 0} will be used",
-				OutputLevel::Level_0_WARNING);
+						 OutputLevel::Level_0_WARNING);
 		}
 		// At the moment, we are only integrating null geodesics
 		if (m_GeodType != GeodesicType::Null)
 		{
 			ScreenOutput("ViewScreen only supports null geodesics at the moment; geodesics integrated will be null.",
-				OutputLevel::Level_0_WARNING);
+						 OutputLevel::Level_0_WARNING);
 		}
 
 		// Construct the vielbein now
@@ -68,12 +67,12 @@ public:
 	// Heart of the ViewScreen: here, the ViewScreen is asked to provide initial conditions
 	// for the geodesic nr index of the current iteration; based on the screen index
 	// that the Mesh gives, it sets up these physical initial conditions.
-	void SetNewInitialConditions(largecounter index, Point& pos, OneIndex& vel, ScreenIndex& scrIndex) const;
+	void SetNewInitialConditions(largecounter index, Point &pos, OneIndex &vel, ScreenIndex &scrIndex) const;
 
 	// These member functions essentially pass on information to/from the Mesh
-	bool IsFinished() const; // Does the ViewScreen (i.e. the Mesh) want to integrate more geodesics or not?
+	bool IsFinished() const;				// Does the ViewScreen (i.e. the Mesh) want to integrate more geodesics or not?
 	largecounter getCurNrGeodesics() const; // Current number of geodesics in this iteration
-	void EndCurrentLoop(); // The current iteration of geodesics is finished; prepare the next one
+	void EndCurrentLoop();					// The current iteration of geodesics is finished; prepare the next one
 	// NOTE: despite not being const, this function has been designed to be threadsafe!
 	void GeodesicFinished(largecounter index, std::vector<real> finalValues); // This geodesic has been integrated, returning its final "values"
 
@@ -101,15 +100,13 @@ private:
 	const bool m_rLogScale;
 
 	// const pointer to const Metric
-	const Metric* const m_theMetric;
+	const Metric *const m_theMetric;
 
 	// The geodesic type to be integrated
-	const GeodesicType m_GeodType{ GeodesicType::Null };
+	const GeodesicType m_GeodType{GeodesicType::Null};
 
 	// The const pointer to the Mesh we are using to determine pixels to be integrated
 	const std::unique_ptr<Mesh> m_theMesh;
 };
-
-
 
 #endif

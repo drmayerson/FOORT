@@ -6,10 +6,9 @@
 /// ViewScreen functions
 /// </summary>
 
-
 void ViewScreen::ConstructVielbein()
 {
-	Point pos{ m_Pos };
+	Point pos{m_Pos};
 	// Adjust r coordinate if using logarithmic coordinate
 	pos[1] = m_rLogScale ? log(pos[1]) : pos[1];
 	// get metric and inverse metric at our position
@@ -23,9 +22,9 @@ void ViewScreen::ConstructVielbein()
 	OneIndex signs{};
 
 	// helper function to calculate norm of vector
-	auto innerprod = [gdd](const OneIndex& vec1, const OneIndex& vec2)->real
+	auto innerprod = [gdd](const OneIndex &vec1, const OneIndex &vec2) -> real
 	{
-		real ret{ 0 };
+		real ret{0};
 		for (int i = 0; i < dimension; ++i)
 			for (int j = 0; j < dimension; ++j)
 				ret += vec1[i] * gdd[i][j] * vec2[j];
@@ -34,27 +33,25 @@ void ViewScreen::ConstructVielbein()
 
 	// Construct vielbein
 	// First t - use that d/dt is asymptotic timelike Killing vector
-	m_Vielbein[0] = OneIndex{ 1,0,0,0 };
+	m_Vielbein[0] = OneIndex{1, 0, 0, 0};
 	real thenorm = innerprod(m_Vielbein[0], m_Vielbein[0]);
 	signs[0] = (thenorm < 0) ? -1 : 1;
 	m_Vielbein[0] = m_Vielbein[0] / sqrt(signs[0] * thenorm);
 
 	// Then phi - use that d/dphi is asymptotic spacelike Killing vector
-	m_Vielbein[3] = OneIndex{ 0,0,0,1 } - signs[0] * innerprod(OneIndex{ 0,0,0,1 }, m_Vielbein[0]) * m_Vielbein[0];
+	m_Vielbein[3] = OneIndex{0, 0, 0, 1} - signs[0] * innerprod(OneIndex{0, 0, 0, 1}, m_Vielbein[0]) * m_Vielbein[0];
 	thenorm = innerprod(m_Vielbein[3], m_Vielbein[3]);
 	signs[3] = (thenorm < 0) ? -1 : 1;
 	m_Vielbein[3] = m_Pos[1] * sin(m_Pos[2]) * m_Vielbein[3] / sqrt(signs[3] * thenorm);
 
 	// Then r
-	m_Vielbein[1] = guu[1] - signs[0] * innerprod(guu[1], m_Vielbein[0]) * m_Vielbein[0]
-		- signs[3] * innerprod(guu[1], m_Vielbein[3]) * m_Vielbein[3];
+	m_Vielbein[1] = guu[1] - signs[0] * innerprod(guu[1], m_Vielbein[0]) * m_Vielbein[0] - signs[3] * innerprod(guu[1], m_Vielbein[3]) * m_Vielbein[3];
 	thenorm = innerprod(m_Vielbein[1], m_Vielbein[1]);
 	signs[1] = (thenorm < 0) ? -1 : 1;
 	m_Vielbein[1] = m_Vielbein[1] / sqrt(signs[1] * thenorm);
 
 	// Then theta
-	m_Vielbein[2] = guu[2] - signs[0] * innerprod(guu[2], m_Vielbein[0]) * m_Vielbein[0]
-		- signs[3] * innerprod(guu[2], m_Vielbein[3]) * m_Vielbein[2];
+	m_Vielbein[2] = guu[2] - signs[0] * innerprod(guu[2], m_Vielbein[0]) * m_Vielbein[0] - signs[3] * innerprod(guu[2], m_Vielbein[3]) * m_Vielbein[2];
 	-signs[1] * innerprod(guu[2], m_Vielbein[1]) * m_Vielbein[1];
 	thenorm = innerprod(m_Vielbein[2], m_Vielbein[2]);
 	signs[2] = (thenorm < 0) ? -1 : 1;
@@ -72,7 +69,7 @@ void ViewScreen::ConstructVielbein()
 	}
 }
 
-void ViewScreen::SetNewInitialConditions(largecounter index, Point& pos, OneIndex& vel, ScreenIndex& scrIndex) const
+void ViewScreen::SetNewInitialConditions(largecounter index, Point &pos, OneIndex &vel, ScreenIndex &scrIndex) const
 {
 	// The position of all geodesics is the same: the position of the camera
 	pos = m_Pos;
@@ -87,14 +84,14 @@ void ViewScreen::SetNewInitialConditions(largecounter index, Point& pos, OneInde
 	// alpha runs from screencenter_x-screenwidth/2 to screencenter_y+screenwidth/2 and beta similarly with screenheight
 	real alpha = m_ScreenCenter[0] + m_ScreenSize[0] * (UnitScreenPos[0] - 0.5);
 	real beta = m_ScreenCenter[1] + m_ScreenSize[1] * (UnitScreenPos[1] - 0.5);
-	
+
 	// Note: currently only radially inpointing camera is supported (we do not check m_Direction)
 
 	real sintheta0 = sin(pos[2]);
 
 	// flat frame initial velocity (see FOORT physics documentation)
-	real densqrt{ sqrt(m_Pos[1] * m_Pos[1] + alpha * alpha + beta * beta) };
-	OneIndex pflat_u{ -1.0, -m_Pos[1] / densqrt, -beta / m_Pos[1] / densqrt, alpha / m_Pos[1] / sintheta0 / densqrt };
+	real densqrt{sqrt(m_Pos[1] * m_Pos[1] + alpha * alpha + beta * beta)};
+	OneIndex pflat_u{-1.0, -m_Pos[1] / densqrt, -beta / m_Pos[1] / densqrt, alpha / m_Pos[1] / sintheta0 / densqrt};
 
 	// convert flat frame initial velocity to curved space initial velocity using vielbein
 	vel = OneIndex{};
@@ -103,7 +100,7 @@ void ViewScreen::SetNewInitialConditions(largecounter index, Point& pos, OneInde
 			vel[i] += m_Vielbein[j][i] * pflat_u[j];
 
 	// rescale velocity so that E = +p_t (+ sign because past-pointing!)
-	real energy{ 1.0 }; // energy is arbitrary for null geodesics
+	real energy{1.0}; // energy is arbitrary for null geodesics
 	real curenergy{};
 	for (int i = 0; i < dimension; ++i)
 		curenergy += m_Metric_dd[0][i] * vel[i];
@@ -142,8 +139,8 @@ void ViewScreen::SetNewInitialConditionsOLD(largecounter index, Point& pos, OneI
 
 	real costheta0 = cos(pos[2]);
 	real sintheta0 = sin(pos[2]);
-	
-	// We use the expressions of [CB]: Cunningham & Bardeen 1973 "Star Orbiting extreme Kerr Black Hole" 
+
+	// We use the expressions of [CB]: Cunningham & Bardeen 1973 "Star Orbiting extreme Kerr Black Hole"
 	// NOTE: These expressions are only valid asymptotically, i.e. for large distance from the orbit.
 	// It is a possibility to provide a more general setup valid anywhere (based on a local orthonormal frame)
 	// We also assume the axis of rotation (if any) is the z-axis
@@ -152,7 +149,7 @@ void ViewScreen::SetNewInitialConditionsOLD(largecounter index, Point& pos, OneI
 	// Energy E = -p_t, azimuthal angular momentum L_z = p_\phi,
 	// and Carter constant Q.
 	// We then define q = Q/E^2 and lambda = L_z/E.
-	
+
 	// [CB]	(28) inverted to give q and lambda (note that (28b) has a typo -- it should be q instead of q^2) is
 	// q = beta^2 + (alpha^2-1)cos^2\theta
 	real q = beta * beta + (alpha * alpha - 1) * costheta0 * costheta0;
@@ -214,6 +211,5 @@ void ViewScreen::GeodesicFinished(largecounter index, std::vector<real> finalVal
 std::string ViewScreen::getFullDescriptionStr() const
 {
 	// Full description string; carries over information from the Mesh as well
-	return "ViewScreen position: " + toString(m_Pos) + ", screen size: " + toString(m_ScreenSize) + ", "
-		+ m_theMesh->getFullDescriptionStr();
+	return "ViewScreen position: " + toString(m_Pos) + ", screen size: " + toString(m_ScreenSize) + ", " + m_theMesh->getFullDescriptionStr();
 }

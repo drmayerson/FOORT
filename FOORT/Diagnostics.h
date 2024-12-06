@@ -7,16 +7,16 @@
 ////// All definitions in Diagnostics.cpp
 ///////////////////////////////////////////////////////////////////////////////////////
 
-#include "Geometry.h" // for tensors
-#include "Metric.h" // for metric
+#include "Geometry.h"	 // for tensors
+#include "Metric.h"		 // for metric
 #include "InputOutput.h" // for ScreenOutput
 
 #include "Diagnostics_Emission.h" // Emission models
 
 #include <cstdint> // for std::uint16_t
-#include <string> // for strings
-#include <memory> // for std::unique_ptr
-#include <vector> // for std::vector
+#include <string>  // for strings
+#include <memory>  // for std::unique_ptr
+#include <vector>  // for std::vector
 
 // Forward declaration of Geodesic class needed here, since Diagnostics are passed a pointer to their owner Geodesic
 // (note "Geodesic.h" is NOT included to avoid header loop, and we do not need Geodesic member functions here!)
@@ -34,12 +34,12 @@ class Geodesic;
 using DiagBitflag = std::uint16_t;
 
 // Define a bitflag per existing diagnostic
-constexpr DiagBitflag Diag_None					{ 0b0000'0000'0000'0000 };
-constexpr DiagBitflag Diag_GeodesicPosition		{ 0b0000'0000'0000'0001 };
-constexpr DiagBitflag Diag_FourColorScreen		{ 0b0000'0000'0000'0010 };
-constexpr DiagBitflag Diag_EquatorialPasses 	{ 0b0000'0000'0000'0100 };
-constexpr DiagBitflag Diag_ClosestRadius		{ 0b0000'0000'0000'1000 };
-constexpr DiagBitflag Diag_EquatorialEmission	{ 0b0000'0000'0001'0000 };
+constexpr DiagBitflag Diag_None{0b0000'0000'0000'0000};
+constexpr DiagBitflag Diag_GeodesicPosition{0b0000'0000'0000'0001};
+constexpr DiagBitflag Diag_FourColorScreen{0b0000'0000'0000'0010};
+constexpr DiagBitflag Diag_EquatorialPasses{0b0000'0000'0000'0100};
+constexpr DiagBitflag Diag_ClosestRadius{0b0000'0000'0000'1000};
+constexpr DiagBitflag Diag_EquatorialEmission{0b0000'0000'0001'0000};
 
 //// DIAGNOSTIC ADD POINT B ////
 // Add a DiagBitflag for your new diagnostic. Make sure you use a bitflag that has not been used before!
@@ -49,16 +49,14 @@ constexpr DiagBitflag Diag_MyDiag				{ 0b0000'0000'0000'1000 };
 */
 //// END DIAGNOSTIC ADD POINT B ////
 
-
 // This carries the information for a Diagnostic to update itself: if UpdateNsteps > 0, then every so many steps.
 // If UpdateNSteps == 0, then it only updates at the start and/or finish of integration if the appropriate bool is set.
 struct UpdateFrequency
 {
-	largecounter UpdateNSteps{ 0 };
-	bool UpdateStart{ false };
-	bool UpdateFinish{ false };
+	largecounter UpdateNSteps{0};
+	bool UpdateStart{false};
+	bool UpdateFinish{false};
 };
-
 
 //////////////////////////////////////////////////////////////
 //// GENERAL DECLARATIONS OF AND WITH ABSTRACT BASE CLASS ////
@@ -69,8 +67,9 @@ class Diagnostic
 public:
 	// Constructor must initialize the pointer to its owner Geodesic
 	Diagnostic() = delete;
-	Diagnostic(Geodesic* const theGeodesic) : m_OwnerGeodesic{ theGeodesic }
-	{}
+	Diagnostic(Geodesic *const theGeodesic) : m_OwnerGeodesic{theGeodesic}
+	{
+	}
 
 	// Resets Diagnostic object. This is called when the owner Geodesic is reset in order to start integrating
 	// a new geodesic.
@@ -95,7 +94,7 @@ public:
 	// Function used to determine distance between two values obtained from getFinalDataVal()
 	// (for determining coarseness of nearby geodesics)
 	// This should return a number >=0
-	virtual real FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const = 0;
+	virtual real FinalDataValDistance(const std::vector<real> &val1, const std::vector<real> &val2) const = 0;
 
 	// Getters for descriptions
 	// This returns the name (only) of the Diagnostic, as a string without spaces that will be appended
@@ -107,11 +106,11 @@ public:
 
 protected:
 	// The geodesic that owns the Diagnostic (a const pointer to the Geodesic)
-	Geodesic* const m_OwnerGeodesic;
+	Geodesic *const m_OwnerGeodesic;
 
 	// Helper function to decide if the Diagnostic should indeed update its status, based on
 	// its UpdateFrequency struct information (which will come from the Diagnostics's DiagnosticOptions)
-	bool DecideUpdate(const UpdateFrequency& myUpdateFrequency);
+	bool DecideUpdate(const UpdateFrequency &myUpdateFrequency);
 
 	// The diagnostic is itself in charge of keeping track of how many steps it has been since it has been updated
 	// The Diagnostic's DiagnosticOptions struct tells it how many steps it needs to wait between updates
@@ -123,13 +122,10 @@ using DiagnosticUniqueVector = std::vector<std::unique_ptr<Diagnostic>>;
 
 // Helper to create a new vector of Diagnostic options, based on the bitflag
 // The first diagnostic is the value diagnostic
-DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag valdiag, Geodesic* const theGeodesic);
-
-
+DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag valdiag, Geodesic *const theGeodesic);
 
 //////////////////////////////////////////////////////
 //// DECLARATIONS FOR DERIVED DIAGNOSTIC CLASSES  ////
-
 
 // The four color screen: associates one of four colors based on the quadrant that the geodesic finishes in
 // Will ONLY return a color if the geodesic indeed finishes because it passes through the boundary sphere!
@@ -137,7 +133,7 @@ class FourColorScreenDiagnostic final : public Diagnostic
 {
 public:
 	// Basic constructor only passes on Geodesic pointer to base class constructor
-	FourColorScreenDiagnostic(Geodesic* const theGeodesic) : Diagnostic(theGeodesic) {}
+	FourColorScreenDiagnostic(Geodesic *const theGeodesic) : Diagnostic(theGeodesic) {}
 
 	// Reset needs to be overridden in order to also reset m_quadrant
 	void Reset() final;
@@ -150,7 +146,7 @@ public:
 	std::vector<real> getFinalDataVal() const final;
 
 	// Discrete metric for distance: returns 0 if the quadrants are the same, 1 if they are not
-	real FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const final;
+	real FinalDataValDistance(const std::vector<real> &val1, const std::vector<real> &val2) const final;
 
 	// Description string getters
 	std::string getNameStr() const final;
@@ -164,7 +160,6 @@ private:
 	int m_quadrant{0};
 };
 
-
 // Forward declaration needed before Diagnostic
 struct GeodesicPositionOptions;
 // Geodesic position tracker
@@ -172,7 +167,7 @@ class GeodesicPositionDiagnostic final : public Diagnostic
 {
 public:
 	// Basic constructor only passes on Geodesic pointer to base class constructor
-	GeodesicPositionDiagnostic(Geodesic* const theGeodesic) : Diagnostic(theGeodesic) {}
+	GeodesicPositionDiagnostic(Geodesic *const theGeodesic) : Diagnostic(theGeodesic) {}
 
 	// Override Reset to also clear m_AllSavedPoints
 	void Reset() final;
@@ -187,7 +182,7 @@ public:
 
 	// This determines the angular distance between two geodesic
 	// (based on their final angles on the boundary sphere (theta, phi))
-	real FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const final;
+	real FinalDataValDistance(const std::vector<real> &val1, const std::vector<real> &val2) const final;
 
 	// Description string getters
 	std::string getNameStr() const final;
@@ -201,7 +196,6 @@ private:
 	std::vector<Point> m_AllSavedPoints{};
 };
 
-
 // Forward declaration needed before Diagnostic
 struct EquatorialPassesOptions;
 // Diagnostic for counting number of passes through equatorial plane
@@ -209,7 +203,7 @@ class EquatorialPassesDiagnostic : public Diagnostic
 {
 public:
 	// Basic constructor only passes on Geodesic pointer to base class constructor
-	EquatorialPassesDiagnostic(Geodesic* const theGeodesic) : Diagnostic(theGeodesic) {}
+	EquatorialPassesDiagnostic(Geodesic *const theGeodesic) : Diagnostic(theGeodesic) {}
 
 	// Override Reset to also reset m_EquatPasses and m_PrevTheta
 	void Reset() override;
@@ -222,7 +216,7 @@ public:
 	std::vector<real> getFinalDataVal() const override;
 
 	// Simple absolute value of difference of passes
-	real FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const override;
+	real FinalDataValDistance(const std::vector<real> &val1, const std::vector<real> &val2) const override;
 
 	// Description string getters
 	std::string getNameStr() const override;
@@ -233,11 +227,11 @@ public:
 
 protected:
 	// Keeps track of how many passes have been made
-	int m_EquatPasses{ 0 };
+	int m_EquatPasses{0};
 
 private:
 	// Keeps track of the previous theta angle, so that we can compare with current theta angle
-	real m_PrevTheta{ -1 };
+	real m_PrevTheta{-1};
 };
 
 // Forward declaration needed before Diagnostic
@@ -248,7 +242,7 @@ class ClosestRadiusDiagnostic final : public Diagnostic
 {
 public:
 	// Basic constructor only passes on Geodesic pointer to base class constructor
-	ClosestRadiusDiagnostic(Geodesic* const theGeodesic) : Diagnostic(theGeodesic) {}
+	ClosestRadiusDiagnostic(Geodesic *const theGeodesic) : Diagnostic(theGeodesic) {}
 
 	// re-initialize closest radius
 	void Reset() final;
@@ -261,7 +255,7 @@ public:
 	std::vector<real> getFinalDataVal() const final;
 
 	// Returns the absolute value of the difference between closest radii
-	real FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const final;
+	real FinalDataValDistance(const std::vector<real> &val1, const std::vector<real> &val2) const final;
 
 	// Description string getters
 	std::string getNameStr() const final;
@@ -272,23 +266,22 @@ public:
 
 private:
 	// Keeps track of closest radius travelled
-	real m_ClosestRadius{ -1 };
+	real m_ClosestRadius{-1};
 };
-
 
 // Forward declaration needed before Diagnostic
 struct EquatorialEmissionOptions;
 // Diagnostic that calculates brightness intensity for the geodesic, based on
 // a specified equatorial disc emission model
 // (intensity profile and fluid velocity profile, both specified in the options struct)
-// Note that EquatorialEmissionDiagnostic inherits from EquatorialPassesDiagnostic, 
+// Note that EquatorialEmissionDiagnostic inherits from EquatorialPassesDiagnostic,
 // since it needs to keep track of when it passes through the equatorial plane.
 // As a result it also keeps track of the number of equatorial passes
 class EquatorialEmissionDiagnostic final : public EquatorialPassesDiagnostic
 {
 public:
 	// Basic constructor only passes on Geodesic pointer to parent class constructor
-	EquatorialEmissionDiagnostic(Geodesic* const theGeodesic) : EquatorialPassesDiagnostic(theGeodesic) {}
+	EquatorialEmissionDiagnostic(Geodesic *const theGeodesic) : EquatorialPassesDiagnostic(theGeodesic) {}
 
 	// Reset intensity back to 0.0, and call parent class Reset()
 	void Reset() final;
@@ -302,7 +295,7 @@ public:
 	std::vector<real> getFinalDataVal() const final;
 
 	// Distance is difference in intensities multiplied by a factor magnifying difference in equatorial passes
-	real FinalDataValDistance(const std::vector<real>& val1, const std::vector<real>& val2) const final;
+	real FinalDataValDistance(const std::vector<real> &val1, const std::vector<real> &val2) const final;
 
 	// Description string getters
 	std::string getNameStr() const final;
@@ -313,7 +306,7 @@ public:
 
 private:
 	// Brightness intensity of the geodesic
-	real m_Intensity{ 0.0 };
+	real m_Intensity{0.0};
 };
 
 //// DIAGNOSTIC ADD POINT A1 ////
@@ -367,8 +360,6 @@ private:
 */
 //// END DIAGNOSTIC ADD POINT A1 ////
 
-
-
 ///////////////////////////////////////
 //// ALL DIAGNOSTICOPTIONS STRUCTS ////
 
@@ -377,8 +368,9 @@ struct DiagnosticOptions
 {
 public:
 	// Basic constructor only sets the number of steps between updates
-	DiagnosticOptions(UpdateFrequency thefrequency) : theUpdateFrequency{ thefrequency }
-	{}
+	DiagnosticOptions(UpdateFrequency thefrequency) : theUpdateFrequency{thefrequency}
+	{
+	}
 
 	virtual ~DiagnosticOptions() = default;
 
@@ -389,9 +381,10 @@ public:
 struct GeodesicPositionOptions : public DiagnosticOptions
 {
 public:
-	GeodesicPositionOptions(largecounter outputsteps, UpdateFrequency thefrequency) : OutputNrSteps{ outputsteps }, 
-		DiagnosticOptions(thefrequency)
-	{}
+	GeodesicPositionOptions(largecounter outputsteps, UpdateFrequency thefrequency) : OutputNrSteps{outputsteps},
+																					  DiagnosticOptions(thefrequency)
+	{
+	}
 
 	const largecounter OutputNrSteps;
 };
@@ -400,9 +393,10 @@ public:
 struct EquatorialPassesOptions : public DiagnosticOptions
 {
 public:
-	EquatorialPassesOptions(real thethreshold, UpdateFrequency thefrequency) : Threshold{ thethreshold },
-		DiagnosticOptions(thefrequency)
-	{}
+	EquatorialPassesOptions(real thethreshold, UpdateFrequency thefrequency) : Threshold{thethreshold},
+																			   DiagnosticOptions(thefrequency)
+	{
+	}
 
 	const real Threshold;
 };
@@ -412,8 +406,9 @@ struct ClosestRadiusOptions : public DiagnosticOptions
 {
 public:
 	ClosestRadiusOptions(bool rlog, UpdateFrequency thefrequency) : RLogScale{rlog},
-		DiagnosticOptions(thefrequency)
-	{}
+																	DiagnosticOptions(thefrequency)
+	{
+	}
 
 	const bool RLogScale;
 };
@@ -428,13 +423,13 @@ struct EquatorialEmissionOptions : public EquatorialPassesOptions
 {
 public:
 	EquatorialEmissionOptions(real thefudgefactor, int equatupper,
-		std::unique_ptr<EmissionModel> theemission, std::unique_ptr<FluidVelocityModel> thefluidmodel,
-		bool rlog, int theredshiftpower, real thethreshold, UpdateFrequency thefrequency) :
-		RedShiftPower{ theredshiftpower }, RLogScale{ rlog }, GeometricFudgeFactor{ thefudgefactor },
-		EquatPassUpperBound{ equatupper },
-		TheEmissionModel{ std::move(theemission) }, TheFluidVelocityModel{ std::move(thefluidmodel) },
-		EquatorialPassesOptions(thethreshold, thefrequency) // constructor for parent class
-	{}
+							  std::unique_ptr<EmissionModel> theemission, std::unique_ptr<FluidVelocityModel> thefluidmodel,
+							  bool rlog, int theredshiftpower, real thethreshold, UpdateFrequency thefrequency) : RedShiftPower{theredshiftpower}, RLogScale{rlog}, GeometricFudgeFactor{thefudgefactor},
+																												  EquatPassUpperBound{equatupper},
+																												  TheEmissionModel{std::move(theemission)}, TheFluidVelocityModel{std::move(thefluidmodel)},
+																												  EquatorialPassesOptions(thethreshold, thefrequency) // constructor for parent class
+	{
+	}
 
 	// Geometric fudge factor for n>0 passes
 	const real GeometricFudgeFactor;
@@ -453,7 +448,6 @@ public:
 	const std::unique_ptr<FluidVelocityModel> TheFluidVelocityModel;
 };
 
-
 //// DIAGNOSTIC ADD POINT A2 (optional) ////
 // if necessary, define your new DiagnosticOptions class here
 // Sample code:
@@ -470,6 +464,5 @@ public:
 };
 */
 //// END DIAGNOSTIC ADD POINT A2 ////
-
 
 #endif

@@ -3,6 +3,13 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# FOORT compilation files
+FOORT/*.o
+FOORT/FOORT
+*vscode*
+PostProc/*
+FOORT/Output/BS*
+
 # User-specific files
 *.rsuser
 *.suo
