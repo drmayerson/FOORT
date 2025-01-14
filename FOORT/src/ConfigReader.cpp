@@ -3,11 +3,25 @@
 #include <ios>		   // for std::scientific
 #include <type_traits> // for std::is_same_v
 
+/**
+ * @file ConfigReader.cpp
+ * @author Daniel R. Mayerson
+ * @version 1.0
+ * @date 2024-12-12
+ * @copyright Copyright (c) 2024
+ */
+
 using namespace ConfigReader;
 
 //////////////////////////////////////////
 ///// Accessors to navigate the collection
 
+/**
+ * @brief Return the index of a specific setting in the collection.
+ *
+ * @param SettingName The name of the setting to find
+ * @return int
+ */
 int ConfigCollection::GetSettingIndex(std::string_view SettingName) const
 {
 	// Return -1 if setting not found
@@ -30,24 +44,51 @@ int ConfigCollection::GetSettingIndex(std::string_view SettingName) const
 	return retIndex;
 }
 
+/**
+ * @brief Check if a setting with the given name exists in the collection.
+ *
+ * @param SettingName The name of the setting to check
+ * @return true
+ * @return false
+ */
 bool ConfigCollection::Exists(std::string_view SettingName) const
 {
 	// Setting index returns -1 if setting not found
 	return GetSettingIndex(SettingName) >= 0;
 }
 
+/**
+ * @brief Check if a setting with the given index is a collection.
+ *
+ * @param SettingIndex The index of the setting to check
+ * @return true
+ * @return false
+ */
 bool ConfigCollection::IsCollection(int SettingIndex) const
 {
 	// Makes sure index is within range of number of settings, and then checks to see if this setting is a collection
 	return SettingIndex >= 0 && SettingIndex < m_Settings.size() && std::holds_alternative<std::unique_ptr<ConfigCollection>>(m_Settings[SettingIndex].SettingValue);
 }
 
+/**
+ * @brief Check if a setting with the given name is a collection.
+ *
+ * @param SettingName The name of the setting to check
+ * @return true
+ * @return false
+ */
 bool ConfigCollection::IsCollection(std::string_view SettingName) const
 {
 	// Defer to index-based implementation
 	return IsCollection(GetSettingIndex(SettingName));
 }
 
+/**
+ * @brief Access a subcollection by index.
+ *
+ * @param CollectionIndex The index of the subcollection to access
+ * @return const ConfigCollection&
+ */
 const ConfigCollection &ConfigCollection::operator[](int CollectionIndex) const
 {
 	// This should only be called with a valid index of a collection, otherwise throw an exception
@@ -62,12 +103,23 @@ const ConfigCollection &ConfigCollection::operator[](int CollectionIndex) const
 	}
 }
 
+/**
+ * @brief Access a subcollection by name.
+ *
+ * @param CollectionName The name of the subcollection to access
+ * @return const ConfigCollection&
+ */
 const ConfigCollection &ConfigCollection::operator[](std::string_view CollectionName) const
 {
 	// Defer to index-based implemntation
 	return operator[](GetSettingIndex(CollectionName));
 }
 
+/**
+ * @brief Return the total number of settings in the collection.
+ *
+ * @return int
+ */
 int ConfigCollection::NrSettings() const
 {
 	// We don't expect so many settings that an int wouldn't suffice!
@@ -79,16 +131,29 @@ int ConfigCollection::NrSettings() const
 
 // Templated functions implemented in .h file!
 
+/**
+ * @brief If the output is int, we only look up to see if the value is an int
+ *
+ * @param SettingName Name of the setting to look up
+ * @param theOutput integer ouput
+ * @return true
+ * @return false
+ */
 bool ConfigCollection::LookupValueInteger(std::string_view SettingName, int &theOutput) const
 {
-	// If the output is int, we only look up to see if the value is an int
 	return LookupValue(SettingName, theOutput);
 }
 
+/**
+ * @brief If the output is long, the setting value can either be a long or an int, so we check for both
+ *
+ * @param SettingName Name of the setting to look up
+ * @param theOutput long output
+ * @return true
+ * @return false
+ */
 bool ConfigCollection::LookupValueInteger(std::string_view SettingName, long &theOutput) const
 {
-	// If the output is long, the setting value can either be a long or an int, so we check for both
-
 	long longtry{};
 	if (LookupValue(SettingName, longtry))
 	{
@@ -106,10 +171,16 @@ bool ConfigCollection::LookupValueInteger(std::string_view SettingName, long &th
 	return false;
 }
 
+/**
+ * @brief If the output is long long, the setting value can either be a long long, a long, or an int, so we check for all
+ *
+ * @param SettingName Name of the setting to look up
+ * @param theOutput long long output
+ * @return true
+ * @return false
+ */
 bool ConfigCollection::LookupValueInteger(std::string_view SettingName, long long &theOutput) const
 {
-	// If the output is long long, the setting value can either be a long long, a long, or an int, so we check for all
-
 	long long lltry{};
 	if (LookupValue(SettingName, lltry))
 	{
@@ -129,6 +200,14 @@ bool ConfigCollection::LookupValueInteger(std::string_view SettingName, long lon
 	return false;
 }
 
+/**
+ * @brief If the output is unsigned int, the setting value can either be an unsigned int, an int, a long, or a long long, so we check for all
+ *
+ * @param SettingName Name of the setting to look up
+ * @param theOutput unsigned int output
+ * @return true
+ * @return false
+ */
 bool ConfigCollection::LookupValueInteger(std::string_view SettingName, unsigned int &theOutput) const
 {
 	// An int that is >=0 will always fit in an unsigned int
@@ -150,6 +229,14 @@ bool ConfigCollection::LookupValueInteger(std::string_view SettingName, unsigned
 	return false;
 }
 
+/**
+ * @brief If the output is unsigned long, the setting value can either be an unsigned long, an unsigned int, an int, a long, or a long long, so we check for all
+ *
+ * @param SettingName Name of the setting to look up
+ * @param theOutput unsigned long output
+ * @return true
+ * @return false
+ */
 bool ConfigCollection::LookupValueInteger(std::string_view SettingName, unsigned long &theOutput) const
 {
 	// A long that is >=0 will always fit in an unsigned long
@@ -171,6 +258,14 @@ bool ConfigCollection::LookupValueInteger(std::string_view SettingName, unsigned
 	return false;
 }
 
+/**
+ * @brief If the output is unsigned long long, the setting value can either be an unsigned long long, an unsigned long, an unsigned int, an int, a long, or a long long, so we check for all
+ *
+ * @param SettingName Name of the setting to look up
+ * @param theOutput unsigned long long output
+ * @return true
+ * @return false
+ */
 bool ConfigCollection::LookupValueInteger(std::string_view SettingName, unsigned long long &theOutput) const
 {
 	// A long long that is >=0 will always fit in an unsigned long long
@@ -187,6 +282,12 @@ bool ConfigCollection::LookupValueInteger(std::string_view SettingName, unsigned
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ///// Output entire collection (including subcollections) to a given outputstream, and helper functions
 
+/**
+ * @brief Output the entire collection to a given output stream.
+ *
+ * @param OutputStream pointer to an outputstream
+ * @param Indent indentation level
+ */
 void ConfigCollection::DisplayCollection(std::ostream &OutputStream, int Indent) const
 {
 	// Simply loop through all settings and output them
@@ -195,6 +296,12 @@ void ConfigCollection::DisplayCollection(std::ostream &OutputStream, int Indent)
 		DisplaySetting(OutputStream, i, Indent);
 }
 
+/**
+ * @brief Output a given number of tabs to the output stream.
+ *
+ * @param OutputStream pointer to an outputstream
+ * @param NrTabs number of tabs to output
+ */
 void ConfigCollection::DisplayTabs(std::ostream &OutputStream, int NrTabs) const
 {
 	// Helper function to output given number of tabs
@@ -202,6 +309,13 @@ void ConfigCollection::DisplayTabs(std::ostream &OutputStream, int NrTabs) const
 		OutputStream << '\t';
 }
 
+/**
+ * @brief Output a single setting to the output stream.
+ *
+ * @param OutputStream pointer to an outputstream
+ * @param SettingIndex index of the setting to output
+ * @param Indent indentation level
+ */
 void ConfigCollection::DisplaySetting(std::ostream &OutputStream, int SettingIndex, int Indent) const
 {
 	// Helper function to output single, given setting
@@ -272,9 +386,13 @@ void ConfigCollection::DisplaySetting(std::ostream &OutputStream, int SettingInd
 ////////////////////////////////////////////////
 ///// Read in a config file and helper functions
 
-// Main function: read in config file of given file name
-// Returns true if successful, false if file does not exist
-// Will throw exception if parse/syntax error encountered
+/**
+ * @brief Read in a configuration file.
+ *
+ * @param FileName File name of the configuration file
+ * @return true if succesful
+ * @return false if the file does not exist, or if there is a parse/syntax error
+ */
 bool ConfigCollection::ReadFile(const std::string &FileName)
 {
 	// Open the file
@@ -312,9 +430,11 @@ bool ConfigCollection::ReadFile(const std::string &FileName)
 	return true;
 }
 
-// Read in entire collection (including subcollections)
-// Pre: stream is positioned right after { (or at beginning of file)
-// Post: stream is positioned right after } (or at EOF)
+/**
+ * @brief Read in an entire collection (including subcollections). Pre: stream is positioned right after '{' (or at beginning of file). Post: stream is positioned right after '}' (or at EOF).
+ *
+ * @param InputFile  pointer to an input file stream
+ */
 void ConfigCollection::ReadCollection(std::ifstream &InputFile)
 {
 	// First, empty the settings vector
@@ -368,11 +488,12 @@ void ConfigCollection::ReadCollection(std::ifstream &InputFile)
 	// Post condition is true because ReadSettingName() has eaten up } in last iteration of loop (for subcollections)
 }
 
-// Read in a setting name
-// Pre: next non-whitespace character in stream is beginning of name
-// Post: stream has just read in all characters of name (but no more);
-// returns "" if there is no more setting to read in the current collection, in this case
-// '}' has been read in (for subcollections)
+/**
+ * @brief Read in a setting name. Pre: next non-whitespace character in stream is beginning of name. Post: stream has just read in all characters of name (but no more); returns "" if there is no more setting to read in the current collection, in this case '}' has been read in (for subcollections).
+ *
+ * @param InputFile Pointer to the input file stream
+ * @param theName Pointer to the name of the setting
+ */
 void ConfigCollection::ReadSettingName(std::ifstream &InputFile, std::string &theName)
 {
 	// Eat up any leading white space
@@ -448,9 +569,12 @@ void ConfigCollection::ReadSettingName(std::ifstream &InputFile, std::string &th
 	// has NOT been read in, EXCEPT if it is '}' or EOF signifying the end of the collection.
 }
 
-// Read in one specific character only (not '/')
-// Pre: next non-whitespace character in stream is this character
-// Post: stream is just after character
+/**
+ * @brief Read in one specific character only (not '/'). Pre: next non-whitespace character in stream is this character. Post: stream is just after character.
+ *
+ * @param InputFile Pointer to the input file stream
+ * @param theChar The character to read in
+ */
 void ConfigCollection::ReadSettingSpecificChar(std::ifstream &InputFile, char theChar) const
 {
 	// Eat up any leading white space
@@ -493,10 +617,12 @@ void ConfigCollection::ReadSettingSpecificChar(std::ifstream &InputFile, char th
 	// Post condition is met: specific character has been eaten up from stream
 }
 
-// Read in setting value (could be subcollection)
-// Pre: next non-whitespace character in stream is beginning of value
-// (can be '{' for subcollection, digit or '-' or '.' or 'e' for number, '"' for string, or 't'/'f' for boolean)
-// Post: Value has entirely been read in (i.e. next character should be ';')
+/**
+ * @brief Read in setting value (could be subcollection). Pre: next non-whitespace character in stream is beginning of value (can be '{' for subcollection, digit or '-' or '.' or 'e' for number, '"' for string, or 't'/'f' for boolean). Post: Value has entirely been read in (i.e. next character should be ';').
+ *
+ * @param InputFile Pointer to the input file stream
+ * @param theValue Pointer to the setting value
+ */
 void ConfigCollection::ReadSettingValue(std::ifstream &InputFile, ConfigSettingValue &theValue)
 {
 	// Eat up any leading white space

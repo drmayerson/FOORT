@@ -259,7 +259,8 @@ class BosonStarMetric final : public Metric
 {
 public:
 	// Simple (default) constructor is all that is needed
-	BosonStarMetric(bool rLogScale = false);
+	BosonStarMetric(double Phi_infinity, int num_lines, bool rLogScale = false,
+					std::string Phi_filename = "Phi.dat", std::string m_filename = "m.dat");
 	// The override of the basic metric getter functions
 	TwoIndex getMetric_dd(const Point &p) const final;
 	TwoIndex getMetric_uu(const Point &p) const final;
@@ -267,10 +268,24 @@ public:
 	std::string getFullDescriptionStr() const final;
 
 protected:
-	// The spline interpolator for Phi
+	//! The value of Phi at infinity, before rescaling.
+	const double m_Phi_infinity;
+	//! Number of lines to be read from the data files. Mainly to avoid reading
+	//! the data at extreme distances, which could upset the spline interpolation.
+	const int m_num_lines;
+
+	//! filename with Phi data
+	std::string m_Phi_filename;
+	//! filename with m data
+	std::string m_m_filename;
+
+	//! The spline interpolator for Phi
 	tk::spline m_PhiSpline;
-	// The spline interpolator for m
+	//! The spline interpolator for m
 	tk::spline m_mSpline;
+
+	//! function to read the data
+	void read_data();
 };
 
 //// METRIC ADD POINT A ////

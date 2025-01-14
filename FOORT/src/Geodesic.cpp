@@ -2,25 +2,47 @@
 
 #include "InputOutput.h" // for ScreenOutput()
 
+/**
+ * @file Geodesic.cpp
+ * @author Daniel R. Mayerson
+ * @version 1.0
+ * @date 2024-12-16
+ * @copyright Copyright (c) 2024
+ */
+
 /// <summary>
 /// Source (and descendant classes) functions
 /// </summary>
 
+/**
+ * @brief Basic full description string getter for Source base class
+ *
+ * @return std::string
+ */
 std::string Source::getFullDescriptionStr() const
 {
-	// Basic full description string
 	return "Source (no override description specified)";
 }
 
+/**
+ * @brief Returns zero source for the geodesic equation: no force felt by geodesic
+ *
+ * @param pos Position of the geodesic
+ * @param vel Velocity of the geodesic
+ * @return OneIndex Source for the geodesic
+ */
 OneIndex NoSource::getSource([[maybe_unused]] Point pos, [[maybe_unused]] OneIndex vel) const
 {
-	// no rhs for the geodesic equation: no force felt by geodesic
 	return OneIndex{0, 0, 0, 0};
 }
 
+/**
+ * @brief Full description string getter for NoSource class
+ *
+ * @return std::string
+ */
 std::string NoSource::getFullDescriptionStr() const
 {
-	// Full description string
 	return "No source";
 }
 
@@ -28,6 +50,15 @@ std::string NoSource::getFullDescriptionStr() const
 /// Geodesic (and descendant classes) functions
 /// </summary>
 
+/**
+ * @brief This initializes/resets the geodesic with a given ScreenIndex, initial position, and initial velocity
+ * @details Also resets all Diagnostics and Terminations, resets the TermCondition to Term::Continue,
+ *	and puts the Geodesic back to lambda = 0.0.
+ *
+ * @param scrindex ScreenIndex
+ * @param initpos Initial position
+ * @param initvel Initial velocity
+ */
 void Geodesic::Reset(ScreenIndex scrindex, Point initpos, OneIndex initvel)
 {
 	// Set screen index, initial position/velocity
@@ -55,6 +86,11 @@ void Geodesic::Reset(ScreenIndex scrindex, Point initpos, OneIndex initvel)
 	}
 }
 
+/**
+ * @brief This makes the Geodesic integrate itself one step; then the Geodesic loops through all Terminations and Diagnostics to update
+ *
+ * @return Term
+ */
 Term Geodesic::Update()
 {
 	// Integrate one step!
@@ -84,31 +120,63 @@ Term Geodesic::Update()
 	return m_TermCond;
 }
 
+/**
+ * @brief Get the current termination condition
+ *
+ * @return Term
+ */
 Term Geodesic::getTermCondition() const
 {
 	return m_TermCond;
 }
 
+/**
+ * @brief Get the current position
+ *
+ * @return Point
+ */
 Point Geodesic::getCurrentPos() const
 {
 	return m_CurrentPos;
 }
 
+/**
+ * @brief Get the current velocity
+ *
+ * @return OneIndex
+ */
 OneIndex Geodesic::getCurrentVel() const
 {
 	return m_CurrentVel;
 }
 
+/**
+ * @brief Get the current value of the affine parameter
+ *
+ * @return real
+ */
 real Geodesic::getCurrentLambda() const
 {
 	return m_curLambda;
 }
 
+/**
+ * @brief Get the screen index
+ *
+ * @return ScreenIndex
+ */
 ScreenIndex Geodesic::getScreenIndex() const
 {
 	return m_ScreenIndex;
 }
 
+/**
+ * @brief Get the complete output that should be written to the output files
+ * @details There is one string more than the count of Diagnostics: one string per Diagnostic,
+ *	PLUS the first string is the screen index.
+ *
+ * @return std::vector<std::string>
+ */
 std::vector<std::string> Geodesic::getAllOutputStr() const
 {
 	// The Geodesic should have terminated if this is called!
@@ -138,6 +206,12 @@ std::vector<std::string> Geodesic::getAllOutputStr() const
 	return theOutput;
 }
 
+/**
+ * @brief Get the "value" (from the Diagnostic that was set to the value Diagnostic) that is associated to the Geodesic
+ * @details Will be used to determine "distance" between Geodesics which is used in Mesh refinement.
+ *
+ * @return std::vector<real>
+ */
 std::vector<real> Geodesic::getDiagnosticFinalValue() const
 {
 	// The Geodesic should have terminated if this is called!

@@ -1,3 +1,11 @@
+/**
+ * @file Config.cpp
+ * @author Daniel R. Mayerson
+ * @version 1.0
+ * @date 2024-12-12
+ * @copyright Copyright (c) 2024
+ */
+
 #include "Config.h" // We are implementing these Config namespace functions here
 
 #include "Utilities.h" // for Utilities::GetDiagNameStrings
@@ -40,7 +48,8 @@ std::unique_ptr<MyTermOptions> MyTermination::DiagOptions;
 // Config namespace and all of its functions are only defined in CONFIGURATION_MODE
 #ifdef CONFIGURATION_MODE
 
-// Initialize screen output options
+//! \brief Initialize screen output options
+//! \param theCfg Pointer to the configuration object
 void Config::InitializeScreenOutput(const ConfigCollection &theCfg)
 {
 	// DEFAULT: highest level output allowed
@@ -65,9 +74,9 @@ void Config::InitializeScreenOutput(const ConfigCollection &theCfg)
 	}
 }
 
-/// <summary>
-/// Config::GetMetric():  Use configuration to create the correct Metric with specified parameters
-/// </summary>
+//! \brief  Use configuration to create the correct Metric with specified parameters
+//! \param theCfg Pointer to the configuration object
+//! \return Metric pointer
 std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 {
 	std::string MetricName{};
@@ -274,8 +283,20 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 			bool rLogScale{false};
 			MetricSettings.LookupValue("RLogScale", rLogScale);
 
+			// Look for model specific settings
+			double Phi_infinity{1.376427};
+			MetricSettings.LookupValue("PhiInfinity", Phi_infinity);
+
+			int num_lines{10896};
+			MetricSettings.LookupValue("NumLines", num_lines);
+
+			std::string Phi_filename{"Phi.dat"};
+			std::string m_filename("m.dat");
+			MetricSettings.LookupValue("PhiFilename", Phi_filename);
+			MetricSettings.LookupValue("MFilename", m_filename);
+
 			// All settings complete; create Metric object!
-			TheMetric = std::unique_ptr<Metric>(new BosonStarMetric(rLogScale));
+			TheMetric = std::unique_ptr<Metric>(new BosonStarMetric(Phi_infinity, num_lines, rLogScale, Phi_filename, m_filename));
 		}
 		//// METRIC ADD POINT B ////
 		// Add an else if clause to check for your new Metric object!
@@ -310,9 +331,10 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 	return TheMetric;
 }
 
-/// <summary>
-/// Config::GetSource():  Use configuration to create the correct Source with specified parameters
-/// </summary>
+//! \brief  Use configuration to create the correct Source with specified parameters
+//! \param theCfg Pointer to the configuration object
+//! \param theMetric Pointer to the Metric object
+//! \return Pointer to the Source object
 std::unique_ptr<Source> Config::GetSource(const ConfigCollection &theCfg, const Metric *const theMetric)
 {
 	std::string SourceName{};
@@ -368,11 +390,13 @@ std::unique_ptr<Source> Config::GetSource(const ConfigCollection &theCfg, const 
 	return TheSource;
 }
 
-/// <summary>
-/// Config::InitializeDiagnostics():  Use configuration to set the Diagnostics bitflag appropriately;
-/// initialize all DiagnosticOptions for all Diagnostics that are turned on;
-/// and set bitflag for diagnostic to be used for coarseness evaluating in Mesh
-/// </summary>
+//! \brief Use configuration to set the Diagnostics bitflag appropriately;
+//! initialize all DiagnosticOptions for all Diagnostics that are turned on;
+//! and set bitflag for diagnostic to be used for coarseness evaluating in Mesh
+//! \param theCfg Pointer to the configuration object
+//! \param alldiags Pointer to the diagnostics bitflags
+//! \param valdiag Pointer to the diagnostics used for coarseness evaluation in the Mesh
+//! \param theMetric Pointer to the Metric object
 void Config::InitializeDiagnostics(const ConfigCollection &theCfg, DiagBitflag &alldiags, DiagBitflag &valdiag, const Metric *const theMetric)
 {
 	// First set these flags to all zeros
@@ -696,10 +720,10 @@ void Config::InitializeDiagnostics(const ConfigCollection &theCfg, DiagBitflag &
 	}
 }
 
-/// <summary>
-/// Config::InitializeTerminations():  Use configuration to set the Termination bitflag appropriately;
-/// and initialize all TerminationOptions for all Terminations that are turned on.
-/// </summary>
+//! \brief Use configuration to set the Termination bitflag appropriately; and initialize all TerminationOptions for all Terminations that are turned on.
+//! \param theCfg Pointer to the configuration object
+//! \param allterms Pointer to the termination bitflags
+//! \param theMetric Pointer to the Metric object
 void Config::InitializeTerminations(const ConfigCollection &theCfg, TermBitflag &allterms, const Metric *const theMetric)
 {
 	// First set the flag to all zeros
@@ -930,10 +954,11 @@ void Config::InitializeTerminations(const ConfigCollection &theCfg, TermBitflag 
 	}
 }
 
-/// <summary>
-/// Config::GetViewScreen():  Use configuration to create the ViewScreen object;
-/// with options set according to the configuration.
-/// </summary>
+//! \brief Use configuration to create the ViewScreen object with specified parameters
+//! \param theCfg Pointer to the configuration object
+//! \param valdiag Diagnostic bitflag used for coarseness evaluation in the Mesh
+//! \param theMetric Pointer to the Metric object
+//! \return Pointer to the ViewScreen object
 std::unique_ptr<ViewScreen> Config::GetViewScreen(const ConfigCollection &theCfg, DiagBitflag valdiag, const Metric *const theMetric)
 {
 	// DEFAULTS set here
@@ -995,11 +1020,10 @@ std::unique_ptr<ViewScreen> Config::GetViewScreen(const ConfigCollection &theCfg
 	return theViewScreen;
 }
 
-/// <summary>
-/// Config::GetMesh():  Use configuration to create the Mesh object;
-/// with options set according to the configuration.
-/// Config::GetViewScreen() calls this when creating the ViewScreen object.
-/// </summary>
+//! \brief Use configuration to create the Mesh object with specified parameters
+//! \param theCfg Pointer to the configuration object
+//! \param valdiag Diagnostic bitflag used for coarseness evaluation in the Mesh
+//! \return Pointer to the Mesh object
 std::unique_ptr<Mesh> Config::GetMesh(const ConfigCollection &theCfg, DiagBitflag valdiag)
 {
 	std::unique_ptr<Mesh> theMesh;
@@ -1103,10 +1127,9 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigCollection &theCfg, DiagBitfla
 	return theMesh;
 }
 
-/// <summary>
-/// Config::GetGeodesicIntegrator():  Returns a pointer to the integrator function to be used
-/// as specified in the configuration file.
-/// </summary>
+//! \brief Use configuration to set the GeodesicIntegratorFunc pointer to the correct integrator function
+//! \param theCfg Pointer to the configuration object
+//! \return GeodesicIntegratorFunc function
 GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigCollection &theCfg)
 {
 	std::string IntegratorType{};
@@ -1193,10 +1216,12 @@ GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigCollection &the
 	return TheFunc;
 }
 
-/// <summary>
-/// Config::GetOutputHandler():  Creates the GeodesicOutputHandler object with options specified
-/// according to the configuration file, for handling of geodesic outputs.
-/// </summary>
+//! \brief Use configuration to create the GeodesicOutputHandler object with specified parameters
+//! \param theCfg Pointer to the configuration object
+//! \param alldiags Diagnostics bitflags
+//! \param valdiag Diagnostic bitflag used for coarseness evaluation in the Mesh
+//! \param FirstLineInfo String to be written as the first line in the output file
+//! \return Pointer to the GeodesicOutputHandler object
 std::unique_ptr<GeodesicOutputHandler> Config::GetOutputHandler(const ConfigCollection &theCfg,
 																DiagBitflag alldiags, DiagBitflag valdiag, std::string FirstLineInfo)
 {

@@ -1,19 +1,20 @@
 #ifndef _FOORT_CONFIG_H
 #define _FOORT_CONFIG_H
 
-///////////////////////////////////////////////////////////////////////////////////////
-////// CONFIG.H
-////// Functions that read the configuration file
-////// and initialize all objects.
-////// All definitions in Config.cpp
-///////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @file Config.h
+ * @brief Functions that read the configuration file and initialize all objects.
+ * @author Daniel R. Mayerson
+ * @version 1.0
+ * @date 2024-12-12
+ * @copyright Copyright (c) 2024
+ */
 
 //////////////////////////////////////////////////////////
-// COMMENT ONLY THIS LINE OUT TO BE IN PRECOMPILED OPTIONS MODE
+// OUTDATED: should remain defined for now
 #define CONFIGURATION_MODE
 //////////////////////////////////////////////////////////
 
-// We need essentially all of the possible different objects as configuration functions initialize all of them
 #include "Geometry.h"
 #include "Metric.h"
 #include "Diagnostics.h"
@@ -22,9 +23,6 @@
 #include "Geodesic.h"
 #include "Integrators.h"
 
-// The entire configuration namespace and its functions are only defined in CONFIGURATION MODE!
-#ifdef CONFIGURATION_MODE
-
 #include <memory> // std::unique_ptr
 #include <string> // std::string
 
@@ -32,7 +30,9 @@
 
 #include "ConfigReader.h"
 
-// Namespace for all configuration functions that initialize objects based on configuration file
+/**
+ * \brief Namespace for all configuration functions that initialize objects based on configuration file
+ */
 namespace Config
 {
 	// Output level for important missing information that will default
@@ -83,7 +83,5 @@ namespace Config
 															DiagBitflag alldiags, DiagBitflag valdiag, std::string FirstLineInfo);
 
 } // end namespace Config
-
-#endif // CONFIGURATION_MODE
 
 #endif

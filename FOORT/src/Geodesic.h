@@ -1,13 +1,6 @@
 #ifndef _FOORT_GEODESIC_H
 #define _FOORT_GEODESIC_H
 
-///////////////////////////////////////////////////////////////////////////////////////
-////// GEODESIC.H
-////// Declarations of abstract base Source class and all its descendants.
-////// Declaration of Geodesic class.
-////// All definitions in Geodesic.cpp
-///////////////////////////////////////////////////////////////////////////////////////
-
 #include "Geometry.h"	  // for tensor objects
 #include "Metric.h"		  // for the metric
 #include "Diagnostics.h"  // Geodesics own Diagnostics
@@ -17,10 +10,22 @@
 #include <string> // for strings
 #include <vector> // for std::vector
 
+/**
+ * @file Geodesic.h
+ * @author Daniel R. Mayerson
+ * @brief Declarations of abstract base Source class and all its descendants. Declaration of Geodesic class.
+ * @version 1.0
+ * @date 2024-12-16
+ * @copyright Copyright (c) 2024
+ */
+
 ///////////////////////////////////////////////////////////
 //// DECLARATIONS OF SOURCE BASE CLASS AND DESCENDANTS ////
 
-// Abstract base class
+/**
+ * @brief Abstract Source base class
+ *
+ */
 class Source
 {
 public:
@@ -37,11 +42,15 @@ public:
 	virtual std::string getFullDescriptionStr() const;
 
 protected:
-	// A const pointer to a const metric
+	//! A const pointer to a const metric
 	const Metric *const m_theMetric;
 };
 
-// NoSource: there is no source, i.e. the geodesic is indeed a geodesic (and feels no force)
+/**
+ * @brief NoSource class.
+ * @details There is no source, i.e. the geodesic is indeed a geodesic (and feels no force)
+ *
+ */
 class NoSource final : public Source
 {
 public:
@@ -58,9 +67,12 @@ public:
 ////////////////////////////////////////
 //// DECLARATIONS OF GEODESIC CLASS ////
 
-// Geodesic class: an instance of this class is created for each Geodesic that is integrated.
-// The Geodesic is in charge of integrating itself until termination, updating its Diagnostics accordingly,
-// and (after termination) returning the appropriate output.
+/**
+ * @brief Geodesic class: an instance of this class is created for each Geodesic that is integrated.
+ * @details The Geodesic is in charge of integrating itself until termination, updating its Diagnostics accordingly,
+ * and (after termination) returing the appropriate output
+ *
+ */
 class Geodesic
 {
 public:
@@ -70,13 +82,16 @@ public:
 	Geodesic(const Geodesic &) = delete;
 	Geodesic &operator=(const Geodesic &) = delete;
 
-	// Constructor which creates the Geodesic object
-	// Takes the following arguments which initialize the private member variables that remain the same over all geodesics
-	// - Metric (pointer)
-	// - Source (pointer)
-	// - Diagnostic bitflag (& value Diagnostic bitflag) (used to create a vector of new instances of Diagnostics)
-	// - Termination bitflag (used to create a vector of new instances of Terminations)
-	// - Geodesic integrator function to use for integrating geodesic equation
+	/**
+	 * @brief Construct a new Geodesic object. Arguments initialize private member variables that remain the same over all geodesics.
+	 *
+	 * @param theMetric Pointer to the Metric object.
+	 * @param theSource Pointer to the Source object.
+	 * @param diagbit Diagnostic bitflag.
+	 * @param valdiagbit Value diagnostic bitflag.
+	 * @param termbit Termination bitflag.
+	 * @param theIntegrator Geoedesic integrator function to use for integrating geodesic equation.
+	 */
 	Geodesic(const Metric *const theMetric, const Source *const theSource,
 			 DiagBitflag diagbit, DiagBitflag valdiagbit,
 			 TermBitflag termbit, GeodesicIntegratorFunc theIntegrator) : m_theMetric{theMetric}, m_theSource{theSource},
@@ -112,23 +127,30 @@ public:
 
 private:
 	// These variables define its internal state
-	Term m_TermCond{Term::Uninitialized}; // As long as this is Term::Continue, not done integrating yet
-	Point m_CurrentPos{};				  // Current position
-	OneIndex m_CurrentVel{};			  // Current proper velocity
-	real m_curLambda{0.0};				  // Current value of affine parameter (starts at 0.0)
+	//! As long as this is Term::Continue, not done integrating yet
+	Term m_TermCond{Term::Uninitialized};
+	//! Current position
+	Point m_CurrentPos{};
+	//! Current proper velocity
+	OneIndex m_CurrentVel{};
+	//! Current value of affine parameter (starts at 0.0)
+	real m_curLambda{0.0};
 
-	// The Geodesic keeps track of what index it has been assigned;
-	// it outputs this information in its final output string
+	//! The Geodesic keeps track of what index it has been assigned;
+	//! it outputs this information in its final output string
 	ScreenIndex m_ScreenIndex{};
 
 	// These are const pointers (or const vectors of pointers) that contain all the information the Geodesic needs
-	const Metric *const m_theMetric; // Metric is needed to evaluate the geodesic equation
-	const Source *const m_theSource; // Source for the rhs of the geodesic equation
-	// An instance of each Diagnostic and Termination is created for the Geodesic (in its constructor);
-	// so the Geodesic is the owner of these objects.
+	//! const pointer to the Metric
+	const Metric *const m_theMetric;
+	//! const pointer to the Source for the rhs of the geodesic equation
+	const Source *const m_theSource;
+	//! Vector of unique pointers to Diagnostics. An instance of each Diagnostic is created for the Geodesic, so the Geodesic is the owner of these objects.
 	const DiagnosticUniqueVector m_AllDiagnostics;
+	//! Vector of unique pointers to Terminations. An instance of each Termination is created for the Geodesic, so the Geodesic is the owner of these objects.
 	const TerminationUniqueVector m_AllTerminations;
-	const GeodesicIntegratorFunc m_theIntegrator; // This is the function that will integrate the geodesic equation one step
+	//! This is the function that will integrate the geodesic equation one step
+	const GeodesicIntegratorFunc m_theIntegrator;
 };
 
 #endif

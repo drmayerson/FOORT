@@ -21,6 +21,7 @@ target_link_libraries(config_lib PUBLIC diagnostics_lib geodesic_lib integrators
 target_link_libraries(diagnostics_lib PUBLIC diagnostics_emission_lib geodesic_lib input_output_lib integrators_lib metric_lib)
 target_link_libraries(diagnostics_emission_lib PUBLIC input_output_lib integrators_lib metric_lib)
 target_link_libraries(geodesic_lib PUBLIC diagnostics_lib input_output_lib integrators_lib metric_lib terminations_lib)
+target_link_libraries(input_output_lib stdc++fs)
 target_link_libraries(integrators_lib PUBLIC geodesic_lib metric_lib)
 target_link_libraries(mesh_lib PUBLIC diagnostics_lib input_output_lib utilities_lib)
 target_link_libraries(metric_lib PUBLIC input_output_lib integrators_lib spline_lib)

@@ -4,16 +4,34 @@
 
 #include <cmath> // for asinh, exp, sqrt, fabs
 
+/**
+ * @file DiagnosticsEmission.cpp
+ * @author Daniel R. Mayerson
+ * @version 1.0
+ * @date 2024-12-16
+ * @copyright Copyright (c) 2024
+ */
+
 /// <summary>
 /// Emission model functions
 /// </summary>
 
+/**
+ * @brief Base class default string getter
+ *
+ * @return std::string
+ */
 std::string EmissionModel::getFullDescriptionStr() const
 {
-	// Base class default string getter
 	return "Unspecified emission model";
 }
 
+/**
+ * @brief Get the emission at a point according to the Johnson SU model used in GLM
+ *
+ * @param p Point at which to calculate the emission
+ * @return real Emission at the point
+ */
 real GLMJohnsonSUEmission::GetEmission(const Point &p) const
 {
 	// Return the local emission according to the Johnson SU model used in GLM
@@ -24,6 +42,11 @@ real GLMJohnsonSUEmission::GetEmission(const Point &p) const
 	return num / den;
 }
 
+/**
+ * @brief Description string getter for the Johnson SU emission model
+ *
+ * @return std::string
+ */
 std::string GLMJohnsonSUEmission::getFullDescriptionStr() const
 {
 	// Description string
@@ -34,11 +57,22 @@ std::string GLMJohnsonSUEmission::getFullDescriptionStr() const
 /// FluidVelocityModel functions
 /// </summary>
 
+/**
+ * @brief Base class default string getter
+ *
+ * @return std::string
+ */
 std::string FluidVelocityModel::getFullDescriptionStr() const
 {
 	return "Unspecified fluid velocity model";
 }
 
+/**
+ * @brief Get the local four-velocity of the fluid according to the GeneralCircularRadial model
+ *
+ * @param p Point at which to calculate the four-velocity
+ * @return OneIndex Local four-velocity with index down
+ */
 OneIndex GeneralCircularRadialFluid::GetFourVelocityd(const Point &p) const
 {
 	// Put point exactly on equator
@@ -137,6 +171,11 @@ OneIndex GeneralCircularRadialFluid::GetFourVelocityd(const Point &p) const
 	return p_down_fin;
 }
 
+/**
+ * @brief Description string getter for the GeneralCircularRadial fluid velocity model
+ *
+ * @return std::string
+ */
 std::string GeneralCircularRadialFluid::getFullDescriptionStr() const
 {
 	// Full description string; contains ISCO radius (calculated in constructor)
@@ -148,6 +187,15 @@ std::string GeneralCircularRadialFluid::getFullDescriptionStr() const
 	return "Circular/radial flow (sub-Keplerian parameter xi = " + std::to_string(m_subKeplerParam) + ", beta_r = " + std::to_string(m_betaR) + ", beta_phi = " + std::to_string(m_betaPhi) + "; " + (m_ISCOexists ? "ISCO = " + std::to_string(trueISCOradius) : "no ISCO found") + ")";
 }
 
+/**
+ * @brief Get the circular velocity for a point, with optional subKeplerian rescaling
+ * @details Returns the velocity for circular (sub)Keplerian motion (outside the ISCO). First the circular geodesic is calculated,
+ * then if subKeplerianOn == true, the orbit is reparametrized to non-geodetic subKeplerian circular motion according to the subKeplerian parameter
+ *
+ * @param p Point at which to calculate the velocity
+ * @param subKeplerianOn Boolean to indicate whether to rescale the angular momentum for sub-Keplerian motion
+ * @return OneIndex circular velocity with index down. If no solution, returns all zeros
+ */
 OneIndex GeneralCircularRadialFluid::GetCircularVelocityd(const Point &p, bool subKeplerianOn) const
 {
 	// Returns velocity for circular (sub)Keplerian motion (outside the ISCO)
@@ -253,10 +301,14 @@ OneIndex GeneralCircularRadialFluid::GetCircularVelocityd(const Point &p, bool s
 	return p_down; // if no solution, returns all zeros
 }
 
+/**
+ * @brief Returns velocity for non-geodetic motion where E,L = (E,L)_ISCO and radially falling inward
+ *
+ * @param p Point at which to calculate the velocity
+ * @return OneIndex
+ */
 OneIndex GeneralCircularRadialFluid::GetInsideISCOCircularVelocityd(const Point &p) const
 {
-	// Returns velocity for non-geodetic motion where E,L = (E,L)_ISCO and radially falling inward
-
 	TwoIndex g_uu{m_theMetric->getMetric_uu(p)};
 
 	// Assuming g_ra cross terms vanish!
@@ -271,10 +323,14 @@ OneIndex GeneralCircularRadialFluid::GetInsideISCOCircularVelocityd(const Point 
 		return {};
 }
 
+/**
+ * @brief Returns radial velocity for pure infalling matter with E = 1 and L = 0 at infinity
+ *
+ * @param p Point at which to calculate the velocity
+ * @return OneIndex
+ */
 OneIndex GeneralCircularRadialFluid::GetRadialVelocityd(const Point &p) const
 {
-	// Returns velocity for pure infalling matter with E = 1 and L = 0 at infinity
-
 	real E{1.0}; // energy at infinity
 	real p_t{-E};
 	real p_phi{0.0};   // angular momentum at infinity = 0
@@ -294,12 +350,12 @@ OneIndex GeneralCircularRadialFluid::GetRadialVelocityd(const Point &p) const
 	return p_down;
 }
 
+/**
+ * @brief Helper function to find the ISCO
+ * @details This helper function finds the ISCO. We use a binary search to converge on the ISCO value; the initial outer bounds for a metric with horizon are the horizon radius and 10*(horizon radius) (in true radii, not log(r) coordinates)
+ */
 void GeneralCircularRadialFluid::FindISCO()
 {
-	// This helper function finds the ISCO.
-	// We use a binary search to converge on the ISCO value; the initial outer bounds
-	// for a metric with horizon are the horizon radius and 10*(horizon radius) (in true radii, not log(r) coordinates)
-
 	real lowerbound{0.0};
 	real upperbound{1000.0};
 	const SphericalHorizonMetric *sphermetric = dynamic_cast<const SphericalHorizonMetric *>(m_theMetric);
@@ -375,12 +431,15 @@ void GeneralCircularRadialFluid::FindISCO()
 	}
 }
 
+/**
+ * @brief Helper function to get \partial_r(g^{ab}\Gamma^r_{bc}g^{cd})
+ * @details This function calculates \partial_r(g^ { ab }\Gamma ^ r_{ bc }g^ { cd }). We do so by calculating the central difference with O(h^4) accuracy, but taking the sqrt of the usual h used for derivatives
+ *
+ * @param r Radius at which to calculate the derivative
+ * @return TwoIndex
+ */
 TwoIndex GeneralCircularRadialFluid::GetChristrRaisedDer(real r) const
 {
-	// This function calculates \partial_r(g^ { ab }\Gamma ^ r_{ bc }g^ { cd })
-	// We do so by calculating the central difference with O(h^4) accuracy, but taking the
-	// sqrt of the usual h used for derivatives
-
 	Point BaseP{0.0, r, pi / 2.0, 0.0};
 	Point ShiftP{0.0, sqrt(Integrators::Derivative_hval), 0.0, 0.0};
 

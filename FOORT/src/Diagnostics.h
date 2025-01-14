@@ -1,11 +1,14 @@
 #ifndef _FOORT_DIAGNOSTICS_H
 #define _FOORT_DIAGNOSTICS_H
 
-///////////////////////////////////////////////////////////////////////////////////////
-////// DIAGNOSTICS.H
-////// Declarations of abstract base Diagnostic class and all its descendants.
-////// All definitions in Diagnostics.cpp
-///////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @file Diagnostics.h
+ * @author Daniel R. Mayerson
+ * @brief Declarations of abstract base Diagnostic class and all its descendants. All Definitions in Diagnostics.cpp
+ * @version 1.0
+ * @date 2024-12-16
+ * @copyright Copyright (c) 2024
+ */
 
 #include "Geometry.h"	 // for tensors
 #include "Metric.h"		 // for metric
@@ -31,6 +34,10 @@ class Geodesic;
 // it is not possible to have a Diagnostic "on" more than once
 // Note: why not std::bitset<size>? Because in this way we can use expressions with DiagBitflag in conditional expressions,
 // e.g. if ( mydiagbitflag & Diag_FourColorScreen)
+/**
+ * @brief Diagnostic bitflags
+ * @details Used for constructing vector of Diagnostics ...
+ */
 using DiagBitflag = std::uint16_t;
 
 // Define a bitflag per existing diagnostic
@@ -49,8 +56,10 @@ constexpr DiagBitflag Diag_MyDiag				{ 0b0000'0000'0000'1000 };
 */
 //// END DIAGNOSTIC ADD POINT B ////
 
-// This carries the information for a Diagnostic to update itself: if UpdateNsteps > 0, then every so many steps.
-// If UpdateNSteps == 0, then it only updates at the start and/or finish of integration if the appropriate bool is set.
+/**
+ * @brief Struct to hold the information for a Diagnostic to update itself
+ * @details If UpdateNsteps > 0, then every so many steps. If UpdateNSteps == 0, then it only updates at the start and/or finish of integration if the appropriate bool is set.
+ */
 struct UpdateFrequency
 {
 	largecounter UpdateNSteps{0};
@@ -58,10 +67,10 @@ struct UpdateFrequency
 	bool UpdateFinish{false};
 };
 
-//////////////////////////////////////////////////////////////
-//// GENERAL DECLARATIONS OF AND WITH ABSTRACT BASE CLASS ////
-
-// Abstract base class for all diagnostics
+/**
+ * @brief Abstract base class for all diagnostics
+ *
+ */
 class Diagnostic
 {
 public:
@@ -117,18 +126,21 @@ protected:
 	largecounter m_StepsSinceUpdated{};
 };
 
-// Owner vector of derived Diagnostics classes
+//! Owner vector of derived Diagnostics classes
 using DiagnosticUniqueVector = std::vector<std::unique_ptr<Diagnostic>>;
 
-// Helper to create a new vector of Diagnostic options, based on the bitflag
-// The first diagnostic is the value diagnostic
+//! Helper to create a new vector of Diagnostic options, based on the bitflag
+//! The first diagnostic is the value diagnostic
 DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag valdiag, Geodesic *const theGeodesic);
 
 //////////////////////////////////////////////////////
 //// DECLARATIONS FOR DERIVED DIAGNOSTIC CLASSES  ////
 
-// The four color screen: associates one of four colors based on the quadrant that the geodesic finishes in
-// Will ONLY return a color if the geodesic indeed finishes because it passes through the boundary sphere!
+/**
+ * @brief The four color screen diagnostic.
+ * @details This diagnostic associates one of four colors based on the quadrant that the geodesic finishes in. Will ONLY return a color if the geodesic indeed finishes because it passes through the boundary sphere!
+ *
+ */
 class FourColorScreenDiagnostic final : public Diagnostic
 {
 public:
@@ -155,14 +167,15 @@ public:
 	// FourColorScreen does not need any (static) options!
 
 private:
-	// Note initialization to 0; this means the default value returned will be 0
-	// (e.g. if Term::BoundarySphere is not reached)
+	//! Note initialization to 0; this means the default value returned will be 0 (e.g. if Term::BoundarySphere is not reached)
 	int m_quadrant{0};
 };
 
-// Forward declaration needed before Diagnostic
+//! Forward declaration needed before Diagnostic
 struct GeodesicPositionOptions;
-// Geodesic position tracker
+/**
+ * @brief Geodesic position tracker.
+ */
 class GeodesicPositionDiagnostic final : public Diagnostic
 {
 public:
@@ -196,9 +209,11 @@ private:
 	std::vector<Point> m_AllSavedPoints{};
 };
 
-// Forward declaration needed before Diagnostic
+//! Forward declaration needed before Diagnostic
 struct EquatorialPassesOptions;
-// Diagnostic for counting number of passes through equatorial plane
+/**
+ * @brief Diagnostic that counts the number of passes through the equatorial plane.
+ */
 class EquatorialPassesDiagnostic : public Diagnostic
 {
 public:
@@ -222,22 +237,23 @@ public:
 	std::string getNameStr() const override;
 	std::string getFullDescriptionStr() const override;
 
-	// Needs the extra option of a threshold
+	//! Needs the extra option of a threshold
 	static std::unique_ptr<EquatorialPassesOptions> DiagOptions;
 
 protected:
-	// Keeps track of how many passes have been made
+	//! Keeps track of how many passes have been made
 	int m_EquatPasses{0};
 
 private:
-	// Keeps track of the previous theta angle, so that we can compare with current theta angle
+	//! Keeps track of the previous theta angle, so that we can compare with current theta angle
 	real m_PrevTheta{-1};
 };
 
 // Forward declaration needed before Diagnostic
 struct ClosestRadiusOptions;
-// Diagnostic keeps track of the closes radius that the geodesic passes through
-// Note: always keeps track of true radius, not log radius
+/**
+ * @brief Diagnostic that keeps track of the closest (true, not log) radius that the geodesic passes through.
+ */
 class ClosestRadiusDiagnostic final : public Diagnostic
 {
 public:
@@ -271,12 +287,12 @@ private:
 
 // Forward declaration needed before Diagnostic
 struct EquatorialEmissionOptions;
-// Diagnostic that calculates brightness intensity for the geodesic, based on
-// a specified equatorial disc emission model
-// (intensity profile and fluid velocity profile, both specified in the options struct)
-// Note that EquatorialEmissionDiagnostic inherits from EquatorialPassesDiagnostic,
-// since it needs to keep track of when it passes through the equatorial plane.
-// As a result it also keeps track of the number of equatorial passes
+/**
+ * @brief Diagnostic that calculates brightness intensity for the geodesic, based on a specified equatorial disc emission model.
+ * @details Inherits from EquatorialPassesDiagnostic, since it needs to keep track of when it passes through the equatorial plane.
+ * As a result it also keeps track of the number of equatorial passes.
+ * Both the intensity profile and fluid velocity profile are specified in the options struct.
+ */
 class EquatorialEmissionDiagnostic final : public EquatorialPassesDiagnostic
 {
 public:
@@ -363,7 +379,9 @@ private:
 ///////////////////////////////////////
 //// ALL DIAGNOSTICOPTIONS STRUCTS ////
 
-// Base class for DiagnosticOptions. Other Diagnostics can inherit from here if they require more options.
+/**
+ * @brief Base class for DiagnosticOptions. Other Diagnostics can inherit from here if they require more options.
+ */
 struct DiagnosticOptions
 {
 public:
@@ -376,8 +394,11 @@ public:
 
 	const UpdateFrequency theUpdateFrequency;
 };
-
-// GeodesicPositionDiagnostic needs to keep track of number of steps to output
+/**
+ * @brief Options for GeodesicPositionDiagnostic.
+ * @details Inherits from DiagnosticOptions, and adds the number of steps to output.
+ *
+ */
 struct GeodesicPositionOptions : public DiagnosticOptions
 {
 public:
@@ -389,7 +410,11 @@ public:
 	const largecounter OutputNrSteps;
 };
 
-// EquatorialPassesDiagnostic needs to keep track of the threshold
+/**
+ * @brief Options for EquatorialPassesDiagnostic.
+ * @details Inherits from DiagnosticOptions, and adds the threshold for counting passes.
+ *
+ */
 struct EquatorialPassesOptions : public DiagnosticOptions
 {
 public:
@@ -401,7 +426,11 @@ public:
 	const real Threshold;
 };
 
-// ClosestRadiusOptions needs to keep track of whether we are using r or log(r) radial coordinate
+/**
+ * @brief Options for ClosestRadiusDiagnostic.
+ * @details Inherits from DiagnosticOptions, and adds the flag for using log(r) scale.
+ *
+ */
 struct ClosestRadiusOptions : public DiagnosticOptions
 {
 public:
@@ -417,8 +446,11 @@ public:
 // See Diagnostics_Emission.h and .cpp for declarations and definitions of these and their descendant classes!
 struct EmissionModel;
 struct FluidVelocityModel;
-// EquatorialEmissionDiagnostic needs to keep track of all tuneable parameters of the emission
-// Note that this inherits from EquatorialPassesOptions
+/**
+ * @brief Options for EquatorialEmissionDiagnostic.
+ * @details Inherits from EquatorialPassesOptions, and adds the fudge factor, upper bound, emission model, fluid velocity model, redshift power, and threshold.
+ *
+ */
 struct EquatorialEmissionOptions : public EquatorialPassesOptions
 {
 public:

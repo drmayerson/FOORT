@@ -9,11 +9,26 @@
 #include <algorithm> // needed for std::rotate()
 #include <cmath>	 // needed for cos, sin, acos, asinh, pow
 
+/**
+ * @file Diagnostics.cpp
+ * @author Daniel R. Mayerson
+ * @version 1.0
+ * @date 2024-12-16
+ * @copyright Copyright (c) 2024
+ */
+
 /// <summary>
 /// Diagnostic helper function
 /// </summary>
 
-// Helper to create a new vector of Diagnostic options, based on the bitflag
+/**
+ * @brief Create a Diagnostic Vector object
+ *
+ * @param diagflags Diagnostic bitflags
+ * @param valdiag Value Diagnostic bitflags
+ * @param theGeodesic Pointer to the Geodesic object
+ * @return DiagnosticUniqueVector
+ */
 DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag valdiag, Geodesic *const theGeodesic)
 {
 	// This should never happen if everything was set up correctly
@@ -116,14 +131,24 @@ DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag
 /// Diagnostic (abstract base class) functions
 /// </summary>
 
+/**
+ * @brief Reset Diagnostic object steps to zero.
+ *
+ */
 void Diagnostic::Reset()
 {
 	// Reset steps to 0 for starting a new geodesic
 	m_StepsSinceUpdated = 0;
 }
 
-// This helper function returns true if the Diagnostic should update its internal status. Should be called from within
-// UpdateData() with the appropriate DiagnosticOptions::theUpdateFrequency
+/**
+ * @brief Returns true if the Diagnostic should update its initial status.
+ * @details Should be called from within UpdateData() with the appropriate DiagnosticOptions::theUpdateFrequency.
+ *
+ * @param myUpdateFrequency UpdateFrequency struct
+ * @return true
+ * @return false
+ */
 bool Diagnostic::DecideUpdate(const UpdateFrequency &myUpdateFrequency)
 {
 	bool decideupdate = false;
@@ -153,7 +178,12 @@ bool Diagnostic::DecideUpdate(const UpdateFrequency &myUpdateFrequency)
 	return decideupdate;
 }
 
-// Base class definition just returns the short name (which itself is pure virtual in the base class!)
+/**
+ * @brief Base class just returns the short name of the Diagnostic.
+ * @details This function is pure virtual in the base class.
+ *
+ * @return std::string
+ */
 std::string Diagnostic::getFullDescriptionStr() const
 {
 	return getNameStr();
@@ -163,13 +193,20 @@ std::string Diagnostic::getFullDescriptionStr() const
 /// FourColorScreen functions
 /// </summary>
 
+/**
+ * @brief Reset the quadrant to its default option; also call base class Reset function
+ *
+ */
 void FourColorScreenDiagnostic::Reset()
 {
-	// Reset the quadrant to its default option; also call base class Reset function
 	m_quadrant = 0;
 	Diagnostic::Reset();
 }
 
+/**
+ * @brief Update the quadrant based on the geodesic's final position
+ *
+ */
 void FourColorScreenDiagnostic::UpdateData()
 {
 	// Note: FourColorScreen only wants to update at the end, and then only if
@@ -213,36 +250,58 @@ void FourColorScreenDiagnostic::UpdateData()
 	}
 }
 
+/**
+ * @brief Return the value of the quadrant as a string
+ *
+ * @return std::string
+ */
 std::string FourColorScreenDiagnostic::getFullDataStr() const
 {
-	// Return the value of the quadrant as string
 	return std::to_string(m_quadrant);
 }
 
+/**
+ * @brief Return the value of the quadrant as a vector of size one
+ *
+ * @return std::vector<real>
+ */
 std::vector<real> FourColorScreenDiagnostic::getFinalDataVal() const
 {
-	// Return the quadrant as a vector (of size one)
 	return std::vector<real>{static_cast<real>(m_quadrant)};
 }
 
+/**
+ * @brief Discrete metric for distance: return 0 if the quadrants are the same, 1 if they are not
+ *
+ * @param val1 first quadrant value
+ * @param val2 second quadrant value
+ * @return real
+ */
 real FourColorScreenDiagnostic::FinalDataValDistance(const std::vector<real> &val1, const std::vector<real> &val2) const
 {
-	// Discrete metric for distance: returns 0 if the quadrants are the same, 1 if they are not
 	if (fabs(val1[0] - val2[0]) < 1.0) // use <1 instead of == 0.0 to avoid floating point round-off errors
 		return 0;
 	else
 		return 1;
 }
 
+/**
+ * @brief Simple name without spaces
+ *
+ * @return std::string
+ */
 std::string FourColorScreenDiagnostic::getNameStr() const
 {
-	// Simple name without spaces
 	return "FourColorScreen";
 }
 
+/**
+ * @brief Return full name, possibly with spaces
+ *
+ * @return std::string
+ */
 std::string FourColorScreenDiagnostic::getFullDescriptionStr() const
 {
-	// Full description does not have more information than simple name, but can contain spaces
 	return "Four-color screen";
 }
 
@@ -250,13 +309,20 @@ std::string FourColorScreenDiagnostic::getFullDescriptionStr() const
 /// GeodesicPositionDiagnostic functions
 /// </summary>
 
+/**
+ * @brief Empty out vector of points and call base Reset function
+ *
+ */
 void GeodesicPositionDiagnostic::Reset()
 {
-	// Empty out vector of points; also call base class Reset function
 	m_AllSavedPoints.clear();
 	Diagnostic::Reset();
 }
 
+/**
+ * @brief Update the saved points vector with the current position of the geodesic
+ *
+ */
 void GeodesicPositionDiagnostic::UpdateData()
 {
 	// This checks to see if we want to update the data now (and increments the step counter if necessary)
@@ -296,11 +362,16 @@ void GeodesicPositionDiagnostic::UpdateData()
 	}
 }
 
+/**
+ * @brief Return full data string of all saved points
+ * @details The full output string looks like this:
+ * "(total nr steps) ;; (step 1) (step 2) (step 3) ..."
+ * where each step is a (space-separated) output of the geodesic coordinates at that step
+ *
+ * @return std::string
+ */
 std::string GeodesicPositionDiagnostic::getFullDataStr() const
 {
-	// The full output string looks like this:
-	// "(total nr steps) ;; (step 1) (step 2) (step 3) ..."
-	// where each step is a (space-separated) output of the geodesic coordinates at that step
 	std::string outputstr{std::to_string(m_AllSavedPoints.size()) + " ;; "};
 
 	for (auto &output : m_AllSavedPoints)
@@ -314,13 +385,25 @@ std::string GeodesicPositionDiagnostic::getFullDataStr() const
 	return outputstr;
 }
 
+/**
+ * @brief Return the final (theta, phi) value of the geodesic
+ *
+ * @return std::vector<real>
+ */
 std::vector<real> GeodesicPositionDiagnostic::getFinalDataVal() const
 {
-	// return the last (theta, phi) coordinates
 	Point lastpt{m_AllSavedPoints.back()};
 	return std::vector<real>{lastpt[2], lastpt[3]};
 }
 
+/**
+ * @brief Return the angular distance between two geodesics
+ * @details This is based on their final angles on the boundary sphere (theta, phi)
+ *
+ * @param val1 first geodesic final position
+ * @param val2 second geodesic final position
+ * @return real
+ */
 real GeodesicPositionDiagnostic::FinalDataValDistance(const std::vector<real> &val1, const std::vector<real> &val2) const
 {
 	// Check to make sure we have the right size vectors passed
@@ -334,12 +417,22 @@ real GeodesicPositionDiagnostic::FinalDataValDistance(const std::vector<real> &v
 	return acos(cos(val1[0]) * cos(val2[0]) + sin(val1[0]) * sin(val2[0]) * cos(val1[1] - val2[1]));
 }
 
+/**
+ * @brief Simple name without spaces
+ *
+ * @return std::string
+ */
 std::string GeodesicPositionDiagnostic::getNameStr() const
 {
 	// Simple name string without spaces
 	return "GeodesicPosition";
 }
 
+/**
+ * @brief More descriptive string (with spaces)
+ *
+ * @return std::string
+ */
 std::string GeodesicPositionDiagnostic::getFullDescriptionStr() const
 {
 	// Full description string; also contains information about how frequently it updates and how many steps it outputs at the end
@@ -351,14 +444,21 @@ std::string GeodesicPositionDiagnostic::getFullDescriptionStr() const
 /// EquatorialPassesDiagnostic functions
 /// </summary>
 
+/**
+ * @brief Reset the number of equatorial passes and the previous theta angle and call base class Reset function
+ *
+ */
 void EquatorialPassesDiagnostic::Reset()
 {
-	// Reset internal variables to default (initial) values; also call base class Reset function
 	m_EquatPasses = 0;
 	m_PrevTheta = -1;
 	Diagnostic::Reset();
 }
 
+/**
+ * @brief Check to see if we have crossed the equatorial plane and update the number of passes
+ *
+ */
 void EquatorialPassesDiagnostic::UpdateData()
 {
 	// This checks to see if we want to update the data now (and increments the step counter if necessary)
@@ -391,18 +491,35 @@ void EquatorialPassesDiagnostic::UpdateData()
 	}
 }
 
+/**
+ * @brief Return the number of equatorial passes as a string
+ *
+ * @return std::string
+ */
 std::string EquatorialPassesDiagnostic::getFullDataStr() const
 {
 	// Returns a string of how many times it passed across the equatorial plane
 	return std::to_string(m_EquatPasses);
 }
 
+/**
+ * @brief Return the number of equatorial passes as a vector of size one
+ *
+ * @return std::vector<real>
+ */
 std::vector<real> EquatorialPassesDiagnostic::getFinalDataVal() const
 {
 	// Simple vector of size one containing the number of equatorial passes
 	return std::vector<real>{static_cast<real>(m_EquatPasses)};
 }
 
+/**
+ * @brief Return the absolute value of the difference between the number of equatorial passes
+ *
+ * @param val1 first number of equatorial passes
+ * @param val2 second number of equatorial passes
+ * @return real
+ */
 real EquatorialPassesDiagnostic::FinalDataValDistance(const std::vector<real> &val1, const std::vector<real> &val2) const
 {
 	// Returns the simple distance between two geodesics. Note that
@@ -411,15 +528,23 @@ real EquatorialPassesDiagnostic::FinalDataValDistance(const std::vector<real> &v
 	return abs(val1[0] - val2[0]);
 }
 
+/**
+ * @brief Simple name without spaces
+ *
+ * @return std::string
+ */
 std::string EquatorialPassesDiagnostic::getNameStr() const
 {
-	// Simple name string without spaces
 	return "EquatPasses";
 }
 
+/**
+ * @brief More descriptive string (with spaces)
+ *
+ * @return std::string
+ */
 std::string EquatorialPassesDiagnostic::getFullDescriptionStr() const
 {
-	// More descriptive string (with spaces)
 	return "Equatorial passes (threshold = " + std::to_string(DiagOptions->Threshold) + ")";
 }
 
@@ -427,13 +552,20 @@ std::string EquatorialPassesDiagnostic::getFullDescriptionStr() const
 /// ClosestRadiusDiagnostic functions
 /// </summary>
 
+/**
+ * @brief Reset the closest radius to -1 and call base class Reset function
+ *
+ */
 void ClosestRadiusDiagnostic::Reset()
 {
-	// Reset internal variables to default (initial) values; also call base class Reset function
 	m_ClosestRadius = -1;
 	Diagnostic::Reset();
 }
 
+/**
+ * @brief Check to see if we have travelled closer to the center and update the closest radius
+ *
+ */
 void ClosestRadiusDiagnostic::UpdateData()
 {
 	// This checks to see if we want to update the data now (and increments the step counter if necessary)
@@ -455,30 +587,56 @@ void ClosestRadiusDiagnostic::UpdateData()
 	}
 }
 
+/**
+ * @brief Return the closest radius as a string
+ *
+ * @return std::string
+ */
 std::string ClosestRadiusDiagnostic::getFullDataStr() const
 {
-	// Returns a string of closest radius
 	return std::to_string(m_ClosestRadius);
 }
 
+/**
+ * @brief Return the closest radius as a vector of size one
+ *
+ * @return std::vector<real>
+ */
 std::vector<real> ClosestRadiusDiagnostic::getFinalDataVal() const
 {
 	// Simple vector of size one containing the closest radius
 	return std::vector<real>{m_ClosestRadius};
 }
 
+/**
+ * @brief Return the absolute value of the difference between the closest radii
+ *
+ * @param val1 first closest radius
+ * @param val2 second closest radius
+ * @return real
+ */
 real ClosestRadiusDiagnostic::FinalDataValDistance(const std::vector<real> &val1, const std::vector<real> &val2) const
 {
 	// Returns the simple distance between two geodesics as the (radial) distance between their closest point
 	return fabs(val1[0] - val2[0]);
 }
 
+/**
+ * @brief Simple name without spaces
+ *
+ * @return std::string
+ */
 std::string ClosestRadiusDiagnostic::getNameStr() const
 {
 	// Simple name string without spaces
 	return "ClosestRadius";
 }
 
+/**
+ * @brief More descriptive string (with spaces)
+ *
+ * @return std::string
+ */
 std::string ClosestRadiusDiagnostic::getFullDescriptionStr() const
 {
 	// More descriptive string (with spaces)
@@ -489,6 +647,10 @@ std::string ClosestRadiusDiagnostic::getFullDescriptionStr() const
 /// EquatorialEmissionDiagnostic functions
 /// </summary>
 
+/**
+ * @brief Reset the intensity and number of equatorial passes to zero and call base class Reset function
+ *
+ */
 void EquatorialEmissionDiagnostic::Reset()
 {
 	// Reset internal variables to default (initial) values; further call parent class Reset function
@@ -496,6 +658,10 @@ void EquatorialEmissionDiagnostic::Reset()
 	EquatorialPassesDiagnostic::Reset();
 }
 
+/**
+ * @brief Update the intensity based on the emission model and the number of equatorial passes
+ *
+ */
 void EquatorialEmissionDiagnostic::UpdateData()
 {
 	// Call parent class UpdateData()
@@ -537,18 +703,35 @@ void EquatorialEmissionDiagnostic::UpdateData()
 	}
 }
 
+/**
+ * @brief Return the intensity and number of equatorial passes as a string
+ *
+ * @return std::string
+ */
 std::string EquatorialEmissionDiagnostic::getFullDataStr() const
 {
 	// Returns intensity and equatorial passes
 	return std::to_string(m_Intensity) + " " + std::to_string(m_EquatPasses);
 }
 
+/**
+ * @brief Return the intensity and number of equatorial passes as a vector of size two
+ *
+ * @return std::vector<real>
+ */
 std::vector<real> EquatorialEmissionDiagnostic::getFinalDataVal() const
 {
 	// Vector returns intensity and number of equatorial passes
 	return std::vector<real>{m_Intensity, static_cast<real>(m_EquatPasses)};
 }
 
+/**
+ * @brief Return the distance between two geodesics based on their intensity and number of equatorial passes
+ *
+ * @param val1 first geodesic intensity and number of equatorial passes
+ * @param val2 second geodesic intensity and number of equatorial passes
+ * @return real
+ */
 real EquatorialEmissionDiagnostic::FinalDataValDistance(const std::vector<real> &val1, const std::vector<real> &val2) const
 {
 	// Difference in equatorial passes
@@ -560,12 +743,22 @@ real EquatorialEmissionDiagnostic::FinalDataValDistance(const std::vector<real> 
 	return IntensitiesDiff * (EquatPassDiff + 1.0);
 }
 
+/**
+ * @brief Simple name without spaces
+ *
+ * @return std::string
+ */
 std::string EquatorialEmissionDiagnostic::getNameStr() const
 {
 	// Simple name string without spaces
 	return "EquatorialEmission";
 }
 
+/**
+ * @brief More descriptive string (with spaces)
+ *
+ * @return std::string
+ */
 std::string EquatorialEmissionDiagnostic::getFullDescriptionStr() const
 {
 	// More descriptive string (with spaces)

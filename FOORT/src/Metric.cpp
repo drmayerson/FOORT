@@ -920,7 +920,9 @@ std::string ST3CrMetric::getFullDescriptionStr() const
 // Constructor, must be passed the two BS parameters and whether we are using a logarithmic radial scale
 // We always have a M = 1 BH; the parameter a gives the angular momentum a = J/M^2
 // The horizon is at r = M + k
-BosonStarMetric::BosonStarMetric(bool rLogScale) : Metric(rLogScale)
+BosonStarMetric::BosonStarMetric(double Phi_infinity, int num_lines, bool rLogScale,
+								 std::string Phi_filename, std::string m_filename) : Metric(rLogScale), m_Phi_infinity(Phi_infinity),
+																					 m_num_lines(num_lines), m_Phi_filename(Phi_filename), m_m_filename(m_filename)
 {
 	// Make sure we are in four spacetime dimensions
 	if constexpr (dimension != 4)
@@ -929,33 +931,39 @@ BosonStarMetric::BosonStarMetric(bool rLogScale) : Metric(rLogScale)
 	}
 	// Boson star has a Killing vector along t and phi, so we initialize the symmetries accordingly
 	m_Symmetries = {0, 3};
+
+	read_data();
+}
+
+void BosonStarMetric::read_data()
+{
 	// We have to interpolate the metric from the data files
-	std::ifstream Phi_file("BosonStar/Phi.dat");
-	std::ifstream m_file("BosonStar/m.dat");
+	std::ifstream Phi_file("BosonStar/" + m_Phi_filename);
+	std::ifstream m_file("BosonStar/" + m_m_filename);
 	if (!Phi_file.is_open() || !m_file.is_open())
 	{
 		std::cerr << "Error reading BosonStar files!" << std::endl;
 		exit(1);
 	}
-	ScreenOutput("Read BosonStar files.");
-	int line_count = 10896;
+	ScreenOutput("Reading BosonStar files.");
+
 	std::string linePhi, linem;
 	// holds the phi, m and r values from the nonuniform r-y hybrid grid. Needed for interpolation
 	// TODO: size properly, currently overestimated
-	std::vector<double> phi_vals(line_count);
-	std::vector<double> m_vals(line_count);
-	std::vector<double> r_vals(line_count);
+	std::vector<double> phi_vals(m_num_lines);
+	std::vector<double> m_vals(m_num_lines);
+	std::vector<double> r_vals(m_num_lines);
 
 	int j = 0;
 
-	while (std::getline(Phi_file, linePhi) && j < line_count)
+	while (std::getline(Phi_file, linePhi) && j < m_num_lines)
 	{
 		std::istringstream iss(linePhi);
 		if (iss >> r_vals[j] >> phi_vals[j])
 			j++;
 	}
 	j = 0;
-	while (std::getline(m_file, linem) && j < line_count)
+	while (std::getline(m_file, linem) && j < m_num_lines)
 	{
 		std::istringstream iss(linem);
 		if (iss >> r_vals[j] >> m_vals[j])
@@ -976,7 +984,7 @@ TwoIndex BosonStarMetric::getMetric_dd(const Point &p) const
 	real r = m_rLogScale ? exp(p[1]) : p[1];
 	real theta = p[2];
 	real sint = sin(theta);
-	real Phi = m_PhiSpline(r) - 1.376427;
+	real Phi = m_PhiSpline(r) - m_Phi_infinity;
 	real m = m_mSpline(r);
 	real alpha = exp(Phi);
 	// Covariant metric elements
@@ -999,7 +1007,7 @@ TwoIndex BosonStarMetric::getMetric_uu(const Point &p) const
 	r += 1e-10; // to avoid division by zero
 	real theta = p[2];
 	real sint = sin(theta);
-	real Phi = m_PhiSpline(r) - 1.376427;
+	real Phi = m_PhiSpline(r) - m_Phi_infinity;
 	real m = m_mSpline(r);
 	real alpha = exp(Phi);
 	// Contravariant metric elements
@@ -1017,7 +1025,7 @@ TwoIndex BosonStarMetric::getMetric_uu(const Point &p) const
 }
 std::string BosonStarMetric::getFullDescriptionStr() const
 {
-	return "Boson star";
+	return "Boson star (Phi infinity = " + std::to_string(m_Phi_infinity) + ", num lines = " + std::to_string(m_num_lines) + ")";
 }
 
 //// (New Metric classes can define their member functions here)

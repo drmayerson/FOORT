@@ -1,6 +1,15 @@
 #ifndef _CONFIGREADER_H
 #define _CONFIGREADER_H
 
+/**
+ * @file ConfigReader.h
+ * @brief Classes used to read in a configuration file and store the settings.
+ * @author Daniel R. Mayerson
+ * @version 1.0
+ * @date 2024-12-12
+ * @copyright Copyright (c) 2024
+ */
+
 #include <string_view> // std::string_view
 #include <string>	   // std::string
 #include <iostream>	   // needed for file and console output
@@ -11,7 +20,9 @@
 #include <limits>	   // for std::numeric_limits
 #include <memory>	   // for std::unique_ptr
 
-// Namespace to put all ConfigReader objects
+/**
+ * \brief Namespace to put all ConfigReader objects
+ */
 namespace ConfigReader
 {
 	// Shorthand for the maximum number of characters we can ignore in a stream
@@ -150,6 +161,15 @@ namespace ConfigReader
 ///////////////////////////////////////////
 ///// Implementation of templated functions
 
+/**
+ * @brief Looks up the value of a setting with the given index and puts it in the output variable.
+ *
+ * @tparam OutputType
+ * @param SettingIndex Setting index
+ * @param theOutput Pointer to the output variable
+ * @return true
+ * @return false
+ */
 template <class OutputType>
 bool ConfigReader::ConfigCollection::LookupValue(int SettingIndex, OutputType &theOutput) const
 {
@@ -164,6 +184,15 @@ bool ConfigReader::ConfigCollection::LookupValue(int SettingIndex, OutputType &t
 	return false;
 }
 
+/**
+ * @brief Looks up the value of a setting with the given name and puts it in the output variable.
+ *
+ * @tparam OutputType
+ * @param SettingName Setting name
+ * @param theOutput Pointer to the output variable
+ * @return true
+ * @return false
+ */
 template <class OutputType>
 bool ConfigReader::ConfigCollection::LookupValue(std::string_view SettingName, OutputType &theOutput) const
 {
@@ -176,7 +205,16 @@ bool ConfigReader::ConfigCollection::LookupValue(std::string_view SettingName, O
 	return false;
 }
 
-// This simply defers to the setting-name-based implementation of the function with given output type
+/**
+ * @brief This simply defers to the setting-name-based implementation of the function with given output type
+ *
+ * @tparam OutputType
+ * @param SettingIndex Setting index
+ * @param theOutput Pointer to the output variable
+ *
+ * @return true
+ * @return false
+ */
 template <class OutputType>
 bool ConfigReader::ConfigCollection::LookupValueInteger(int SettingIndex, OutputType &theOutput) const
 {

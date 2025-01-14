@@ -8,9 +8,19 @@
 #include <string> // for strings
 #include <cmath>  // for fmax, fmin
 
-// Here we declare the emission and fluid velocity models used for equatorial disc emission
+/**
+ * @file DiagnosticsEmission.h
+ * @author Daniel R. Mayerson
+ * @brief Declarations of emission and fluid velocity models used for equatorial disc emission.
+ * @version 1.0
+ * @date 2024-12-16
+ * @copyright Copyright (c) 2024
+ */
 
-// Emission model abstract base class
+/**
+ * @brief Emmision model abstract base class
+ *
+ */
 struct EmissionModel
 {
 public:
@@ -25,7 +35,10 @@ public:
 	virtual std::string getFullDescriptionStr() const;
 };
 
-// The Johnson SU emission model used in GLM
+/**
+ * @brief The Johnson SU emission model used in GLM
+ *
+ */
 struct GLMJohnsonSUEmission final : public EmissionModel
 {
 public:
@@ -41,15 +54,20 @@ public:
 	std::string getFullDescriptionStr() const final;
 
 private:
-	// mu, gamma, sigma are the three parameters of the model
+	//! mu parameter
 	const real m_mu;
+	//! gamma parameter
 	const real m_gamma;
+	//! sigma parameter
 	const real m_sigma;
 };
 
 ///////////////
 
-// Fluid velocity abstract base class
+/**
+ * @brief Fluid velocity model abstract base class
+ *
+ */
 struct FluidVelocityModel
 {
 public:
@@ -70,8 +88,12 @@ protected:
 	const Metric *const m_theMetric;
 };
 
-// This fluid velocity model has three tuneable parameters and represents fluid travelling at a mix of
-// (sub)Keplerian circular orbits and radially infalling orbits in the equatorial plane
+/**
+ * @brief General circular radial fluid velocity model
+ * @details This fluid velocity model has three tuneable parameters and represents fluid travelling at a mix of
+ * ()sub)Keplerian circular orbits and radially infalling orbits in the equatorial plane
+ *
+ */
 struct GeneralCircularRadialFluid final : public FluidVelocityModel
 {
 	// Constructor with three parameters and Metric pointer (which is passed to base class constructor)
@@ -108,8 +130,11 @@ struct GeneralCircularRadialFluid final : public FluidVelocityModel
 
 private:
 	// Three parameters determining the flow
+	//! Sub-Keplerian parameter (0 = Keplerian, 1 = sub-Keplerian)
 	const real m_subKeplerParam;
+	//! Radial velocity parameter
 	const real m_betaR;
+	//! Azimuthal velocity parameter
 	const real m_betaPhi;
 
 	// Helper function to get circular (sub)Keplerian velocity outside the ISCO
@@ -123,10 +148,13 @@ private:
 
 	// Helper function to find the ISCO (called in Constructor)
 	void FindISCO();
-	// ISCO radius and momentum (index down) components
+	//! Flag to indicate if ISCO exists for this Metric
 	bool m_ISCOexists{false};
+	//! ISCO radius
 	real m_ISCOr{-1.0};
+	//! ISCO t momentum
 	real m_ISCOpt{};
+	//! ISCO phi momentum
 	real m_ISCOpphi{};
 
 	// Helper function which returns \partial_r(g^{ab}\Gamma^r_{bc}g^{cd}),
