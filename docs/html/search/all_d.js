@@ -6,5 +6,7 @@ var searchData=
   ['newgeodesicoutput_3',['NewGeodesicOutput',['../class_geodesic_output_handler.html#a9896f1650186466213cb9afd8481bca5',1,'GeodesicOutputHandler']]],
   ['nosource_4',['NoSource',['../class_no_source.html',1,'NoSource'],['../class_no_source.html#a5cc28627029270467f18173b6e5069b5',1,'NoSource::NoSource()']]],
   ['nrsettings_5',['NrSettings',['../class_config_reader_1_1_config_collection.html#a4e3b69449bb8ead4a973af829759b729',1,'ConfigReader::ConfigCollection']]],
-  ['null_6',['Null',['../_view_screen_8h.html#a0d4e12928a4d05040961e205260a0e74abbb93ef26e3c101ff11cdd21cab08a94',1,'ViewScreen.h']]]
+  ['null_6',['Null',['../_view_screen_8h.html#a0d4e12928a4d05040961e205260a0e74abbb93ef26e3c101ff11cdd21cab08a94',1,'ViewScreen.h']]],
+  ['num_5flower_7',['num_lower',['../classtk_1_1internal_1_1band__matrix.html#a419b2b8f3203457bcdd08a88ec9bea12',1,'tk::internal::band_matrix']]],
+  ['num_5fupper_8',['num_upper',['../classtk_1_1internal_1_1band__matrix.html#a27a73e26676f3b24a7c7d2be3b5495a0',1,'tk::internal::band_matrix']]]
 ];

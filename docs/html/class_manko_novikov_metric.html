@@ -92,6 +92,9 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p>Mano-Novikov metric (with angular momentum and M3 parameter turned on)  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_metric_8h_source.html">Metric.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for MankoNovikovMetric:</div>
@@ -99,8 +102,8 @@ Inheritance diagram for MankoNovikovMetric:</div>
  <div class="center">
   <img src="class_manko_novikov_metric.png" usemap="#MankoNovikovMetric_map" alt=""/>
   <map id="MankoNovikovMetric_map" name="MankoNovikovMetric_map">
-<area href="class_spherical_horizon_metric.html" alt="SphericalHorizonMetric" shape="rect" coords="0,56,146,80"/>
-<area href="class_metric.html" alt="Metric" shape="rect" coords="0,0,146,24"/>
+<area href="class_spherical_horizon_metric.html" title="Abstract base class for a metric with a spherical horizon (i.e. horizon at constant radius r)" alt="SphericalHorizonMetric" shape="rect" coords="0,56,146,80"/>
+<area href="class_metric.html" title="The abstract base class for all Metrics." alt="Metric" shape="rect" coords="0,0,146,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -109,60 +112,78 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a93c4e97638887244aa44f9995433c6cb" id="r_a93c4e97638887244aa44f9995433c6cb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a93c4e97638887244aa44f9995433c6cb">MankoNovikovMetric</a> ()=delete</td></tr>
 <tr class="separator:a93c4e97638887244aa44f9995433c6cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa14ef83279e1a4160034a385d6129283" id="r_aa14ef83279e1a4160034a385d6129283"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa14ef83279e1a4160034a385d6129283">MankoNovikovMetric</a> (<a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> aParam, <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> alpha3Param, bool rLogScale=false)</td></tr>
-<tr class="memdesc:aa14ef83279e1a4160034a385d6129283"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_manko_novikov_metric.html">MankoNovikovMetric</a> functions (implementation by Seppe Staelens)  <br /></td></tr>
+<tr class="memdesc:aa14ef83279e1a4160034a385d6129283"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new Manko Novikov <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a> object. We always have a M = 1 BH.  <br /></td></tr>
 <tr class="separator:aa14ef83279e1a4160034a385d6129283"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a732d8e8527c2b127f3c091856bd86884" id="r_a732d8e8527c2b127f3c091856bd86884"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a9cd1cb43637d1e6e730925d90d0b068d">TwoIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a732d8e8527c2b127f3c091856bd86884">getMetric_dd</a> (const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p) const final</td></tr>
+<tr class="memdesc:a732d8e8527c2b127f3c091856bd86884"><td class="mdescLeft">&#160;</td><td class="mdescRight">Manko-Novikov metric getter, indices down.  <br /></td></tr>
 <tr class="separator:a732d8e8527c2b127f3c091856bd86884"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a621e5c8c8d8d847bfa9db43cc484e370" id="r_a621e5c8c8d8d847bfa9db43cc484e370"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a9cd1cb43637d1e6e730925d90d0b068d">TwoIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a621e5c8c8d8d847bfa9db43cc484e370">getMetric_uu</a> (const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p) const final</td></tr>
+<tr class="memdesc:a621e5c8c8d8d847bfa9db43cc484e370"><td class="mdescLeft">&#160;</td><td class="mdescRight">Manko-Novikov metric getter, indices up.  <br /></td></tr>
 <tr class="separator:a621e5c8c8d8d847bfa9db43cc484e370"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84291afda877bdcdd2b9238eb0487cdc" id="r_a84291afda877bdcdd2b9238eb0487cdc"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a84291afda877bdcdd2b9238eb0487cdc">getFullDescriptionStr</a> () const final</td></tr>
+<tr class="memdesc:a84291afda877bdcdd2b9238eb0487cdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Manko-Novikov metric description string getter.  <br /></td></tr>
 <tr class="separator:a84291afda877bdcdd2b9238eb0487cdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_spherical_horizon_metric"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_class_spherical_horizon_metric')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_spherical_horizon_metric.html">SphericalHorizonMetric</a></td></tr>
 <tr class="memitem:a4d2855091767d211367868aea3429751 inherit pub_methods_class_spherical_horizon_metric" id="r_a4d2855091767d211367868aea3429751"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_spherical_horizon_metric.html#a4d2855091767d211367868aea3429751">SphericalHorizonMetric</a> ()=delete</td></tr>
 <tr class="separator:a4d2855091767d211367868aea3429751 inherit pub_methods_class_spherical_horizon_metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aefcd9c831558b49b0c9c754196c5761e inherit pub_methods_class_spherical_horizon_metric" id="r_aefcd9c831558b49b0c9c754196c5761e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_spherical_horizon_metric.html#aefcd9c831558b49b0c9c754196c5761e">SphericalHorizonMetric</a> (<a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> HorizonRadius, bool rLogScale)</td></tr>
-<tr class="memdesc:aefcd9c831558b49b0c9c754196c5761e inherit pub_methods_class_spherical_horizon_metric"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_spherical_horizon_metric.html">SphericalHorizonMetric</a> functions.  <br /></td></tr>
+<tr class="memdesc:aefcd9c831558b49b0c9c754196c5761e inherit pub_methods_class_spherical_horizon_metric"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new Spherical Horizon <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a> object.  <br /></td></tr>
 <tr class="separator:aefcd9c831558b49b0c9c754196c5761e inherit pub_methods_class_spherical_horizon_metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade4020aad1e63f83b3dff6fdda3ffc1f inherit pub_methods_class_spherical_horizon_metric" id="r_ade4020aad1e63f83b3dff6fdda3ffc1f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_spherical_horizon_metric.html#ade4020aad1e63f83b3dff6fdda3ffc1f">getHorizonRadius</a> () const</td></tr>
+<tr class="memdesc:ade4020aad1e63f83b3dff6fdda3ffc1f inherit pub_methods_class_spherical_horizon_metric"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the radius of the horizon.  <br /></td></tr>
 <tr class="separator:ade4020aad1e63f83b3dff6fdda3ffc1f inherit pub_methods_class_spherical_horizon_metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_metric"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_class_metric')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_metric.html">Metric</a></td></tr>
 <tr class="memitem:a7d6124dba09b572c6123ada4704873e8 inherit pub_methods_class_metric" id="r_a7d6124dba09b572c6123ada4704873e8"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_metric.html#a7d6124dba09b572c6123ada4704873e8">~Metric</a> ()=default</td></tr>
 <tr class="separator:a7d6124dba09b572c6123ada4704873e8 inherit pub_methods_class_metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb49fde3a5b86106b50f8d8ead78125b inherit pub_methods_class_metric" id="r_afb49fde3a5b86106b50f8d8ead78125b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_metric.html#afb49fde3a5b86106b50f8d8ead78125b">Metric</a> (bool rlogscale=false)</td></tr>
-<tr class="memdesc:afb49fde3a5b86106b50f8d8ead78125b inherit pub_methods_class_metric"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_metric.html">Metric</a> (abstract base class) functions.  <br /></td></tr>
+<tr class="memdesc:afb49fde3a5b86106b50f8d8ead78125b inherit pub_methods_class_metric"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a> object.  <br /></td></tr>
 <tr class="separator:afb49fde3a5b86106b50f8d8ead78125b inherit pub_methods_class_metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a992c9e48ed03548713fbfd3be0ebc4da inherit pub_methods_class_metric" id="r_a992c9e48ed03548713fbfd3be0ebc4da"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="_geometry_8h.html#ab418a89a927c785b2610da4cc7f40cf5">ThreeIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_metric.html#a992c9e48ed03548713fbfd3be0ebc4da">getChristoffel_udd</a> (const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p) const</td></tr>
+<tr class="memdesc:a992c9e48ed03548713fbfd3be0ebc4da inherit pub_methods_class_metric"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the Christoffel symbols of the metric (indices up, down, down)  <br /></td></tr>
 <tr class="separator:a992c9e48ed03548713fbfd3be0ebc4da inherit pub_methods_class_metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a58d39502395541ff9c46f48540c03b inherit pub_methods_class_metric" id="r_a1a58d39502395541ff9c46f48540c03b"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="_geometry_8h.html#a07b49904b9472e4e238e844f0ff48a50">FourIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_metric.html#a1a58d39502395541ff9c46f48540c03b">getRiemann_uddd</a> (const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p) const</td></tr>
+<tr class="memdesc:a1a58d39502395541ff9c46f48540c03b inherit pub_methods_class_metric"><td class="mdescLeft">&#160;</td><td class="mdescRight">Riemann tensor of the metric (indices up, down, down, down)  <br /></td></tr>
 <tr class="separator:a1a58d39502395541ff9c46f48540c03b inherit pub_methods_class_metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ad8c08271e4010a610565d7894855a6 inherit pub_methods_class_metric" id="r_a3ad8c08271e4010a610565d7894855a6"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_metric.html#a3ad8c08271e4010a610565d7894855a6">getKretschmann</a> (const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p) const</td></tr>
+<tr class="memdesc:a3ad8c08271e4010a610565d7894855a6 inherit pub_methods_class_metric"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the Kretschmann scalar at a point.  <br /></td></tr>
 <tr class="separator:a3ad8c08271e4010a610565d7894855a6 inherit pub_methods_class_metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae29832cf536215e598893ece88e58170 inherit pub_methods_class_metric" id="r_ae29832cf536215e598893ece88e58170"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_metric.html#ae29832cf536215e598893ece88e58170">getrLogScale</a> () const</td></tr>
+<tr class="memdesc:ae29832cf536215e598893ece88e58170 inherit pub_methods_class_metric"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get whether we are using a logarithmic radial scale.  <br /></td></tr>
 <tr class="separator:ae29832cf536215e598893ece88e58170 inherit pub_methods_class_metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a2af040bf0f74cc15ee66c3ea4e4c5778" id="r_a2af040bf0f74cc15ee66c3ea4e4c5778"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2af040bf0f74cc15ee66c3ea4e4c5778">m_aParam</a></td></tr>
+<tr class="memdesc:a2af040bf0f74cc15ee66c3ea4e4c5778"><td class="mdescLeft">&#160;</td><td class="mdescRight">a parameter for the Manko-Novikov metric  <br /></td></tr>
 <tr class="separator:a2af040bf0f74cc15ee66c3ea4e4c5778"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8254550947385d03dfe52b76ef78f674" id="r_a8254550947385d03dfe52b76ef78f674"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8254550947385d03dfe52b76ef78f674">m_alpha3Param</a></td></tr>
+<tr class="memdesc:a8254550947385d03dfe52b76ef78f674"><td class="mdescLeft">&#160;</td><td class="mdescRight">alpha3 parameter for the Manko-Novikov metric  <br /></td></tr>
 <tr class="separator:a8254550947385d03dfe52b76ef78f674"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0bc56e2539735348c072777d57c0b56" id="r_ad0bc56e2539735348c072777d57c0b56"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad0bc56e2539735348c072777d57c0b56">m_alphaParam</a></td></tr>
+<tr class="memdesc:ad0bc56e2539735348c072777d57c0b56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derived alpha parameter.  <br /></td></tr>
 <tr class="separator:ad0bc56e2539735348c072777d57c0b56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbbde58b233eaf883ca3891cc6390642" id="r_afbbde58b233eaf883ca3891cc6390642"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afbbde58b233eaf883ca3891cc6390642">m_kParam</a></td></tr>
+<tr class="memdesc:afbbde58b233eaf883ca3891cc6390642"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derived k parameter.  <br /></td></tr>
 <tr class="separator:afbbde58b233eaf883ca3891cc6390642"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_attribs_class_spherical_horizon_metric"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_attribs_class_spherical_horizon_metric')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_spherical_horizon_metric.html">SphericalHorizonMetric</a></td></tr>
 <tr class="memitem:aeca39fb454da29172817f6c2aa9ddd5d inherit pro_attribs_class_spherical_horizon_metric" id="r_aeca39fb454da29172817f6c2aa9ddd5d"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_spherical_horizon_metric.html#aeca39fb454da29172817f6c2aa9ddd5d">m_HorizonRadius</a></td></tr>
+<tr class="memdesc:aeca39fb454da29172817f6c2aa9ddd5d inherit pro_attribs_class_spherical_horizon_metric"><td class="mdescLeft">&#160;</td><td class="mdescRight">Radius of the horizon.  <br /></td></tr>
 <tr class="separator:aeca39fb454da29172817f6c2aa9ddd5d inherit pro_attribs_class_spherical_horizon_metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_class_metric"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_attribs_class_metric')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_metric.html">Metric</a></td></tr>
 <tr class="memitem:a2e4146bcd1d23b95bdd3e7974643e8a5 inherit pro_attribs_class_metric" id="r_a2e4146bcd1d23b95bdd3e7974643e8a5"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_metric.html#a2e4146bcd1d23b95bdd3e7974643e8a5">m_Symmetries</a> {}</td></tr>
+<tr class="memdesc:a2e4146bcd1d23b95bdd3e7974643e8a5 inherit pro_attribs_class_metric"><td class="mdescLeft">&#160;</td><td class="mdescRight">The symmetries (coordinate Killing vectors) of the metric. Should be set by descendant constructor.  <br /></td></tr>
 <tr class="separator:a2e4146bcd1d23b95bdd3e7974643e8a5 inherit pro_attribs_class_metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14194404785702d6c7d7afb2ef1de717 inherit pro_attribs_class_metric" id="r_a14194404785702d6c7d7afb2ef1de717"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_metric.html#a14194404785702d6c7d7afb2ef1de717">m_rLogScale</a></td></tr>
+<tr class="memdesc:a14194404785702d6c7d7afb2ef1de717 inherit pro_attribs_class_metric"><td class="mdescLeft">&#160;</td><td class="mdescRight">Are we using a logarithmic r coordinate?  <br /></td></tr>
 <tr class="separator:a14194404785702d6c7d7afb2ef1de717 inherit pro_attribs_class_metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Mano-Novikov metric (with angular momentum and M3 parameter turned on) </p>
+<dl class="section note"><dt>Note</dt><dd>Implementation by Seppe Staelens </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a93c4e97638887244aa44f9995433c6cb" name="a93c4e97638887244aa44f9995433c6cb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a93c4e97638887244aa44f9995433c6cb">&#9670;&#160;</a></span>MankoNovikovMetric() <span class="overload">[1/2]</span></h2>
 
@@ -212,7 +233,15 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="class_manko_novikov_metric.html">MankoNovikovMetric</a> functions (implementation by Seppe Staelens) </p>
+<p>Construct a new Manko Novikov <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a> object. We always have a M = 1 BH. </p>
+<p>The horizon is at r = M + k </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">aParam</td><td>a parameter for the Manko-Novikov metric. The angular momentum a = J/M^2 </td></tr>
+    <tr><td class="paramname">alpha3Param</td><td>alpha3 parameter for the Manko-Novikov metric </td></tr>
+    <tr><td class="paramname">rLogScale</td><td>whether we are using a logarithmic radial scale </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -239,6 +268,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Manko-Novikov metric description string getter. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
 
 <p>Reimplemented from <a class="el" href="class_metric.html#a6b0e0169c9b0cf7ca4f0c67a2cde8db3">Metric</a>.</p>
 
@@ -267,6 +299,15 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Manko-Novikov metric getter, indices down. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Point at which to evaluate the metric </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>TwoIndex </dd></dl>
+
 <p>Implements <a class="el" href="class_metric.html#a61fe8a3c276a36d782573043fdcb6966">Metric</a>.</p>
 
 </div>
@@ -294,6 +335,15 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Manko-Novikov metric getter, indices up. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Point at which to evaluate the metric </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>TwoIndex </dd></dl>
+
 <p>Implements <a class="el" href="class_metric.html#a8f4ae22cfe486e974cc184e31b88bb73">Metric</a>.</p>
 
 </div>
@@ -319,6 +369,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>alpha3 parameter for the Manko-Novikov metric </p>
+
 </div>
 </div>
 <a id="ad0bc56e2539735348c072777d57c0b56" name="ad0bc56e2539735348c072777d57c0b56"></a>
@@ -340,6 +392,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Derived alpha parameter. </p>
 
 </div>
 </div>
@@ -363,6 +417,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>a parameter for the Manko-Novikov metric </p>
+
 </div>
 </div>
 <a id="afbbde58b233eaf883ca3891cc6390642" name="afbbde58b233eaf883ca3891cc6390642"></a>
@@ -384,6 +440,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Derived k parameter. </p>
 
 </div>
 </div>

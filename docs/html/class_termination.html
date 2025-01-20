@@ -93,6 +93,9 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p>Abstract base class for all Terminations.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_terminations_8h_source.html">Terminations.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for Termination:</div>
@@ -100,12 +103,12 @@ Inheritance diagram for Termination:</div>
  <div class="center">
   <img src="class_termination.png" usemap="#Termination_map" alt=""/>
   <map id="Termination_map" name="Termination_map">
-<area href="class_boundary_sphere_termination.html" alt="BoundarySphereTermination" shape="rect" coords="0,56,182,80"/>
-<area href="class_general_singularity_termination.html" alt="GeneralSingularityTermination" shape="rect" coords="192,56,374,80"/>
-<area href="class_horizon_termination.html" alt="HorizonTermination" shape="rect" coords="384,56,566,80"/>
-<area href="class_na_n_termination.html" alt="NaNTermination" shape="rect" coords="576,56,758,80"/>
-<area href="class_theta_singularity_termination.html" alt="ThetaSingularityTermination" shape="rect" coords="768,56,950,80"/>
-<area href="class_time_out_termination.html" alt="TimeOutTermination" shape="rect" coords="960,56,1142,80"/>
+<area href="class_boundary_sphere_termination.html" title="BoundarySphereTermination: Terminate geodesics if they reach outside of a boundary sphere." alt="BoundarySphereTermination" shape="rect" coords="0,56,182,80"/>
+<area href="class_general_singularity_termination.html" title="GeneralSingularityTermination: Terminate geodesics if they get too close to one of a number of singul..." alt="GeneralSingularityTermination" shape="rect" coords="192,56,374,80"/>
+<area href="class_horizon_termination.html" title="HorizonTermination: Terminate geodesics if they get too close to the horizon." alt="HorizonTermination" shape="rect" coords="384,56,566,80"/>
+<area href="class_na_n_termination.html" title="NaNTermination: Terminate geodesics if they contain a NaN in position or velocity." alt="NaNTermination" shape="rect" coords="576,56,758,80"/>
+<area href="class_theta_singularity_termination.html" title="ThetaSingularityTermination: Terminate geodesics if they get too close to a polar coordinate singular..." alt="ThetaSingularityTermination" shape="rect" coords="768,56,950,80"/>
+<area href="class_time_out_termination.html" title="TimeOutTermination: Terminate geodesics if they take too many steps." alt="TimeOutTermination" shape="rect" coords="960,56,1142,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -116,7 +119,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a827bbfaa8744be304805d53b5e0744f4" id="r_a827bbfaa8744be304805d53b5e0744f4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a827bbfaa8744be304805d53b5e0744f4">Termination</a> (<a class="el" href="class_geodesic.html">Geodesic</a> *const theGeodesic)</td></tr>
 <tr class="separator:a827bbfaa8744be304805d53b5e0744f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23ed35eca7391de07a36402da0ad96c8" id="r_a23ed35eca7391de07a36402da0ad96c8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a23ed35eca7391de07a36402da0ad96c8">Reset</a> ()</td></tr>
-<tr class="memdesc:a23ed35eca7391de07a36402da0ad96c8"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_termination.html">Termination</a> (abstract base class) functions.  <br /></td></tr>
+<tr class="memdesc:a23ed35eca7391de07a36402da0ad96c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset to 0 to start integrating a new geodesic.  <br /></td></tr>
 <tr class="separator:a23ed35eca7391de07a36402da0ad96c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53729f469768793c208cff0be3f77e09" id="r_a53729f469768793c208cff0be3f77e09"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a53729f469768793c208cff0be3f77e09">~Termination</a> ()=default</td></tr>
 <tr class="separator:a53729f469768793c208cff0be3f77e09"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -128,16 +131,21 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a65032156976b4c193e1cac94299e36df" id="r_a65032156976b4c193e1cac94299e36df"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a65032156976b4c193e1cac94299e36df">DecideUpdate</a> (<a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a> UpdateNSteps)</td></tr>
+<tr class="memdesc:a65032156976b4c193e1cac94299e36df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if the <a class="el" href="class_termination.html" title="Abstract base class for all Terminations.">Termination</a> should update its internal status.  <br /></td></tr>
 <tr class="separator:a65032156976b4c193e1cac94299e36df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:a4f1f3fd74781daa644909d62b58caa51" id="r_a4f1f3fd74781daa644909d62b58caa51"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_geodesic.html">Geodesic</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4f1f3fd74781daa644909d62b58caa51">m_OwnerGeodesic</a></td></tr>
+<tr class="memdesc:a4f1f3fd74781daa644909d62b58caa51"><td class="mdescLeft">&#160;</td><td class="mdescRight">The geodesic that owns the <a class="el" href="class_termination.html" title="Abstract base class for all Terminations.">Termination</a> (a const pointer to the <a class="el" href="class_geodesic.html" title="Geodesic class: an instance of this class is created for each Geodesic that is integrated.">Geodesic</a>)  <br /></td></tr>
 <tr class="separator:a4f1f3fd74781daa644909d62b58caa51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf9af79fde7034a72bd02d1d667d1516" id="r_adf9af79fde7034a72bd02d1d667d1516"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adf9af79fde7034a72bd02d1d667d1516">m_StepsSinceUpdated</a> {}</td></tr>
+<tr class="memdesc:adf9af79fde7034a72bd02d1d667d1516"><td class="mdescLeft">&#160;</td><td class="mdescRight">The termination is itself in charge of keeping track of how many steps it has been since it has been updated. The <a class="el" href="class_termination.html" title="Abstract base class for all Terminations.">Termination</a>'s <a class="el" href="struct_termination_options.html" title="Base class for all TerminationOptions structs. Other TerminationOptions can inherit from here if they...">TerminationOptions</a> struct tells it how many steps it needs to wait between updates.  <br /></td></tr>
 <tr class="separator:adf9af79fde7034a72bd02d1d667d1516"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Abstract base class for all Terminations. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="afc2973e46572f3a595787ef1259baf10" name="afc2973e46572f3a595787ef1259baf10"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afc2973e46572f3a595787ef1259baf10">&#9670;&#160;</a></span>Termination() <span class="overload">[1/2]</span></h2>
 
@@ -264,6 +272,17 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Returns true if the <a class="el" href="class_termination.html" title="Abstract base class for all Terminations.">Termination</a> should update its internal status. </p>
+<p>Should be called from within <a class="el" href="#a5d348655713f928b6335c6d803bcca1c">CheckTermination()</a> with the appropriate TermOptions::UpdateEveryNSteps </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">UpdateNSteps</td><td>the number of steps after which the terminations should be updated </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true </dd>
+<dd>
+false </dd></dl>
+
 </div>
 </div>
 <a id="a64b4162cb979ea9a5e11ca21fe9e6c05" name="a64b4162cb979ea9a5e11ca21fe9e6c05"></a>
@@ -316,7 +335,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="class_termination.html">Termination</a> (abstract base class) functions. </p>
+<p>Reset to 0 to start integrating a new geodesic. </p>
 
 <p>Reimplemented in <a class="el" href="class_time_out_termination.html#aa312418aa5cb3827b0dcfc4dcb76bf17">TimeOutTermination</a>.</p>
 
@@ -343,6 +362,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>The geodesic that owns the <a class="el" href="class_termination.html" title="Abstract base class for all Terminations.">Termination</a> (a const pointer to the <a class="el" href="class_geodesic.html" title="Geodesic class: an instance of this class is created for each Geodesic that is integrated.">Geodesic</a>) </p>
+
 </div>
 </div>
 <a id="adf9af79fde7034a72bd02d1d667d1516" name="adf9af79fde7034a72bd02d1d667d1516"></a>
@@ -364,6 +385,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The termination is itself in charge of keeping track of how many steps it has been since it has been updated. The <a class="el" href="class_termination.html" title="Abstract base class for all Terminations.">Termination</a>'s <a class="el" href="struct_termination_options.html" title="Base class for all TerminationOptions structs. Other TerminationOptions can inherit from here if they...">TerminationOptions</a> struct tells it how many steps it needs to wait between updates. </p>
 
 </div>
 </div>

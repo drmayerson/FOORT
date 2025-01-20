@@ -94,6 +94,9 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p>Adaptive subdivision <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a>.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_mesh_8h_source.html">Mesh.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for SquareSubdivisionMeshV2:</div>
@@ -101,13 +104,14 @@ Inheritance diagram for SquareSubdivisionMeshV2:</div>
  <div class="center">
   <img src="class_square_subdivision_mesh_v2.png" usemap="#SquareSubdivisionMeshV2_map" alt=""/>
   <map id="SquareSubdivisionMeshV2_map" name="SquareSubdivisionMeshV2_map">
-<area href="class_mesh.html" alt="Mesh" shape="rect" coords="0,0,164,24"/>
+<area href="class_mesh.html" title="Abstract base Mesh class." alt="Mesh" shape="rect" coords="0,0,164,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html">PixelInfo</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A struct the <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a> uses to keep all information about a given pixel.  <a href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
@@ -117,18 +121,22 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af3997efc9633d1e77f8b84efbe9ed5d0" id="r_af3997efc9633d1e77f8b84efbe9ed5d0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af3997efc9633d1e77f8b84efbe9ed5d0">SquareSubdivisionMeshV2</a> (<a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a> maxPixels, <a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a> initialPixels, int maxSubdivide, <a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a> iterationPixels, bool initialSubToFinal, <a class="el" href="_diagnostics_8h.html#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> valdiag)</td></tr>
 <tr class="separator:af3997efc9633d1e77f8b84efbe9ed5d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a77e065d6818df7027900ae2eefb940df" id="r_a77e065d6818df7027900ae2eefb940df"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a77e065d6818df7027900ae2eefb940df">getCurNrGeodesics</a> () const final</td></tr>
-<tr class="memdesc:a77e065d6818df7027900ae2eefb940df"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_square_subdivision_mesh_v2.html">SquareSubdivisionMeshV2</a> functions.  <br /></td></tr>
+<tr class="memdesc:a77e065d6818df7027900ae2eefb940df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current number of geodesics to be integrated.  <br /></td></tr>
 <tr class="separator:a77e065d6818df7027900ae2eefb940df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f620980a2fbc631b17046c2e397301a" id="r_a8f620980a2fbc631b17046c2e397301a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8f620980a2fbc631b17046c2e397301a">getNewInitConds</a> (<a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a> index, <a class="el" href="_geometry_8h.html#adddc4cdb0ade8f206fa6bccc778f6d19">ScreenPoint</a> &amp;newunitpoint, <a class="el" href="_geometry_8h.html#a513af160c943af6de42baec642491b89">ScreenIndex</a> &amp;newscreenindex) const final</td></tr>
+<tr class="memdesc:a8f620980a2fbc631b17046c2e397301a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the initial conditions for the next pixel to be integrated.  <br /></td></tr>
 <tr class="separator:a8f620980a2fbc631b17046c2e397301a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a460ea3d71a6daa46d6c6663a6fe0a554" id="r_a460ea3d71a6daa46d6c6663a6fe0a554"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a460ea3d71a6daa46d6c6663a6fe0a554">GeodesicFinished</a> (<a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a> index, std::vector&lt; <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> &gt; finalValues) final</td></tr>
+<tr class="memdesc:a460ea3d71a6daa46d6c6663a6fe0a554"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when a geodesic is finished integrating: the final values are stored.  <br /></td></tr>
 <tr class="separator:a460ea3d71a6daa46d6c6663a6fe0a554"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b0d31659851bc26e430064731b0ccd7" id="r_a0b0d31659851bc26e430064731b0ccd7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0b0d31659851bc26e430064731b0ccd7">EndCurrentLoop</a> () final</td></tr>
+<tr class="memdesc:a0b0d31659851bc26e430064731b0ccd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called at the end of each integration iteration loop. Wraps up the current iteration and initializes the next one.  <br /></td></tr>
 <tr class="separator:a0b0d31659851bc26e430064731b0ccd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7826c3524bb84ea6c628cfa5567c1316" id="r_a7826c3524bb84ea6c628cfa5567c1316"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7826c3524bb84ea6c628cfa5567c1316">IsFinished</a> () const final</td></tr>
+<tr class="memdesc:a7826c3524bb84ea6c628cfa5567c1316"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether the <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a> is finished integrating.  <br /></td></tr>
 <tr class="separator:a7826c3524bb84ea6c628cfa5567c1316"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0bcf04c439aa2cdde80bdd5d164c8171" id="r_a0bcf04c439aa2cdde80bdd5d164c8171"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0bcf04c439aa2cdde80bdd5d164c8171">getFullDescriptionStr</a> () const final</td></tr>
-<tr class="memdesc:a0bcf04c439aa2cdde80bdd5d164c8171"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_mesh.html">Mesh</a> (abstract base class) functions.  <br /></td></tr>
+<tr class="memdesc:a0bcf04c439aa2cdde80bdd5d164c8171"><td class="mdescLeft">&#160;</td><td class="mdescRight">Description string getter.  <br /></td></tr>
 <tr class="separator:a0bcf04c439aa2cdde80bdd5d164c8171"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_mesh"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_class_mesh')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_mesh.html">Mesh</a></td></tr>
 <tr class="memitem:a4250f1287e407de4c81e8dfb25a7af0b inherit pub_methods_class_mesh" id="r_a4250f1287e407de4c81e8dfb25a7af0b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_mesh.html#a4250f1287e407de4c81e8dfb25a7af0b">Mesh</a> (<a class="el" href="_diagnostics_8h.html#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> valdiag)</td></tr>
@@ -139,60 +147,86 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
 <tr class="memitem:a00ebf672cefbe26eb1fd4f3f2cce8eee" id="r_a00ebf672cefbe26eb1fd4f3f2cce8eee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a00ebf672cefbe26eb1fd4f3f2cce8eee">InitializeFirstGrid</a> ()</td></tr>
+<tr class="memdesc:a00ebf672cefbe26eb1fd4f3f2cce8eee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function to initialize the first grid of pixels to integrate.  <br /></td></tr>
 <tr class="separator:a00ebf672cefbe26eb1fd4f3f2cce8eee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f8c32b3af8f47fe38818a7f587cc2c4" id="r_a4f8c32b3af8f47fe38818a7f587cc2c4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4f8c32b3af8f47fe38818a7f587cc2c4">UpdateAllWeights</a> ()</td></tr>
+<tr class="memdesc:a4f8c32b3af8f47fe38818a7f587cc2c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function to update all pixel weights in m_CurrentPixelUpdating.  <br /></td></tr>
 <tr class="separator:a4f8c32b3af8f47fe38818a7f587cc2c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0bf8f55039717b5acf2d27567dd0a720" id="r_a0bf8f55039717b5acf2d27567dd0a720"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html">PixelInfo</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0bf8f55039717b5acf2d27567dd0a720">GetUp</a> (<a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html">PixelInfo</a> *p, int subdiv) const</td></tr>
+<tr class="memdesc:a0bf8f55039717b5acf2d27567dd0a720"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the upper neighbor of a pixel at a certain subdivision level.  <br /></td></tr>
 <tr class="separator:a0bf8f55039717b5acf2d27567dd0a720"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8725f825b1223be1f6eacc4445154b8b" id="r_a8725f825b1223be1f6eacc4445154b8b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html">PixelInfo</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8725f825b1223be1f6eacc4445154b8b">GetDown</a> (<a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html">PixelInfo</a> *p, int subdiv) const</td></tr>
+<tr class="memdesc:a8725f825b1223be1f6eacc4445154b8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the lower neighbor of a pixel at a certain subdivision level.  <br /></td></tr>
 <tr class="separator:a8725f825b1223be1f6eacc4445154b8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5492dc571b87726a856cba370ee888e9" id="r_a5492dc571b87726a856cba370ee888e9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html">PixelInfo</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5492dc571b87726a856cba370ee888e9">GetRight</a> (<a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html">PixelInfo</a> *p, int subdiv) const</td></tr>
+<tr class="memdesc:a5492dc571b87726a856cba370ee888e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the right neighbor of a pixel at a certain subdivision level.  <br /></td></tr>
 <tr class="separator:a5492dc571b87726a856cba370ee888e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6edc704bfe359b8fb299815179e695c9" id="r_a6edc704bfe359b8fb299815179e695c9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html">PixelInfo</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6edc704bfe359b8fb299815179e695c9">GetLeft</a> (<a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html">PixelInfo</a> *p, int subdiv) const</td></tr>
+<tr class="memdesc:a6edc704bfe359b8fb299815179e695c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the left neighbor of a pixel at a certain subdivision level.  <br /></td></tr>
 <tr class="separator:a6edc704bfe359b8fb299815179e695c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20dfff2d2eaef396f00202f01b11e4c1" id="r_a20dfff2d2eaef396f00202f01b11e4c1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a20dfff2d2eaef396f00202f01b11e4c1">SubdivideAndQueue</a> (<a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a> ind)</td></tr>
+<tr class="memdesc:a20dfff2d2eaef396f00202f01b11e4c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Subdivide the pixel at index ind and add up to 5 new pixels to the integration queue.  <br /></td></tr>
 <tr class="separator:a20dfff2d2eaef396f00202f01b11e4c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60d686450c0a7433e44117320aa9d098" id="r_a60d686450c0a7433e44117320aa9d098"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a2542cbb5acb3ce8e6be47b99c3844a97">pixelcoord</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a60d686450c0a7433e44117320aa9d098">ExpInt</a> (int base, int exp) const</td></tr>
+<tr class="memdesc:a60d686450c0a7433e44117320aa9d098"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function to exponentiate ints.  <br /></td></tr>
 <tr class="separator:a60d686450c0a7433e44117320aa9d098"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a5912e9ba326680a3d298f2019ebc5b33" id="r_a5912e9ba326680a3d298f2019ebc5b33"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5912e9ba326680a3d298f2019ebc5b33">m_InitialPixels</a></td></tr>
+<tr class="memdesc:a5912e9ba326680a3d298f2019ebc5b33"><td class="mdescLeft">&#160;</td><td class="mdescRight">How many initial pixels (spread uniformly over the grid) do we integrate?  <br /></td></tr>
 <tr class="separator:a5912e9ba326680a3d298f2019ebc5b33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06159500c1618e724c3074089b9c1a62" id="r_a06159500c1618e724c3074089b9c1a62"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a06159500c1618e724c3074089b9c1a62">m_MaxSubdivide</a></td></tr>
+<tr class="memdesc:a06159500c1618e724c3074089b9c1a62"><td class="mdescLeft">&#160;</td><td class="mdescRight">How many times are we allowed to subdivide a square? Note: the initial grid is already at 1.  <br /></td></tr>
 <tr class="separator:a06159500c1618e724c3074089b9c1a62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a520d11a54d4bd54446e1aa288a5257ad" id="r_a520d11a54d4bd54446e1aa288a5257ad"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#a2542cbb5acb3ce8e6be47b99c3844a97">pixelcoord</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a520d11a54d4bd54446e1aa288a5257ad">m_RowColumnSize</a></td></tr>
+<tr class="memdesc:a520d11a54d4bd54446e1aa288a5257ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">The total size in pixels of a row or column (square grid)  <br /></td></tr>
 <tr class="separator:a520d11a54d4bd54446e1aa288a5257ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a436bbd3f1442998d87e043d0f657421a" id="r_a436bbd3f1442998d87e043d0f657421a"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a436bbd3f1442998d87e043d0f657421a">m_IterationPixels</a></td></tr>
+<tr class="memdesc:a436bbd3f1442998d87e043d0f657421a"><td class="mdescLeft">&#160;</td><td class="mdescRight">How many pixels per iteration can we subdivide?  <br /></td></tr>
 <tr class="separator:a436bbd3f1442998d87e043d0f657421a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc2c9183af2c0e0068d575bddb5b7172" id="r_adc2c9183af2c0e0068d575bddb5b7172"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adc2c9183af2c0e0068d575bddb5b7172">m_MaxPixels</a></td></tr>
+<tr class="memdesc:adc2c9183af2c0e0068d575bddb5b7172"><td class="mdescLeft">&#160;</td><td class="mdescRight">How many pixels can we integrate in total over all iterations?  <br /></td></tr>
 <tr class="separator:adc2c9183af2c0e0068d575bddb5b7172"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2730d4247b33390df5057217be56dc6e" id="r_a2730d4247b33390df5057217be56dc6e"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2730d4247b33390df5057217be56dc6e">m_InitialSubDividideToFinal</a></td></tr>
+<tr class="memdesc:a2730d4247b33390df5057217be56dc6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">If we decide to subdivide a square, do we automatically subdivide it further to the max level?  <br /></td></tr>
 <tr class="separator:a2730d4247b33390df5057217be56dc6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aea6a4a485c6c7137e6b57d318ec6d81f" id="r_aea6a4a485c6c7137e6b57d318ec6d81f"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aea6a4a485c6c7137e6b57d318ec6d81f">m_InfinitePixels</a></td></tr>
+<tr class="memdesc:aea6a4a485c6c7137e6b57d318ec6d81f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Are we allowed to integrate as many pixels as we want? (m_MaxPixels == 0)  <br /></td></tr>
 <tr class="separator:aea6a4a485c6c7137e6b57d318ec6d81f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c583319eed90befce1d1f504c5452d1" id="r_a4c583319eed90befce1d1f504c5452d1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c583319eed90befce1d1f504c5452d1">m_PixelsLeft</a></td></tr>
+<tr class="memdesc:a4c583319eed90befce1d1f504c5452d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">How many pixels are we still allowed to integrate (if !m_InfinitePixels)?  <br /></td></tr>
 <tr class="separator:a4c583319eed90befce1d1f504c5452d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad91fc253f3bc12138a4c7c24cbd15cc5" id="r_ad91fc253f3bc12138a4c7c24cbd15cc5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad91fc253f3bc12138a4c7c24cbd15cc5">m_PixelsIntegrated</a> {0}</td></tr>
+<tr class="memdesc:ad91fc253f3bc12138a4c7c24cbd15cc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">How many pixels we have integrated so far.  <br /></td></tr>
 <tr class="separator:ad91fc253f3bc12138a4c7c24cbd15cc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf5e15238c2a40975f28fa210484d699" id="r_aaf5e15238c2a40975f28fa210484d699"><td class="memItemLeft" align="right" valign="top">std::forward_list&lt; std::unique_ptr&lt; <a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html">PixelInfo</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaf5e15238c2a40975f28fa210484d699">m_AllPixels</a> {}</td></tr>
+<tr class="memdesc:aaf5e15238c2a40975f28fa210484d699"><td class="mdescLeft">&#160;</td><td class="mdescRight">Master list of all pixels. std::forward_list is more space-efficient than std::list, bidirectional iteration is not needed, no random access supported. This list is only used to store the owner pointers (and thus the objects) of all pixels. The other pixel vectors are used to iterate through (and need random access)  <br /></td></tr>
 <tr class="separator:aaf5e15238c2a40975f28fa210484d699"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ad953ae7802281d77d15c0c581114e4" id="r_a1ad953ae7802281d77d15c0c581114e4"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html">PixelInfo</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1ad953ae7802281d77d15c0c581114e4">m_ActivePixels</a> {}</td></tr>
+<tr class="memdesc:a1ad953ae7802281d77d15c0c581114e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of active pixels, i.e. those that can be subdivided and have non-zero weight.  <br /></td></tr>
 <tr class="separator:a1ad953ae7802281d77d15c0c581114e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c7dd0ef98d0d5a86a61298cfbd05f05" id="r_a4c7dd0ef98d0d5a86a61298cfbd05f05"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html">PixelInfo</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c7dd0ef98d0d5a86a61298cfbd05f05">m_CurrentPixelQueue</a> {}</td></tr>
+<tr class="memdesc:a4c7dd0ef98d0d5a86a61298cfbd05f05"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of current queue of pixels to be sent to be integrated.  <br /></td></tr>
 <tr class="separator:a4c7dd0ef98d0d5a86a61298cfbd05f05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72451bb721b287f31d9d0ab39fc9255a" id="r_a72451bb721b287f31d9d0ab39fc9255a"><td class="memItemLeft" align="right" valign="top">std::vector&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a72451bb721b287f31d9d0ab39fc9255a">m_CurrentPixelQueueDone</a> {}</td></tr>
+<tr class="memdesc:a72451bb721b287f31d9d0ab39fc9255a"><td class="mdescLeft">&#160;</td><td class="mdescRight">A bool for every pixel in the current queue: gets set to true when the pixel is done integrating and gets its values returned.  <br /></td></tr>
 <tr class="separator:a72451bb721b287f31d9d0ab39fc9255a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee1a2b410917dc89c3bfae923551e00e" id="r_aee1a2b410917dc89c3bfae923551e00e"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html">PixelInfo</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aee1a2b410917dc89c3bfae923551e00e">m_CurrentPixelUpdating</a> {}</td></tr>
+<tr class="memdesc:aee1a2b410917dc89c3bfae923551e00e"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of pixels that are already integrated but need updating weights after current queue is all integrated.  <br /></td></tr>
 <tr class="separator:aee1a2b410917dc89c3bfae923551e00e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_attribs_class_mesh"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_attribs_class_mesh')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_mesh.html">Mesh</a></td></tr>
 <tr class="memitem:ab0807b2b8e1d88920084002b3b533794 inherit pro_attribs_class_mesh" id="r_ab0807b2b8e1d88920084002b3b533794"><td class="memItemLeft" align="right" valign="top">const std::unique_ptr&lt; const <a class="el" href="class_diagnostic.html">Diagnostic</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_mesh.html#ab0807b2b8e1d88920084002b3b533794">m_DistanceDiagnostic</a></td></tr>
+<tr class="memdesc:ab0807b2b8e1d88920084002b3b533794 inherit pro_attribs_class_mesh"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> (a const pointer to a const <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> object) that is used to calculate distances (using FinalDataValDistance()) between the "values" that are assigned to Geodesics.  <br /></td></tr>
 <tr class="separator:ab0807b2b8e1d88920084002b3b533794 inherit pro_attribs_class_mesh"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Adaptive subdivision <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a>. </p>
+<p>starts with evenly spaced, square <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a>, then decides to subdivide certain squares of pixels into smaller squares, based on which pixels have a bigger "weight", which is defined as the maximum "distance" (using the <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> value distance) between the upper-left vertex of the square with the other three vertices of the square. V2: new way of dealing with neighbors and looping over pixels </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a8a53f61994a22886331b2354b115c25d" name="a8a53f61994a22886331b2354b115c25d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8a53f61994a22886331b2354b115c25d">&#9670;&#160;</a></span>SquareSubdivisionMeshV2() <span class="overload">[1/2]</span></h2>
 
@@ -291,6 +325,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Called at the end of each integration iteration loop. Wraps up the current iteration and initializes the next one. </p>
+
 <p>Implements <a class="el" href="class_mesh.html#ab92de2b10d1659fc24b9e49d99153c43">Mesh</a>.</p>
 
 </div>
@@ -322,6 +358,17 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Helper function to exponentiate ints. </p>
+<dl class="section note"><dt>Note</dt><dd>The result may be larger than fits in an int, but this is only called with int arguments </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">base</td><td>base </td></tr>
+    <tr><td class="paramname">exp</td><td>exponent </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>pixelcoord </dd></dl>
+
 </div>
 </div>
 <a id="a460ea3d71a6daa46d6c6663a6fe0a554" name="a460ea3d71a6daa46d6c6663a6fe0a554"></a>
@@ -351,6 +398,15 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Called when a geodesic is finished integrating: the final values are stored. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>index of the geodesic that is finished </td></tr>
+    <tr><td class="paramname">finalValues</td><td>final values of the diagnostics </td></tr>
+  </table>
+  </dd>
+</dl>
+
 <p>Implements <a class="el" href="class_mesh.html#acea35667753997db2dd4afe778971a0b">Mesh</a>.</p>
 
 </div>
@@ -378,7 +434,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="class_square_subdivision_mesh_v2.html">SquareSubdivisionMeshV2</a> functions. </p>
+<p>Return the current number of geodesics to be integrated. </p>
+<dl class="section return"><dt>Returns</dt><dd>largecounter </dd></dl>
 
 <p>Implements <a class="el" href="class_mesh.html#a9f70e6b42f934019c61930a68678a8e4">Mesh</a>.</p>
 
@@ -411,6 +468,16 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Get the lower neighbor of a pixel at a certain subdivision level. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td><a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html" title="A struct the Mesh uses to keep all information about a given pixel.">PixelInfo</a> pointer to the pixel </td></tr>
+    <tr><td class="paramname">subdiv</td><td>subdivision level of the neighbor </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html" title="A struct the Mesh uses to keep all information about a given pixel.">SquareSubdivisionMeshV2::PixelInfo</a>* </dd></dl>
+
 </div>
 </div>
 <a id="a0bcf04c439aa2cdde80bdd5d164c8171" name="a0bcf04c439aa2cdde80bdd5d164c8171"></a>
@@ -436,7 +503,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="class_mesh.html">Mesh</a> (abstract base class) functions. </p>
+<p>Description string getter. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
 
 <p>Reimplemented from <a class="el" href="class_mesh.html#ad4fdb3ad18207bd2470bb00b6e8ac27b">Mesh</a>.</p>
 
@@ -468,6 +536,16 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Get the left neighbor of a pixel at a certain subdivision level. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td><a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html" title="A struct the Mesh uses to keep all information about a given pixel.">PixelInfo</a> pointer to the pixel </td></tr>
+    <tr><td class="paramname">subdiv</td><td>subdivision level of the neighbor </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html" title="A struct the Mesh uses to keep all information about a given pixel.">SquareSubdivisionMeshV2::PixelInfo</a>* </dd></dl>
 
 </div>
 </div>
@@ -503,6 +581,17 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Get the initial conditions for the next pixel to be integrated. </p>
+<p>The next pixel is the one with index m_CurrentPixel</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>index of the pixel to be initialized </td></tr>
+    <tr><td class="paramname">newunitpoint</td><td>new unit point to be initialized </td></tr>
+    <tr><td class="paramname">newscreenindex</td><td>new screen index to be initialized </td></tr>
+  </table>
+  </dd>
+</dl>
+
 <p>Implements <a class="el" href="class_mesh.html#a1cf5f09a9c32f14f2cd6641f3f3a250a">Mesh</a>.</p>
 
 </div>
@@ -534,6 +623,16 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Get the right neighbor of a pixel at a certain subdivision level. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td><a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html" title="A struct the Mesh uses to keep all information about a given pixel.">PixelInfo</a> pointer to the pixel </td></tr>
+    <tr><td class="paramname">subdiv</td><td>subdivision level of the neighbor </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html" title="A struct the Mesh uses to keep all information about a given pixel.">SquareSubdivisionMeshV2::PixelInfo</a>* </dd></dl>
+
 </div>
 </div>
 <a id="a0bf8f55039717b5acf2d27567dd0a720" name="a0bf8f55039717b5acf2d27567dd0a720"></a>
@@ -563,6 +662,16 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Get the upper neighbor of a pixel at a certain subdivision level. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td><a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html" title="A struct the Mesh uses to keep all information about a given pixel.">PixelInfo</a> pointer to the pixel </td></tr>
+    <tr><td class="paramname">subdiv</td><td>subdivision level of the neighbor </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="struct_square_subdivision_mesh_v2_1_1_pixel_info.html" title="A struct the Mesh uses to keep all information about a given pixel.">SquareSubdivisionMeshV2::PixelInfo</a>* </dd></dl>
+
 </div>
 </div>
 <a id="a00ebf672cefbe26eb1fd4f3f2cce8eee" name="a00ebf672cefbe26eb1fd4f3f2cce8eee"></a>
@@ -588,6 +697,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Helper function to initialize the first grid of pixels to integrate. </p>
+
 </div>
 </div>
 <a id="a7826c3524bb84ea6c628cfa5567c1316" name="a7826c3524bb84ea6c628cfa5567c1316"></a>
@@ -612,6 +723,11 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Check whether the <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a> is finished integrating. </p>
+<dl class="section return"><dt>Returns</dt><dd>true </dd>
+<dd>
+false </dd></dl>
 
 <p>Implements <a class="el" href="class_mesh.html#a28677f062d3c7fa493f2c032532d5310">Mesh</a>.</p>
 
@@ -640,6 +756,14 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Subdivide the pixel at index ind and add up to 5 new pixels to the integration queue. </p>
+<p>The pixels are numbered as 1 2 3 4 5 6 7 8 9 i.e. the initial square is given by (1, 3, 7, 9), and the new pixels are (2, 4, 5, 6, 8). </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ind</td><td>index of the pixel to subdivide </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="a4f8c32b3af8f47fe38818a7f587cc2c4" name="a4f8c32b3af8f47fe38818a7f587cc2c4"></a>
@@ -665,6 +789,11 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Helper function to update all pixel weights in m_CurrentPixelUpdating. </p>
+<p>All pixels with weight &gt; 0 will be added to m_ActivePixels </p><dl class="section note"><dt>Note</dt><dd>Assumes all pixels have subdiv &gt; 0 and subdiv &lt; m_MaxSubdivide, and all their neighbors assigned correctly </dd>
+<dd>
+Assumes all pixels have their (and their neighbor's) values assigned correctly </dd></dl>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -688,6 +817,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>List of active pixels, i.e. those that can be subdivided and have non-zero weight. </p>
+
 </div>
 </div>
 <a id="aaf5e15238c2a40975f28fa210484d699" name="aaf5e15238c2a40975f28fa210484d699"></a>
@@ -709,6 +840,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Master list of all pixels. std::forward_list is more space-efficient than std::list, bidirectional iteration is not needed, no random access supported. This list is only used to store the owner pointers (and thus the objects) of all pixels. The other pixel vectors are used to iterate through (and need random access) </p>
 
 </div>
 </div>
@@ -732,6 +865,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>List of current queue of pixels to be sent to be integrated. </p>
+
 </div>
 </div>
 <a id="a72451bb721b287f31d9d0ab39fc9255a" name="a72451bb721b287f31d9d0ab39fc9255a"></a>
@@ -753,6 +888,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>A bool for every pixel in the current queue: gets set to true when the pixel is done integrating and gets its values returned. </p>
 
 </div>
 </div>
@@ -776,6 +913,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>List of pixels that are already integrated but need updating weights after current queue is all integrated. </p>
+
 </div>
 </div>
 <a id="aea6a4a485c6c7137e6b57d318ec6d81f" name="aea6a4a485c6c7137e6b57d318ec6d81f"></a>
@@ -797,6 +936,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Are we allowed to integrate as many pixels as we want? (m_MaxPixels == 0) </p>
 
 </div>
 </div>
@@ -820,6 +961,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>How many initial pixels (spread uniformly over the grid) do we integrate? </p>
+
 </div>
 </div>
 <a id="a2730d4247b33390df5057217be56dc6e" name="a2730d4247b33390df5057217be56dc6e"></a>
@@ -841,6 +984,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>If we decide to subdivide a square, do we automatically subdivide it further to the max level? </p>
 
 </div>
 </div>
@@ -864,6 +1009,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>How many pixels per iteration can we subdivide? </p>
+
 </div>
 </div>
 <a id="adc2c9183af2c0e0068d575bddb5b7172" name="adc2c9183af2c0e0068d575bddb5b7172"></a>
@@ -885,6 +1032,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>How many pixels can we integrate in total over all iterations? </p>
 
 </div>
 </div>
@@ -908,6 +1057,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>How many times are we allowed to subdivide a square? Note: the initial grid is already at 1. </p>
+
 </div>
 </div>
 <a id="ad91fc253f3bc12138a4c7c24cbd15cc5" name="ad91fc253f3bc12138a4c7c24cbd15cc5"></a>
@@ -929,6 +1080,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>How many pixels we have integrated so far. </p>
 
 </div>
 </div>
@@ -952,6 +1105,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>How many pixels are we still allowed to integrate (if !m_InfinitePixels)? </p>
+
 </div>
 </div>
 <a id="a520d11a54d4bd54446e1aa288a5257ad" name="a520d11a54d4bd54446e1aa288a5257ad"></a>
@@ -973,6 +1128,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The total size in pixels of a row or column (square grid) </p>
 
 </div>
 </div>

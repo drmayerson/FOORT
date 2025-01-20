@@ -9,9 +9,7 @@
  * No .cpp with implementations; all functions are inline.
  * @version 0.1
  * @date 2025-01-14
- *
  * @copyright Copyright (c) 2025
- *
  */
 
 #include <limits>  // for std::numeric_limits

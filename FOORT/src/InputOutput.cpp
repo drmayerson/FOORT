@@ -3,36 +3,59 @@
 #include <algorithm>  // needed for std::min etc
 #include <filesystem> // needed for std::filesystem::create_directories
 
-/// <summary>
-/// Screen output functions
-/// </summary>
+/**
+ * @file InputOutput.cpp
+ * @author Daniel R. Mayerson
+ * @version 0.1
+ * @date 2025-01-14
+ * @copyright Copyright (c) 2025
+ */
 
-// This is the output level; default is 1. Note: variable only accessible in this code file!
+// Screen output functions
+
+//! This is the output level; default is 1. Note: variable only accessible in this code file!
 static OutputLevel theOutputLevel{OutputLevel::Level_1_PROC};
 
-// Frequency of messages during each integration loop.  Note: variable only accessible in this code file!
+//! Frequency of messages during each integration loop.  Note: variable only accessible in this code file!
 static largecounter theLoopMessageFrequency{LARGECOUNTER_MAX};
 
-// Set the output level
+/**
+ * @brief Set the Output Level
+ *
+ * @param theLvl The desired level
+ */
 void SetOutputLevel(OutputLevel theLvl)
 {
 	theOutputLevel = theLvl;
 }
 
-// Set the frequency of messages during integration loops
+/**
+ * @brief Set the Loop Message Frequency
+ *
+ * @param thefreq the desired frequency
+ */
 void SetLoopMessageFrequency(largecounter thefreq)
 {
 	theLoopMessageFrequency = thefreq;
 }
 
-// Get the frequency of messages during integration loops
+/**
+ * @brief Get the Loop Message Frequency during integration loops
+ *
+ * @return largecounter
+ */
 largecounter GetLoopMessageFrequency()
 {
 	return theLoopMessageFrequency;
 }
 
-// Outputs line to screen console, contingent on it being allowed by the set outputlevel
-// Defaults are lvl = OutputLevel::Level_3_ALLDETAIL and newLine = true
+/**
+ * @brief Outputs line to screen console, contingent on it being allowed by the set outputlevel
+ * @details Defaults are lvl = OutputLevel::Level_3_ALLDETAIL and newLine = true
+ * @param theOutput output to be put on the screen
+ * @param lvl the output level
+ * @param newLine indicates whether we want a new line after the output
+ */
 void ScreenOutput(std::string_view theOutput, OutputLevel lvl, bool newLine)
 {
 	if (static_cast<int>(lvl) <= static_cast<int>(theOutputLevel)) // Output is allowed at current set level
@@ -53,11 +76,19 @@ void ScreenOutput(std::string_view theOutput, OutputLevel lvl, bool newLine)
 	}
 }
 
-/// <summary>
-/// GeodesicOutputHandler functions
-/// </summary>
+// GeodesicOutputHandler functions
 
-// Constructor initializes all const member variables using the arguments
+/**
+ * @brief Construct a new Geodesic Output Handler object and initialize all const member variables
+ *
+ * @param FilePrefix file prefix
+ * @param TimeStamp time stamp
+ * @param FileExtension file extensions
+ * @param DiagNames diagnostics names
+ * @param nroutputstocache number of geodesics to put to the cache
+ * @param geodperfile max number of geodesics per output file
+ * @param firstlineinfo the info to print on the first line
+ */
 GeodesicOutputHandler::GeodesicOutputHandler(std::string FilePrefix, std::string TimeStamp, std::string FileExtension,
 											 std::vector<std::string> DiagNames, largecounter nroutputstocache, largecounter geodperfile, std::string firstlineinfo) : m_FilePrefix{FilePrefix}, m_TimeStamp{TimeStamp}, m_FileExtension{FileExtension}, m_DiagNames{DiagNames},
 																																									   // Make sure that we only cache up to the max amount that fits in largecounter
@@ -73,6 +104,11 @@ GeodesicOutputHandler::GeodesicOutputHandler(std::string FilePrefix, std::string
 		m_WriteToConsole = true;
 }
 
+/**
+ * @brief full description string getter for the geodesic output handler
+ *
+ * @return std::string
+ */
 std::string GeodesicOutputHandler::getFullDescriptionStr() const
 {
 	// Descriptive string with all options
@@ -86,6 +122,11 @@ std::string GeodesicOutputHandler::getFullDescriptionStr() const
 	}
 }
 
+/**
+ * @brief prepare the cache for output
+ *
+ * @param nrOutputToCome number of outputs to come into the cache
+ */
 void GeodesicOutputHandler::PrepareForOutput(largecounter nrOutputToCome)
 {
 	// If the output that is coming will put us over the caching limit, first write the cached data to file
@@ -103,6 +144,12 @@ void GeodesicOutputHandler::PrepareForOutput(largecounter nrOutputToCome)
 	m_AllCachedData.insert(m_AllCachedData.end(), nrOutputToCome, std::vector<std::string>{});
 }
 
+/**
+ * @brief
+ *
+ * @param index
+ * @param theOutput
+ */
 void GeodesicOutputHandler::NewGeodesicOutput(largecounter index, std::vector<std::string> theOutput)
 {
 	// NOTE: this must be thread-safe! Indeed, we are only overwriting an existing element of m_AllCachedData
@@ -113,12 +160,17 @@ void GeodesicOutputHandler::NewGeodesicOutput(largecounter index, std::vector<st
 	m_AllCachedData[m_PrevCached + index] = std::move(theOutput);
 }
 
+/**
+ * @brief There is no more output, so we write anything that is cached to file to clean up and finalize
+ */
 void GeodesicOutputHandler::OutputFinished()
 {
-	// There is no more output, so we write anything that is cached to file to clean up and finalize
 	WriteCachedOutputToFile();
 }
 
+/**
+ * @brief Write cached output to a file
+ */
 void GeodesicOutputHandler::WriteCachedOutputToFile()
 {
 	// Check if there is anything to do
@@ -264,13 +316,18 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 	m_AllCachedData.clear();
 }
 
+/**
+ * @brief Get the file name based on the various parts of the file name stored in the member variables.
+ *
+ * @param diagnr
+ * @param filenr
+ * @return std::string
+ */
 std::string GeodesicOutputHandler::GetFileName(int diagnr, unsigned short filenr) const
 {
 	if (m_WriteToConsole)
 		ScreenOutput("Should not be getting a file name if we are writing to console!", OutputLevel::Level_0_WARNING);
 
-	// This procedure construct a full output file name from the various parts of the file name stored
-	// in the member variables
 	std::string FullFileName{m_FilePrefix + "_"};
 
 	if (m_TimeStamp != "")
@@ -289,11 +346,15 @@ std::string GeodesicOutputHandler::GetFileName(int diagnr, unsigned short filenr
 	return FullFileName;
 }
 
+/**
+ * @brief We check here to see if the files are being put in a (sub)directory;
+ * if so, we create the directory/directories first to make sure creating/opening the file
+ * will succeed.
+ *
+ * @param filename Filename to be found / created
+ */
 void GeodesicOutputHandler::OpenForFirstTime(const std::string &filename)
 {
-	// We check here to see if the files are being put in a (sub)directory;
-	// if so, we create the directory/directories first to make sure creating/opening the file
-	// will succeed.
 	auto pos = filename.find_last_of("/");
 	if (pos != std::string::npos) // there is at least one slash, so files are in a (sub)directory
 	{

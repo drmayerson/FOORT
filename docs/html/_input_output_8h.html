@@ -95,6 +95,9 @@ $(function(){ initResizable(false); });
   <div class="headertitle"><div class="title">InputOutput.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Declarations of functions &amp; classes that deal with the output to files and to the screen.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="_geometry_8h_source.html">Geometry.h</a>&quot;</code><br />
 <code>#include &lt;string_view&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
@@ -107,6 +110,7 @@ $(function(){ initResizable(false); });
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_geodesic_output_handler.html">GeodesicOutputHandler</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">// <a class="el" href="class_geodesic_output_handler.html" title="// GeodesicOutputHandler handles all of the output to file. It gets passed all of the output strings ...">GeodesicOutputHandler</a> handles all of the output to file. It gets passed all of the output strings for every <a class="el" href="class_geodesic.html" title="Geodesic class: an instance of this class is created for each Geodesic that is integrated.">Geodesic</a>, it then stores this data until it eventually writes all data to the appropriate files  <a href="class_geodesic_output_handler.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
@@ -121,20 +125,31 @@ Enumerations</h2></td></tr>
 , <a class="el" href="#a6bcb6b3fe3d480eff62b980e53515a37ab1e6fa4db42923f170a17ab2ea0798d2">MaxLevel</a>
 <br />
  }</td></tr>
+<tr class="memdesc:a6bcb6b3fe3d480eff62b980e53515a37"><td class="mdescLeft">&#160;</td><td class="mdescRight">The output level determines at what priority level the output is generated to the console.  <a href="#a6bcb6b3fe3d480eff62b980e53515a37">More...</a><br /></td></tr>
 <tr class="separator:a6bcb6b3fe3d480eff62b980e53515a37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:acb15e378d55d02a38b6fe108deaa53d9" id="r_acb15e378d55d02a38b6fe108deaa53d9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acb15e378d55d02a38b6fe108deaa53d9">SetOutputLevel</a> (<a class="el" href="#a6bcb6b3fe3d480eff62b980e53515a37">OutputLevel</a> theLvl)</td></tr>
+<tr class="memdesc:acb15e378d55d02a38b6fe108deaa53d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the Output Level.  <br /></td></tr>
 <tr class="separator:acb15e378d55d02a38b6fe108deaa53d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a564d957e7f0d531386eab2065981d489" id="r_a564d957e7f0d531386eab2065981d489"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a564d957e7f0d531386eab2065981d489">ScreenOutput</a> (std::string_view theOutput, <a class="el" href="#a6bcb6b3fe3d480eff62b980e53515a37">OutputLevel</a> lvl=<a class="el" href="#a6bcb6b3fe3d480eff62b980e53515a37a2060faffcdba99749ca6c74c1dd3b1ef">OutputLevel::Level_3_ALLDETAIL</a>, bool newLine=true)</td></tr>
+<tr class="memdesc:a564d957e7f0d531386eab2065981d489"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outputs line to screen console, contingent on it being allowed by the set outputlevel.  <br /></td></tr>
 <tr class="separator:a564d957e7f0d531386eab2065981d489"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e70916e7492f9ed2577e490defdfe9d" id="r_a0e70916e7492f9ed2577e490defdfe9d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0e70916e7492f9ed2577e490defdfe9d">SetLoopMessageFrequency</a> (<a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a> thefreq)</td></tr>
+<tr class="memdesc:a0e70916e7492f9ed2577e490defdfe9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the Loop Message Frequency.  <br /></td></tr>
 <tr class="separator:a0e70916e7492f9ed2577e490defdfe9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac0bf2d07a808f8c778ae1372809f8c4" id="r_aac0bf2d07a808f8c778ae1372809f8c4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aac0bf2d07a808f8c778ae1372809f8c4">GetLoopMessageFrequency</a> ()</td></tr>
+<tr class="memdesc:aac0bf2d07a808f8c778ae1372809f8c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the Loop Message Frequency during integration loops.  <br /></td></tr>
 <tr class="separator:aac0bf2d07a808f8c778ae1372809f8c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Declarations of functions &amp; classes that deal with the output to files and to the screen. </p>
+<dl class="section author"><dt>Author</dt><dd>Daniel R. Mayerson </dd></dl>
+<dl class="section version"><dt>Version</dt><dd>0.1 </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>2025-01-14 </dd></dl>
+<dl class="section copyright"><dt>Copyright</dt><dd>Copyright (c) 2025 </dd></dl>
+</div><h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a6bcb6b3fe3d480eff62b980e53515a37" name="a6bcb6b3fe3d480eff62b980e53515a37"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6bcb6b3fe3d480eff62b980e53515a37">&#9670;&#160;</a></span>OutputLevel</h2>
 
@@ -154,6 +169,9 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The output level determines at what priority level the output is generated to the console. </p>
+<p>Level_0_WARNING: Only warnings are outputted. Level_1_PROC: Coarsest level output; only the major procedures produce output. Level_2_SUBPROC: Subprocedures can also produce output. Level_3_ALLDETAIL: Finest level output; all details are shown. Level_4_DEBUG: Finest level output AND debug messages as well. </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a6bcb6b3fe3d480eff62b980e53515a37a4ea9c6d126a77877f09d2218367bfea1" name="a6bcb6b3fe3d480eff62b980e53515a37a4ea9c6d126a77877f09d2218367bfea1"></a>Level_0_WARNING&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a6bcb6b3fe3d480eff62b980e53515a37aa3f5a3d4e574903b3a1fd62c45e54cf4" name="a6bcb6b3fe3d480eff62b980e53515a37aa3f5a3d4e574903b3a1fd62c45e54cf4"></a>Level_1_PROC&#160;</td><td class="fielddoc"></td></tr>
@@ -181,6 +199,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Get the Loop Message Frequency during integration loops. </p>
+<dl class="section return"><dt>Returns</dt><dd>largecounter </dd></dl>
+
 </div>
 </div>
 <a id="a564d957e7f0d531386eab2065981d489" name="a564d957e7f0d531386eab2065981d489"></a>
@@ -197,15 +218,25 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="#a6bcb6b3fe3d480eff62b980e53515a37">OutputLevel</a></td>          <td class="paramname"><span class="paramname"><em>lvl</em></span><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="#a6bcb6b3fe3d480eff62b980e53515a37a2060faffcdba99749ca6c74c1dd3b1ef">OutputLevel::Level_3_ALLDETAIL</a></span>, </td>
+          <td class="paramtype"><a class="el" href="#a6bcb6b3fe3d480eff62b980e53515a37">OutputLevel</a></td>          <td class="paramname"><span class="paramname"><em>lvl</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>newLine</em></span><span class="paramdefsep"> = </span><span class="paramdefval">true</span>&#160;)</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>newLine</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Outputs line to screen console, contingent on it being allowed by the set outputlevel. </p>
+<p>Defaults are lvl = <a class="el" href="#a6bcb6b3fe3d480eff62b980e53515a37a2060faffcdba99749ca6c74c1dd3b1ef">OutputLevel::Level_3_ALLDETAIL</a> and newLine = true </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">theOutput</td><td>output to be put on the screen </td></tr>
+    <tr><td class="paramname">lvl</td><td>the output level </td></tr>
+    <tr><td class="paramname">newLine</td><td>indicates whether we want a new line after the output </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -224,6 +255,14 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the Loop Message Frequency. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">thefreq</td><td>the desired frequency </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="acb15e378d55d02a38b6fe108deaa53d9" name="acb15e378d55d02a38b6fe108deaa53d9"></a>
@@ -240,6 +279,14 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Set the Output Level. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">theLvl</td><td>The desired level </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

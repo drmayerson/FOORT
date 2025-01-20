@@ -90,23 +90,31 @@ $(function(){ initResizable(false); });
   <div class="headertitle"><div class="title">Utilities Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Namespace that contains our utility functions.  
+<a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_utilities_1_1_timer.html">Timer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_utilities_1_1_timer.html" title="Timer class to keep track of elapsed time.">Timer</a> class to keep track of elapsed time.  <a href="class_utilities_1_1_timer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:af0b51b80a51c860540e2d8b76463ae6e" id="r_af0b51b80a51c860540e2d8b76463ae6e"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af0b51b80a51c860540e2d8b76463ae6e">GetTimeStampString</a> ()</td></tr>
-<tr class="memdesc:af0b51b80a51c860540e2d8b76463ae6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Other functions in <a class="el" href="namespace_utilities.html">Utilities</a>.  <br /></td></tr>
+<tr class="memdesc:af0b51b80a51c860540e2d8b76463ae6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a string of the current time (in a format that can be used to append to file names)  <br /></td></tr>
 <tr class="separator:af0b51b80a51c860540e2d8b76463ae6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afdd8062a39c3ee81d8d09db3f81490d8" id="r_afdd8062a39c3ee81d8d09db3f81490d8"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afdd8062a39c3ee81d8d09db3f81490d8">GetDiagNameStrings</a> (<a class="el" href="_diagnostics_8h.html#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> alldiags, <a class="el" href="_diagnostics_8h.html#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> valdiag)</td></tr>
+<tr class="memdesc:afdd8062a39c3ee81d8d09db3f81490d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function to get all <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> Names (for outputting to files)  <br /></td></tr>
 <tr class="separator:afdd8062a39c3ee81d8d09db3f81490d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd512675530571d06a624482bfee61a4" id="r_acd512675530571d06a624482bfee61a4"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acd512675530571d06a624482bfee61a4">GetFirstLineInfoString</a> (const <a class="el" href="class_metric.html">Metric</a> *theMetric, const <a class="el" href="class_source.html">Source</a> *theSource, <a class="el" href="_diagnostics_8h.html#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> alldiags, <a class="el" href="_diagnostics_8h.html#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> valdiag, <a class="el" href="_terminations_8h.html#ade7ca271520105b2b5e784c013d36f87">TermBitflag</a> allterms, const <a class="el" href="class_view_screen.html">ViewScreen</a> *theView)</td></tr>
+<tr class="memdesc:acd512675530571d06a624482bfee61a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">This returns the full string to be written to every output file as its first line.  <br /></td></tr>
 <tr class="separator:acd512675530571d06a624482bfee61a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Namespace that contains our utility functions. </p>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="afdd8062a39c3ee81d8d09db3f81490d8" name="afdd8062a39c3ee81d8d09db3f81490d8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afdd8062a39c3ee81d8d09db3f81490d8">&#9670;&#160;</a></span>GetDiagNameStrings()</h2>
 
@@ -125,6 +133,16 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Helper function to get all <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> Names (for outputting to files) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">alldiags</td><td>bitflag for all Diagnostics </td></tr>
+    <tr><td class="paramname">valdiag</td><td>bitflag for the value diagnostic </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>std::vector&lt;std::string&gt; </dd></dl>
 
 </div>
 </div>
@@ -167,6 +185,20 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>This returns the full string to be written to every output file as its first line. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">theMetric</td><td>pointer to the <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a> object </td></tr>
+    <tr><td class="paramname">theSource</td><td>pointer to the <a class="el" href="class_source.html" title="Abstract Source base class.">Source</a> object </td></tr>
+    <tr><td class="paramname">alldiags</td><td>bitflag for all Diagnostics </td></tr>
+    <tr><td class="paramname">valdiag</td><td>bitflag for the value diagnostic </td></tr>
+    <tr><td class="paramname">allterms</td><td>bitflag for all Terminations </td></tr>
+    <tr><td class="paramname">theView</td><td>pointer to the <a class="el" href="class_view_screen.html" title="This class is in charge of converting a pixel on the screen into physical initial conditions for a ge...">ViewScreen</a> object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
+
 </div>
 </div>
 <a id="af0b51b80a51c860540e2d8b76463ae6e" name="af0b51b80a51c860540e2d8b76463ae6e"></a>
@@ -184,7 +216,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Other functions in <a class="el" href="namespace_utilities.html">Utilities</a>. </p>
+<p>Get a string of the current time (in a format that can be used to append to file names) </p>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
 
 </div>
 </div>

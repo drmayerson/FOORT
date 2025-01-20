@@ -6,25 +6,46 @@
 #include <limits>	 // for std::numeric_limits
 #include <iostream>	 // for std::cin
 
-/// <summary>
-/// Mesh (abstract base class) functions
-/// </summary>
+/**
+ * @file Mesh.cpp
+ * @author Daniel R. Mayerson
+ * @version 0.1
+ * @date 2025-01-14
+ * @copyright Copyright (c) 2025
+ */
 
+// Mesh (abstract base class) functions
+
+/**
+ * @brief Basic description string getter
+ *
+ * @return std::string
+ */
 std::string Mesh::getFullDescriptionStr() const
 {
 	return "Mesh (no override description specified)";
 }
 
-/// <summary>
-/// SimpleSquareMesh functions
-/// </summary>
+// SimpleSquareMesh functions
 
+/**
+ * @brief Check whether the Mesh is finished integrating
+ * @details We are done if we have sent all pixels to be integrated (there is only one iteration of pixels)
+ * @return true
+ * @return false
+ */
 bool SimpleSquareMesh::IsFinished() const
 {
-	// We are done if we have sent all pixels to be integrated (there is only one iteration of pixels)
 	return m_Finished;
 }
 
+/**
+ * @brief Get the initial conditions for the next pixel to be integrated
+ * @details The next pixel is the one with index m_CurrentPixel
+ * @param index index of the pixel to be initialized
+ * @param newunitpoint new unit point to be initialized
+ * @param newscreenindex new screen index to be initialized
+ */
 void SimpleSquareMesh::getNewInitConds(largecounter index, ScreenPoint &newunitpoint, ScreenIndex &newscreenindex) const
 {
 	// We should not be getting new initial conditions if all pixels are done already!
@@ -46,40 +67,62 @@ void SimpleSquareMesh::getNewInitConds(largecounter index, ScreenPoint &newunitp
 	newunitpoint = ScreenPoint{row * 1.0 / static_cast<real>(m_RowColumnSize - 1), column * 1.0 / static_cast<real>(m_RowColumnSize - 1)};
 }
 
+/**
+ * @brief End the current loop of integrating pixels
+ * @details We are done integrating after one loop
+ */
 void SimpleSquareMesh::EndCurrentLoop()
 {
-	// We are now done integrating
 	m_Finished = true;
 }
 
+/**
+ * @brief Get the current number of geodesics to be integrated
+ * @details This is the total number of pixels in the grid
+ * @return largecounter
+ */
 largecounter SimpleSquareMesh::getCurNrGeodesics() const
 {
-	// This Mesh only has one loop, so the total pixels is the current number of pixels to be integrated.
 	return m_TotalPixels;
 }
 
+/**
+ * @brief Function that is called when a geodesic is finished integrating
+ * @details This Mesh doesn't actually have to do anything with the geodesic (values) when it is done!
+ *
+ * @param index index of the geodesic that is finished
+ * @param finalValues final values of the geodesic
+ */
 void SimpleSquareMesh::GeodesicFinished([[maybe_unused]] largecounter index, [[maybe_unused]] std::vector<real> finalValues)
 {
 	// This Mesh doesn't actually have to do anything with the geodesic (values) when it is done!
 }
 
+/**
+ * @brief Description string getter
+ *
+ * @return std::string
+ */
 std::string SimpleSquareMesh::getFullDescriptionStr() const
 {
-	// Description string
 	return "Mesh: simple square grid (" + std::to_string(m_RowColumnSize) + "^2 pixels)";
 }
 
-/// <summary>
-/// InputCertainPixelsMesh functions
-/// </summary>
+// InputCertainPixelsMesh functions
 
+/**
+ * @brief Constructor for InputCertainPixelsMesh
+ * @details Constructor will ask for pixels to be inputted by the user through the console
+ *
+ * @param totalPixels total number of pixels in the grid
+ * @param valdiag value diagnostic bitflag
+ */
 InputCertainPixelsMesh::InputCertainPixelsMesh(largecounter totalPixels, DiagBitflag valdiag) : m_RowColumnSize{static_cast<pixelcoord>(sqrt(totalPixels))},
 																								Mesh(valdiag)
 {
 	if constexpr (dimension != 4)
 		ScreenOutput("InputCertainPixelsMesh only defined in 4D!", OutputLevel::Level_0_WARNING);
 
-	// Constructor will ask for pixels to be inputted by the user through the console
 	// We want to identify messages from the Mesh with the prefix,
 	// and we set the level to be as high as possible since we want to make sure our messages are outputted!
 	std::string prefix{"InputCertainPixelsMesh message: "};
@@ -133,29 +176,57 @@ InputCertainPixelsMesh::InputCertainPixelsMesh(largecounter totalPixels, DiagBit
 		ScreenOutput("No pixels added to integration list!", OutputLevel::Level_0_WARNING);
 }
 
+/**
+ * @brief Get the current number of geodesics to be integrated
+ * @details This is the total number of pixels in the grid
+ * @return largecounter
+ */
 largecounter InputCertainPixelsMesh::getCurNrGeodesics() const
 {
-	// This Mesh only has one loop, so the total pixels is the current number of pixels to be made.
 	return m_TotalPixels;
 }
 
+/**
+ * @brief End the current loop of integrating pixels
+ * @details This Mesh only has one loop; we are now finished integrating
+ */
 void InputCertainPixelsMesh::EndCurrentLoop()
 {
-	// This Mesh only has one loop; we are now finished integrating
 	m_Finished = true;
 }
 
+/**
+ * @brief Function that is called when a geodesic is finished integrating
+ * @details This Mesh doesn't actually have to do anything with the geodesic (values) when it is done!
+ *
+ * @param index index of the geodesic that is finished
+ * @param finalValues final values of the geodesic
+ */
 void InputCertainPixelsMesh::GeodesicFinished([[maybe_unused]] largecounter index, [[maybe_unused]] std::vector<real> finalValues)
 {
 	// This Mesh doesn't actually have to do anything with the geodesic (values) when it's done!
 }
 
+/**
+ * @brief Check whether the Mesh is finished integrating
+ *
+ * @return true
+ * @return false
+ */
 bool InputCertainPixelsMesh::IsFinished() const
 {
 	// The Mesh is finished after one loop
 	return m_Finished;
 }
 
+/**
+ * @brief Get the initial conditions for the next pixel to be integrated
+ * @details The next pixel is the one with index m_CurrentPixel
+ *
+ * @param index index of the pixel to be initialized
+ * @param newunitpoint new unit point to be initialized
+ * @param newscreenindex new screen index to be initialized
+ */
 void InputCertainPixelsMesh::getNewInitConds(largecounter index, ScreenPoint &newunitpoint, ScreenIndex &newscreenindex) const
 {
 	// We should not be getting new initial conditions if all pixels are done already!
@@ -170,22 +241,37 @@ void InputCertainPixelsMesh::getNewInitConds(largecounter index, ScreenPoint &ne
 							   newscreenindex[1] * 1.0 / static_cast<real>(m_RowColumnSize - 1)};
 }
 
+/**
+ * @brief Description string getter
+ *
+ * @return std::string
+ */
 std::string InputCertainPixelsMesh::getFullDescriptionStr() const
 {
 	// Descriptive string
 	return "Mesh: User-input pixels";
 }
 
-/// <summary>
-/// SquareSubdivisionMesh functions
-/// </summary>
+// SquareSubdivisionMesh functions
 
+/**
+ * @brief Return the current number of geodesics to be integrated
+ *
+ * @return largecounter
+ */
 largecounter SquareSubdivisionMesh::getCurNrGeodesics() const
 {
-	// The number of geodesics in the current integration iteration
 	return static_cast<largecounter>(m_CurrentPixelQueue.size());
 }
 
+/**
+ * @brief Get the initial conditions for the next pixel to be integrated
+ * @details The next pixel is the one with index m_CurrentPixel
+ *
+ * @param index index of the pixel to be initialized
+ * @param newunitpoint new unit point to be initialized
+ * @param newscreenindex new screen index to be initialized
+ */
 void SquareSubdivisionMesh::getNewInitConds(largecounter index, ScreenPoint &newunitpoint, ScreenIndex &newscreenindex) const
 {
 	// Returning the geodesic with the appropriate index in the current queue
@@ -195,6 +281,12 @@ void SquareSubdivisionMesh::getNewInitConds(largecounter index, ScreenPoint &new
 							   newscreenindex[1] * 1.0 / static_cast<real>(m_RowColumnSize - 1)};
 }
 
+/**
+ * @brief Called when a geodesic is finished integrating: the final values are stored.
+ *
+ * @param index index of the geodesic that is finished
+ * @param finalValues final values of the diagnostics
+ */
 void SquareSubdivisionMesh::GeodesicFinished(largecounter index, std::vector<real> finalValues)
 {
 	// NOTE: this function must be thread-safe!
@@ -207,25 +299,38 @@ void SquareSubdivisionMesh::GeodesicFinished(largecounter index, std::vector<rea
 	m_CurrentPixelQueueDone[index] = true;
 }
 
-// Note: definition of SquareSubdivisionMesh::EndCurrentLoop() is below
-
+/**
+ * @brief Check whether the Mesh is finished integrating
+ *
+ * @return true
+ * @return false
+ */
 bool SquareSubdivisionMesh::IsFinished() const
 {
 	// We are finished if we did not manage to populate the current pixel queue with any new pixels to integrate
 	return m_CurrentPixelQueue.size() == 0;
 }
 
+/**
+ * @brief Description string getter
+ *
+ * @return std::string
+ */
 std::string SquareSubdivisionMesh::getFullDescriptionStr() const
 {
-	// Descriptive string
 	return "Mesh: square subdivision (initial pixels: " + std::to_string(static_cast<pixelcoord>(sqrt(m_InitialPixels))) + "^2; max subdivision: " + std::to_string(m_MaxSubdivide) + "; pixels subdivided per iteration: " + std::to_string(m_IterationPixels) + "; max total pixels: " + (m_InfinitePixels ? "infinite" : std::to_string(m_MaxPixels)) + "; if pixel is initially subdivided, will continue to max: " + std::to_string(m_InitialSubDividideToFinal) + ")";
 }
 
 // Helper (private) member function
+/**
+ * @brief Helper function to exponentiate ints
+ * @details Note that the result may be larger than fits in an int, but this is only called with int arguments
+ * @param base base
+ * @param exp exponent
+ * @return pixelcoord
+ */
 pixelcoord SquareSubdivisionMesh::ExpInt(int base, int exp)
 {
-	// Helper function to exponentiate ints; note: the result may be larger than fits in an int, but
-	// this is only called with int arguments
 	pixelcoord ret{1};
 	while (exp > 0)
 	{
@@ -235,10 +340,11 @@ pixelcoord SquareSubdivisionMesh::ExpInt(int base, int exp)
 	return ret;
 }
 
-//////////////////////////////////////////////////////////////
-//// Important SquareSubdivisionMesh functions start here ////
+// Important SquareSubdivisionMesh functions start here
 
-// Helper function: sets up the initial grid to integrate
+/**
+ * @brief Helper function to initialize the first grid of pixels to integrate
+ */
 void SquareSubdivisionMesh::InitializeFirstGrid()
 {
 	// initial square grid of m_InitialPixels
@@ -273,7 +379,9 @@ void SquareSubdivisionMesh::InitializeFirstGrid()
 	m_CurrentPixelQueueDone = std::vector<bool>(m_CurrentPixelQueue.size(), false);
 }
 
-// Helper function: updates all pixels' neighbors (if pixel can have neighbors and needs updating)
+/**
+ * @brief Helper function to update all pixel neighbors (if needed)
+ */
 void SquareSubdivisionMesh::UpdateAllNeighbors()
 {
 	ScreenOutput("Updating all pixel neighbor information...", OutputLevel::Level_3_ALLDETAIL);
@@ -313,9 +421,11 @@ void SquareSubdivisionMesh::UpdateAllNeighbors()
 	ScreenOutput("Done updating pixel neighbor information.", OutputLevel::Level_3_ALLDETAIL);
 }
 
-// Helper function: updates all weights of pixels that have weight < 0 (so need updating) and have a
-// subdivision level that allows further subdivision.
-// Note: assumes all squares have neighbors assigned correctly!
+/**
+ * @brief Helper function to update all pixel weights
+ * @details Updates all weights of the pixels in m_AllPixels with weight < 0 and subdiv > 0 and subdiv < m_MaxSubdivide
+ * @note Assumes all squares have neighbors assigned correctly!
+ */
 void SquareSubdivisionMesh::UpdateAllWeights()
 {
 	// Updates all weights of the pixels in m_AllPixels with weight < 0 and subdiv > 0 and subdiv < m_MaxSubdivide
@@ -364,8 +474,12 @@ void SquareSubdivisionMesh::UpdateAllWeights()
 	ScreenOutput("Done updating pixel weights.", OutputLevel::Level_3_ALLDETAIL);
 }
 
-// Helper function: subdivides the square with pixel m_AllPixels[ind] in the upper-left corner,
-// and add (up to) 5 new pixels in the integration queue accordingly
+/**
+ * @brief Helper function to subdivide a pixel and add up to 5 new pixels to the queue
+ * @details This will take the pixel m_AllPixels[ind] and subdivide it,
+ * adding up to <=5 pixels to the CurrentPixelQueue
+ * @param ind index of the pixel to subdivide
+ */
 void SquareSubdivisionMesh::SubdivideAndQueue(largecounter ind)
 {
 	// Helper function to find a pixel in m_AllPixels
@@ -504,8 +618,11 @@ void SquareSubdivisionMesh::SubdivideAndQueue(largecounter ind)
 	// or if they already exist, their subdivision/weight have been updated accordingly
 }
 
-// This function is called at the end of each integration iteration loop.
-// We must wrap up the current iteration and initialize the next one.
+/**
+ * @brief End the current loop of integrating pixels
+ * @details This function is called at the end of each integration iteration loop.
+ * We must wrap up the current iteration and initialize the next one.
+ */
 void SquareSubdivisionMesh::EndCurrentLoop()
 {
 	///////////////////////////////////////////
@@ -628,16 +745,27 @@ void SquareSubdivisionMesh::EndCurrentLoop()
 	// (the same is true if we have not actually managed to "create" any new pixels in the subdivision process)
 }
 
-/// <summary>
-/// SquareSubdivisionMeshV2 functions
-/// </summary>
+// SquareSubdivisionMeshV2 functions
 
+/**
+ * @brief Return the current number of geodesics to be integrated
+ *
+ * @return largecounter
+ */
 largecounter SquareSubdivisionMeshV2::getCurNrGeodesics() const
 {
 	// The number of geodesics in the current integration iteration
 	return static_cast<largecounter>(m_CurrentPixelQueue.size());
 }
 
+/**
+ * @brief Get the initial conditions for the next pixel to be integrated
+ * @details The next pixel is the one with index m_CurrentPixel
+ *
+ * @param index index of the pixel to be initialized
+ * @param newunitpoint new unit point to be initialized
+ * @param newscreenindex new screen index to be initialized
+ */
 void SquareSubdivisionMeshV2::getNewInitConds(largecounter index, ScreenPoint &newunitpoint, ScreenIndex &newscreenindex) const
 {
 	// Returning the geodesic with the appropriate index in the current queue
@@ -647,6 +775,12 @@ void SquareSubdivisionMeshV2::getNewInitConds(largecounter index, ScreenPoint &n
 							   newscreenindex[1] * 1.0 / static_cast<real>(m_RowColumnSize - 1)};
 }
 
+/**
+ * @brief Called when a geodesic is finished integrating: the final values are stored.
+ *
+ * @param index index of the geodesic that is finished
+ * @param finalValues final values of the diagnostics
+ */
 void SquareSubdivisionMeshV2::GeodesicFinished(largecounter index, std::vector<real> finalValues)
 {
 	// NOTE: this function must be thread-safe!
@@ -659,25 +793,38 @@ void SquareSubdivisionMeshV2::GeodesicFinished(largecounter index, std::vector<r
 	m_CurrentPixelQueueDone[index] = true;
 }
 
-// Note: definition of SquareSubdivisionMeshV2::EndCurrentLoop() is below
-
+/**
+ * @brief Check whether the Mesh is finished integrating
+ *
+ * @return true
+ * @return false
+ */
 bool SquareSubdivisionMeshV2::IsFinished() const
 {
 	// We are finished if we did not manage to populate the current pixel queue with any new pixels to integrate
 	return m_CurrentPixelQueue.size() == 0;
 }
 
+/**
+ * @brief Description string getter
+ *
+ * @return std::string
+ */
 std::string SquareSubdivisionMeshV2::getFullDescriptionStr() const
 {
 	// Descriptive string
 	return "Mesh: square subdivision v2 (initial pixels: " + std::to_string(static_cast<pixelcoord>(sqrt(m_InitialPixels))) + "^2; max subdivision: " + std::to_string(m_MaxSubdivide) + "; pixels subdivided per iteration: " + std::to_string(m_IterationPixels) + "; max total pixels: " + (m_InfinitePixels ? "infinite" : std::to_string(m_MaxPixels)) + "; if pixel is initially subdivided, will continue to max: " + std::to_string(m_InitialSubDividideToFinal) + "; row/column size: " + std::to_string(m_RowColumnSize) + ")";
 }
 
-// Helper (private) member function
+/**
+ * @brief Helper function to exponentiate ints
+ * @note The result may be larger than fits in an int, but this is only called with int arguments
+ * @param base base
+ * @param exp exponent
+ * @return pixelcoord
+ */
 pixelcoord SquareSubdivisionMeshV2::ExpInt(int base, int exp) const
 {
-	// Helper function to exponentiate ints; note: the result may be larger than fits in an int, but
-	// this is only called with int arguments
 	pixelcoord ret{1};
 	while (exp > 0)
 	{
@@ -687,10 +834,11 @@ pixelcoord SquareSubdivisionMeshV2::ExpInt(int base, int exp) const
 	return ret;
 }
 
-//////////////////////////////////////////////////////////////
-//// Important SquareSubdivisionMeshV2 functions start here ////
+// Important SquareSubdivisionMeshV2 functions start here
 
-// Helper function: sets up the initial grid to integrate
+/**
+ * @brief Helper function to initialize the first grid of pixels to integrate
+ */
 void SquareSubdivisionMeshV2::InitializeFirstGrid()
 {
 	// initial square grid of m_InitialPixels
@@ -767,10 +915,12 @@ void SquareSubdivisionMeshV2::InitializeFirstGrid()
 	m_CurrentPixelQueueDone = std::vector<bool>(m_CurrentPixelQueue.size(), false);
 }
 
-// Helper function: updates all weights of the pixels in m_CurrentPixelUpdating;
-// Note: these are assumed to have subdiv > 0 and subdiv < m_MaxSubdivide, and all their neigbors assigned correctly,
-// and are further assumed to have their (and their neighbor's) values assigned correctly
-// All pixels with weight > 0 will be added to m_ActivePixels
+/**
+ * @brief Helper function to update all pixel weights in m_CurrentPixelUpdating
+ * @details All pixels with weight > 0 will be added to m_ActivePixels
+ * @note Assumes all pixels have subdiv > 0 and subdiv < m_MaxSubdivide, and all their neighbors assigned correctly
+ * @note Assumes all pixels have their (and their neighbor's) values assigned correctly
+ */
 void SquareSubdivisionMeshV2::UpdateAllWeights()
 {
 	// Updates all weights of the pixels in m_CurrentPixelUpdating
@@ -805,6 +955,13 @@ void SquareSubdivisionMeshV2::UpdateAllWeights()
 	ScreenOutput("Done updating pixel weights.", OutputLevel::Level_3_ALLDETAIL);
 }
 
+/**
+ * @brief Get the upper neighbor of a pixel at a certain subdivision level
+ *
+ * @param p PixelInfo pointer to the pixel
+ * @param subdiv subdivision level of the neighbor
+ * @return SquareSubdivisionMeshV2::PixelInfo*
+ */
 SquareSubdivisionMeshV2::PixelInfo *SquareSubdivisionMeshV2::GetUp(PixelInfo *p, int subdiv) const
 {
 	// p does not exist, it does not have the necessary neighbor,
@@ -830,6 +987,13 @@ SquareSubdivisionMeshV2::PixelInfo *SquareSubdivisionMeshV2::GetUp(PixelInfo *p,
 	}
 }
 
+/**
+ * @brief Get the lower neighbor of a pixel at a certain subdivision level
+ *
+ * @param p PixelInfo pointer to the pixel
+ * @param subdiv subdivision level of the neighbor
+ * @return SquareSubdivisionMeshV2::PixelInfo*
+ */
 SquareSubdivisionMeshV2::PixelInfo *SquareSubdivisionMeshV2::GetDown(PixelInfo *p, int subdiv) const
 {
 	// p does not exist, it does not have the necessary neighbor,
@@ -853,6 +1017,13 @@ SquareSubdivisionMeshV2::PixelInfo *SquareSubdivisionMeshV2::GetDown(PixelInfo *
 	}
 }
 
+/**
+ * @brief Get the left neighbor of a pixel at a certain subdivision level
+ *
+ * @param p PixelInfo pointer to the pixel
+ * @param subdiv subdivision level of the neighbor
+ * @return SquareSubdivisionMeshV2::PixelInfo*
+ */
 SquareSubdivisionMeshV2::PixelInfo *SquareSubdivisionMeshV2::GetLeft(PixelInfo *p, int subdiv) const
 {
 	// p does not exist, it does not have the necessary neighbor,
@@ -878,6 +1049,13 @@ SquareSubdivisionMeshV2::PixelInfo *SquareSubdivisionMeshV2::GetLeft(PixelInfo *
 	}
 }
 
+/**
+ * @brief Get the right neighbor of a pixel at a certain subdivision level
+ *
+ * @param p PixelInfo pointer to the pixel
+ * @param subdiv subdivision level of the neighbor
+ * @return SquareSubdivisionMeshV2::PixelInfo*
+ */
 SquareSubdivisionMeshV2::PixelInfo *SquareSubdivisionMeshV2::GetRight(PixelInfo *p, int subdiv) const
 {
 	// p does not exist, it does not have the necessary neighbor,
@@ -901,15 +1079,17 @@ SquareSubdivisionMeshV2::PixelInfo *SquareSubdivisionMeshV2::GetRight(PixelInfo 
 	}
 }
 
-// Helper function: subdivides the square with pixel m_ActivePixels[ind] in the upper-left corner,
-// and add (up to) 5 new pixels in the integration queue accordingly
+/**
+ * @brief Subdivide the pixel at index ind and add up to 5 new pixels to the integration queue
+ * @details The pixels are numbered as
+ * 1 2 3
+ * 4 5 6
+ * 7 8 9
+ * i.e. the initial square is given by (1, 3, 7, 9), and the new pixels are (2, 4, 5, 6, 8).
+ * @param ind index of the pixel to subdivide
+ */
 void SquareSubdivisionMeshV2::SubdivideAndQueue(largecounter ind)
 {
-	// The pixels are numbered as
-	// 1 2 3
-	// 4 5 6
-	// 7 8 9
-	// i.e. the initial square is given by (1, 3, 7, 9), and the new pixels are (2, 4, 5, 6, 8).
 	PixelInfo *pixel1 = m_ActivePixels[ind];
 	PixelInfo *pixel3 = pixel1->RightNbr;
 	PixelInfo *pixel7 = pixel1->DownNbr;
@@ -1042,8 +1222,10 @@ void SquareSubdivisionMeshV2::SubdivideAndQueue(largecounter ind)
 	pixel5->SEdiagNbr = pixel9;
 }
 
-// This function is called at the end of each integration iteration loop.
-// We must wrap up the current iteration and initialize the next one.
+/**
+ * @brief Called at the end of each integration iteration loop. Wraps up the current iteration and initializes the next one.
+ *
+ */
 void SquareSubdivisionMeshV2::EndCurrentLoop()
 {
 	///////////////////////////////////////////

@@ -7,13 +7,19 @@
 #include <string> // for strings
 #include <vector> // needed for the (non-fixed size) vector of symmetries in the metric
 
-///////////////////////////////////////////////////////////////////////////////////////
-////// METRIC.H
-////// Declarations of abstract base Metric class and all its descendants.
-////// All definitions in Metric.cpp
-///////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @file Metric.h
+ * @author Daniel R. Mayerson
+ * @brief Declarations of abstract base Metric class and all its descendants.
+ * @version 0.1
+ * @date 2025-01-14
+ * @copyright Copyright (c) 2025
+ */
 
-// The abstract base class for all Metrics.
+/**
+ * @brief The abstract base class for all Metrics.
+ *
+ */
 class Metric
 {
 public:
@@ -50,13 +56,15 @@ public:
 	bool getrLogScale() const;
 
 protected:
-	// The symmetries (coordinate Killing vectors) of the metric. Should be set by descendant constructor.
+	//! The symmetries (coordinate Killing vectors) of the metric. Should be set by descendant constructor.
 	std::vector<int> m_Symmetries{};
-	// Are we using a logarithmic r coordinate?
+	//! Are we using a logarithmic r coordinate?
 	const bool m_rLogScale;
 };
 
-// Abstract base class for a metric that has a spherical horizon (i.e. horizon at constant radius r)
+/**
+ * @brief Abstract base class for a metric with a spherical horizon (i.e. horizon at constant radius r)
+ */
 class SphericalHorizonMetric : public Metric
 {
 public:
@@ -69,19 +77,20 @@ public:
 	real getHorizonRadius() const;
 
 protected:
-	// Radius of the horizon
+	//! Radius of the horizon
 	const real m_HorizonRadius;
 };
 
-// The Kerr metric (normalized so that M = 1)
+/**
+ * @brief The Kerr metric
+ */
 class KerrMetric final : public SphericalHorizonMetric
 {
 private:
-	// Mass-rescaled rotation parameter for Kerr
-	// Note that this should be between -1 and 1.
+	//! Mass-rescaled rotation parameter for Kerr. Note that this should be between -1 and 1.
 	const real m_aParam;
 
-	// Mass parameter for Kerr. Default is 1.
+	//! Mass parameter for Kerr. Default is 1.
 	const real m_mParam;
 
 public:
@@ -99,7 +108,9 @@ public:
 	std::string getFullDescriptionStr() const final;
 };
 
-// Flat space (4D)
+/**
+ * @brief Flat space metric in 4D
+ */
 class FlatSpaceMetric final : public Metric
 {
 public:
@@ -114,14 +125,19 @@ public:
 	std::string getFullDescriptionStr() const final;
 };
 
-// Rasheed-Larsen black hole
+/**
+ * @brief Rasheed-Larsen black hole
+ */
 class RasheedLarsenMetric final : public SphericalHorizonMetric
 {
 private:
-	// Rasheed-Larsen is specified by four parameters
+	//! a parameter for the Rasheed-Larsen metric
 	const real m_aParam;
+	//! m parameter for the Rasheed-Larsen metric
 	const real m_mParam;
+	//! p parameter for the Rasheed-Larsen metric
 	const real m_pParam;
+	//! q parameter for the Rasheed-Larsen metric
 	const real m_qParam;
 
 public:
@@ -139,15 +155,23 @@ public:
 	std::string getFullDescriptionStr() const final;
 };
 
-// Johanssen black hole metric (implementation by Seppe Staelens)
+/**
+ * @brief Johannsen black hole metric
+ * @note Implementation by Seppe Staelens
+ */
 class JohannsenMetric final : public SphericalHorizonMetric
 {
 private:
 	// Johannsen up to first order in deviation function is specified by five parameters (if M=1)
+	//! a parameter for the Johannsen metric
 	const real m_aParam;
+	//! alpha13 parameter for the Johannsen metric
 	const real m_alpha13Param;
+	//! alpha22 parameter for the Johannsen metric
 	const real m_alpha22Param;
+	//! alpha52 parameter for the Johannsen metric
 	const real m_alpha52Param;
+	//! eps3 parameter for the Johannsen metric
 	const real m_eps3Param;
 
 public:
@@ -165,16 +189,23 @@ public:
 	std::string getFullDescriptionStr() const final;
 };
 
-// Manko-Novikov metric (with angular momentum and M3 parameter turned on) (implementation by Seppe Staelens)
+/**
+ * @brief Mano-Novikov metric (with angular momentum and M3 parameter turned on)
+ * @note Implementation by Seppe Staelens
+ */
 class MankoNovikovMetric final : public SphericalHorizonMetric
 {
 private:
 	// Manko-Novikov metric with only alpha3 as symmetry breaking parameter
+	//! a parameter for the Manko-Novikov metric
 	const real m_aParam;
+	//! alpha3 parameter for the Manko-Novikov metric
 	const real m_alpha3Param;
 
 	// These are convenient derived quantities from a
+	//! Derived alpha parameter
 	const real m_alphaParam;
+	//! Derived k parameter
 	const real m_kParam;
 
 public:
@@ -192,12 +223,14 @@ public:
 	std::string getFullDescriptionStr() const final;
 };
 
-// The Kerr metric in Kerr-Schild coordinates (normalized so that M = 1)
+/**
+ * @brief Kerr metric in Kerr-Schild coordinates
+ * @note Normalized so that M = 1
+ */
 class KerrSchildMetric final : public SphericalHorizonMetric
 {
 private:
-	// Rotation parameter for Kerr
-	// Note that this should be between -1 and 1 since M=1
+	//! Rotation parameter for Kerr. Note that this should be between -1 and 1 since M=1
 	const real m_aParam;
 
 public:
@@ -215,7 +248,9 @@ public:
 	std::string getFullDescriptionStr() const final;
 };
 
-// Abstract base class for a metric with an arbitrary number of singularities (of arbitrary codimension)
+/**
+ * @brief Abstract base class for a metric with an arbitrary number of singularities (of arbitrary codimension)
+ */
 class SingularityMetric : public Metric
 {
 public:
@@ -226,11 +261,14 @@ public:
 	std::vector<Singularity> getSingularities() const;
 
 protected:
-	// All singularities of the metric
+	//! All singularities of the metric
 	const std::vector<Singularity> m_AllSingularities;
 };
 
-// Ring fuzzball (implementation Lies Van Dael)
+/**
+ * @brief Ring fuzzball metric
+ * @note Implementation by Lies Van Dael
+ */
 class ST3CrMetric final : public SingularityMetric
 {
 public:
@@ -254,7 +292,11 @@ private:
 	real f_om_phi(real phi, real r, real theta, real l, real R) const;
 };
 
-// Boson star with solitonic potential (sigma = 0.06, phi_c = 0.044) (implementation by Seppe Staelens)
+/**
+ * @brief Boson star metric with solitonic potential
+ * @note Implementation by Seppe Staelens
+ * @note The default files correspond to sigma = 0.06 and phi_c = 0.044
+ */
 class BosonStarMetric final : public Metric
 {
 public:

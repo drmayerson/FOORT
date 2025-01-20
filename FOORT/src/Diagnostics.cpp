@@ -25,7 +25,7 @@
  * @brief Create a Diagnostic Vector object
  *
  * @param diagflags Diagnostic bitflags
- * @param valdiag Value Diagnostic bitflags
+ * @param valdiag Value Diagnostic bitflag
  * @param theGeodesic Pointer to the Geodesic object
  * @return DiagnosticUniqueVector
  */

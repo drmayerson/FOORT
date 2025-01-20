@@ -95,6 +95,9 @@ $(function(){ initResizable(false); });
   <div class="headertitle"><div class="title">Utilities.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Declarations of various utility functions, in a <a class="el" href="namespace_utilities.html" title="Namespace that contains our utility functions.">Utilities</a> namespace.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="_metric_8h_source.html">Metric.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_diagnostics_8h_source.html">Diagnostics.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_terminations_8h_source.html">Terminations.h</a>&quot;</code><br />
@@ -110,24 +113,34 @@ $(function(){ initResizable(false); });
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_utilities_1_1_timer.html">Utilities::Timer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_utilities_1_1_timer.html" title="Timer class to keep track of elapsed time.">Timer</a> class to keep track of elapsed time.  <a href="class_utilities_1_1_timer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_utilities.html">Utilities</a></td></tr>
+<tr class="memdesc:namespace_utilities"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace that contains our utility functions. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:af0b51b80a51c860540e2d8b76463ae6e" id="r_af0b51b80a51c860540e2d8b76463ae6e"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_utilities.html#af0b51b80a51c860540e2d8b76463ae6e">Utilities::GetTimeStampString</a> ()</td></tr>
-<tr class="memdesc:af0b51b80a51c860540e2d8b76463ae6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Other functions in <a class="el" href="namespace_utilities.html">Utilities</a>.  <br /></td></tr>
+<tr class="memdesc:af0b51b80a51c860540e2d8b76463ae6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a string of the current time (in a format that can be used to append to file names)  <br /></td></tr>
 <tr class="separator:af0b51b80a51c860540e2d8b76463ae6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afdd8062a39c3ee81d8d09db3f81490d8" id="r_afdd8062a39c3ee81d8d09db3f81490d8"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_utilities.html#afdd8062a39c3ee81d8d09db3f81490d8">Utilities::GetDiagNameStrings</a> (<a class="el" href="_diagnostics_8h.html#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> alldiags, <a class="el" href="_diagnostics_8h.html#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> valdiag)</td></tr>
+<tr class="memdesc:afdd8062a39c3ee81d8d09db3f81490d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function to get all <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> Names (for outputting to files)  <br /></td></tr>
 <tr class="separator:afdd8062a39c3ee81d8d09db3f81490d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd512675530571d06a624482bfee61a4" id="r_acd512675530571d06a624482bfee61a4"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_utilities.html#acd512675530571d06a624482bfee61a4">Utilities::GetFirstLineInfoString</a> (const <a class="el" href="class_metric.html">Metric</a> *theMetric, const <a class="el" href="class_source.html">Source</a> *theSource, <a class="el" href="_diagnostics_8h.html#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> alldiags, <a class="el" href="_diagnostics_8h.html#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> valdiag, <a class="el" href="_terminations_8h.html#ade7ca271520105b2b5e784c013d36f87">TermBitflag</a> allterms, const <a class="el" href="class_view_screen.html">ViewScreen</a> *theView)</td></tr>
+<tr class="memdesc:acd512675530571d06a624482bfee61a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">This returns the full string to be written to every output file as its first line.  <br /></td></tr>
 <tr class="separator:acd512675530571d06a624482bfee61a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Declarations of various utility functions, in a <a class="el" href="namespace_utilities.html" title="Namespace that contains our utility functions.">Utilities</a> namespace. </p>
+<dl class="section author"><dt>Author</dt><dd>Daniel R. Mayerson </dd></dl>
+<dl class="section version"><dt>Version</dt><dd>0.1 </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>2025-01-14 </dd></dl>
+<dl class="section copyright"><dt>Copyright</dt><dd>Copyright (c) 2025 </dd></dl>
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.12.0

@@ -93,6 +93,9 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p>General circular radial fluid velocity model.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_diagnostics_emission_8h_source.html">DiagnosticsEmission.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for GeneralCircularRadialFluid:</div>
@@ -100,7 +103,7 @@ Inheritance diagram for GeneralCircularRadialFluid:</div>
  <div class="center">
   <img src="struct_general_circular_radial_fluid.png" usemap="#GeneralCircularRadialFluid_map" alt=""/>
   <map id="GeneralCircularRadialFluid_map" name="GeneralCircularRadialFluid_map">
-<area href="struct_fluid_velocity_model.html" alt="FluidVelocityModel" shape="rect" coords="0,0,166,24"/>
+<area href="struct_fluid_velocity_model.html" title="Fluid velocity model abstract base class." alt="FluidVelocityModel" shape="rect" coords="0,0,166,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -109,9 +112,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:afaae8dcc920e5c3c7e1267d10140bc08" id="r_afaae8dcc920e5c3c7e1267d10140bc08"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afaae8dcc920e5c3c7e1267d10140bc08">GeneralCircularRadialFluid</a> (<a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> subKeplerParam, <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> betar, <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> betaphi, const <a class="el" href="class_metric.html">Metric</a> *const theMetric)</td></tr>
 <tr class="separator:afaae8dcc920e5c3c7e1267d10140bc08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a4a784d30d00df14249850b64669f59" id="r_a7a4a784d30d00df14249850b64669f59"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#ae4096cddfa5ef7cb64402fe5c75a0164">OneIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7a4a784d30d00df14249850b64669f59">GetFourVelocityd</a> (const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p) const final</td></tr>
+<tr class="memdesc:a7a4a784d30d00df14249850b64669f59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the local four-velocity of the fluid according to the GeneralCircularRadial model.  <br /></td></tr>
 <tr class="separator:a7a4a784d30d00df14249850b64669f59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34ee29c22747acea6efd40b090f82875" id="r_a34ee29c22747acea6efd40b090f82875"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a34ee29c22747acea6efd40b090f82875">getFullDescriptionStr</a> () const final</td></tr>
-<tr class="memdesc:a34ee29c22747acea6efd40b090f82875"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="struct_fluid_velocity_model.html">FluidVelocityModel</a> functions.  <br /></td></tr>
+<tr class="memdesc:a34ee29c22747acea6efd40b090f82875"><td class="mdescLeft">&#160;</td><td class="mdescRight">Description string getter for the GeneralCircularRadial fluid velocity model.  <br /></td></tr>
 <tr class="separator:a34ee29c22747acea6efd40b090f82875"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_struct_fluid_velocity_model"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_struct_fluid_velocity_model')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="struct_fluid_velocity_model.html">FluidVelocityModel</a></td></tr>
 <tr class="memitem:a64790fcdceb23bf0ff035d60e669605c inherit pub_methods_struct_fluid_velocity_model" id="r_a64790fcdceb23bf0ff035d60e669605c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_fluid_velocity_model.html#a64790fcdceb23bf0ff035d60e669605c">FluidVelocityModel</a> (const <a class="el" href="class_metric.html">Metric</a> *const theMetric)</td></tr>
@@ -122,31 +126,43 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
 <tr class="memitem:a342fc2e0f61acc8dc54df27fcbd21df3" id="r_a342fc2e0f61acc8dc54df27fcbd21df3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#ae4096cddfa5ef7cb64402fe5c75a0164">OneIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a342fc2e0f61acc8dc54df27fcbd21df3">GetCircularVelocityd</a> (const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p, bool subKeplerianOn=true) const</td></tr>
+<tr class="memdesc:a342fc2e0f61acc8dc54df27fcbd21df3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the circular velocity for a point, with optional subKeplerian rescaling.  <br /></td></tr>
 <tr class="separator:a342fc2e0f61acc8dc54df27fcbd21df3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36b81021d92aa384dd616ef438552957" id="r_a36b81021d92aa384dd616ef438552957"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#ae4096cddfa5ef7cb64402fe5c75a0164">OneIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a36b81021d92aa384dd616ef438552957">GetInsideISCOCircularVelocityd</a> (const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p) const</td></tr>
+<tr class="memdesc:a36b81021d92aa384dd616ef438552957"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns velocity for non-geodetic motion where E,L = (E,L)_ISCO and radially falling inward.  <br /></td></tr>
 <tr class="separator:a36b81021d92aa384dd616ef438552957"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d80de78de530b83baa1d55dd1630b88" id="r_a8d80de78de530b83baa1d55dd1630b88"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#ae4096cddfa5ef7cb64402fe5c75a0164">OneIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8d80de78de530b83baa1d55dd1630b88">GetRadialVelocityd</a> (const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p) const</td></tr>
+<tr class="memdesc:a8d80de78de530b83baa1d55dd1630b88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns radial velocity for pure infalling matter with E = 1 and L = 0 at infinity.  <br /></td></tr>
 <tr class="separator:a8d80de78de530b83baa1d55dd1630b88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd28dfa5f2f4e0e7531aa211fbd7d751" id="r_afd28dfa5f2f4e0e7531aa211fbd7d751"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afd28dfa5f2f4e0e7531aa211fbd7d751">FindISCO</a> ()</td></tr>
+<tr class="memdesc:afd28dfa5f2f4e0e7531aa211fbd7d751"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function to find the ISCO.  <br /></td></tr>
 <tr class="separator:afd28dfa5f2f4e0e7531aa211fbd7d751"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aedea10416bc52df742bcb539b17f9e3d" id="r_aedea10416bc52df742bcb539b17f9e3d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a9cd1cb43637d1e6e730925d90d0b068d">TwoIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aedea10416bc52df742bcb539b17f9e3d">GetChristrRaisedDer</a> (<a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> r) const</td></tr>
+<tr class="memdesc:aedea10416bc52df742bcb539b17f9e3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function to get \partial_r(g^{ab}\Gamma^r_{bc}g^{cd})  <br /></td></tr>
 <tr class="separator:aedea10416bc52df742bcb539b17f9e3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a00c1f2e8905a45628344cbd47c1ecb36" id="r_a00c1f2e8905a45628344cbd47c1ecb36"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a00c1f2e8905a45628344cbd47c1ecb36">m_subKeplerParam</a></td></tr>
+<tr class="memdesc:a00c1f2e8905a45628344cbd47c1ecb36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sub-Keplerian parameter (0 = Keplerian, 1 = sub-Keplerian)  <br /></td></tr>
 <tr class="separator:a00c1f2e8905a45628344cbd47c1ecb36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9de69543daef6ba93fb76fc9fad18c4a" id="r_a9de69543daef6ba93fb76fc9fad18c4a"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9de69543daef6ba93fb76fc9fad18c4a">m_betaR</a></td></tr>
+<tr class="memdesc:a9de69543daef6ba93fb76fc9fad18c4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Radial velocity parameter.  <br /></td></tr>
 <tr class="separator:a9de69543daef6ba93fb76fc9fad18c4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9756faebcfc8d1cab6de4d48b2a722ae" id="r_a9756faebcfc8d1cab6de4d48b2a722ae"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9756faebcfc8d1cab6de4d48b2a722ae">m_betaPhi</a></td></tr>
+<tr class="memdesc:a9756faebcfc8d1cab6de4d48b2a722ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Azimuthal velocity parameter.  <br /></td></tr>
 <tr class="separator:a9756faebcfc8d1cab6de4d48b2a722ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a169f78016833fb2fe5e6ff6b1d178a14" id="r_a169f78016833fb2fe5e6ff6b1d178a14"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a169f78016833fb2fe5e6ff6b1d178a14">m_ISCOexists</a> {false}</td></tr>
+<tr class="memdesc:a169f78016833fb2fe5e6ff6b1d178a14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag to indicate if ISCO exists for this <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a>.  <br /></td></tr>
 <tr class="separator:a169f78016833fb2fe5e6ff6b1d178a14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a45079b77e6ba99b406ed622372ed0c25" id="r_a45079b77e6ba99b406ed622372ed0c25"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a45079b77e6ba99b406ed622372ed0c25">m_ISCOr</a> {-1.0}</td></tr>
+<tr class="memdesc:a45079b77e6ba99b406ed622372ed0c25"><td class="mdescLeft">&#160;</td><td class="mdescRight">ISCO radius.  <br /></td></tr>
 <tr class="separator:a45079b77e6ba99b406ed622372ed0c25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a1484c77f62a056b309e61b69c8301d" id="r_a7a1484c77f62a056b309e61b69c8301d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7a1484c77f62a056b309e61b69c8301d">m_ISCOpt</a> {}</td></tr>
+<tr class="memdesc:a7a1484c77f62a056b309e61b69c8301d"><td class="mdescLeft">&#160;</td><td class="mdescRight">ISCO t momentum.  <br /></td></tr>
 <tr class="separator:a7a1484c77f62a056b309e61b69c8301d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48cd45b10b9e952130773ed0eb6e447b" id="r_a48cd45b10b9e952130773ed0eb6e447b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a48cd45b10b9e952130773ed0eb6e447b">m_ISCOpphi</a> {}</td></tr>
+<tr class="memdesc:a48cd45b10b9e952130773ed0eb6e447b"><td class="mdescLeft">&#160;</td><td class="mdescRight">ISCO phi momentum.  <br /></td></tr>
 <tr class="separator:a48cd45b10b9e952130773ed0eb6e447b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
@@ -155,7 +171,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a3e6ef70832d66f22da4cc8e3182cd910 inherit pro_attribs_struct_fluid_velocity_model" id="r_a3e6ef70832d66f22da4cc8e3182cd910"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_metric.html">Metric</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_fluid_velocity_model.html#a3e6ef70832d66f22da4cc8e3182cd910">m_theMetric</a></td></tr>
 <tr class="separator:a3e6ef70832d66f22da4cc8e3182cd910 inherit pro_attribs_struct_fluid_velocity_model"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>General circular radial fluid velocity model. </p>
+<p>This fluid velocity model has three tuneable parameters and represents fluid travelling at a mix of ()sub)Keplerian circular orbits and radially infalling orbits in the equatorial plane </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="afaae8dcc920e5c3c7e1267d10140bc08" name="afaae8dcc920e5c3c7e1267d10140bc08"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afaae8dcc920e5c3c7e1267d10140bc08">&#9670;&#160;</a></span>GeneralCircularRadialFluid()</h2>
 
@@ -219,6 +238,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Helper function to find the ISCO. </p>
+<p>This helper function finds the ISCO. We use a binary search to converge on the ISCO value; the initial outer bounds for a metric with horizon are the horizon radius and 10*(horizon radius) (in true radii, not log(r) coordinates) </p>
+
 </div>
 </div>
 <a id="aedea10416bc52df742bcb539b17f9e3d" name="aedea10416bc52df742bcb539b17f9e3d"></a>
@@ -243,6 +265,16 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Helper function to get \partial_r(g^{ab}\Gamma^r_{bc}g^{cd}) </p>
+<p>This function calculates \partial_r(g^ { ab }\Gamma ^ r_{ bc }g^ { cd }). We do so by calculating the central difference with O(h^4) accuracy, but taking the sqrt of the usual h used for derivatives</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">r</td><td>Radius at which to calculate the derivative </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>TwoIndex </dd></dl>
 
 </div>
 </div>
@@ -273,6 +305,17 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Get the circular velocity for a point, with optional subKeplerian rescaling. </p>
+<p>Returns the velocity for circular (sub)Keplerian motion (outside the ISCO). First the circular geodesic is calculated, then if subKeplerianOn == true, the orbit is reparametrized to non-geodetic subKeplerian circular motion according to the subKeplerian parameter</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Point at which to calculate the velocity </td></tr>
+    <tr><td class="paramname">subKeplerianOn</td><td>Boolean to indicate whether to rescale the angular momentum for sub-Keplerian motion </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>OneIndex circular velocity with index down. If no solution, returns all zeros </dd></dl>
+
 </div>
 </div>
 <a id="a7a4a784d30d00df14249850b64669f59" name="a7a4a784d30d00df14249850b64669f59"></a>
@@ -297,6 +340,15 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Get the local four-velocity of the fluid according to the GeneralCircularRadial model. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Point at which to calculate the four-velocity </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>OneIndex Local four-velocity with index down </dd></dl>
 
 <p>Implements <a class="el" href="struct_fluid_velocity_model.html#ab2712fbb2259bd6a058dc1ac87acd326">FluidVelocityModel</a>.</p>
 
@@ -325,7 +377,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="struct_fluid_velocity_model.html">FluidVelocityModel</a> functions. </p>
+<p>Description string getter for the GeneralCircularRadial fluid velocity model. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
 
 <p>Reimplemented from <a class="el" href="struct_fluid_velocity_model.html#a8c272fd0b73910562531b388c4750832">FluidVelocityModel</a>.</p>
 
@@ -354,6 +407,15 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Returns velocity for non-geodetic motion where E,L = (E,L)_ISCO and radially falling inward. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Point at which to calculate the velocity </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>OneIndex </dd></dl>
+
 </div>
 </div>
 <a id="a8d80de78de530b83baa1d55dd1630b88" name="a8d80de78de530b83baa1d55dd1630b88"></a>
@@ -379,6 +441,15 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Returns radial velocity for pure infalling matter with E = 1 and L = 0 at infinity. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Point at which to calculate the velocity </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>OneIndex </dd></dl>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -402,6 +473,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Azimuthal velocity parameter. </p>
+
 </div>
 </div>
 <a id="a9de69543daef6ba93fb76fc9fad18c4a" name="a9de69543daef6ba93fb76fc9fad18c4a"></a>
@@ -423,6 +496,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Radial velocity parameter. </p>
 
 </div>
 </div>
@@ -446,6 +521,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Flag to indicate if ISCO exists for this <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a>. </p>
+
 </div>
 </div>
 <a id="a48cd45b10b9e952130773ed0eb6e447b" name="a48cd45b10b9e952130773ed0eb6e447b"></a>
@@ -467,6 +544,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>ISCO phi momentum. </p>
 
 </div>
 </div>
@@ -490,6 +569,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>ISCO t momentum. </p>
+
 </div>
 </div>
 <a id="a45079b77e6ba99b406ed622372ed0c25" name="a45079b77e6ba99b406ed622372ed0c25"></a>
@@ -512,6 +593,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>ISCO radius. </p>
+
 </div>
 </div>
 <a id="a00c1f2e8905a45628344cbd47c1ecb36" name="a00c1f2e8905a45628344cbd47c1ecb36"></a>
@@ -533,6 +616,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Sub-Keplerian parameter (0 = Keplerian, 1 = sub-Keplerian) </p>
 
 </div>
 </div>

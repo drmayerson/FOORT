@@ -1,11 +1,14 @@
 #ifndef _FOORT_MESH_H
 #define _FOORT_MESH_H
 
-///////////////////////////////////////////////////////////////////////////////////////
-////// MESH.H
-////// Declarations of abstract base Mesh class and all its descendants.
-////// All definitions in Mesh.cpp
-///////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @file Mesh.h
+ * @author Daniel R. Mayerson
+ * @brief Declarations of abstract base Mesh class and all its descendants.
+ * @version 0.1
+ * @date 2025-01-14
+ * @copyright Copyright (c) 2025
+ */
 
 #include "Geometry.h"	 // needed for basic tensor objects
 #include "Diagnostics.h" // needed for Diagnostic "value" and "distance" functions
@@ -19,7 +22,9 @@
 #include <array>		// std::array
 #include <string>		// for strings
 
-// Abstract Mesh base class
+/**
+ * @brief Abstract base Mesh class
+ */
 class Mesh
 {
 public:
@@ -55,12 +60,13 @@ public:
 	virtual std::string getFullDescriptionStr() const;
 
 protected:
-	// The Diagnostic (a const pointer to a const Diagnostic object) that is used to calculate
-	// distances (using FinalDataValDistance()) between the "values" that are assigned to Geodesics
+	//! The Diagnostic (a const pointer to a const Diagnostic object) that is used to calculate distances (using FinalDataValDistance()) between the "values" that are assigned to Geodesics
 	const std::unique_ptr<const Diagnostic> m_DistanceDiagnostic;
 };
 
-// A simple square mesh that will integrate a square of evenly spaced pixels
+/**
+ * @brief A simple square mesh that will integrate a square of evenly spaced pixels
+ */
 class SimpleSquareMesh final : public Mesh
 {
 public:
@@ -93,15 +99,17 @@ public:
 	std::string getFullDescriptionStr() const final;
 
 private:
-	// Total amount of pixels in grid (is the square of m_RowColumnSize)
+	//! Total amount of pixels in grid (is the square of m_RowColumnSize)
 	const largecounter m_TotalPixels;
-	// Amount of pixels per row or column (square grid)
+	//! Amount of pixels per row or column (square grid)
 	const pixelcoord m_RowColumnSize;
-	// Are we done integrating or not?
+	//! Are we done integrating or not?
 	bool m_Finished{false};
 };
 
-// Mesh which integrates only certain user-inputted pixels
+/**
+ * @brief Mesh which integrates only certain user-inputted pixels
+ */
 class InputCertainPixelsMesh : public Mesh
 {
 public:
@@ -128,22 +136,24 @@ public:
 	std::string getFullDescriptionStr() const final;
 
 private:
-	// Total pixel size of the screen (square grid)
+	//! Total pixel size of the screen (square grid)
 	const pixelcoord m_RowColumnSize;
 
-	// How many pixels have been inputted in total, i.e. need integrating
+	//! How many pixels have been inputted in total, i.e. need integrating
 	largecounter m_TotalPixels{0};
-	// All pixels' location
+	//! All pixels' location
 	std::vector<ScreenIndex> m_PixelsToIntegrate{};
-	// Are we finished integrating?
+	//! Are we finished integrating?
 	bool m_Finished{false};
 };
 
-// Adaptive subdivision Mesh: starts with evenly spaced, square Mesh,
-// then decides to subdivide certain squares of pixels into smaller squares,
-// based on which pixels have a bigger "weight", which is defined as the maximum
-// "distance" (using the Diagnostic value distance) between the upper-left
-// vertex of the square with the other three vertices of the square.
+/**
+ * @brief Adaptive subdivision Mesh
+ * @details starts with evenly spaced, square Mesh, then decides to subdivide certain squares of pixels into smaller squares,
+ * based on which pixels have a bigger "weight", which is defined as the maximum
+ * ""distance" (using the Diagnostic value distance) between the upper-left
+ * vertex of the square with the other three vertices of the square.
+ */
 class SquareSubdivisionMesh : public Mesh
 {
 public:
@@ -194,56 +204,54 @@ public:
 	std::string getFullDescriptionStr() const final;
 
 private:
-	// How many initial pixels (spread uniformly over the grid) do we integrate?
+	//! How many initial pixels (spread uniformly over the grid) do we integrate?
 	const largecounter m_InitialPixels;
-	// How many times are we allowed  to subdivide a square? Note: the initial grid is already at 1
+	//! How many times are we allowed  to subdivide a square? Note: the initial grid is already at 1
 	const int m_MaxSubdivide;
-	// The total size in pixels of a row or column (square grid)
+	//! The total size in pixels of a row or column (square grid)
 	const pixelcoord m_RowColumnSize;
-	// How many pixels per iteration can we subdivide?
+	//! How many pixels per iteration can we subdivide?
 	const largecounter m_IterationPixels;
-	// How many pixels can we integrate in total over all iterations?
+	//! How many pixels can we integrate in total over all iterations?
 	const largecounter m_MaxPixels;
-	// If we decide to subdivide a square, do we automatically subdivide it further to the max level?
+	//! If we decide to subdivide a square, do we automatically subdivide it further to the max level?
 	const bool m_InitialSubDividideToFinal;
-	// Are we allowed to integrate as many pixels as we want? (m_MaxPixels == 0)
+	//! Are we allowed to integrate as many pixels as we want? (m_MaxPixels == 0)
 	const bool m_InfinitePixels;
 
-	// How many pixels are we still allowed to integrate (if !m_InfinitePixels)?
+	//! How many pixels are we still allowed to integrate (if !m_InfinitePixels)?
 	largecounter m_PixelsLeft;
 
-	// A struct the Mesh uses to keep all information about a given pixel
+	/**
+	 * @brief A struct the Mesh uses to keep all information about a given pixel
+	 */
 	struct PixelInfo
 	{
 		// Constructor with its ScreenIndex and current subdivision level
 		PixelInfo(ScreenIndex ind, int subdiv) : Index{ind}, SubdivideLevel{subdiv} {}
 
-		// The pixel's screenindex
+		//! The pixel's screenindex
 		ScreenIndex Index{};
 
-		// The level at which the pixel has been subdivided
-		// Note: initial grid pixels are at 1; pixels at 0 are pixels that cannot be subdivided
-		// (for example, at the right or lower edges)
+		//! The level at which the pixel has been subdivided. Note: initial grid pixels are at 1; pixels at 0 are pixels that cannot be subdivided (for example, at the right or lower edges)
 		int SubdivideLevel{};
 
-		// Weight of the pixel: if negative, this signifies that it needs to be updated/calculated!
-		// The weight is determined as the max of the distance (as calculated by the value Diagnostic)
-		// between its values and those of its right, lower, and right-lower neighbors.
+		//! Weight of the pixel: if negative, this signifies that it needs to be updated/calculated! The weight is determined as the max of the distance (as calculated by the value Diagnostic) between its values and those of its right, lower, and right-lower neighbors.
 		real Weight{-1};
 
-		// The values associated to this pixel (as calculated by the value Diagnostic)
+		//! The values associated to this pixel (as calculated by the value Diagnostic)
 		std::vector<real> DiagValue{};
 
-		// Where its lower and right neighbors are located in m_AllPixels
-		// Note: the pixel with index 0 is (0,0) and can never be the lower or right neighbor of any other pixel!
+		//! Where its lower neighbor is located in m_AllPixels. Note: the pixel with index 0 is (0,0) and can never be the lower or right neighbor of any other pixel!
 		largecounter LowerNbrIndex{0};
+		//! Where its right neighbor is located in m_AllPixels. Note: the pixel with index 0 is (0,0) and can never be the lower or right neighbor of any other pixel!
 		largecounter RightNbrIndex{0};
 	};
-	// The current queue of pixels to be integrated
+	//! The current queue of pixels to be integrated
 	std::vector<PixelInfo> m_CurrentPixelQueue{};
-	// A bool for every pixel in the current queue: gets set to true when the pixel is done integrating and gets its values returned
+	//! A bool for every pixel in the current queue: gets set to true when the pixel is done integrating and gets its values returned
 	std::vector<bool> m_CurrentPixelQueueDone{};
-	// All pixels that have been integrated already (so does not include the pixels in the current queue)
+	//! All pixels that have been integrated already (so does not include the pixels in the current queue)
 	std::vector<PixelInfo> m_AllPixels{};
 
 	// Initializes the first nxn screen in m_CurrentPixelQueue
@@ -266,12 +274,15 @@ private:
 	pixelcoord ExpInt(int base, int exp);
 };
 
-// Adaptive subdivision Mesh: starts with evenly spaced, square Mesh,
-// then decides to subdivide certain squares of pixels into smaller squares,
-// based on which pixels have a bigger "weight", which is defined as the maximum
-// "distance" (using the Diagnostic value distance) between the upper-left
-// vertex of the square with the other three vertices of the square.
-// V2: new way of dealing with neighbors and looping over pixels
+/**
+ * @brief Adaptive subdivision Mesh
+ * @details starts with evenly spaced, square Mesh,
+ * then decides to subdivide certain squares of pixels into smaller squares,
+ * based on which pixels have a bigger "weight", which is defined as the maximum
+ * "distance" (using the Diagnostic value distance) between the upper-left
+ * vertex of the square with the other three vertices of the square.
+ * V2: new way of dealing with neighbors and looping over pixels
+ */
 class SquareSubdivisionMeshV2 : public Mesh
 {
 public:
@@ -319,70 +330,69 @@ public:
 	std::string getFullDescriptionStr() const final;
 
 private:
-	// How many initial pixels (spread uniformly over the grid) do we integrate?
+	//! How many initial pixels (spread uniformly over the grid) do we integrate?
 	const largecounter m_InitialPixels;
-	// How many times are we allowed  to subdivide a square? Note: the initial grid is already at 1
+	//! How many times are we allowed  to subdivide a square? Note: the initial grid is already at 1
 	const int m_MaxSubdivide;
-	// The total size in pixels of a row or column (square grid)
+	//! The total size in pixels of a row or column (square grid)
 	const pixelcoord m_RowColumnSize;
-	// How many pixels per iteration can we subdivide?
+	//! How many pixels per iteration can we subdivide?
 	const largecounter m_IterationPixels;
-	// How many pixels can we integrate in total over all iterations?
+	//! How many pixels can we integrate in total over all iterations?
 	const largecounter m_MaxPixels;
-	// If we decide to subdivide a square, do we automatically subdivide it further to the max level?
+	//! If we decide to subdivide a square, do we automatically subdivide it further to the max level?
 	const bool m_InitialSubDividideToFinal;
-	// Are we allowed to integrate as many pixels as we want? (m_MaxPixels == 0)
+	//! Are we allowed to integrate as many pixels as we want? (m_MaxPixels == 0)
 	const bool m_InfinitePixels;
 
-	// How many pixels are we still allowed to integrate (if !m_InfinitePixels)?
+	//! How many pixels are we still allowed to integrate (if !m_InfinitePixels)?
 	largecounter m_PixelsLeft;
 
-	// How many pixels we have integrated so far
+	//! How many pixels we have integrated so far
 	largecounter m_PixelsIntegrated{0};
 
-	// A struct the Mesh uses to keep all information about a given pixel
+	/**
+	 * @brief A struct the Mesh uses to keep all information about a given pixel
+	 */
 	struct PixelInfo
 	{
 		// Constructor with its ScreenIndex and current subdivision level
 		PixelInfo(ScreenIndex ind, int subdiv) : Index{ind}, SubdivideLevel{subdiv} {}
 
-		// The pixel's screenindex: this gets set by the constructor and cannot change anymore
+		//! The pixel's screenindex: this gets set by the constructor and cannot change anymore
 		const ScreenIndex Index{};
 
-		// The level at which the pixel has been subdivided
-		// Note: initial grid pixels are at 1; pixels at 0 are pixels that cannot be subdivided
-		// (for example, at the right or lower edges)
+		//! The level at which the pixel has been subdivided. Note: initial grid pixels are at 1; pixels at 0 are pixels that cannot be subdivided (for example, at the right or lower edges)
 		int SubdivideLevel{};
 
-		// Weight of the pixel: if negative, this signifies that it needs to be updated/calculated!
-		// The weight is determined as the max of the distance (as calculated by the value Diagnostic)
-		// between its values and those of its right, lower, and right-lower neighbors.
+		//! Weight of the pixel: if negative, this signifies that it needs to be updated/calculated! The weight is determined as the max of the distance (as calculated by the value Diagnostic) between its values and those of its right, lower, and right-lower neighbors.
 		real Weight{-1};
 
-		// The values associated to this pixel (as calculated by the value Diagnostic)
+		//! The values associated to this pixel (as calculated by the value Diagnostic)
 		std::vector<real> DiagValue{};
 
-		// Pointers to its neighbors
+		//! Pointer to its left neighbor
 		PixelInfo *LeftNbr{nullptr};
+		//! Pointer to its right neighbor
 		PixelInfo *RightNbr{nullptr};
+		//! Pointer to its upper neighbor
 		PixelInfo *UpNbr{nullptr};
+		//! Pointer to its lower neighbor
 		PixelInfo *DownNbr{nullptr};
+		//! Pointer to its lower-rightt neighbor
 		PixelInfo *SEdiagNbr{nullptr};
 	};
 
-	// Master list of all pixels
-	// std::forward_list is more space-efficient than std::list, bidirectional iteration is not needed, no random access supported
-	// This list is only used to store the owner pointers (and thus the objects) of all pixels.
-	// The other pixel vectors are used to iterate through (and need random access)
+	//! Master list of all pixels. std::forward_list is more space-efficient than std::list, bidirectional iteration is not needed, no random access supported. This list is only used to store the owner pointers (and thus the objects) of all pixels. The other pixel vectors are used to iterate through (and need random access)
 	std::forward_list<std::unique_ptr<PixelInfo>> m_AllPixels{};
 
-	// List of active pixels, i.e. those that can be subdivided and have non-zero weight
+	//! List of active pixels, i.e. those that can be subdivided and have non-zero weight
 	std::vector<PixelInfo *> m_ActivePixels{};
-	// List of current queue of pixels to be sent to be integrated
+	//! List of current queue of pixels to be sent to be integrated
 	std::vector<PixelInfo *> m_CurrentPixelQueue{};
-	// A bool for every pixel in the current queue: gets set to true when the pixel is done integrating and gets its values returned
+	//! A bool for every pixel in the current queue: gets set to true when the pixel is done integrating and gets its values returned
 	std::vector<bool> m_CurrentPixelQueueDone{};
-	// List of pixels that are already integrated but need updating weights after current queue is all integrated
+	//! List of pixels that are already integrated but need updating weights after current queue is all integrated
 	std::vector<PixelInfo *> m_CurrentPixelUpdating{};
 
 	// Initializes the first nxn screen and puts them in m_CurrentPixelQueue

@@ -100,15 +100,24 @@ $(function(){ initResizable(false); });
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:acb15e378d55d02a38b6fe108deaa53d9" id="r_acb15e378d55d02a38b6fe108deaa53d9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acb15e378d55d02a38b6fe108deaa53d9">SetOutputLevel</a> (<a class="el" href="_input_output_8h.html#a6bcb6b3fe3d480eff62b980e53515a37">OutputLevel</a> theLvl)</td></tr>
+<tr class="memdesc:acb15e378d55d02a38b6fe108deaa53d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the Output Level.  <br /></td></tr>
 <tr class="separator:acb15e378d55d02a38b6fe108deaa53d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e70916e7492f9ed2577e490defdfe9d" id="r_a0e70916e7492f9ed2577e490defdfe9d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0e70916e7492f9ed2577e490defdfe9d">SetLoopMessageFrequency</a> (<a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a> thefreq)</td></tr>
+<tr class="memdesc:a0e70916e7492f9ed2577e490defdfe9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the Loop Message Frequency.  <br /></td></tr>
 <tr class="separator:a0e70916e7492f9ed2577e490defdfe9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac0bf2d07a808f8c778ae1372809f8c4" id="r_aac0bf2d07a808f8c778ae1372809f8c4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aac0bf2d07a808f8c778ae1372809f8c4">GetLoopMessageFrequency</a> ()</td></tr>
+<tr class="memdesc:aac0bf2d07a808f8c778ae1372809f8c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the Loop Message Frequency during integration loops.  <br /></td></tr>
 <tr class="separator:aac0bf2d07a808f8c778ae1372809f8c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a04179ee0693c1c4499b92ef6bd734528" id="r_a04179ee0693c1c4499b92ef6bd734528"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a04179ee0693c1c4499b92ef6bd734528">ScreenOutput</a> (std::string_view theOutput, <a class="el" href="_input_output_8h.html#a6bcb6b3fe3d480eff62b980e53515a37">OutputLevel</a> lvl, bool newLine)</td></tr>
+<tr class="memdesc:a04179ee0693c1c4499b92ef6bd734528"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outputs line to screen console, contingent on it being allowed by the set outputlevel.  <br /></td></tr>
 <tr class="separator:a04179ee0693c1c4499b92ef6bd734528"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><dl class="section author"><dt>Author</dt><dd>Daniel R. Mayerson </dd></dl>
+<dl class="section version"><dt>Version</dt><dd>0.1 </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>2025-01-14 </dd></dl>
+<dl class="section copyright"><dt>Copyright</dt><dd>Copyright (c) 2025 </dd></dl>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="aac0bf2d07a808f8c778ae1372809f8c4" name="aac0bf2d07a808f8c778ae1372809f8c4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aac0bf2d07a808f8c778ae1372809f8c4">&#9670;&#160;</a></span>GetLoopMessageFrequency()</h2>
 
@@ -123,6 +132,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Get the Loop Message Frequency during integration loops. </p>
+<dl class="section return"><dt>Returns</dt><dd>largecounter </dd></dl>
 
 </div>
 </div>
@@ -150,6 +162,16 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Outputs line to screen console, contingent on it being allowed by the set outputlevel. </p>
+<p>Defaults are lvl = <a class="el" href="_input_output_8h.html#a6bcb6b3fe3d480eff62b980e53515a37a2060faffcdba99749ca6c74c1dd3b1ef">OutputLevel::Level_3_ALLDETAIL</a> and newLine = true </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">theOutput</td><td>output to be put on the screen </td></tr>
+    <tr><td class="paramname">lvl</td><td>the output level </td></tr>
+    <tr><td class="paramname">newLine</td><td>indicates whether we want a new line after the output </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="a0e70916e7492f9ed2577e490defdfe9d" name="a0e70916e7492f9ed2577e490defdfe9d"></a>
@@ -167,6 +189,14 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the Loop Message Frequency. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">thefreq</td><td>the desired frequency </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="acb15e378d55d02a38b6fe108deaa53d9" name="acb15e378d55d02a38b6fe108deaa53d9"></a>
@@ -183,6 +213,14 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Set the Output Level. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">theLvl</td><td>The desired level </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

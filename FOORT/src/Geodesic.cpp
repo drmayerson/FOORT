@@ -10,9 +10,7 @@
  * @copyright Copyright (c) 2024
  */
 
-/// <summary>
-/// Source (and descendant classes) functions
-/// </summary>
+// Source (and descendant classes) functions
 
 /**
  * @brief Basic full description string getter for Source base class

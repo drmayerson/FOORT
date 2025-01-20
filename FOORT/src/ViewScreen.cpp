@@ -2,10 +2,17 @@
 
 #include <algorithm> // for std::max
 
-/// <summary>
-/// ViewScreen functions
-/// </summary>
+/**
+ * @file ViewScreen.cpp
+ * @author Daniel R. Mayerson
+ * @version 0.1
+ * @date 2025-01-14
+ * @copyright Copyright (c) 2025
+ */
 
+/**
+ * @brief Construct the vielbein at the position of the camera
+ */
 void ViewScreen::ConstructVielbein()
 {
 	Point pos{m_Pos};
@@ -69,6 +76,13 @@ void ViewScreen::ConstructVielbein()
 	}
 }
 
+/**
+ * @brief Set new initial conditions for geodesic nr index
+ * @param index index of the geodesic
+ * @param pos pointer to the starting position of the geodesic - which is the camera position
+ * @param vel pointer to the starting velocity of the geodesic
+ * @param scrIndex pointer to the screen index of the geodesic
+ */
 void ViewScreen::SetNewInitialConditions(largecounter index, Point &pos, OneIndex &vel, ScreenIndex &scrIndex) const
 {
 	// The position of all geodesics is the same: the position of the camera
@@ -184,30 +198,48 @@ void ViewScreen::SetNewInitialConditionsOLD(largecounter index, Point& pos, OneI
 }
 */
 
+/**
+ * @brief Check if the ViewScreen is finished
+ * @return true if the ViewScreen is finished, false otherwise
+ */
 bool ViewScreen::IsFinished() const
 {
-	// pass on information to the Mesh
 	return m_theMesh->IsFinished();
 }
 
+/**
+ * @brief Get the current number of geodesics
+ * @return largecounter
+ */
 largecounter ViewScreen::getCurNrGeodesics() const
 {
 	// pass on information to the Mesh
 	return m_theMesh->getCurNrGeodesics();
 }
 
+/**
+ * @brief End the current loop of geodesics
+ */
 void ViewScreen::EndCurrentLoop()
 {
 	// pass on information to the Mesh
 	m_theMesh->EndCurrentLoop();
 }
 
+/**
+ * @brief Pass on information that a geodesic has finished
+ * @param index index of the geodesic
+ * @param finalValues final values of the geodesic
+ */
 void ViewScreen::GeodesicFinished(largecounter index, std::vector<real> finalValues)
 {
-	// pass on information to the Mesh
 	m_theMesh->GeodesicFinished(index, std::move(finalValues));
 }
 
+/**
+ * @brief Get the full description string of the ViewScreen
+ * @return std::string
+ */
 std::string ViewScreen::getFullDescriptionStr() const
 {
 	// Full description string; carries over information from the Mesh as well

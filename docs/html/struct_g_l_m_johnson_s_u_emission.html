@@ -92,6 +92,9 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p>The Johnson SU emission model used in GLM.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_diagnostics_emission_8h_source.html">DiagnosticsEmission.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for GLMJohnsonSUEmission:</div>
@@ -99,7 +102,7 @@ Inheritance diagram for GLMJohnsonSUEmission:</div>
  <div class="center">
   <img src="struct_g_l_m_johnson_s_u_emission.png" usemap="#GLMJohnsonSUEmission_map" alt=""/>
   <map id="GLMJohnsonSUEmission_map" name="GLMJohnsonSUEmission_map">
-<area href="struct_emission_model.html" alt="EmissionModel" shape="rect" coords="0,0,152,24"/>
+<area href="struct_emission_model.html" title="Emmision model abstract base class." alt="EmissionModel" shape="rect" coords="0,0,152,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -108,9 +111,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8f2b3b93d283c69814362c229574f8f4" id="r_a8f2b3b93d283c69814362c229574f8f4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8f2b3b93d283c69814362c229574f8f4">GLMJohnsonSUEmission</a> (<a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> mu, <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> gamma, <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> sigma)</td></tr>
 <tr class="separator:a8f2b3b93d283c69814362c229574f8f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb756ec78412ec48108c3dda02c46686" id="r_afb756ec78412ec48108c3dda02c46686"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afb756ec78412ec48108c3dda02c46686">GetEmission</a> (const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p) const final</td></tr>
+<tr class="memdesc:afb756ec78412ec48108c3dda02c46686"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the emission at a point according to the Johnson SU model used in GLM.  <br /></td></tr>
 <tr class="separator:afb756ec78412ec48108c3dda02c46686"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6217f200677e8c925fa1130673b9daa" id="r_ac6217f200677e8c925fa1130673b9daa"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac6217f200677e8c925fa1130673b9daa">getFullDescriptionStr</a> () const final</td></tr>
-<tr class="memdesc:ac6217f200677e8c925fa1130673b9daa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emission model functions.  <br /></td></tr>
+<tr class="memdesc:ac6217f200677e8c925fa1130673b9daa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Description string getter for the Johnson SU emission model.  <br /></td></tr>
 <tr class="separator:ac6217f200677e8c925fa1130673b9daa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_struct_emission_model"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_struct_emission_model')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="struct_emission_model.html">EmissionModel</a></td></tr>
 <tr class="memitem:a0fc8d28ec587e5f5dca02717d05bae46 inherit pub_methods_struct_emission_model" id="r_a0fc8d28ec587e5f5dca02717d05bae46"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_emission_model.html#a0fc8d28ec587e5f5dca02717d05bae46">~EmissionModel</a> ()=default</td></tr>
@@ -119,13 +123,18 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a21de62242589135af1e6da1ce35cb260" id="r_a21de62242589135af1e6da1ce35cb260"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a21de62242589135af1e6da1ce35cb260">m_mu</a></td></tr>
+<tr class="memdesc:a21de62242589135af1e6da1ce35cb260"><td class="mdescLeft">&#160;</td><td class="mdescRight">mu parameter  <br /></td></tr>
 <tr class="separator:a21de62242589135af1e6da1ce35cb260"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a37c0ad23435a149cb3735fdb4223ce0a" id="r_a37c0ad23435a149cb3735fdb4223ce0a"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a37c0ad23435a149cb3735fdb4223ce0a">m_gamma</a></td></tr>
+<tr class="memdesc:a37c0ad23435a149cb3735fdb4223ce0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">gamma parameter  <br /></td></tr>
 <tr class="separator:a37c0ad23435a149cb3735fdb4223ce0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae7d88041154f8a84278b1761430038f" id="r_aae7d88041154f8a84278b1761430038f"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aae7d88041154f8a84278b1761430038f">m_sigma</a></td></tr>
+<tr class="memdesc:aae7d88041154f8a84278b1761430038f"><td class="mdescLeft">&#160;</td><td class="mdescRight">sigma parameter  <br /></td></tr>
 <tr class="separator:aae7d88041154f8a84278b1761430038f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>The Johnson SU emission model used in GLM. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a8f2b3b93d283c69814362c229574f8f4" name="a8f2b3b93d283c69814362c229574f8f4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8f2b3b93d283c69814362c229574f8f4">&#9670;&#160;</a></span>GLMJohnsonSUEmission()</h2>
 
@@ -184,6 +193,15 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Get the emission at a point according to the Johnson SU model used in GLM. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Point at which to calculate the emission </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>real Emission at the point </dd></dl>
+
 <p>Implements <a class="el" href="struct_emission_model.html#ad2202fa33d9d98d3a72f9dfdda4e721f">EmissionModel</a>.</p>
 
 </div>
@@ -211,7 +229,8 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Emission model functions. </p>
+<p>Description string getter for the Johnson SU emission model. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
 
 <p>Reimplemented from <a class="el" href="struct_emission_model.html#a961441d5443ee34bb1ae516eba72a04b">EmissionModel</a>.</p>
 
@@ -238,6 +257,8 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>gamma parameter </p>
+
 </div>
 </div>
 <a id="a21de62242589135af1e6da1ce35cb260" name="a21de62242589135af1e6da1ce35cb260"></a>
@@ -260,6 +281,8 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>mu parameter </p>
+
 </div>
 </div>
 <a id="aae7d88041154f8a84278b1761430038f" name="aae7d88041154f8a84278b1761430038f"></a>
@@ -281,6 +304,8 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>sigma parameter </p>
 
 </div>
 </div>

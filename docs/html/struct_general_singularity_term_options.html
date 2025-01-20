@@ -92,6 +92,9 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p>Options for <a class="el" href="class_general_singularity_termination.html" title="GeneralSingularityTermination: Terminate geodesics if they get too close to one of a number of singul...">GeneralSingularityTermination</a>.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_terminations_8h_source.html">Terminations.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for GeneralSingularityTermOptions:</div>
@@ -99,7 +102,7 @@ Inheritance diagram for GeneralSingularityTermOptions:</div>
  <div class="center">
   <img src="struct_general_singularity_term_options.png" usemap="#GeneralSingularityTermOptions_map" alt=""/>
   <map id="GeneralSingularityTermOptions_map" name="GeneralSingularityTermOptions_map">
-<area href="struct_termination_options.html" alt="TerminationOptions" shape="rect" coords="0,0,188,24"/>
+<area href="struct_termination_options.html" title="Base class for all TerminationOptions structs. Other TerminationOptions can inherit from here if they..." alt="TerminationOptions" shape="rect" coords="0,0,188,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -116,18 +119,26 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a9e93bbf380eadb81db21dade7971fd22" id="r_a9e93bbf380eadb81db21dade7971fd22"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="_geometry_8h.html#a36cf2d8d1161ce4bbd792fe4c585d4c9">Singularity</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9e93bbf380eadb81db21dade7971fd22">Singularities</a></td></tr>
+<tr class="memdesc:a9e93bbf380eadb81db21dade7971fd22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector of singularities.  <br /></td></tr>
 <tr class="separator:a9e93bbf380eadb81db21dade7971fd22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12921dfa49b491ca0acc7e10d289903b" id="r_a12921dfa49b491ca0acc7e10d289903b"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a12921dfa49b491ca0acc7e10d289903b">Epsilon</a></td></tr>
+<tr class="memdesc:a12921dfa49b491ca0acc7e10d289903b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum flat distance the geodesic is allowed to be from any singularity.  <br /></td></tr>
 <tr class="separator:a12921dfa49b491ca0acc7e10d289903b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd62be274654e3e474213cd248fe8fa2" id="r_afd62be274654e3e474213cd248fe8fa2"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afd62be274654e3e474213cd248fe8fa2">OutputToConsole</a></td></tr>
+<tr class="memdesc:afd62be274654e3e474213cd248fe8fa2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether to output a message to the console when a singularity is encountered.  <br /></td></tr>
 <tr class="separator:afd62be274654e3e474213cd248fe8fa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a67a81c87201fc3adcfa39b700b094eec" id="r_a67a81c87201fc3adcfa39b700b094eec"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a67a81c87201fc3adcfa39b700b094eec">rLogScale</a></td></tr>
+<tr class="memdesc:a67a81c87201fc3adcfa39b700b094eec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether we are using a logarithmic r coordinate or not.  <br /></td></tr>
 <tr class="separator:a67a81c87201fc3adcfa39b700b094eec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_attribs_struct_termination_options"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_attribs_struct_termination_options')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="struct_termination_options.html">TerminationOptions</a></td></tr>
 <tr class="memitem:a985dcb57a283d0d4caec3a390ea190e7 inherit pub_attribs_struct_termination_options" id="r_a985dcb57a283d0d4caec3a390ea190e7"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_termination_options.html#a985dcb57a283d0d4caec3a390ea190e7">UpdateEveryNSteps</a></td></tr>
+<tr class="memdesc:a985dcb57a283d0d4caec3a390ea190e7 inherit pub_attribs_struct_termination_options"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of steps between updates.  <br /></td></tr>
 <tr class="separator:a985dcb57a283d0d4caec3a390ea190e7 inherit pub_attribs_struct_termination_options"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Options for <a class="el" href="class_general_singularity_termination.html" title="GeneralSingularityTermination: Terminate geodesics if they get too close to one of a number of singul...">GeneralSingularityTermination</a>. </p>
+<p>Keeps track of the singularities, allowed distance and whether we are using a logarithmic r coordinate. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a9a373c1262cdd874572b83408db17dcd" name="a9a373c1262cdd874572b83408db17dcd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9a373c1262cdd874572b83408db17dcd">&#9670;&#160;</a></span>GeneralSingularityTermOptions()</h2>
 
@@ -185,6 +196,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Minimum flat distance the geodesic is allowed to be from any singularity. </p>
+
 </div>
 </div>
 <a id="afd62be274654e3e474213cd248fe8fa2" name="afd62be274654e3e474213cd248fe8fa2"></a>
@@ -198,6 +211,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Whether to output a message to the console when a singularity is encountered. </p>
 
 </div>
 </div>
@@ -213,6 +228,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Whether we are using a logarithmic r coordinate or not. </p>
+
 </div>
 </div>
 <a id="a9e93bbf380eadb81db21dade7971fd22" name="a9e93bbf380eadb81db21dade7971fd22"></a>
@@ -226,6 +243,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Vector of singularities. </p>
 
 </div>
 </div>

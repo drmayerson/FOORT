@@ -1,13 +1,15 @@
 #ifndef _FOORT_VIEWSCREEN_H
 #define _FOORT_VIEWSCREEN_H
 
-///////////////////////////////////////////////////////////////////////////////////////
-////// VIEWSCREEN.H
-////// Declarations of ViewScreen class. This class is in charge of converting
-////// a pixel on the screen (which is dictated by its Mesh to be integrated)
-////// into physical initial conditions for the geodesic.
-////// All definitions in ViewScreen.cpp
-///////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @file ViewScreen.h
+ * @author Daniel R. Mayerson
+ * @brief Declarations of ViewScreen class.
+ * @details This class is in charge of converting a pixel on the screen (which the Mesh wants to integrate) into physical initial conditions for the position and velocity of a geodesic.
+ * @version 0.1
+ * @date 2025-01-14
+ * @copyright Copyright (c) 2025
+ */
 
 #include "Geometry.h" // For basic tensor objects
 #include "Metric.h"	  // For the Metric object
@@ -18,7 +20,10 @@
 #include <array>   // std::array
 #include <string>  // strings
 
-// Type of geodesic being integrated. NOTE: only Null supported/implemented at the moment!
+/**
+ * @brief Type of geodesic being integrated
+ * @details Null is the default, Timelike is -1, Spacelike is 1. Only Null is supported/implemented at the moment.
+ */
 enum class GeodesicType
 {
 	Null = 0,
@@ -26,9 +31,11 @@ enum class GeodesicType
 	Spacelike = 1,
 };
 
-// ViewScreen class: this class is in charge of converting a pixel on the screen (which the Mesh wants to integrate)
-// to physical initial conditions for the position and velocity of a geodesic. It owns a Mesh instance, which will tell it
-// which pixels to integrate etc.
+/**
+ * @brief This class is in charge of converting a pixel on the screen into physical initial conditions for a geodesic.
+ * @details The ViewScreen class is in charge of converting a pixel on the screen (which the Mesh wants to integrate) into physical initial conditions for the position and velocity of a geodesic.
+ * It owns a Mesh instance, which will tell it which pixels to integrate etc.
+ */
 class ViewScreen
 {
 public:
@@ -80,32 +87,33 @@ public:
 	std::string getFullDescriptionStr() const;
 
 private:
-	// The metric at the position of the viewscreen (we only need indices down)
+	//! The metric at the position of the viewscreen (we only need indices down)
 	TwoIndex m_Metric_dd{};
-	// The vielbein used to transform from the curved spacetime at the viewscreen to a locally flat frame
+	//! The vielbein used to transform from the curved spacetime at the viewscreen to a locally flat frame
 	TwoIndex m_Vielbein{};
 
 	// Helper function to construct the vielbein given the metric
 	void ConstructVielbein();
 
-	// The position and looking direction of the camera
+	//! The position of the camera
 	const Point m_Pos;
+	//! The looking direction of the camera (always pointing towards the origin)
 	const OneIndex m_Direction;
-	// The screensize (in physical units of length)
+	//! The screensize (in physical units of length)
 	const ScreenPoint m_ScreenSize;
-	// The screen center
+	//! The screen center
 	const ScreenPoint m_ScreenCenter;
 
-	// Whether the metric uses a logarithmic r coordinate or not
+	//! Whether the metric uses a logarithmic r coordinate or not
 	const bool m_rLogScale;
 
-	// const pointer to const Metric
+	//! const pointer to const Metric
 	const Metric *const m_theMetric;
 
-	// The geodesic type to be integrated
+	//! The geodesic type to be integrated
 	const GeodesicType m_GeodType{GeodesicType::Null};
 
-	// The const pointer to the Mesh we are using to determine pixels to be integrated
+	//! The const pointer to the Mesh we are using to determine pixels to be integrated
 	const std::unique_ptr<Mesh> m_theMesh;
 };
 

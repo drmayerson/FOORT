@@ -86,11 +86,15 @@ $(function(){ initResizable(false); });
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="class_boson_star_metric-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">BosonStarMetric Class Reference<span class="mlabels"><span class="mlabel">final</span></span></div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Boson star metric with solitonic potential.  
+ <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_metric_8h_source.html">Metric.h</a>&gt;</code></p>
 <div class="dynheader">
@@ -99,51 +103,84 @@ Inheritance diagram for BosonStarMetric:</div>
  <div class="center">
   <img src="class_boson_star_metric.png" usemap="#BosonStarMetric_map" alt=""/>
   <map id="BosonStarMetric_map" name="BosonStarMetric_map">
-<area href="class_metric.html" alt="Metric" shape="rect" coords="0,0,106,24"/>
+<area href="class_metric.html" title="The abstract base class for all Metrics." alt="Metric" shape="rect" coords="0,0,106,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a2023f6e84d8d5e952321339ec89abe0f" id="r_a2023f6e84d8d5e952321339ec89abe0f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2023f6e84d8d5e952321339ec89abe0f">BosonStarMetric</a> (bool rLogScale=false)</td></tr>
-<tr class="memdesc:a2023f6e84d8d5e952321339ec89abe0f"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_boson_star_metric.html">BosonStarMetric</a> functions (implementation by Seppe Staelens)  <br /></td></tr>
-<tr class="separator:a2023f6e84d8d5e952321339ec89abe0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a195da7416ef18d69fa853510fea25418" id="r_a195da7416ef18d69fa853510fea25418"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a195da7416ef18d69fa853510fea25418">BosonStarMetric</a> (double Phi_infinity, int num_lines, bool rLogScale=false, std::string Phi_filename=&quot;Phi.dat&quot;, std::string m_filename=&quot;m.dat&quot;)</td></tr>
+<tr class="memdesc:a195da7416ef18d69fa853510fea25418"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new Boson Star <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a> object.  <br /></td></tr>
+<tr class="separator:a195da7416ef18d69fa853510fea25418"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81916b179400a9bd1619b38dd0c78e3c" id="r_a81916b179400a9bd1619b38dd0c78e3c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a9cd1cb43637d1e6e730925d90d0b068d">TwoIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a81916b179400a9bd1619b38dd0c78e3c">getMetric_dd</a> (const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p) const final</td></tr>
+<tr class="memdesc:a81916b179400a9bd1619b38dd0c78e3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">BosonStar metric getter, indices down.  <br /></td></tr>
 <tr class="separator:a81916b179400a9bd1619b38dd0c78e3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef5bff6254d0b8a9702ac20d7c68fa80" id="r_aef5bff6254d0b8a9702ac20d7c68fa80"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a9cd1cb43637d1e6e730925d90d0b068d">TwoIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aef5bff6254d0b8a9702ac20d7c68fa80">getMetric_uu</a> (const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p) const final</td></tr>
+<tr class="memdesc:aef5bff6254d0b8a9702ac20d7c68fa80"><td class="mdescLeft">&#160;</td><td class="mdescRight">BosonStar metric getter, indices up.  <br /></td></tr>
 <tr class="separator:aef5bff6254d0b8a9702ac20d7c68fa80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2bb6402afaca74d3fd1e46c21af7047f" id="r_a2bb6402afaca74d3fd1e46c21af7047f"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2bb6402afaca74d3fd1e46c21af7047f">getFullDescriptionStr</a> () const final</td></tr>
+<tr class="memdesc:a2bb6402afaca74d3fd1e46c21af7047f"><td class="mdescLeft">&#160;</td><td class="mdescRight">BosonStar metric description string getter.  <br /></td></tr>
 <tr class="separator:a2bb6402afaca74d3fd1e46c21af7047f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_metric"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_class_metric')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_metric.html">Metric</a></td></tr>
 <tr class="memitem:a7d6124dba09b572c6123ada4704873e8 inherit pub_methods_class_metric" id="r_a7d6124dba09b572c6123ada4704873e8"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_metric.html#a7d6124dba09b572c6123ada4704873e8">~Metric</a> ()=default</td></tr>
 <tr class="separator:a7d6124dba09b572c6123ada4704873e8 inherit pub_methods_class_metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb49fde3a5b86106b50f8d8ead78125b inherit pub_methods_class_metric" id="r_afb49fde3a5b86106b50f8d8ead78125b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_metric.html#afb49fde3a5b86106b50f8d8ead78125b">Metric</a> (bool rlogscale=false)</td></tr>
-<tr class="memdesc:afb49fde3a5b86106b50f8d8ead78125b inherit pub_methods_class_metric"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_metric.html">Metric</a> (abstract base class) functions.  <br /></td></tr>
+<tr class="memdesc:afb49fde3a5b86106b50f8d8ead78125b inherit pub_methods_class_metric"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a> object.  <br /></td></tr>
 <tr class="separator:afb49fde3a5b86106b50f8d8ead78125b inherit pub_methods_class_metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a992c9e48ed03548713fbfd3be0ebc4da inherit pub_methods_class_metric" id="r_a992c9e48ed03548713fbfd3be0ebc4da"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="_geometry_8h.html#ab418a89a927c785b2610da4cc7f40cf5">ThreeIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_metric.html#a992c9e48ed03548713fbfd3be0ebc4da">getChristoffel_udd</a> (const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p) const</td></tr>
+<tr class="memdesc:a992c9e48ed03548713fbfd3be0ebc4da inherit pub_methods_class_metric"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the Christoffel symbols of the metric (indices up, down, down)  <br /></td></tr>
 <tr class="separator:a992c9e48ed03548713fbfd3be0ebc4da inherit pub_methods_class_metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a58d39502395541ff9c46f48540c03b inherit pub_methods_class_metric" id="r_a1a58d39502395541ff9c46f48540c03b"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="_geometry_8h.html#a07b49904b9472e4e238e844f0ff48a50">FourIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_metric.html#a1a58d39502395541ff9c46f48540c03b">getRiemann_uddd</a> (const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p) const</td></tr>
+<tr class="memdesc:a1a58d39502395541ff9c46f48540c03b inherit pub_methods_class_metric"><td class="mdescLeft">&#160;</td><td class="mdescRight">Riemann tensor of the metric (indices up, down, down, down)  <br /></td></tr>
 <tr class="separator:a1a58d39502395541ff9c46f48540c03b inherit pub_methods_class_metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ad8c08271e4010a610565d7894855a6 inherit pub_methods_class_metric" id="r_a3ad8c08271e4010a610565d7894855a6"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_metric.html#a3ad8c08271e4010a610565d7894855a6">getKretschmann</a> (const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p) const</td></tr>
+<tr class="memdesc:a3ad8c08271e4010a610565d7894855a6 inherit pub_methods_class_metric"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the Kretschmann scalar at a point.  <br /></td></tr>
 <tr class="separator:a3ad8c08271e4010a610565d7894855a6 inherit pub_methods_class_metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae29832cf536215e598893ece88e58170 inherit pub_methods_class_metric" id="r_ae29832cf536215e598893ece88e58170"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_metric.html#ae29832cf536215e598893ece88e58170">getrLogScale</a> () const</td></tr>
+<tr class="memdesc:ae29832cf536215e598893ece88e58170 inherit pub_methods_class_metric"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get whether we are using a logarithmic radial scale.  <br /></td></tr>
 <tr class="separator:ae29832cf536215e598893ece88e58170 inherit pub_methods_class_metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a683aba8d77ab2fb7b8910101368205b2" id="r_a683aba8d77ab2fb7b8910101368205b2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a683aba8d77ab2fb7b8910101368205b2">read_data</a> ()</td></tr>
+<tr class="memdesc:a683aba8d77ab2fb7b8910101368205b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">function to read the data  <br /></td></tr>
+<tr class="separator:a683aba8d77ab2fb7b8910101368205b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a2c488670fe17cffa28cf5192f54c0523" id="r_a2c488670fe17cffa28cf5192f54c0523"><td class="memItemLeft" align="right" valign="top">tk::spline&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2c488670fe17cffa28cf5192f54c0523">m_PhiSpline</a></td></tr>
+<tr class="memitem:a6576c9c95ad945d0e1025c3a1a2d4ad6" id="r_a6576c9c95ad945d0e1025c3a1a2d4ad6"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6576c9c95ad945d0e1025c3a1a2d4ad6">m_Phi_infinity</a></td></tr>
+<tr class="memdesc:a6576c9c95ad945d0e1025c3a1a2d4ad6"><td class="mdescLeft">&#160;</td><td class="mdescRight">The value of Phi at infinity, before rescaling.  <br /></td></tr>
+<tr class="separator:a6576c9c95ad945d0e1025c3a1a2d4ad6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a740cbcd0ac6871dd5fc3fec2880ad370" id="r_a740cbcd0ac6871dd5fc3fec2880ad370"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a740cbcd0ac6871dd5fc3fec2880ad370">m_num_lines</a></td></tr>
+<tr class="separator:a740cbcd0ac6871dd5fc3fec2880ad370"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae49a812a43c4eed290271a467974c21f" id="r_ae49a812a43c4eed290271a467974c21f"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae49a812a43c4eed290271a467974c21f">m_Phi_filename</a></td></tr>
+<tr class="memdesc:ae49a812a43c4eed290271a467974c21f"><td class="mdescLeft">&#160;</td><td class="mdescRight">filename with Phi data  <br /></td></tr>
+<tr class="separator:ae49a812a43c4eed290271a467974c21f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37c79f5ee4d3f438eb5c1306ec83f324" id="r_a37c79f5ee4d3f438eb5c1306ec83f324"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a37c79f5ee4d3f438eb5c1306ec83f324">m_m_filename</a></td></tr>
+<tr class="memdesc:a37c79f5ee4d3f438eb5c1306ec83f324"><td class="mdescLeft">&#160;</td><td class="mdescRight">filename with m data  <br /></td></tr>
+<tr class="separator:a37c79f5ee4d3f438eb5c1306ec83f324"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c488670fe17cffa28cf5192f54c0523" id="r_a2c488670fe17cffa28cf5192f54c0523"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtk_1_1spline.html">tk::spline</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2c488670fe17cffa28cf5192f54c0523">m_PhiSpline</a></td></tr>
+<tr class="memdesc:a2c488670fe17cffa28cf5192f54c0523"><td class="mdescLeft">&#160;</td><td class="mdescRight">The spline interpolator for Phi.  <br /></td></tr>
 <tr class="separator:a2c488670fe17cffa28cf5192f54c0523"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aead550ad77d339ada24c83ffe3fef3be" id="r_aead550ad77d339ada24c83ffe3fef3be"><td class="memItemLeft" align="right" valign="top">tk::spline&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aead550ad77d339ada24c83ffe3fef3be">m_mSpline</a></td></tr>
+<tr class="memitem:aead550ad77d339ada24c83ffe3fef3be" id="r_aead550ad77d339ada24c83ffe3fef3be"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtk_1_1spline.html">tk::spline</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aead550ad77d339ada24c83ffe3fef3be">m_mSpline</a></td></tr>
+<tr class="memdesc:aead550ad77d339ada24c83ffe3fef3be"><td class="mdescLeft">&#160;</td><td class="mdescRight">The spline interpolator for m.  <br /></td></tr>
 <tr class="separator:aead550ad77d339ada24c83ffe3fef3be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_class_metric"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_attribs_class_metric')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_metric.html">Metric</a></td></tr>
 <tr class="memitem:a2e4146bcd1d23b95bdd3e7974643e8a5 inherit pro_attribs_class_metric" id="r_a2e4146bcd1d23b95bdd3e7974643e8a5"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_metric.html#a2e4146bcd1d23b95bdd3e7974643e8a5">m_Symmetries</a> {}</td></tr>
+<tr class="memdesc:a2e4146bcd1d23b95bdd3e7974643e8a5 inherit pro_attribs_class_metric"><td class="mdescLeft">&#160;</td><td class="mdescRight">The symmetries (coordinate Killing vectors) of the metric. Should be set by descendant constructor.  <br /></td></tr>
 <tr class="separator:a2e4146bcd1d23b95bdd3e7974643e8a5 inherit pro_attribs_class_metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14194404785702d6c7d7afb2ef1de717 inherit pro_attribs_class_metric" id="r_a14194404785702d6c7d7afb2ef1de717"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_metric.html#a14194404785702d6c7d7afb2ef1de717">m_rLogScale</a></td></tr>
+<tr class="memdesc:a14194404785702d6c7d7afb2ef1de717 inherit pro_attribs_class_metric"><td class="mdescLeft">&#160;</td><td class="mdescRight">Are we using a logarithmic r coordinate?  <br /></td></tr>
 <tr class="separator:a14194404785702d6c7d7afb2ef1de717 inherit pro_attribs_class_metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a2023f6e84d8d5e952321339ec89abe0f" name="a2023f6e84d8d5e952321339ec89abe0f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2023f6e84d8d5e952321339ec89abe0f">&#9670;&#160;</a></span>BosonStarMetric()</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Boson star metric with solitonic potential. </p>
+<dl class="section note"><dt>Note</dt><dd>Implementation by Seppe Staelens </dd>
+<dd>
+The default files correspond to sigma = 0.06 and phi_c = 0.044 </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a195da7416ef18d69fa853510fea25418" name="a195da7416ef18d69fa853510fea25418"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a195da7416ef18d69fa853510fea25418">&#9670;&#160;</a></span>BosonStarMetric()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -151,13 +188,42 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="memname">BosonStarMetric::BosonStarMetric </td>
           <td>(</td>
-          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>rLogScale</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span></td><td>)</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>Phi_infinity</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>num_lines</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>rLogScale</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string</td>          <td class="paramname"><span class="paramname"><em>Phi_filename</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;Phi.dat&quot;</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string</td>          <td class="paramname"><span class="paramname"><em>m_filename</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;m.dat&quot;</span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="class_boson_star_metric.html">BosonStarMetric</a> functions (implementation by Seppe Staelens) </p>
+<p>Construct a new Boson Star <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a> object. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">Phi_infinity</td><td>value of Phi = log(lapse) at infinity </td></tr>
+    <tr><td class="paramname">num_lines</td><td>number of lines in the data files </td></tr>
+    <tr><td class="paramname">rLogScale</td><td>whether we are using a logarithmic radial scale </td></tr>
+    <tr><td class="paramname">Phi_filename</td><td>filename for the Phi data </td></tr>
+    <tr><td class="paramname">m_filename</td><td>filename for the mass aspect data </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -184,6 +250,9 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>BosonStar metric description string getter. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
 
 <p>Reimplemented from <a class="el" href="class_metric.html#a6b0e0169c9b0cf7ca4f0c67a2cde8db3">Metric</a>.</p>
 
@@ -212,6 +281,15 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>BosonStar metric getter, indices down. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Point at which to evaluate the metric </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>TwoIndex </dd></dl>
+
 <p>Implements <a class="el" href="class_metric.html#a61fe8a3c276a36d782573043fdcb6966">Metric</a>.</p>
 
 </div>
@@ -239,11 +317,72 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>BosonStar metric getter, indices up. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Point at which to evaluate the metric </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>TwoIndex </dd></dl>
+
 <p>Implements <a class="el" href="class_metric.html#a8f4ae22cfe486e974cc184e31b88bb73">Metric</a>.</p>
 
 </div>
 </div>
+<a id="a683aba8d77ab2fb7b8910101368205b2" name="a683aba8d77ab2fb7b8910101368205b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a683aba8d77ab2fb7b8910101368205b2">&#9670;&#160;</a></span>read_data()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BosonStarMetric::read_data </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>function to read the data </p>
+<p>Read the numerically obtained boson star metric data from the files. </p>
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a37c79f5ee4d3f438eb5c1306ec83f324" name="a37c79f5ee4d3f438eb5c1306ec83f324"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37c79f5ee4d3f438eb5c1306ec83f324">&#9670;&#160;</a></span>m_m_filename</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string BosonStarMetric::m_m_filename</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>filename with m data </p>
+
+</div>
+</div>
 <a id="aead550ad77d339ada24c83ffe3fef3be" name="aead550ad77d339ada24c83ffe3fef3be"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aead550ad77d339ada24c83ffe3fef3be">&#9670;&#160;</a></span>m_mSpline</h2>
 
@@ -254,7 +393,7 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">tk::spline BosonStarMetric::m_mSpline</td>
+          <td class="memname"><a class="el" href="classtk_1_1spline.html">tk::spline</a> BosonStarMetric::m_mSpline</td>
         </tr>
       </table>
   </td>
@@ -263,6 +402,79 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The spline interpolator for m. </p>
+
+</div>
+</div>
+<a id="a740cbcd0ac6871dd5fc3fec2880ad370" name="a740cbcd0ac6871dd5fc3fec2880ad370"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a740cbcd0ac6871dd5fc3fec2880ad370">&#9670;&#160;</a></span>m_num_lines</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int BosonStarMetric::m_num_lines</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Number of lines to be read from the data files. Mainly to avoid reading the data at extreme distances, which could upset the spline interpolation. </p>
+
+</div>
+</div>
+<a id="ae49a812a43c4eed290271a467974c21f" name="ae49a812a43c4eed290271a467974c21f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae49a812a43c4eed290271a467974c21f">&#9670;&#160;</a></span>m_Phi_filename</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string BosonStarMetric::m_Phi_filename</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>filename with Phi data </p>
+
+</div>
+</div>
+<a id="a6576c9c95ad945d0e1025c3a1a2d4ad6" name="a6576c9c95ad945d0e1025c3a1a2d4ad6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6576c9c95ad945d0e1025c3a1a2d4ad6">&#9670;&#160;</a></span>m_Phi_infinity</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const double BosonStarMetric::m_Phi_infinity</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The value of Phi at infinity, before rescaling. </p>
 
 </div>
 </div>
@@ -276,7 +488,7 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">tk::spline BosonStarMetric::m_PhiSpline</td>
+          <td class="memname"><a class="el" href="classtk_1_1spline.html">tk::spline</a> BosonStarMetric::m_PhiSpline</td>
         </tr>
       </table>
   </td>
@@ -285,6 +497,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The spline interpolator for Phi. </p>
 
 </div>
 </div>

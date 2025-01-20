@@ -94,27 +94,37 @@ $(function(){ initResizable(false); });
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a5b7330cf1ec0125aa0447465ea5286d7" id="r_a5b7330cf1ec0125aa0447465ea5286d7"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5b7330cf1ec0125aa0447465ea5286d7">GetFullIntegratorDescription</a> ()</td></tr>
+<tr class="memdesc:a5b7330cf1ec0125aa0447465ea5286d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Description string getter for the Integrator.  <br /></td></tr>
 <tr class="separator:a5b7330cf1ec0125aa0447465ea5286d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a386c259f9eeef96c555c1b4e24abbd9b" id="r_a386c259f9eeef96c555c1b4e24abbd9b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a386c259f9eeef96c555c1b4e24abbd9b">GetAdaptiveStep</a> (<a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> curpos, <a class="el" href="_geometry_8h.html#ae4096cddfa5ef7cb64402fe5c75a0164">OneIndex</a> curvel)</td></tr>
+<tr class="memdesc:a386c259f9eeef96c555c1b4e24abbd9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine the (affine parameter) step size to take.  <br /></td></tr>
 <tr class="separator:a386c259f9eeef96c555c1b4e24abbd9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8a3a281f8baa76ce5693f6a8ecf2af3" id="r_ab8a3a281f8baa76ce5693f6a8ecf2af3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab8a3a281f8baa76ce5693f6a8ecf2af3">IntegrateGeodesicStep_RK4</a> (<a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> curpos, <a class="el" href="_geometry_8h.html#ae4096cddfa5ef7cb64402fe5c75a0164">OneIndex</a> curvel, <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;nextpos, <a class="el" href="_geometry_8h.html#ae4096cddfa5ef7cb64402fe5c75a0164">OneIndex</a> &amp;nextvel, <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> &amp;stepsize, const <a class="el" href="class_metric.html">Metric</a> *theMetric, const <a class="el" href="class_source.html">Source</a> *theSource)</td></tr>
+<tr class="memdesc:ab8a3a281f8baa76ce5693f6a8ecf2af3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Integrate the geodesic equation by one step using Runge-Kutta-4.  <br /></td></tr>
 <tr class="separator:ab8a3a281f8baa76ce5693f6a8ecf2af3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9d35496386c8c24c28c4dc3c9fa688a" id="r_ab9d35496386c8c24c28c4dc3c9fa688a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab9d35496386c8c24c28c4dc3c9fa688a">IntegrateGeodesicStep_Verlet</a> (<a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> curpos, <a class="el" href="_geometry_8h.html#ae4096cddfa5ef7cb64402fe5c75a0164">OneIndex</a> curvel, <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;nextpos, <a class="el" href="_geometry_8h.html#ae4096cddfa5ef7cb64402fe5c75a0164">OneIndex</a> &amp;nextvel, <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> &amp;stepsize, const <a class="el" href="class_metric.html">Metric</a> *theMetric, const <a class="el" href="class_source.html">Source</a> *theSource)</td></tr>
+<tr class="memdesc:ab9d35496386c8c24c28c4dc3c9fa688a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Integrate the geodesic equation by one step using the Verlet algorithm.  <br /></td></tr>
 <tr class="separator:ab9d35496386c8c24c28c4dc3c9fa688a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:a5aaa6b3cb00c6921341418047bbbc51e" id="r_a5aaa6b3cb00c6921341418047bbbc51e"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5aaa6b3cb00c6921341418047bbbc51e">delta_nodiv0</a> = 1e-20</td></tr>
+<tr class="memdesc:a5aaa6b3cb00c6921341418047bbbc51e"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is used to avoid dividing by zero.  <br /></td></tr>
 <tr class="separator:a5aaa6b3cb00c6921341418047bbbc51e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a73eaa8355d6a02c405253d3fc199eb48" id="r_a73eaa8355d6a02c405253d3fc199eb48"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a73eaa8355d6a02c405253d3fc199eb48">Derivative_hval</a> {1e-7}</td></tr>
+<tr class="memdesc:a73eaa8355d6a02c405253d3fc199eb48"><td class="mdescLeft">&#160;</td><td class="mdescRight">The amount of any coordinate that we shift to calculate derivatives (using central difference)  <br /></td></tr>
 <tr class="separator:a73eaa8355d6a02c405253d3fc199eb48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa6b5ea945683804f550f64435d6ff5eb" id="r_aa6b5ea945683804f550f64435d6ff5eb"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa6b5ea945683804f550f64435d6ff5eb">IntegratorDescription</a> {&quot;RK4&quot;}</td></tr>
+<tr class="memdesc:aa6b5ea945683804f550f64435d6ff5eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">The name of the integrator selected.  <br /></td></tr>
 <tr class="separator:aa6b5ea945683804f550f64435d6ff5eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d58ff26a8f7798d074861368cb8ab40" id="r_a8d58ff26a8f7798d074861368cb8ab40"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8d58ff26a8f7798d074861368cb8ab40">epsilon</a> {0.03}</td></tr>
+<tr class="memdesc:a8d58ff26a8f7798d074861368cb8ab40"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is the base step size to be taken (the integrator will adapt this if necessary)  <br /></td></tr>
 <tr class="separator:a8d58ff26a8f7798d074861368cb8ab40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d34e11f26f31881b0f45fc457675dba" id="r_a4d34e11f26f31881b0f45fc457675dba"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4d34e11f26f31881b0f45fc457675dba">SmallestPossibleStepsize</a> {1e-12}</td></tr>
+<tr class="memdesc:a4d34e11f26f31881b0f45fc457675dba"><td class="mdescLeft">&#160;</td><td class="mdescRight">The affine parameter must always go forward by at least this amount.  <br /></td></tr>
 <tr class="separator:a4d34e11f26f31881b0f45fc457675dba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9fed7b461859ee476e51f4f328f6af3" id="r_aa9fed7b461859ee476e51f4f328f6af3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa9fed7b461859ee476e51f4f328f6af3">VerletVelocityTolerance</a> {0.001}</td></tr>
+<tr class="memdesc:aa9fed7b461859ee476e51f4f328f6af3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tolerance on the change in velocity in the iteration loop of the Verlet integration algorithm.  <br /></td></tr>
 <tr class="separator:aa9fed7b461859ee476e51f4f328f6af3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -137,6 +147,16 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Determine the (affine parameter) step size to take. </p>
+<p>algorithm as in Raptor (eqs (21)-(24)), which is taken from Noble et al. (2007) &amp; Dolence et al. (2009) </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">curpos</td><td>current position </td></tr>
+    <tr><td class="paramname">curvel</td><td>current velocity </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>real </dd></dl>
+
 </div>
 </div>
 <a id="a5b7330cf1ec0125aa0447465ea5286d7" name="a5b7330cf1ec0125aa0447465ea5286d7"></a>
@@ -153,6 +173,9 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Description string getter for the Integrator. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
 
 </div>
 </div>
@@ -200,6 +223,20 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Integrate the geodesic equation by one step using Runge-Kutta-4. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">curpos</td><td>current position </td></tr>
+    <tr><td class="paramname">curvel</td><td>current velocity </td></tr>
+    <tr><td class="paramname">nextpos</td><td>reference to next position </td></tr>
+    <tr><td class="paramname">nextvel</td><td>reference to next velocity </td></tr>
+    <tr><td class="paramname">stepsize</td><td>reference to the stepsize </td></tr>
+    <tr><td class="paramname">theMetric</td><td>pointer to the <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a> object </td></tr>
+    <tr><td class="paramname">theSource</td><td>pointer to the <a class="el" href="class_source.html" title="Abstract Source base class.">Source</a> object </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="ab9d35496386c8c24c28c4dc3c9fa688a" name="ab9d35496386c8c24c28c4dc3c9fa688a"></a>
@@ -246,6 +283,20 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Integrate the geodesic equation by one step using the Verlet algorithm. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">curpos</td><td>current position </td></tr>
+    <tr><td class="paramname">curvel</td><td>current velocity </td></tr>
+    <tr><td class="paramname">nextpos</td><td>reference to next position </td></tr>
+    <tr><td class="paramname">nextvel</td><td>reference to next velocity </td></tr>
+    <tr><td class="paramname">stepsize</td><td>reference to the stepsize </td></tr>
+    <tr><td class="paramname">theMetric</td><td>pointer to the <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a> object </td></tr>
+    <tr><td class="paramname">theSource</td><td>pointer to the <a class="el" href="class_source.html" title="Abstract Source base class.">Source</a> object </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
@@ -269,6 +320,8 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>This is used to avoid dividing by zero. </p>
+
 </div>
 </div>
 <a id="a73eaa8355d6a02c405253d3fc199eb48" name="a73eaa8355d6a02c405253d3fc199eb48"></a>
@@ -290,6 +343,8 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The amount of any coordinate that we shift to calculate derivatives (using central difference) </p>
 
 </div>
 </div>
@@ -313,6 +368,8 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>This is the base step size to be taken (the integrator will adapt this if necessary) </p>
+
 </div>
 </div>
 <a id="aa6b5ea945683804f550f64435d6ff5eb" name="aa6b5ea945683804f550f64435d6ff5eb"></a>
@@ -334,6 +391,8 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The name of the integrator selected. </p>
 
 </div>
 </div>
@@ -357,6 +416,8 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>The affine parameter must always go forward by at least this amount. </p>
+
 </div>
 </div>
 <a id="aa9fed7b461859ee476e51f4f328f6af3" name="aa9fed7b461859ee476e51f4f328f6af3"></a>
@@ -378,6 +439,8 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Tolerance on the change in velocity in the iteration loop of the Verlet integration algorithm. </p>
 
 </div>
 </div>

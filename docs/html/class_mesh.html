@@ -92,6 +92,9 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p>Abstract base <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a> class.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_mesh_8h_source.html">Mesh.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for Mesh:</div>
@@ -99,10 +102,10 @@ Inheritance diagram for Mesh:</div>
  <div class="center">
   <img src="class_mesh.png" usemap="#Mesh_map" alt=""/>
   <map id="Mesh_map" name="Mesh_map">
-<area href="class_input_certain_pixels_mesh.html" alt="InputCertainPixelsMesh" shape="rect" coords="0,56,164,80"/>
-<area href="class_simple_square_mesh.html" alt="SimpleSquareMesh" shape="rect" coords="174,56,338,80"/>
-<area href="class_square_subdivision_mesh.html" alt="SquareSubdivisionMesh" shape="rect" coords="348,56,512,80"/>
-<area href="class_square_subdivision_mesh_v2.html" alt="SquareSubdivisionMeshV2" shape="rect" coords="522,56,686,80"/>
+<area href="class_input_certain_pixels_mesh.html" title="Mesh which integrates only certain user-inputted pixels." alt="InputCertainPixelsMesh" shape="rect" coords="0,56,164,80"/>
+<area href="class_simple_square_mesh.html" title="A simple square mesh that will integrate a square of evenly spaced pixels." alt="SimpleSquareMesh" shape="rect" coords="174,56,338,80"/>
+<area href="class_square_subdivision_mesh.html" title="Adaptive subdivision Mesh." alt="SquareSubdivisionMesh" shape="rect" coords="348,56,512,80"/>
+<area href="class_square_subdivision_mesh_v2.html" title="Adaptive subdivision Mesh." alt="SquareSubdivisionMeshV2" shape="rect" coords="522,56,686,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -123,15 +126,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a28677f062d3c7fa493f2c032532d5310" id="r_a28677f062d3c7fa493f2c032532d5310"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a28677f062d3c7fa493f2c032532d5310">IsFinished</a> () const =0</td></tr>
 <tr class="separator:a28677f062d3c7fa493f2c032532d5310"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4fdb3ad18207bd2470bb00b6e8ac27b" id="r_ad4fdb3ad18207bd2470bb00b6e8ac27b"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad4fdb3ad18207bd2470bb00b6e8ac27b">getFullDescriptionStr</a> () const</td></tr>
-<tr class="memdesc:ad4fdb3ad18207bd2470bb00b6e8ac27b"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_mesh.html">Mesh</a> (abstract base class) functions.  <br /></td></tr>
+<tr class="memdesc:ad4fdb3ad18207bd2470bb00b6e8ac27b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Basic description string getter.  <br /></td></tr>
 <tr class="separator:ad4fdb3ad18207bd2470bb00b6e8ac27b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:ab0807b2b8e1d88920084002b3b533794" id="r_ab0807b2b8e1d88920084002b3b533794"><td class="memItemLeft" align="right" valign="top">const std::unique_ptr&lt; const <a class="el" href="class_diagnostic.html">Diagnostic</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab0807b2b8e1d88920084002b3b533794">m_DistanceDiagnostic</a></td></tr>
+<tr class="memdesc:ab0807b2b8e1d88920084002b3b533794"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> (a const pointer to a const <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> object) that is used to calculate distances (using FinalDataValDistance()) between the "values" that are assigned to Geodesics.  <br /></td></tr>
 <tr class="separator:ab0807b2b8e1d88920084002b3b533794"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Abstract base <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a> class. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a4250f1287e407de4c81e8dfb25a7af0b" name="a4250f1287e407de4c81e8dfb25a7af0b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4250f1287e407de4c81e8dfb25a7af0b">&#9670;&#160;</a></span>Mesh()</h2>
 
@@ -291,7 +297,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="class_mesh.html">Mesh</a> (abstract base class) functions. </p>
+<p>Basic description string getter. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
 
 <p>Reimplemented in <a class="el" href="class_input_certain_pixels_mesh.html#acc423076b5ecc768175b360c40648bd6">InputCertainPixelsMesh</a>, <a class="el" href="class_simple_square_mesh.html#a52662bbe87b4b8206c0bbe9b69aeb489">SimpleSquareMesh</a>, <a class="el" href="class_square_subdivision_mesh.html#a2d946847d2023471cf4c1b325e24a563">SquareSubdivisionMesh</a>, and <a class="el" href="class_square_subdivision_mesh_v2.html#a0bcf04c439aa2cdde80bdd5d164c8171">SquareSubdivisionMeshV2</a>.</p>
 
@@ -380,6 +387,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> (a const pointer to a const <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> object) that is used to calculate distances (using FinalDataValDistance()) between the "values" that are assigned to Geodesics. </p>
 
 </div>
 </div>

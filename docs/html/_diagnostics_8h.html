@@ -96,6 +96,9 @@ $(function(){ initResizable(false); });
   <div class="headertitle"><div class="title">Diagnostics.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Declarations of abstract base <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> class and all its descendants. All Definitions in <a class="el" href="_diagnostics_8cpp.html">Diagnostics.cpp</a>.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="_geometry_8h_source.html">Geometry.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_metric_8h_source.html">Metric.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_input_output_8h_source.html">InputOutput.h</a>&quot;</code><br />
@@ -110,41 +113,55 @@ $(function(){ initResizable(false); });
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_update_frequency.html">UpdateFrequency</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Struct to hold the information for a <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> to update itself.  <a href="struct_update_frequency.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_diagnostic.html">Diagnostic</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract base class for all diagnostics.  <a href="class_diagnostic.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_four_color_screen_diagnostic.html">FourColorScreenDiagnostic</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The four color screen diagnostic.  <a href="class_four_color_screen_diagnostic.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_geodesic_position_diagnostic.html">GeodesicPositionDiagnostic</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_geodesic.html" title="Geodesic class: an instance of this class is created for each Geodesic that is integrated.">Geodesic</a> position tracker.  <a href="class_geodesic_position_diagnostic.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_equatorial_passes_diagnostic.html">EquatorialPassesDiagnostic</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> that counts the number of passes through the equatorial plane.  <a href="class_equatorial_passes_diagnostic.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_closest_radius_diagnostic.html">ClosestRadiusDiagnostic</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> that keeps track of the closest (true, not log) radius that the geodesic passes through.  <a href="class_closest_radius_diagnostic.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_equatorial_emission_diagnostic.html">EquatorialEmissionDiagnostic</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> that calculates brightness intensity for the geodesic, based on a specified equatorial disc emission model.  <a href="class_equatorial_emission_diagnostic.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_diagnostic_options.html">DiagnosticOptions</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base class for <a class="el" href="struct_diagnostic_options.html" title="Base class for DiagnosticOptions. Other Diagnostics can inherit from here if they require more option...">DiagnosticOptions</a>. Other Diagnostics can inherit from here if they require more options.  <a href="struct_diagnostic_options.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_geodesic_position_options.html">GeodesicPositionOptions</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Options for <a class="el" href="class_geodesic_position_diagnostic.html" title="Geodesic position tracker.">GeodesicPositionDiagnostic</a>.  <a href="struct_geodesic_position_options.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_equatorial_passes_options.html">EquatorialPassesOptions</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Options for <a class="el" href="class_equatorial_passes_diagnostic.html" title="Diagnostic that counts the number of passes through the equatorial plane.">EquatorialPassesDiagnostic</a>.  <a href="struct_equatorial_passes_options.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_closest_radius_options.html">ClosestRadiusOptions</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Options for <a class="el" href="class_closest_radius_diagnostic.html" title="Diagnostic that keeps track of the closest (true, not log) radius that the geodesic passes through.">ClosestRadiusDiagnostic</a>.  <a href="struct_closest_radius_options.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_equatorial_emission_options.html">EquatorialEmissionOptions</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Options for <a class="el" href="class_equatorial_emission_diagnostic.html" title="Diagnostic that calculates brightness intensity for the geodesic, based on a specified equatorial dis...">EquatorialEmissionDiagnostic</a>.  <a href="struct_equatorial_emission_options.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:af7f2400872c056241d14f2667f6615f2" id="r_af7f2400872c056241d14f2667f6615f2"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> = std::uint16_t</td></tr>
+<tr class="memdesc:af7f2400872c056241d14f2667f6615f2"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> bitflags.  <br /></td></tr>
 <tr class="separator:af7f2400872c056241d14f2667f6615f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91f488bca4b09a093306b7ecac94505c" id="r_a91f488bca4b09a093306b7ecac94505c"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a91f488bca4b09a093306b7ecac94505c">DiagnosticUniqueVector</a> = std::vector&lt;std::unique_ptr&lt;<a class="el" href="class_diagnostic.html">Diagnostic</a>&gt;&gt;</td></tr>
+<tr class="memdesc:a91f488bca4b09a093306b7ecac94505c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Owner vector of derived Diagnostics classes.  <br /></td></tr>
 <tr class="separator:a91f488bca4b09a093306b7ecac94505c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a8a87ae8855d663259a98df524e50c021" id="r_a8a87ae8855d663259a98df524e50c021"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a91f488bca4b09a093306b7ecac94505c">DiagnosticUniqueVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8a87ae8855d663259a98df524e50c021">CreateDiagnosticVector</a> (<a class="el" href="#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> diagflags, <a class="el" href="#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> valdiag, <a class="el" href="class_geodesic.html">Geodesic</a> *const theGeodesic)</td></tr>
-<tr class="memdesc:a8a87ae8855d663259a98df524e50c021"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_diagnostic.html">Diagnostic</a> helper function.  <br /></td></tr>
+<tr class="memdesc:a8a87ae8855d663259a98df524e50c021"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> helper function.  <br /></td></tr>
 <tr class="separator:a8a87ae8855d663259a98df524e50c021"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
@@ -162,7 +179,13 @@ Variables</h2></td></tr>
 <tr class="memitem:aecef2a4309080818a1b76565573418ba" id="r_aecef2a4309080818a1b76565573418ba"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aecef2a4309080818a1b76565573418ba">Diag_EquatorialEmission</a> {0b0000'0000'0001'0000}</td></tr>
 <tr class="separator:aecef2a4309080818a1b76565573418ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Typedef Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Declarations of abstract base <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> class and all its descendants. All Definitions in <a class="el" href="_diagnostics_8cpp.html">Diagnostics.cpp</a>. </p>
+<dl class="section author"><dt>Author</dt><dd>Daniel R. Mayerson </dd></dl>
+<dl class="section version"><dt>Version</dt><dd>1.0 </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>2024-12-16 </dd></dl>
+<dl class="section copyright"><dt>Copyright</dt><dd>Copyright (c) 2024 </dd></dl>
+</div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="af7f2400872c056241d14f2667f6615f2" name="af7f2400872c056241d14f2667f6615f2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af7f2400872c056241d14f2667f6615f2">&#9670;&#160;</a></span>DiagBitflag</h2>
 
@@ -174,6 +197,9 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p><a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> bitflags. </p>
+<p>Used for constructing vector of Diagnostics ... </p>
 
 </div>
 </div>
@@ -188,6 +214,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Owner vector of derived Diagnostics classes. </p>
 
 </div>
 </div>
@@ -216,7 +244,18 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="class_diagnostic.html">Diagnostic</a> helper function. </p>
+<p><a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> helper function. </p>
+<p>Helper to create a new vector of <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> options, based on the bitflag The first diagnostic is the value diagnostic</p>
+<p>Create a <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> Vector object</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">diagflags</td><td><a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> bitflags </td></tr>
+    <tr><td class="paramname">valdiag</td><td>Value <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> bitflag </td></tr>
+    <tr><td class="paramname">theGeodesic</td><td>Pointer to the <a class="el" href="class_geodesic.html" title="Geodesic class: an instance of this class is created for each Geodesic that is integrated.">Geodesic</a> object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>DiagnosticUniqueVector </dd></dl>
 
 </div>
 </div>

@@ -1,11 +1,14 @@
 #ifndef _FOORT_TERMINATIONS_H
 #define _FOORT_TERMINATIONS_H
 
-///////////////////////////////////////////////////////////////////////////////////////
-////// TERMINATIONS.H
-////// Declarations of abstract base Termination class and all its descendants.
-////// All definitions in Terminations.cpp
-///////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @file Terminations.h
+ * @author Daniel R. Mayerson
+ * @brief Declarations of abstract base Termination class and all its descendants.
+ * @version 0.1
+ * @date 2025-01-14
+ * @copyright Copyright (c) 2025
+ */
 
 #include "Geometry.h" // for basic tensor objects
 
@@ -18,20 +21,24 @@
 // (note "Geodesic.h" is NOT included to avoid header loop, and we do not need Geodesic member functions here!)
 class Geodesic;
 
-/////////////////////////
-//// TERMINATION BITFLAGS
-// Used for constructing vector of Terminations
-// Note that this means every Termination is either "on" or "off";
-// it is not possible to have a Termination "on" more than once
+// TERMINATION BITFLAGS
+//! Used for constructing vector of Terminations. Note that this means every Termination is either "on" or "off"; it is not possible to have a Termination "on" more than once
 using TermBitflag = std::uint16_t;
 
 // Define a bitflag per existing Termination
+//! No terminations bitflag
 constexpr TermBitflag Term_None{0b0000'0000'0000'0000};
+//! Boundary Sphere termination bitflag
 constexpr TermBitflag Term_BoundarySphere{0b0000'0000'0000'0001};
+//! Time Out termination bitflag
 constexpr TermBitflag Term_TimeOut{0b0000'0000'0000'0010};
+//! Horizon termination bitflag
 constexpr TermBitflag Term_Horizon{0b0000'0000'0000'0100};
+//! Theta Singularity termination bitflag
 constexpr TermBitflag Term_ThetaSingularity{0b0000'0000'0000'1000};
+//! NaN termination bitflag
 constexpr TermBitflag Term_NaN{0b0000'0000'0001'0000};
+//! General Singularity termination bitflag
 constexpr TermBitflag Term_GeneralSingularity{0b0000'0000'0010'0000};
 
 //// TERMINATION ADD POINT B1 ////
@@ -42,20 +49,29 @@ constexpr TermBitflag Term_MyTerm				{ 0b0000'0000'0000'1000 };
 */
 //// END TERMINATION ADD POINT B1 ////
 
-////////////////////////////
-//// TERMINATION CONDITIONS
+// TERMINATION CONDITIONS
 
-// Possible termination conditions that can be set by Terminations
+/**
+ * @brief Possible termination conditions that can be set by Terminations
+ */
 enum class Term
 {
-	Uninitialized = -1, // Geodesic has not been properly initialized yet with initial position/velocity
-	Continue = 0,		// All is right, continue integrating geodesic
-	Horizon,			// STOP, encountered horizon (set by HorizonTermination)
-	BoundarySphere,		// STOP, encountered boundary sphere (set by BoundarySphereTermination)
-	TimeOut,			// STOP, taken too many steps (set by TimeOutTermination)
-	ThetaSingularity,	// STOP, too close to polar coordinate singularity (theta = 0 or theta = pi/2)
-	NaN,				// STOP, NaN encountered in geodesic position or velocity
-	GeneralSingularity, // STOP, singularity encountered (of any codimension)
+	//! Geoedesic has not been properly initialized yet with initial position/velocity
+	Uninitialized = -1,
+	//! All is right, continue integrating geodesic
+	Continue = 0,
+	//! STOP, encountered horizon (set by HorizonTermination)
+	Horizon,
+	//! STOP, encountered boundary sphere (set by BoundarySphereTermination)
+	BoundarySphere,
+	//! STOP, taken too many steps (set by TimeOutTermination)
+	TimeOut,
+	//! STOP, too close to polar coordinate singularity (theta = 0 or theta = pi/2) (set by ThetaSingularityTermination)
+	ThetaSingularity,
+	//! STOP, NaN encountered in geodesic position or velocity (set by NaNTermination)
+	NaN,
+	//! STOP, singularity encountered (of any codimension) (set by GeneralSingularityTermination)
+	GeneralSingularity,
 
 	//// TERMINATION ADD POINT B2 ////
 	// Add a new Termination condition that your new Termination can set
@@ -68,10 +84,11 @@ enum class Term
 	Maxterms // Number of termination conditions that exist
 };
 
-//////////////////////////////////////////////////////////////
-//// GENERAL DECLARATIONS OF AND WITH ABSTRACT BASE CLASS ////
+// GENERAL DECLARATIONS OF ABSTRACT BASE CLASS
 
-// Abstract base class for all Terminations
+/**
+ * @brief Abstract base class for all Terminations.
+ */
 class Termination
 {
 public:
@@ -99,30 +116,31 @@ public:
 	virtual std::string getFullDescriptionStr() const = 0;
 
 protected:
-	// The geodesic that owns the Termination (a const pointer to the Geodesic)
+	//! The geodesic that owns the Termination (a const pointer to the Geodesic)
 	Geodesic *const m_OwnerGeodesic;
 
 	// Helper function to decide if the Termination should indeed update its status, based on
 	// UpdateNSteps (which is set to 0 if we always update)
 	bool DecideUpdate(largecounter UpdateNSteps);
 
-	// The termination is itself in charge of keeping track of how many steps it has been since it has been updated
-	// The Termination's TerminationOptions struct tells it how many steps it needs to wait between updates
+	//! The termination is itself in charge of keeping track of how many steps it has been since it has been updated. The Termination's TerminationOptions struct tells it how many steps it needs to wait between updates
 	largecounter m_StepsSinceUpdated{};
 };
 
-// The owner vector of derived Termination classes
+//! The owner vector of derived Termination classes
 using TerminationUniqueVector = std::vector<std::unique_ptr<Termination>>;
 
 // Helper to create a new vector of Termination options, based on the bitflag
 TerminationUniqueVector CreateTerminationVector(TermBitflag termflags, Geodesic *const theGeodesic);
 
-///////////////////////////////////////////////////////
-//// DECLARATIONS FOR DERIVED TERMINATION CLASSES  ////
+// DECLARATIONS FOR DERIVED TERMINATION CLASSES (DESCENDANTS)
 
 // Forward declaration needed before Termination
 struct HorizonTermOptions;
-// Horizon termination: terminate geodesics if they get too close to the horizon (returns Term::Horizon)
+
+/**
+ * @brief HorizonTermination: Terminate geodesics if they get too close to the horizon
+ */
 class HorizonTermination final : public Termination
 {
 public:
@@ -135,14 +153,16 @@ public:
 	// Description string
 	std::string getFullDescriptionStr() const final;
 
-	// Options (contains horizon radius, if we are using logarithmic r coordinate, and distance allowed from the horizon)
+	//! Options (contains horizon radius, if we are using logarithmic r coordinate, and distance allowed from the horizon)
 	static std::unique_ptr<HorizonTermOptions> TermOptions;
 };
 
 // Forward declaration needed before Termination
 struct BoundarySphereTermOptions;
-// The Boundary Sphere: this terminates the geodesic (and returns Term::BoundarySphere) if
-// the geodesic reaches outside of the boundary sphere
+
+/**
+ * @brief BoundarySphereTermination: Terminate geodesics if they reach outside of a boundary sphere
+ */
 class BoundarySphereTermination final : public Termination
 {
 public:
@@ -155,14 +175,16 @@ public:
 	// Description string
 	std::string getFullDescriptionStr() const final;
 
-	// The options that the BoundarySphereTermination keeps (contains the radius of the boundary sphere)
+	//! The options that the BoundarySphereTermination keeps (contains the radius of the boundary sphere)
 	static std::unique_ptr<BoundarySphereTermOptions> TermOptions;
 };
 
 // Forward declaration needed before Termination
 struct TimeOutTermOptions;
-// The Time Out: this terminates the geodesic if too many steps have been
-// taken in its integration (and returns Term::TimeOut)
+
+/**
+ * @brief TimeOutTermination: Terminate geodesics if they take too many steps
+ */
 class TimeOutTermination final : public Termination
 {
 public:
@@ -178,16 +200,20 @@ public:
 	// Description string
 	std::string getFullDescriptionStr() const final;
 
-	// The options that the TimeOutTermination keeps (contains max number of steps allowed)
+	//! The options that the TimeOutTermination keeps (contains max number of steps allowed)
 	static std::unique_ptr<TimeOutTermOptions> TermOptions;
 
 private:
-	// Keep track of the number of steps that the geodesic has taken so far
+	//! Keep track of the number of steps that the geodesic has taken so far
 	largecounter m_CurNrSteps{0};
 };
 
 // Forward declaration needed before Termination
 struct ThetaSingularityTermOptions;
+
+/**
+ * @brief ThetaSingularityTermination: Terminate geodesics if they get too close to a polar coordinate singularity
+ */
 class ThetaSingularityTermination final : public Termination
 {
 public:
@@ -201,14 +227,16 @@ public:
 	// Description string
 	std::string getFullDescriptionStr() const final;
 
-	// The options that the Termination keeps (will probably be a descendant struct instead, which specifies
-	// any additional options the Termination needs)
+	//! The options that the Termination keeps (will probably be a descendant struct instead, which specifies any additional options the Termination needs)
 	static std::unique_ptr<ThetaSingularityTermOptions> TermOptions;
 };
 
 // Forward declaration needed before Termination
 struct NaNTermOptions;
-// NaN termination: terminate geodesics if position or velocity contains a nan
+
+/**
+ * @brief NaNTermination: Terminate geodesics if they contain a NaN in position or velocity
+ */
 class NaNTermination final : public Termination
 {
 public:
@@ -221,13 +249,16 @@ public:
 	// Description string
 	std::string getFullDescriptionStr() const final;
 
-	// Options (contains horizon radius, if we are using logarithmic r coordinate, and distance allowed from the horizon)
+	//! Options (contains horizon radius, if we are using logarithmic r coordinate, and distance allowed from the horizon)
 	static std::unique_ptr<NaNTermOptions> TermOptions;
 };
 
 // Forward declaration needed before Termination
 struct GeneralSingularityTermOptions;
-// General singularity: terminate geodesic if it comes too close to one of a given number of (arbitrary codimension) singularities
+
+/**
+ * @brief GeneralSingularityTermination: Terminate geodesics if they get too close to one of a number of singularities (of arbitrary codimension)
+ */
 class GeneralSingularityTermination final : public Termination
 {
 public:
@@ -240,7 +271,7 @@ public:
 	// Description string
 	std::string getFullDescriptionStr() const final;
 
-	// Options (contains horizon radius, if we are using logarithmic r coordinate, and distance allowed from the horizon)
+	//! Options (contains horizon radius, if we are using logarithmic r coordinate, and distance allowed from the horizon)
 	static std::unique_ptr<GeneralSingularityTermOptions> TermOptions;
 
 private:
@@ -280,10 +311,11 @@ private:
 */
 //// END TERMINATION ADD POINT A1 ////
 
-////////////////////////////////////////
-//// ALL TERMINATIONOPTIONS STRUCTS ////
+// ALL TERMINATIONOPTIONS STRUCTS
 
-// Base class for TerminationOptions. Other Terminations can inherit from here if they require more options.
+/**
+ * @brief Base class for all TerminationOptions structs. Other TerminationOptions can inherit from here if they require more options.
+ */
 struct TerminationOptions
 {
 public:
@@ -295,10 +327,14 @@ public:
 	// virtual destructor to ensure correct destruction of descendants
 	virtual ~TerminationOptions() = default;
 
+	//! Number of steps between updates
 	const largecounter UpdateEveryNSteps;
 };
 
-// Options class for HorizonTermination; keeps track of location of horizon radius and the epsilon to terminate away from the horizon
+/**
+ * @brief Options for HorizonTermination.
+ * @details Keeps track of the horizon radius, whether we are using a logarithmic r coordinate, and the distance allowed from the horizon.
+ */
 struct HorizonTermOptions : public TerminationOptions
 {
 public:
@@ -306,12 +342,18 @@ public:
 	{
 	}
 
+	//! The radius of the horizon
 	const real HorizonRadius;
+	//! The distance allowed from the horizon
 	const real AtHorizonEps;
+	//! Whether we are using a logarithmic r coordinate
 	const bool rLogScale;
 };
 
-// Options class for BoundarySphere; has to keep track of the BoundarySphere's radius
+/**
+ * @brief Options for BoundarySphereTermination.
+ * @details Keeps track of the boundary sphere radius, whether we are using a logarithmic r coordinate.
+ */
 struct BoundarySphereTermOptions : public TerminationOptions
 {
 public:
@@ -320,11 +362,16 @@ public:
 	{
 	}
 
+	//! Radius of the boundary sphere
 	const real SphereRadius;
+	//! Whether we are using a logarithmic r coordinate
 	const bool rLogScale;
 };
 
-// Options class for TimeOut; has to keep track of the max. number of integration steps allowed
+/**
+ * @brief Options for TimeOutTermination
+ * @details Keeps track of the max. number of integration steps allowed
+ */
 struct TimeOutTermOptions : public TerminationOptions
 {
 public:
@@ -332,10 +379,15 @@ public:
 	{
 	}
 
+	//! Max. number of integration steps allowed.
 	const largecounter MaxSteps;
 };
 
 // Options class for ThetaSingularityTermination
+/**
+ * @brief Options for ThetaSingularityTermination
+ * @details Keeps track of the minimum required distance from the singularity
+ */
 struct ThetaSingularityTermOptions : public TerminationOptions
 {
 public:
@@ -343,10 +395,13 @@ public:
 	{
 	}
 
+	//! Minimum difference between theta and 0 or pi.
 	const real ThetaSingEpsilon;
 };
 
-// Options class for TimeOut; has to keep track of the max. number of integration steps allowed
+/**
+ * @brief Options for NaNTermination
+ */
 struct NaNTermOptions : public TerminationOptions
 {
 public:
@@ -354,9 +409,14 @@ public:
 	{
 	}
 
+	//! Whether to output to the console when a NaN is encountered
 	const bool OutputToConsole;
 };
 
+/**
+ * @brief Options for GeneralSingularityTermination
+ * @details Keeps track of the singularities, allowed distance and whether we are using a logarithmic r coordinate.
+ */
 struct GeneralSingularityTermOptions : public TerminationOptions
 {
 public:
@@ -366,9 +426,13 @@ public:
 		  rLogScale{therlogscale},
 		  TerminationOptions(Nsteps) {}
 
+	//! Vector of singularities
 	const std::vector<Singularity> Singularities;
+	//! Minimum flat distance the geodesic is allowed to be from any singularity
 	const real Epsilon;
+	//! Whether to output a message to the console when a singularity is encountered
 	const bool OutputToConsole;
+	//! Whether we are using a logarithmic r coordinate or not
 	const bool rLogScale;
 };
 

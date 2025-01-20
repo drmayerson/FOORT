@@ -1,11 +1,14 @@
 #ifndef _FOORT_UTILITIES_H
 #define _FOORT_UTILITIES_H
 
-///////////////////////////////////////////////////////////////////////////////////////
-////// UTILITIES.H
-////// Declarations of various utility functions, in a Utilities namespace
-////// All definitions in Utilities.cpp
-///////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @file Utilities.h
+ * @author Daniel R. Mayerson
+ * @brief Declarations of various utility functions, in a Utilities namespace
+ * @version 0.1
+ * @date 2025-01-14
+ * @copyright Copyright (c) 2025
+ */
 
 // We use Metric, Diagnostic, Termination, Geodesic, ViewScreen, and Integrator declarations here
 #include "Metric.h"
@@ -19,18 +22,21 @@
 #include <string> // for strings
 #include <vector> // for std::vector
 
-// Namespace that contains our utility functions
+//! Namespace that contains our utility functions
 namespace Utilities
 {
-    // Timer class to keep track of elapsed time
+    /**
+     * @brief Timer class to keep track of elapsed time
+     */
     class Timer
     {
     private:
-        // Type aliases to make accessing nested type easier
+        //! Type alias to make accessing nested type easier
         using Clock = std::chrono::steady_clock;
+        //! Type alias to make accessing nested type easier
         using Second = std::chrono::duration<double, std::ratio<1>>;
 
-        // begin time
+        //! begin time
         std::chrono::time_point<Clock> m_beg{Clock::now()};
 
     public:

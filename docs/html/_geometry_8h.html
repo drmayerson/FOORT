@@ -96,6 +96,9 @@ $(function(){ initResizable(false); });
   <div class="headertitle"><div class="title">Geometry.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Definitions and some operations with geometric objects.alignas.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;limits&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;array&gt;</code><br />
@@ -107,76 +110,102 @@ $(function(){ initResizable(false); });
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:adb5bf7146b49bc73adb4d4fd20cbf916" id="r_adb5bf7146b49bc73adb4d4fd20cbf916"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adb5bf7146b49bc73adb4d4fd20cbf916">LARGECOUNTER_MAX</a>&#160;&#160;&#160;std::numeric_limits&lt;<a class="el" href="#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a>&gt;::max()</td></tr>
+<tr class="memdesc:adb5bf7146b49bc73adb4d4fd20cbf916"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro definition of maximum value that can be held in this large counter.  <br /></td></tr>
 <tr class="separator:adb5bf7146b49bc73adb4d4fd20cbf916"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3275dc11eb3b45b4e8d679fa053f9aba" id="r_a3275dc11eb3b45b4e8d679fa053f9aba"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3275dc11eb3b45b4e8d679fa053f9aba">PIXEL_MAX</a>&#160;&#160;&#160;std::numeric_limits&lt;<a class="el" href="#a2542cbb5acb3ce8e6be47b99c3844a97">pixelcoord</a>&gt;::max()</td></tr>
+<tr class="memdesc:a3275dc11eb3b45b4e8d679fa053f9aba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro definition of maximum value that can be held in this large counter.  <br /></td></tr>
 <tr class="separator:a3275dc11eb3b45b4e8d679fa053f9aba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:aedc0ad84d1e764530814f57ad931d02a" id="r_aedc0ad84d1e764530814f57ad931d02a"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aedc0ad84d1e764530814f57ad931d02a">real</a> = double</td></tr>
+<tr class="memdesc:aedc0ad84d1e764530814f57ad931d02a"><td class="mdescLeft">&#160;</td><td class="mdescRight">A real number (could be changed to use arbitrary precision in the future).  <br /></td></tr>
 <tr class="separator:aedc0ad84d1e764530814f57ad931d02a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5bd2398e6953eaf6bfde5f98461c3bca" id="r_a5bd2398e6953eaf6bfde5f98461c3bca"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a> = unsigned long</td></tr>
+<tr class="memdesc:a5bd2398e6953eaf6bfde5f98461c3bca"><td class="mdescLeft">&#160;</td><td class="mdescRight">This type is used to count geodesics integrated.  <br /></td></tr>
 <tr class="separator:a5bd2398e6953eaf6bfde5f98461c3bca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2542cbb5acb3ce8e6be47b99c3844a97" id="r_a2542cbb5acb3ce8e6be47b99c3844a97"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2542cbb5acb3ce8e6be47b99c3844a97">pixelcoord</a> = <a class="el" href="#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a></td></tr>
+<tr class="memdesc:a2542cbb5acb3ce8e6be47b99c3844a97"><td class="mdescLeft">&#160;</td><td class="mdescRight">A pixel coordinate: always &gt;=0 and integer; we use the largecounter type.  <br /></td></tr>
 <tr class="separator:a2542cbb5acb3ce8e6be47b99c3844a97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a52cebe5e2b56d58fea04e7424762e9da" id="r_a52cebe5e2b56d58fea04e7424762e9da"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a52cebe5e2b56d58fea04e7424762e9da">Point</a> = std::array&lt;<a class="el" href="#aedc0ad84d1e764530814f57ad931d02a">real</a>, <a class="el" href="#ae611171a484067e6df0d837b40416e3c">dimension</a>&gt;</td></tr>
-<tr class="memdesc:a52cebe5e2b56d58fea04e7424762e9da"><td class="mdescLeft">&#160;</td><td class="mdescRight">TENSOR DEFINITIONS.  <br /></td></tr>
+<tr class="memdesc:a52cebe5e2b56d58fea04e7424762e9da"><td class="mdescLeft">&#160;</td><td class="mdescRight">A point in spacetime. Note that coordinates are always assumed to be (t, r, theta, phi)  <br /></td></tr>
 <tr class="separator:a52cebe5e2b56d58fea04e7424762e9da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adddc4cdb0ade8f206fa6bccc778f6d19" id="r_adddc4cdb0ade8f206fa6bccc778f6d19"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adddc4cdb0ade8f206fa6bccc778f6d19">ScreenPoint</a> = std::array&lt;<a class="el" href="#aedc0ad84d1e764530814f57ad931d02a">real</a>, <a class="el" href="#ae611171a484067e6df0d837b40416e3c">dimension</a> - 2&gt;</td></tr>
+<tr class="memdesc:adddc4cdb0ade8f206fa6bccc778f6d19"><td class="mdescLeft">&#160;</td><td class="mdescRight">A point on the <a class="el" href="class_view_screen.html" title="This class is in charge of converting a pixel on the screen into physical initial conditions for a ge...">ViewScreen</a>; this does not have a time or radial extent.  <br /></td></tr>
 <tr class="separator:adddc4cdb0ade8f206fa6bccc778f6d19"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a513af160c943af6de42baec642491b89" id="r_a513af160c943af6de42baec642491b89"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a513af160c943af6de42baec642491b89">ScreenIndex</a> = std::array&lt;<a class="el" href="#a2542cbb5acb3ce8e6be47b99c3844a97">pixelcoord</a>, <a class="el" href="#ae611171a484067e6df0d837b40416e3c">dimension</a> - 2&gt;</td></tr>
+<tr class="memdesc:a513af160c943af6de42baec642491b89"><td class="mdescLeft">&#160;</td><td class="mdescRight">An index on the <a class="el" href="class_view_screen.html" title="This class is in charge of converting a pixel on the screen into physical initial conditions for a ge...">ViewScreen</a> (row, column)  <br /></td></tr>
 <tr class="separator:a513af160c943af6de42baec642491b89"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4096cddfa5ef7cb64402fe5c75a0164" id="r_ae4096cddfa5ef7cb64402fe5c75a0164"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae4096cddfa5ef7cb64402fe5c75a0164">OneIndex</a> = <a class="el" href="#a52cebe5e2b56d58fea04e7424762e9da">Point</a></td></tr>
+<tr class="memdesc:ae4096cddfa5ef7cb64402fe5c75a0164"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object with one index has the same structure as a Point.  <br /></td></tr>
 <tr class="separator:ae4096cddfa5ef7cb64402fe5c75a0164"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9cd1cb43637d1e6e730925d90d0b068d" id="r_a9cd1cb43637d1e6e730925d90d0b068d"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9cd1cb43637d1e6e730925d90d0b068d">TwoIndex</a> = std::array&lt;<a class="el" href="#ae4096cddfa5ef7cb64402fe5c75a0164">OneIndex</a>, <a class="el" href="#ae611171a484067e6df0d837b40416e3c">dimension</a>&gt;</td></tr>
+<tr class="memdesc:a9cd1cb43637d1e6e730925d90d0b068d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object with two indices is an array of OneIndex objects.  <br /></td></tr>
 <tr class="separator:a9cd1cb43637d1e6e730925d90d0b068d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab418a89a927c785b2610da4cc7f40cf5" id="r_ab418a89a927c785b2610da4cc7f40cf5"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab418a89a927c785b2610da4cc7f40cf5">ThreeIndex</a> = std::array&lt;<a class="el" href="#a9cd1cb43637d1e6e730925d90d0b068d">TwoIndex</a>, <a class="el" href="#ae611171a484067e6df0d837b40416e3c">dimension</a>&gt;</td></tr>
+<tr class="memdesc:ab418a89a927c785b2610da4cc7f40cf5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object with three indices is an array of TwoIndex objects.  <br /></td></tr>
 <tr class="separator:ab418a89a927c785b2610da4cc7f40cf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07b49904b9472e4e238e844f0ff48a50" id="r_a07b49904b9472e4e238e844f0ff48a50"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a07b49904b9472e4e238e844f0ff48a50">FourIndex</a> = std::array&lt;<a class="el" href="#ab418a89a927c785b2610da4cc7f40cf5">ThreeIndex</a>, <a class="el" href="#ae611171a484067e6df0d837b40416e3c">dimension</a>&gt;</td></tr>
+<tr class="memdesc:a07b49904b9472e4e238e844f0ff48a50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object with four indices is an array of ThreeIndex objects.  <br /></td></tr>
 <tr class="separator:a07b49904b9472e4e238e844f0ff48a50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92d241ab69e32d50564cc0f7f834b532" id="r_a92d241ab69e32d50564cc0f7f834b532"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a92d241ab69e32d50564cc0f7f834b532">SingularityCoord</a> = std::pair&lt;int, <a class="el" href="#aedc0ad84d1e764530814f57ad931d02a">real</a>&gt;</td></tr>
+<tr class="memdesc:a92d241ab69e32d50564cc0f7f834b532"><td class="mdescLeft">&#160;</td><td class="mdescRight">SingularityCoord: pair of (coordinate number, coordinate value)  <br /></td></tr>
 <tr class="separator:a92d241ab69e32d50564cc0f7f834b532"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36cf2d8d1161ce4bbd792fe4c585d4c9" id="r_a36cf2d8d1161ce4bbd792fe4c585d4c9"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a36cf2d8d1161ce4bbd792fe4c585d4c9">Singularity</a> = std::vector&lt;<a class="el" href="#a92d241ab69e32d50564cc0f7f834b532">SingularityCoord</a>&gt;</td></tr>
+<tr class="memdesc:a36cf2d8d1161ce4bbd792fe4c585d4c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Singularity: a number of SingularityCoords together that define a arbitrary codimension surface/line/point.  <br /></td></tr>
 <tr class="separator:a36cf2d8d1161ce4bbd792fe4c585d4c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a8b7bab2c0fd6be217693b9a717a3ffab" id="r_a8b7bab2c0fd6be217693b9a717a3ffab"><td class="memTemplParams" colspan="2">template&lt;size_t TensorDim&gt; </td></tr>
 <tr class="memitem:a8b7bab2c0fd6be217693b9a717a3ffab"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a8b7bab2c0fd6be217693b9a717a3ffab">toString</a> (const std::array&lt; <a class="el" href="#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a>, TensorDim &gt; &amp;theTensor)</td></tr>
-<tr class="memdesc:a8b7bab2c0fd6be217693b9a717a3ffab"><td class="mdescLeft">&#160;</td><td class="mdescRight">PRINTING TENSORS TO STRING.  <br /></td></tr>
+<tr class="memdesc:a8b7bab2c0fd6be217693b9a717a3ffab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base case for single index tensor of unsigned integers (ScreenIndex).  <br /></td></tr>
 <tr class="separator:a8b7bab2c0fd6be217693b9a717a3ffab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae9c42bf266322e5a5b363e7f5395316c" id="r_ae9c42bf266322e5a5b363e7f5395316c"><td class="memTemplParams" colspan="2">template&lt;size_t TensorDim&gt; </td></tr>
 <tr class="memitem:ae9c42bf266322e5a5b363e7f5395316c"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ae9c42bf266322e5a5b363e7f5395316c">toString</a> (const std::array&lt; <a class="el" href="#aedc0ad84d1e764530814f57ad931d02a">real</a>, TensorDim &gt; &amp;theTensor)</td></tr>
+<tr class="memdesc:ae9c42bf266322e5a5b363e7f5395316c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base case for single index tensor of reals (Point, OneIndex, ScreenPoint).  <br /></td></tr>
 <tr class="separator:ae9c42bf266322e5a5b363e7f5395316c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aacc997d7abc93238551ad70510d41109" id="r_aacc997d7abc93238551ad70510d41109"><td class="memTemplParams" colspan="2">template&lt;typename Tensor , size_t TensorDim&gt; </td></tr>
 <tr class="memitem:aacc997d7abc93238551ad70510d41109"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#aacc997d7abc93238551ad70510d41109">toString</a> (const std::array&lt; Tensor, TensorDim &gt; &amp;theTensor)</td></tr>
+<tr class="memdesc:aacc997d7abc93238551ad70510d41109"><td class="mdescLeft">&#160;</td><td class="mdescRight">General case for tensors with more than one index (TwoIndex, ThreeIndex, FourIndex).  <br /></td></tr>
 <tr class="separator:aacc997d7abc93238551ad70510d41109"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3fb6b325f9b7ebfb2f64fe6159dd454e" id="r_a3fb6b325f9b7ebfb2f64fe6159dd454e"><td class="memTemplParams" colspan="2">template&lt;typename t , size_t TensorDim&gt; </td></tr>
 <tr class="memitem:a3fb6b325f9b7ebfb2f64fe6159dd454e"><td class="memTemplItemLeft" align="right" valign="top">std::array&lt; t, TensorDim &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a3fb6b325f9b7ebfb2f64fe6159dd454e">operator+</a> (const std::array&lt; t, TensorDim &gt; &amp;a1, const std::array&lt; t, TensorDim &gt; &amp;a2)</td></tr>
-<tr class="memdesc:a3fb6b325f9b7ebfb2f64fe6159dd454e"><td class="mdescLeft">&#160;</td><td class="mdescRight">TENSOR ARITHMETIC: addition/subtraction of tensors, scalar multiplication/division.  <br /></td></tr>
+<tr class="memdesc:a3fb6b325f9b7ebfb2f64fe6159dd454e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to recursively call + on the lower rank tensor (OR the underlying reals/ints, if the tensor is rank 1)  <br /></td></tr>
 <tr class="separator:a3fb6b325f9b7ebfb2f64fe6159dd454e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab204404d74fd2d37311d70f9d09fff77" id="r_ab204404d74fd2d37311d70f9d09fff77"><td class="memTemplParams" colspan="2">template&lt;typename t , size_t TensorDim&gt; </td></tr>
 <tr class="memitem:ab204404d74fd2d37311d70f9d09fff77"><td class="memTemplItemLeft" align="right" valign="top">std::array&lt; t, TensorDim &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ab204404d74fd2d37311d70f9d09fff77">operator-</a> (const std::array&lt; t, TensorDim &gt; &amp;a1, const std::array&lt; t, TensorDim &gt; &amp;a2)</td></tr>
+<tr class="memdesc:ab204404d74fd2d37311d70f9d09fff77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to recursively call - on the lower rank tensor (OR the underlying reals/ints, if the tensor is rank 1)  <br /></td></tr>
 <tr class="separator:ab204404d74fd2d37311d70f9d09fff77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ff6432d264e18798b5fddf603ee3904" id="r_a3ff6432d264e18798b5fddf603ee3904"><td class="memTemplParams" colspan="2">template&lt;typename t , size_t TensorDim&gt; </td></tr>
 <tr class="memitem:a3ff6432d264e18798b5fddf603ee3904"><td class="memTemplItemLeft" align="right" valign="top">std::array&lt; t, TensorDim &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a3ff6432d264e18798b5fddf603ee3904">operator*</a> (const std::array&lt; t, TensorDim &gt; &amp;t1, <a class="el" href="#aedc0ad84d1e764530814f57ad931d02a">real</a> lambda)</td></tr>
+<tr class="memdesc:a3ff6432d264e18798b5fddf603ee3904"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to recursively scalar multiply the lower-rank tensors (OR the underlying reals/ints for the rank-1 tensor)  <br /></td></tr>
 <tr class="separator:a3ff6432d264e18798b5fddf603ee3904"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53c5aa28fce1dc3e8235049a88844815" id="r_a53c5aa28fce1dc3e8235049a88844815"><td class="memTemplParams" colspan="2">template&lt;typename t , size_t TensorDim&gt; </td></tr>
 <tr class="memitem:a53c5aa28fce1dc3e8235049a88844815"><td class="memTemplItemLeft" align="right" valign="top">std::array&lt; t, TensorDim &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a53c5aa28fce1dc3e8235049a88844815">operator*</a> (<a class="el" href="#aedc0ad84d1e764530814f57ad931d02a">real</a> lambda, const std::array&lt; t, TensorDim &gt; &amp;t1)</td></tr>
+<tr class="memdesc:a53c5aa28fce1dc3e8235049a88844815"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to recursively scalar multiply the lower-rank tensors (OR the underlying reals/ints for the rank-1 tensor)  <br /></td></tr>
 <tr class="separator:a53c5aa28fce1dc3e8235049a88844815"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a589f57bfc1527746d969de1b49100734" id="r_a589f57bfc1527746d969de1b49100734"><td class="memTemplParams" colspan="2">template&lt;typename t , size_t TensorDim&gt; </td></tr>
 <tr class="memitem:a589f57bfc1527746d969de1b49100734"><td class="memTemplItemLeft" align="right" valign="top">std::array&lt; t, TensorDim &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a589f57bfc1527746d969de1b49100734">operator/</a> (const std::array&lt; t, TensorDim &gt; &amp;t1, <a class="el" href="#aedc0ad84d1e764530814f57ad931d02a">real</a> lambda)</td></tr>
+<tr class="memdesc:a589f57bfc1527746d969de1b49100734"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to recursively scalar divide the lower-rank tensors (OR the underlying reals/ints for the rank-1 tensor)  <br /></td></tr>
 <tr class="separator:a589f57bfc1527746d969de1b49100734"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:a9c0a69d659d5613483f83e8a0a7bf9fd" id="r_a9c0a69d659d5613483f83e8a0a7bf9fd"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9c0a69d659d5613483f83e8a0a7bf9fd">pi</a> {3.1415926535}</td></tr>
-<tr class="memdesc:a9c0a69d659d5613483f83e8a0a7bf9fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">CONSTANTS.  <br /></td></tr>
+<tr class="memdesc:a9c0a69d659d5613483f83e8a0a7bf9fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">The value of pi.  <br /></td></tr>
 <tr class="separator:a9c0a69d659d5613483f83e8a0a7bf9fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae611171a484067e6df0d837b40416e3c" id="r_ae611171a484067e6df0d837b40416e3c"><td class="memItemLeft" align="right" valign="top">constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae611171a484067e6df0d837b40416e3c">dimension</a> {4}</td></tr>
+<tr class="memdesc:ae611171a484067e6df0d837b40416e3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The spacetime dimension.  <br /></td></tr>
 <tr class="separator:ae611171a484067e6df0d837b40416e3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Definitions and some operations with geometric objects.alignas. </p>
+<dl class="section author"><dt>Author</dt><dd>Daniel R. Mayerson</dd></dl>
+<p>Defines Point, tensors with 1-4 indices, and the operator toString for them. Also defines basic tensor arithmetic (+, -, *, /). No .cpp with implementations; all functions are inline. </p><dl class="section version"><dt>Version</dt><dd>0.1 </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>2025-01-14 </dd></dl>
+<dl class="section copyright"><dt>Copyright</dt><dd>Copyright (c) 2025 </dd></dl>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="adb5bf7146b49bc73adb4d4fd20cbf916" name="adb5bf7146b49bc73adb4d4fd20cbf916"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adb5bf7146b49bc73adb4d4fd20cbf916">&#9670;&#160;</a></span>LARGECOUNTER_MAX</h2>
 
@@ -188,6 +217,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Macro definition of maximum value that can be held in this large counter. </p>
 
 </div>
 </div>
@@ -202,6 +233,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Macro definition of maximum value that can be held in this large counter. </p>
 
 </div>
 </div>
@@ -218,6 +251,8 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Object with four indices is an array of ThreeIndex objects. </p>
+
 </div>
 </div>
 <a id="a5bd2398e6953eaf6bfde5f98461c3bca" name="a5bd2398e6953eaf6bfde5f98461c3bca"></a>
@@ -231,6 +266,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>This type is used to count geodesics integrated. </p>
 
 </div>
 </div>
@@ -246,6 +283,8 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Object with one index has the same structure as a Point. </p>
+
 </div>
 </div>
 <a id="a2542cbb5acb3ce8e6be47b99c3844a97" name="a2542cbb5acb3ce8e6be47b99c3844a97"></a>
@@ -259,6 +298,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>A pixel coordinate: always &gt;=0 and integer; we use the largecounter type. </p>
 
 </div>
 </div>
@@ -274,7 +315,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>TENSOR DEFINITIONS. </p>
+<p>A point in spacetime. Note that coordinates are always assumed to be (t, r, theta, phi) </p>
 
 </div>
 </div>
@@ -290,6 +331,8 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>A real number (could be changed to use arbitrary precision in the future). </p>
+
 </div>
 </div>
 <a id="a513af160c943af6de42baec642491b89" name="a513af160c943af6de42baec642491b89"></a>
@@ -303,6 +346,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>An index on the <a class="el" href="class_view_screen.html" title="This class is in charge of converting a pixel on the screen into physical initial conditions for a ge...">ViewScreen</a> (row, column) </p>
 
 </div>
 </div>
@@ -318,6 +363,8 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>A point on the <a class="el" href="class_view_screen.html" title="This class is in charge of converting a pixel on the screen into physical initial conditions for a ge...">ViewScreen</a>; this does not have a time or radial extent. </p>
+
 </div>
 </div>
 <a id="a36cf2d8d1161ce4bbd792fe4c585d4c9" name="a36cf2d8d1161ce4bbd792fe4c585d4c9"></a>
@@ -331,6 +378,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Singularity: a number of SingularityCoords together that define a arbitrary codimension surface/line/point. </p>
 
 </div>
 </div>
@@ -346,6 +395,8 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>SingularityCoord: pair of (coordinate number, coordinate value) </p>
+
 </div>
 </div>
 <a id="ab418a89a927c785b2610da4cc7f40cf5" name="ab418a89a927c785b2610da4cc7f40cf5"></a>
@@ -360,6 +411,8 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Object with three indices is an array of TwoIndex objects. </p>
+
 </div>
 </div>
 <a id="a9cd1cb43637d1e6e730925d90d0b068d" name="a9cd1cb43637d1e6e730925d90d0b068d"></a>
@@ -373,6 +426,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Object with two indices is an array of OneIndex objects. </p>
 
 </div>
 </div>
@@ -398,6 +453,23 @@ template&lt;typename t , size_t TensorDim&gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Function to recursively scalar multiply the lower-rank tensors (OR the underlying reals/ints for the rank-1 tensor) </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">t</td><td>Type of the tensor </td></tr>
+    <tr><td class="paramname">TensorDim</td><td>Dimension of the tensor </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">t1</td><td>Tensor </td></tr>
+    <tr><td class="paramname">lambda</td><td>Scalar </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>std::array&lt;t, TensorDim&gt; Scalar product of t1 and lambda </dd></dl>
+
 </div>
 </div>
 <a id="a53c5aa28fce1dc3e8235049a88844815" name="a53c5aa28fce1dc3e8235049a88844815"></a>
@@ -420,6 +492,23 @@ template&lt;typename t , size_t TensorDim&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Function to recursively scalar multiply the lower-rank tensors (OR the underlying reals/ints for the rank-1 tensor) </p>
+<p>This function calls the right multiplication operator. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">t</td><td>Type of the tensor </td></tr>
+    <tr><td class="paramname">TensorDim</td><td>Dimension of the tensor </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">lambda</td><td>Scalar </td></tr>
+    <tr><td class="paramname">t1</td><td>Tensor </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>std::array&lt;t, TensorDim&gt; Scalar product of lambda and t1 </dd></dl>
 
 </div>
 </div>
@@ -444,7 +533,22 @@ template&lt;typename t , size_t TensorDim&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>TENSOR ARITHMETIC: addition/subtraction of tensors, scalar multiplication/division. </p>
+<p>Function to recursively call + on the lower rank tensor (OR the underlying reals/ints, if the tensor is rank 1) </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">t</td><td>data type of the tensor </td></tr>
+    <tr><td class="paramname">TensorDim</td><td>Dimension of the tensor </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">a1</td><td>Tensor 1 </td></tr>
+    <tr><td class="paramname">a2</td><td>Tensor 2 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>std::array&lt;t, TensorDim&gt; Tensor sum of a1 and a2 </dd></dl>
 
 </div>
 </div>
@@ -469,6 +573,23 @@ template&lt;typename t , size_t TensorDim&gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Function to recursively call - on the lower rank tensor (OR the underlying reals/ints, if the tensor is rank 1) </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">t</td><td>data type of the tensor </td></tr>
+    <tr><td class="paramname">TensorDim</td><td>Dimension of the tensor </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">a1</td><td>Tensor 1 </td></tr>
+    <tr><td class="paramname">a2</td><td>Tensor 2 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>std::array&lt;t, TensorDim&gt; Tensor difference of a1 and a2 </dd></dl>
+
 </div>
 </div>
 <a id="a589f57bfc1527746d969de1b49100734" name="a589f57bfc1527746d969de1b49100734"></a>
@@ -492,6 +613,23 @@ template&lt;typename t , size_t TensorDim&gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Function to recursively scalar divide the lower-rank tensors (OR the underlying reals/ints for the rank-1 tensor) </p>
+<p>This function calls the right multiplication operator. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">t</td><td>Type of the tensor </td></tr>
+    <tr><td class="paramname">TensorDim</td><td>Dimension of the tensor </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">t1</td><td>Tensor </td></tr>
+    <tr><td class="paramname">lambda</td><td>Scalar </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>std::array&lt;t, TensorDim&gt; Scalar division of t1 by lambda </dd></dl>
+
 </div>
 </div>
 <a id="a8b7bab2c0fd6be217693b9a717a3ffab" name="a8b7bab2c0fd6be217693b9a717a3ffab"></a>
@@ -511,7 +649,20 @@ template&lt;size_t TensorDim&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>PRINTING TENSORS TO STRING. </p>
+<p>Base case for single index tensor of unsigned integers (ScreenIndex). </p>
+<p>We do not want toString(ScreenIndex) to convert its entries to reals and use the implementation for a single index tensor of reals, because we do not want decimal points in our string for the ints! </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">TensorDim</td><td>Dimension of the tensor </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">theTensor</td><td>Tensor object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
 
 </div>
 </div>
@@ -532,6 +683,21 @@ template&lt;size_t TensorDim&gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Base case for single index tensor of reals (Point, OneIndex, ScreenPoint). </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">TensorDim</td><td>Dimension of the tensor </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">theTensor</td><td>Tensor object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
+
 </div>
 </div>
 <a id="aacc997d7abc93238551ad70510d41109" name="aacc997d7abc93238551ad70510d41109"></a>
@@ -550,6 +716,22 @@ template&lt;typename Tensor , size_t TensorDim&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>General case for tensors with more than one index (TwoIndex, ThreeIndex, FourIndex). </p>
+<p>This function recursively calls the lower rank tensor to print itself. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Tensor</td><td>The type of the tensor </td></tr>
+    <tr><td class="paramname">TensorDim</td><td>Dimension of the tensor </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">theTensor</td><td>Tensor object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
 
 </div>
 </div>
@@ -574,6 +756,8 @@ template&lt;typename Tensor , size_t TensorDim&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>The spacetime dimension. </p>
+
 </div>
 </div>
 <a id="a9c0a69d659d5613483f83e8a0a7bf9fd" name="a9c0a69d659d5613483f83e8a0a7bf9fd"></a>
@@ -596,7 +780,7 @@ template&lt;typename Tensor , size_t TensorDim&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>CONSTANTS. </p>
+<p>The value of pi. </p>
 
 </div>
 </div>

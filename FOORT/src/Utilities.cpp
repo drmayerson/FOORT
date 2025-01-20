@@ -4,26 +4,39 @@
 #include <sstream>
 #include <iomanip>
 
-/// <summary>
-/// Utilities::Timer functions
-/// </summary>
+/**
+ * @file Utilities.cpp
+ * @author Daniel R. Mayerson
+ * @version 0.1
+ * @date 2025-01-14
+ * @copyright Copyright (c) 2025
+ */
 
+// Utilities::Timer functions
+
+/**
+ * @brief Reset begin time
+ */
 void Utilities::Timer::reset()
 {
-	// Reset begin time
 	m_beg = Clock::now();
 }
 
+/**
+ * @brief Returns time elapsed since begin time
+ * @return double
+ */
 double Utilities::Timer::elapsed() const
 {
-	// return time elapsed since begin time
 	return std::chrono::duration_cast<Second>(Clock::now() - m_beg).count();
 }
 
-/// <summary>
-/// Other functions in Utilities
-/// </summary>
+// Other functions in Utilities
 
+/**
+ * @brief Get a string of the current time (in a format that can be used to append to file names)
+ * @return std::string
+ */
 std::string Utilities::GetTimeStampString()
 {
 	std::time_t t = std::time(nullptr);
@@ -34,6 +47,12 @@ std::string Utilities::GetTimeStampString()
 	return datetime.str();
 }
 
+/**
+ * @brief Helper function to get all Diagnostic Names (for outputting to files)
+ * @param alldiags bitflag for all Diagnostics
+ * @param valdiag bitflag for the value diagnostic
+ * @return std::vector<std::string>
+ */
 std::vector<std::string> Utilities::GetDiagNameStrings(DiagBitflag alldiags, DiagBitflag valdiag)
 {
 	std::vector<std::string> thediagstrings{};
@@ -48,12 +67,20 @@ std::vector<std::string> Utilities::GetDiagNameStrings(DiagBitflag alldiags, Dia
 	return thediagstrings;
 }
 
+/**
+ * @brief This returns the full string to be written to every output file as its first line
+ * @param theMetric pointer to the Metric object
+ * @param theSource pointer to the Source object
+ * @param alldiags bitflag for all Diagnostics
+ * @param valdiag bitflag for the value diagnostic
+ * @param allterms bitflag for all Terminations
+ * @param theView pointer to the ViewScreen object
+ * @return std::string
+ */
 std::string Utilities::GetFirstLineInfoString(const Metric *theMetric, const Source *theSource,
 											  DiagBitflag alldiags, DiagBitflag valdiag,
 											  TermBitflag allterms, const ViewScreen *theView)
 {
-	// This returns a descriptive string that is outputted on the first line of every file
-
 	// Create a string for all Diagnostics information
 	std::string fulldiagstring{"Diagnostics: "};
 	{ // temp scope to create/destroy this diagnostic vector

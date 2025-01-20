@@ -93,6 +93,9 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p><a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> that keeps track of the closest (true, not log) radius that the geodesic passes through.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_diagnostics_8h_source.html">Diagnostics.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for ClosestRadiusDiagnostic:</div>
@@ -100,7 +103,7 @@ Inheritance diagram for ClosestRadiusDiagnostic:</div>
  <div class="center">
   <img src="class_closest_radius_diagnostic.png" usemap="#ClosestRadiusDiagnostic_map" alt=""/>
   <map id="ClosestRadiusDiagnostic_map" name="ClosestRadiusDiagnostic_map">
-<area href="class_diagnostic.html" alt="Diagnostic" shape="rect" coords="0,0,150,24"/>
+<area href="class_diagnostic.html" title="Abstract base class for all diagnostics." alt="Diagnostic" shape="rect" coords="0,0,150,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -109,19 +112,25 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad67ae38f22a81f461b551001681f495a" id="r_ad67ae38f22a81f461b551001681f495a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad67ae38f22a81f461b551001681f495a">ClosestRadiusDiagnostic</a> (<a class="el" href="class_geodesic.html">Geodesic</a> *const theGeodesic)</td></tr>
 <tr class="separator:ad67ae38f22a81f461b551001681f495a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a42f50435271c71a4abe3721e22b252ab" id="r_a42f50435271c71a4abe3721e22b252ab"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a42f50435271c71a4abe3721e22b252ab">Reset</a> () final</td></tr>
-<tr class="memdesc:a42f50435271c71a4abe3721e22b252ab"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_closest_radius_diagnostic.html">ClosestRadiusDiagnostic</a> functions.  <br /></td></tr>
+<tr class="memdesc:a42f50435271c71a4abe3721e22b252ab"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_closest_radius_diagnostic.html" title="Diagnostic that keeps track of the closest (true, not log) radius that the geodesic passes through.">ClosestRadiusDiagnostic</a> functions.  <br /></td></tr>
 <tr class="separator:a42f50435271c71a4abe3721e22b252ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab0be4d8f7d28c41c010cfb0cd010e1e1" id="r_ab0be4d8f7d28c41c010cfb0cd010e1e1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab0be4d8f7d28c41c010cfb0cd010e1e1">UpdateData</a> () final</td></tr>
+<tr class="memdesc:ab0be4d8f7d28c41c010cfb0cd010e1e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check to see if we have travelled closer to the center and update the closest radius.  <br /></td></tr>
 <tr class="separator:ab0be4d8f7d28c41c010cfb0cd010e1e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae76a5bdecdf43b978f72ba7ab29264fd" id="r_ae76a5bdecdf43b978f72ba7ab29264fd"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae76a5bdecdf43b978f72ba7ab29264fd">getFullDataStr</a> () const final</td></tr>
+<tr class="memdesc:ae76a5bdecdf43b978f72ba7ab29264fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the closest radius as a string.  <br /></td></tr>
 <tr class="separator:ae76a5bdecdf43b978f72ba7ab29264fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a600b6be0be4d33fac2435c0c4c0068ae" id="r_a600b6be0be4d33fac2435c0c4c0068ae"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a600b6be0be4d33fac2435c0c4c0068ae">getFinalDataVal</a> () const final</td></tr>
+<tr class="memdesc:a600b6be0be4d33fac2435c0c4c0068ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the closest radius as a vector of size one.  <br /></td></tr>
 <tr class="separator:a600b6be0be4d33fac2435c0c4c0068ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1fe788b69ec26db9b87f69fbd052e229" id="r_a1fe788b69ec26db9b87f69fbd052e229"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1fe788b69ec26db9b87f69fbd052e229">FinalDataValDistance</a> (const std::vector&lt; <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> &gt; &amp;val1, const std::vector&lt; <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> &gt; &amp;val2) const final</td></tr>
+<tr class="memdesc:a1fe788b69ec26db9b87f69fbd052e229"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the absolute value of the difference between the closest radii.  <br /></td></tr>
 <tr class="separator:a1fe788b69ec26db9b87f69fbd052e229"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f190c904fd576893ec6887652acb39c" id="r_a4f190c904fd576893ec6887652acb39c"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4f190c904fd576893ec6887652acb39c">getNameStr</a> () const final</td></tr>
+<tr class="memdesc:a4f190c904fd576893ec6887652acb39c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Simple name without spaces.  <br /></td></tr>
 <tr class="separator:a4f190c904fd576893ec6887652acb39c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad6874eb3d2139ebb8930792c43c087aa" id="r_ad6874eb3d2139ebb8930792c43c087aa"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad6874eb3d2139ebb8930792c43c087aa">getFullDescriptionStr</a> () const final</td></tr>
+<tr class="memdesc:ad6874eb3d2139ebb8930792c43c087aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">More descriptive string (with spaces)  <br /></td></tr>
 <tr class="separator:ad6874eb3d2139ebb8930792c43c087aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_diagnostic"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_class_diagnostic')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_diagnostic.html">Diagnostic</a></td></tr>
 <tr class="memitem:a010f0d692df2efcb72de06bd54dffcbb inherit pub_methods_class_diagnostic" id="r_a010f0d692df2efcb72de06bd54dffcbb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_diagnostic.html#a010f0d692df2efcb72de06bd54dffcbb">Diagnostic</a> ()=delete</td></tr>
@@ -145,6 +154,7 @@ Private Attributes</h2></td></tr>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_class_diagnostic"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_methods_class_diagnostic')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_diagnostic.html">Diagnostic</a></td></tr>
 <tr class="memitem:a66292420a6bea4bda026429b3c773f92 inherit pro_methods_class_diagnostic" id="r_a66292420a6bea4bda026429b3c773f92"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_diagnostic.html#a66292420a6bea4bda026429b3c773f92">DecideUpdate</a> (const <a class="el" href="struct_update_frequency.html">UpdateFrequency</a> &amp;myUpdateFrequency)</td></tr>
+<tr class="memdesc:a66292420a6bea4bda026429b3c773f92 inherit pro_methods_class_diagnostic"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if the <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> should update its initial status.  <br /></td></tr>
 <tr class="separator:a66292420a6bea4bda026429b3c773f92 inherit pro_methods_class_diagnostic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_class_diagnostic"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_attribs_class_diagnostic')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_diagnostic.html">Diagnostic</a></td></tr>
 <tr class="memitem:ae79ebd55e96575fec534955227c7a707 inherit pro_attribs_class_diagnostic" id="r_ae79ebd55e96575fec534955227c7a707"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_geodesic.html">Geodesic</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_diagnostic.html#ae79ebd55e96575fec534955227c7a707">m_OwnerGeodesic</a></td></tr>
@@ -152,7 +162,9 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a5741d8cf3a53c8a95bf00c7fae04af05 inherit pro_attribs_class_diagnostic" id="r_a5741d8cf3a53c8a95bf00c7fae04af05"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_diagnostic.html#a5741d8cf3a53c8a95bf00c7fae04af05">m_StepsSinceUpdated</a> {}</td></tr>
 <tr class="separator:a5741d8cf3a53c8a95bf00c7fae04af05 inherit pro_attribs_class_diagnostic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> that keeps track of the closest (true, not log) radius that the geodesic passes through. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ad67ae38f22a81f461b551001681f495a" name="ad67ae38f22a81f461b551001681f495a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad67ae38f22a81f461b551001681f495a">&#9670;&#160;</a></span>ClosestRadiusDiagnostic()</h2>
 
@@ -206,6 +218,16 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the absolute value of the difference between the closest radii. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">val1</td><td>first closest radius </td></tr>
+    <tr><td class="paramname">val2</td><td>second closest radius </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>real </dd></dl>
+
 <p>Implements <a class="el" href="class_diagnostic.html#a19d41db977e81ac34926b0f52a6d3026">Diagnostic</a>.</p>
 
 </div>
@@ -232,6 +254,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the closest radius as a vector of size one. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::vector&lt;real&gt; </dd></dl>
 
 <p>Implements <a class="el" href="class_diagnostic.html#a89cc0afe4b3309f282b36012bf333763">Diagnostic</a>.</p>
 
@@ -260,6 +285,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the closest radius as a string. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
+
 <p>Implements <a class="el" href="class_diagnostic.html#a6c9ba4698beacbeb7efc2a4d656152a3">Diagnostic</a>.</p>
 
 </div>
@@ -286,6 +314,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>More descriptive string (with spaces) </p>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
 
 <p>Reimplemented from <a class="el" href="class_diagnostic.html#afe8453c0df2f289713ff124a65c5e630">Diagnostic</a>.</p>
 
@@ -314,6 +345,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Simple name without spaces. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
+
 <p>Implements <a class="el" href="class_diagnostic.html#a1aea89138fc7565c5767ef02d13ac35a">Diagnostic</a>.</p>
 
 </div>
@@ -341,7 +375,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="class_closest_radius_diagnostic.html">ClosestRadiusDiagnostic</a> functions. </p>
+<p><a class="el" href="class_closest_radius_diagnostic.html" title="Diagnostic that keeps track of the closest (true, not log) radius that the geodesic passes through.">ClosestRadiusDiagnostic</a> functions. </p>
+<p>Reset the closest radius to -1 and call base class Reset function </p>
 
 <p>Reimplemented from <a class="el" href="class_diagnostic.html#aa6099bd0552213d96f92946e2bb719b8">Diagnostic</a>.</p>
 
@@ -369,6 +404,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Check to see if we have travelled closer to the center and update the closest radius. </p>
 
 <p>Implements <a class="el" href="class_diagnostic.html#a7493d9e89748cb188f4333381c631e23">Diagnostic</a>.</p>
 

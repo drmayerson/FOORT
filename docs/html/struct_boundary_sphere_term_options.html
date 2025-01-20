@@ -92,6 +92,9 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p>Options for <a class="el" href="class_boundary_sphere_termination.html" title="BoundarySphereTermination: Terminate geodesics if they reach outside of a boundary sphere.">BoundarySphereTermination</a>.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_terminations_8h_source.html">Terminations.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for BoundarySphereTermOptions:</div>
@@ -99,7 +102,7 @@ Inheritance diagram for BoundarySphereTermOptions:</div>
  <div class="center">
   <img src="struct_boundary_sphere_term_options.png" usemap="#BoundarySphereTermOptions_map" alt=""/>
   <map id="BoundarySphereTermOptions_map" name="BoundarySphereTermOptions_map">
-<area href="struct_termination_options.html" alt="TerminationOptions" shape="rect" coords="0,0,179,24"/>
+<area href="struct_termination_options.html" title="Base class for all TerminationOptions structs. Other TerminationOptions can inherit from here if they..." alt="TerminationOptions" shape="rect" coords="0,0,179,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -116,14 +119,20 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:aa58a0153071285785c547a6607d55ad9" id="r_aa58a0153071285785c547a6607d55ad9"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa58a0153071285785c547a6607d55ad9">SphereRadius</a></td></tr>
+<tr class="memdesc:aa58a0153071285785c547a6607d55ad9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Radius of the boundary sphere.  <br /></td></tr>
 <tr class="separator:aa58a0153071285785c547a6607d55ad9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3edc3b42ed65d014f0e39b6f6ebe1670" id="r_a3edc3b42ed65d014f0e39b6f6ebe1670"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3edc3b42ed65d014f0e39b6f6ebe1670">rLogScale</a></td></tr>
+<tr class="memdesc:a3edc3b42ed65d014f0e39b6f6ebe1670"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether we are using a logarithmic r coordinate.  <br /></td></tr>
 <tr class="separator:a3edc3b42ed65d014f0e39b6f6ebe1670"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_attribs_struct_termination_options"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_attribs_struct_termination_options')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="struct_termination_options.html">TerminationOptions</a></td></tr>
 <tr class="memitem:a985dcb57a283d0d4caec3a390ea190e7 inherit pub_attribs_struct_termination_options" id="r_a985dcb57a283d0d4caec3a390ea190e7"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_termination_options.html#a985dcb57a283d0d4caec3a390ea190e7">UpdateEveryNSteps</a></td></tr>
+<tr class="memdesc:a985dcb57a283d0d4caec3a390ea190e7 inherit pub_attribs_struct_termination_options"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of steps between updates.  <br /></td></tr>
 <tr class="separator:a985dcb57a283d0d4caec3a390ea190e7 inherit pub_attribs_struct_termination_options"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Options for <a class="el" href="class_boundary_sphere_termination.html" title="BoundarySphereTermination: Terminate geodesics if they reach outside of a boundary sphere.">BoundarySphereTermination</a>. </p>
+<p>Keeps track of the boundary sphere radius, whether we are using a logarithmic r coordinate. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ae63f14442c22eb541d063911f659bdb0" name="ae63f14442c22eb541d063911f659bdb0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae63f14442c22eb541d063911f659bdb0">&#9670;&#160;</a></span>BoundarySphereTermOptions()</h2>
 
@@ -171,6 +180,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Whether we are using a logarithmic r coordinate. </p>
+
 </div>
 </div>
 <a id="aa58a0153071285785c547a6607d55ad9" name="aa58a0153071285785c547a6607d55ad9"></a>
@@ -184,6 +195,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Radius of the boundary sphere. </p>
 
 </div>
 </div>

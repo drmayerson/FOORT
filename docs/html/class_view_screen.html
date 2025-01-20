@@ -93,6 +93,9 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p>This class is in charge of converting a pixel on the screen into physical initial conditions for a geodesic.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_view_screen_8h_source.html">ViewScreen.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
@@ -102,48 +105,67 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a65bdc7848aed87b7cd2699bd43d9d5c3" id="r_a65bdc7848aed87b7cd2699bd43d9d5c3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a65bdc7848aed87b7cd2699bd43d9d5c3">ViewScreen</a> (<a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> pos, <a class="el" href="_geometry_8h.html#ae4096cddfa5ef7cb64402fe5c75a0164">OneIndex</a> dir, <a class="el" href="_geometry_8h.html#adddc4cdb0ade8f206fa6bccc778f6d19">ScreenPoint</a> screensize, <a class="el" href="_geometry_8h.html#adddc4cdb0ade8f206fa6bccc778f6d19">ScreenPoint</a> screencenter, std::unique_ptr&lt; <a class="el" href="class_mesh.html">Mesh</a> &gt; theMesh, const <a class="el" href="class_metric.html">Metric</a> *const theMetric, <a class="el" href="_view_screen_8h.html#a0d4e12928a4d05040961e205260a0e74">GeodesicType</a> thegeodtype=<a class="el" href="_view_screen_8h.html#a0d4e12928a4d05040961e205260a0e74abbb93ef26e3c101ff11cdd21cab08a94">GeodesicType::Null</a>)</td></tr>
 <tr class="separator:a65bdc7848aed87b7cd2699bd43d9d5c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a67e9783d03c0930aa6c0abdd6d4ddf00" id="r_a67e9783d03c0930aa6c0abdd6d4ddf00"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a67e9783d03c0930aa6c0abdd6d4ddf00">SetNewInitialConditions</a> (<a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a> index, <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;pos, <a class="el" href="_geometry_8h.html#ae4096cddfa5ef7cb64402fe5c75a0164">OneIndex</a> &amp;vel, <a class="el" href="_geometry_8h.html#a513af160c943af6de42baec642491b89">ScreenIndex</a> &amp;scrIndex) const</td></tr>
+<tr class="memdesc:a67e9783d03c0930aa6c0abdd6d4ddf00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set new initial conditions for geodesic nr index.  <br /></td></tr>
 <tr class="separator:a67e9783d03c0930aa6c0abdd6d4ddf00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a70274b1161344cdb2bfe8c9de1b7cf5a" id="r_a70274b1161344cdb2bfe8c9de1b7cf5a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a70274b1161344cdb2bfe8c9de1b7cf5a">IsFinished</a> () const</td></tr>
+<tr class="memdesc:a70274b1161344cdb2bfe8c9de1b7cf5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the <a class="el" href="class_view_screen.html" title="This class is in charge of converting a pixel on the screen into physical initial conditions for a ge...">ViewScreen</a> is finished.  <br /></td></tr>
 <tr class="separator:a70274b1161344cdb2bfe8c9de1b7cf5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae53e520cf3e86a3304d6ef35bfd55122" id="r_ae53e520cf3e86a3304d6ef35bfd55122"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae53e520cf3e86a3304d6ef35bfd55122">getCurNrGeodesics</a> () const</td></tr>
+<tr class="memdesc:ae53e520cf3e86a3304d6ef35bfd55122"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current number of geodesics.  <br /></td></tr>
 <tr class="separator:ae53e520cf3e86a3304d6ef35bfd55122"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae583c8adbbba7909ca63419ef92ee471" id="r_ae583c8adbbba7909ca63419ef92ee471"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae583c8adbbba7909ca63419ef92ee471">EndCurrentLoop</a> ()</td></tr>
+<tr class="memdesc:ae583c8adbbba7909ca63419ef92ee471"><td class="mdescLeft">&#160;</td><td class="mdescRight">End the current loop of geodesics.  <br /></td></tr>
 <tr class="separator:ae583c8adbbba7909ca63419ef92ee471"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28d79aa872f887d9b4c0a69b114d9887" id="r_a28d79aa872f887d9b4c0a69b114d9887"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a28d79aa872f887d9b4c0a69b114d9887">GeodesicFinished</a> (<a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a> index, std::vector&lt; <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> &gt; finalValues)</td></tr>
+<tr class="memdesc:a28d79aa872f887d9b4c0a69b114d9887"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pass on information that a geodesic has finished.  <br /></td></tr>
 <tr class="separator:a28d79aa872f887d9b4c0a69b114d9887"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47a8905b466a89fb5036818a1df2db05" id="r_a47a8905b466a89fb5036818a1df2db05"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a47a8905b466a89fb5036818a1df2db05">getFullDescriptionStr</a> () const</td></tr>
+<tr class="memdesc:a47a8905b466a89fb5036818a1df2db05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the full description string of the <a class="el" href="class_view_screen.html" title="This class is in charge of converting a pixel on the screen into physical initial conditions for a ge...">ViewScreen</a>.  <br /></td></tr>
 <tr class="separator:a47a8905b466a89fb5036818a1df2db05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
 <tr class="memitem:a36bba842f0500f30f987f4959cd21d09" id="r_a36bba842f0500f30f987f4959cd21d09"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a36bba842f0500f30f987f4959cd21d09">ConstructVielbein</a> ()</td></tr>
-<tr class="memdesc:a36bba842f0500f30f987f4959cd21d09"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_view_screen.html">ViewScreen</a> functions.  <br /></td></tr>
+<tr class="memdesc:a36bba842f0500f30f987f4959cd21d09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the vielbein at the position of the camera.  <br /></td></tr>
 <tr class="separator:a36bba842f0500f30f987f4959cd21d09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:ac5969eff55e711aa40abb69d5a38073d" id="r_ac5969eff55e711aa40abb69d5a38073d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a9cd1cb43637d1e6e730925d90d0b068d">TwoIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac5969eff55e711aa40abb69d5a38073d">m_Metric_dd</a> {}</td></tr>
+<tr class="memdesc:ac5969eff55e711aa40abb69d5a38073d"><td class="mdescLeft">&#160;</td><td class="mdescRight">The metric at the position of the viewscreen (we only need indices down)  <br /></td></tr>
 <tr class="separator:ac5969eff55e711aa40abb69d5a38073d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a178264b8a78039035439ae16ccd2c794" id="r_a178264b8a78039035439ae16ccd2c794"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a9cd1cb43637d1e6e730925d90d0b068d">TwoIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a178264b8a78039035439ae16ccd2c794">m_Vielbein</a> {}</td></tr>
+<tr class="memdesc:a178264b8a78039035439ae16ccd2c794"><td class="mdescLeft">&#160;</td><td class="mdescRight">The vielbein used to transform from the curved spacetime at the viewscreen to a locally flat frame.  <br /></td></tr>
 <tr class="separator:a178264b8a78039035439ae16ccd2c794"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90d679abdafe47b18ab8d1d062af1f2b" id="r_a90d679abdafe47b18ab8d1d062af1f2b"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a90d679abdafe47b18ab8d1d062af1f2b">m_Pos</a></td></tr>
+<tr class="memdesc:a90d679abdafe47b18ab8d1d062af1f2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">The position of the camera.  <br /></td></tr>
 <tr class="separator:a90d679abdafe47b18ab8d1d062af1f2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a317174fffb4773e3cc3f130a8bad6dca" id="r_a317174fffb4773e3cc3f130a8bad6dca"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#ae4096cddfa5ef7cb64402fe5c75a0164">OneIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a317174fffb4773e3cc3f130a8bad6dca">m_Direction</a></td></tr>
+<tr class="memdesc:a317174fffb4773e3cc3f130a8bad6dca"><td class="mdescLeft">&#160;</td><td class="mdescRight">The looking direction of the camera (always pointing towards the origin)  <br /></td></tr>
 <tr class="separator:a317174fffb4773e3cc3f130a8bad6dca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39badbb9ad090a433505430372337576" id="r_a39badbb9ad090a433505430372337576"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#adddc4cdb0ade8f206fa6bccc778f6d19">ScreenPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a39badbb9ad090a433505430372337576">m_ScreenSize</a></td></tr>
+<tr class="memdesc:a39badbb9ad090a433505430372337576"><td class="mdescLeft">&#160;</td><td class="mdescRight">The screensize (in physical units of length)  <br /></td></tr>
 <tr class="separator:a39badbb9ad090a433505430372337576"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e2f2443e4b68964be02ce0e954071a3" id="r_a2e2f2443e4b68964be02ce0e954071a3"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#adddc4cdb0ade8f206fa6bccc778f6d19">ScreenPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2e2f2443e4b68964be02ce0e954071a3">m_ScreenCenter</a></td></tr>
+<tr class="memdesc:a2e2f2443e4b68964be02ce0e954071a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">The screen center.  <br /></td></tr>
 <tr class="separator:a2e2f2443e4b68964be02ce0e954071a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b286a2f3405f7505901c9cb0036f2f4" id="r_a0b286a2f3405f7505901c9cb0036f2f4"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0b286a2f3405f7505901c9cb0036f2f4">m_rLogScale</a></td></tr>
+<tr class="memdesc:a0b286a2f3405f7505901c9cb0036f2f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether the metric uses a logarithmic r coordinate or not.  <br /></td></tr>
 <tr class="separator:a0b286a2f3405f7505901c9cb0036f2f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7c3ca79f257a82251dc619bfdc5e37c" id="r_aa7c3ca79f257a82251dc619bfdc5e37c"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_metric.html">Metric</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa7c3ca79f257a82251dc619bfdc5e37c">m_theMetric</a></td></tr>
+<tr class="memdesc:aa7c3ca79f257a82251dc619bfdc5e37c"><td class="mdescLeft">&#160;</td><td class="mdescRight">const pointer to const <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a>  <br /></td></tr>
 <tr class="separator:aa7c3ca79f257a82251dc619bfdc5e37c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c1bb9e870611721d704792dadcfdc9d" id="r_a1c1bb9e870611721d704792dadcfdc9d"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_view_screen_8h.html#a0d4e12928a4d05040961e205260a0e74">GeodesicType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1c1bb9e870611721d704792dadcfdc9d">m_GeodType</a> {<a class="el" href="_view_screen_8h.html#a0d4e12928a4d05040961e205260a0e74abbb93ef26e3c101ff11cdd21cab08a94">GeodesicType::Null</a>}</td></tr>
+<tr class="memdesc:a1c1bb9e870611721d704792dadcfdc9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">The geodesic type to be integrated.  <br /></td></tr>
 <tr class="separator:a1c1bb9e870611721d704792dadcfdc9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3fede0688f50882ff7f1b1e77b536882" id="r_a3fede0688f50882ff7f1b1e77b536882"><td class="memItemLeft" align="right" valign="top">const std::unique_ptr&lt; <a class="el" href="class_mesh.html">Mesh</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3fede0688f50882ff7f1b1e77b536882">m_theMesh</a></td></tr>
+<tr class="memdesc:a3fede0688f50882ff7f1b1e77b536882"><td class="mdescLeft">&#160;</td><td class="mdescRight">The const pointer to the <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a> we are using to determine pixels to be integrated.  <br /></td></tr>
 <tr class="separator:a3fede0688f50882ff7f1b1e77b536882"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>This class is in charge of converting a pixel on the screen into physical initial conditions for a geodesic. </p>
+<p>The <a class="el" href="class_view_screen.html" title="This class is in charge of converting a pixel on the screen into physical initial conditions for a ge...">ViewScreen</a> class is in charge of converting a pixel on the screen (which the <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a> wants to integrate) into physical initial conditions for the position and velocity of a geodesic. It owns a <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a> instance, which will tell it which pixels to integrate etc. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aaa649cc6e15020ec36af6ca865fd2b2b" name="aaa649cc6e15020ec36af6ca865fd2b2b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aaa649cc6e15020ec36af6ca865fd2b2b">&#9670;&#160;</a></span>ViewScreen() <span class="overload">[1/2]</span></h2>
 
@@ -247,7 +269,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="class_view_screen.html">ViewScreen</a> functions. </p>
+<p>Construct the vielbein at the position of the camera. </p>
 
 </div>
 </div>
@@ -265,6 +287,8 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>End the current loop of geodesics. </p>
 
 </div>
 </div>
@@ -287,6 +311,15 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Pass on information that a geodesic has finished. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>index of the geodesic </td></tr>
+    <tr><td class="paramname">finalValues</td><td>final values of the geodesic </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="ae53e520cf3e86a3304d6ef35bfd55122" name="ae53e520cf3e86a3304d6ef35bfd55122"></a>
@@ -303,6 +336,9 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Get the current number of geodesics. </p>
+<dl class="section return"><dt>Returns</dt><dd>largecounter </dd></dl>
 
 </div>
 </div>
@@ -321,6 +357,9 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Get the full description string of the <a class="el" href="class_view_screen.html" title="This class is in charge of converting a pixel on the screen into physical initial conditions for a ge...">ViewScreen</a>. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
+
 </div>
 </div>
 <a id="a70274b1161344cdb2bfe8c9de1b7cf5a" name="a70274b1161344cdb2bfe8c9de1b7cf5a"></a>
@@ -337,6 +376,9 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Check if the <a class="el" href="class_view_screen.html" title="This class is in charge of converting a pixel on the screen into physical initial conditions for a ge...">ViewScreen</a> is finished. </p>
+<dl class="section return"><dt>Returns</dt><dd>true if the <a class="el" href="class_view_screen.html" title="This class is in charge of converting a pixel on the screen into physical initial conditions for a ge...">ViewScreen</a> is finished, false otherwise </dd></dl>
 
 </div>
 </div>
@@ -369,6 +411,17 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set new initial conditions for geodesic nr index. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>index of the geodesic </td></tr>
+    <tr><td class="paramname">pos</td><td>pointer to the starting position of the geodesic - which is the camera position </td></tr>
+    <tr><td class="paramname">vel</td><td>pointer to the starting velocity of the geodesic </td></tr>
+    <tr><td class="paramname">scrIndex</td><td>pointer to the screen index of the geodesic </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -392,6 +445,8 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>The looking direction of the camera (always pointing towards the origin) </p>
+
 </div>
 </div>
 <a id="a1c1bb9e870611721d704792dadcfdc9d" name="a1c1bb9e870611721d704792dadcfdc9d"></a>
@@ -413,6 +468,8 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The geodesic type to be integrated. </p>
 
 </div>
 </div>
@@ -436,6 +493,8 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>The metric at the position of the viewscreen (we only need indices down) </p>
+
 </div>
 </div>
 <a id="a90d679abdafe47b18ab8d1d062af1f2b" name="a90d679abdafe47b18ab8d1d062af1f2b"></a>
@@ -457,6 +516,8 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The position of the camera. </p>
 
 </div>
 </div>
@@ -480,6 +541,8 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Whether the metric uses a logarithmic r coordinate or not. </p>
+
 </div>
 </div>
 <a id="a2e2f2443e4b68964be02ce0e954071a3" name="a2e2f2443e4b68964be02ce0e954071a3"></a>
@@ -501,6 +564,8 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The screen center. </p>
 
 </div>
 </div>
@@ -524,6 +589,8 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>The screensize (in physical units of length) </p>
+
 </div>
 </div>
 <a id="a3fede0688f50882ff7f1b1e77b536882" name="a3fede0688f50882ff7f1b1e77b536882"></a>
@@ -545,6 +612,8 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The const pointer to the <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a> we are using to determine pixels to be integrated. </p>
 
 </div>
 </div>
@@ -568,6 +637,8 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>const pointer to const <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a> </p>
+
 </div>
 </div>
 <a id="a178264b8a78039035439ae16ccd2c794" name="a178264b8a78039035439ae16ccd2c794"></a>
@@ -589,6 +660,8 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The vielbein used to transform from the curved spacetime at the viewscreen to a locally flat frame. </p>
 
 </div>
 </div>

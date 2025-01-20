@@ -23,6 +23,16 @@
  *
  */
 
+/**
+ * @file Spline.h
+ * @brief Simple cubic spline interpolation library without external dependencies
+ * @details This library is not made by the authors of FOORT, but implemented as found in the following link:
+ * https://kluge.in-chemnitz.de/opensource/spline/. The main body has been separated into Spline.cpp, however.
+ * @author Tino Kluge
+ * @date 2021
+ * @copyright GNU General Public License
+ */
+
 #ifndef TK_SPLINE_H
 #define TK_SPLINE_H
 

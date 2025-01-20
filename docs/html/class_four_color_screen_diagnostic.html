@@ -92,6 +92,9 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p>The four color screen diagnostic.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_diagnostics_8h_source.html">Diagnostics.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for FourColorScreenDiagnostic:</div>
@@ -99,7 +102,7 @@ Inheritance diagram for FourColorScreenDiagnostic:</div>
  <div class="center">
   <img src="class_four_color_screen_diagnostic.png" usemap="#FourColorScreenDiagnostic_map" alt=""/>
   <map id="FourColorScreenDiagnostic_map" name="FourColorScreenDiagnostic_map">
-<area href="class_diagnostic.html" alt="Diagnostic" shape="rect" coords="0,0,170,24"/>
+<area href="class_diagnostic.html" title="Abstract base class for all diagnostics." alt="Diagnostic" shape="rect" coords="0,0,170,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -111,16 +114,22 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:adf923b67559fb99a273ff840a52a403c"><td class="mdescLeft">&#160;</td><td class="mdescRight">FourColorScreen functions.  <br /></td></tr>
 <tr class="separator:adf923b67559fb99a273ff840a52a403c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a155b27b155d0455deff704ec1b877811" id="r_a155b27b155d0455deff704ec1b877811"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a155b27b155d0455deff704ec1b877811">UpdateData</a> () override</td></tr>
+<tr class="memdesc:a155b27b155d0455deff704ec1b877811"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the quadrant based on the geodesic's final position.  <br /></td></tr>
 <tr class="separator:a155b27b155d0455deff704ec1b877811"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6107ead6faab2e4f313d60cbf4c66f08" id="r_a6107ead6faab2e4f313d60cbf4c66f08"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6107ead6faab2e4f313d60cbf4c66f08">getFullDataStr</a> () const final</td></tr>
+<tr class="memdesc:a6107ead6faab2e4f313d60cbf4c66f08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the value of the quadrant as a string.  <br /></td></tr>
 <tr class="separator:a6107ead6faab2e4f313d60cbf4c66f08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e92e8d2df219798fd469e1cfb9a3239" id="r_a3e92e8d2df219798fd469e1cfb9a3239"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3e92e8d2df219798fd469e1cfb9a3239">getFinalDataVal</a> () const final</td></tr>
+<tr class="memdesc:a3e92e8d2df219798fd469e1cfb9a3239"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the value of the quadrant as a vector of size one.  <br /></td></tr>
 <tr class="separator:a3e92e8d2df219798fd469e1cfb9a3239"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0f9688cc2fd0b430c055a2ce05fccc6" id="r_ad0f9688cc2fd0b430c055a2ce05fccc6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad0f9688cc2fd0b430c055a2ce05fccc6">FinalDataValDistance</a> (const std::vector&lt; <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> &gt; &amp;val1, const std::vector&lt; <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> &gt; &amp;val2) const final</td></tr>
+<tr class="memdesc:ad0f9688cc2fd0b430c055a2ce05fccc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Discrete metric for distance: return 0 if the quadrants are the same, 1 if they are not.  <br /></td></tr>
 <tr class="separator:ad0f9688cc2fd0b430c055a2ce05fccc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8ba210b588bf4dbd65c4bb953c906fc" id="r_ad8ba210b588bf4dbd65c4bb953c906fc"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad8ba210b588bf4dbd65c4bb953c906fc">getNameStr</a> () const final</td></tr>
+<tr class="memdesc:ad8ba210b588bf4dbd65c4bb953c906fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Simple name without spaces.  <br /></td></tr>
 <tr class="separator:ad8ba210b588bf4dbd65c4bb953c906fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f07ea0f9c0b4d5fded5a67e6c908cea" id="r_a8f07ea0f9c0b4d5fded5a67e6c908cea"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8f07ea0f9c0b4d5fded5a67e6c908cea">getFullDescriptionStr</a> () const final</td></tr>
+<tr class="memdesc:a8f07ea0f9c0b4d5fded5a67e6c908cea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return full name, possibly with spaces.  <br /></td></tr>
 <tr class="separator:a8f07ea0f9c0b4d5fded5a67e6c908cea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_diagnostic"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_class_diagnostic')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_diagnostic.html">Diagnostic</a></td></tr>
 <tr class="memitem:a010f0d692df2efcb72de06bd54dffcbb inherit pub_methods_class_diagnostic" id="r_a010f0d692df2efcb72de06bd54dffcbb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_diagnostic.html#a010f0d692df2efcb72de06bd54dffcbb">Diagnostic</a> ()=delete</td></tr>
@@ -133,12 +142,14 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:ae8c29d6bf6c15e5c0af3ec1a33b8d220" id="r_ae8c29d6bf6c15e5c0af3ec1a33b8d220"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae8c29d6bf6c15e5c0af3ec1a33b8d220">m_quadrant</a> {0}</td></tr>
+<tr class="memdesc:ae8c29d6bf6c15e5c0af3ec1a33b8d220"><td class="mdescLeft">&#160;</td><td class="mdescRight">Note initialization to 0; this means the default value returned will be 0 (e.g. if <a class="el" href="_terminations_8h.html#a8cdefb1144dde7779068f9cd70ef5b7cab8d66c0e208c37512c92f3f2d0e6462f" title="STOP, encountered boundary sphere (set by BoundarySphereTermination)">Term::BoundarySphere</a> is not reached)  <br /></td></tr>
 <tr class="separator:ae8c29d6bf6c15e5c0af3ec1a33b8d220"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_class_diagnostic"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_methods_class_diagnostic')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_diagnostic.html">Diagnostic</a></td></tr>
 <tr class="memitem:a66292420a6bea4bda026429b3c773f92 inherit pro_methods_class_diagnostic" id="r_a66292420a6bea4bda026429b3c773f92"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_diagnostic.html#a66292420a6bea4bda026429b3c773f92">DecideUpdate</a> (const <a class="el" href="struct_update_frequency.html">UpdateFrequency</a> &amp;myUpdateFrequency)</td></tr>
+<tr class="memdesc:a66292420a6bea4bda026429b3c773f92 inherit pro_methods_class_diagnostic"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if the <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> should update its initial status.  <br /></td></tr>
 <tr class="separator:a66292420a6bea4bda026429b3c773f92 inherit pro_methods_class_diagnostic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_class_diagnostic"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_attribs_class_diagnostic')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_diagnostic.html">Diagnostic</a></td></tr>
 <tr class="memitem:ae79ebd55e96575fec534955227c7a707 inherit pro_attribs_class_diagnostic" id="r_ae79ebd55e96575fec534955227c7a707"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_geodesic.html">Geodesic</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_diagnostic.html#ae79ebd55e96575fec534955227c7a707">m_OwnerGeodesic</a></td></tr>
@@ -146,7 +157,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a5741d8cf3a53c8a95bf00c7fae04af05 inherit pro_attribs_class_diagnostic" id="r_a5741d8cf3a53c8a95bf00c7fae04af05"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_diagnostic.html#a5741d8cf3a53c8a95bf00c7fae04af05">m_StepsSinceUpdated</a> {}</td></tr>
 <tr class="separator:a5741d8cf3a53c8a95bf00c7fae04af05 inherit pro_attribs_class_diagnostic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>The four color screen diagnostic. </p>
+<p>This diagnostic associates one of four colors based on the quadrant that the geodesic finishes in. Will ONLY return a color if the geodesic indeed finishes because it passes through the boundary sphere! </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a6cfec6dca4ed2e514a52d4132fafa296" name="a6cfec6dca4ed2e514a52d4132fafa296"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6cfec6dca4ed2e514a52d4132fafa296">&#9670;&#160;</a></span>FourColorScreenDiagnostic()</h2>
 
@@ -200,6 +214,16 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Discrete metric for distance: return 0 if the quadrants are the same, 1 if they are not. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">val1</td><td>first quadrant value </td></tr>
+    <tr><td class="paramname">val2</td><td>second quadrant value </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>real </dd></dl>
+
 <p>Implements <a class="el" href="class_diagnostic.html#a19d41db977e81ac34926b0f52a6d3026">Diagnostic</a>.</p>
 
 </div>
@@ -226,6 +250,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the value of the quadrant as a vector of size one. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::vector&lt;real&gt; </dd></dl>
 
 <p>Implements <a class="el" href="class_diagnostic.html#a89cc0afe4b3309f282b36012bf333763">Diagnostic</a>.</p>
 
@@ -254,6 +281,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the value of the quadrant as a string. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
+
 <p>Implements <a class="el" href="class_diagnostic.html#a6c9ba4698beacbeb7efc2a4d656152a3">Diagnostic</a>.</p>
 
 </div>
@@ -281,6 +311,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return full name, possibly with spaces. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
+
 <p>Reimplemented from <a class="el" href="class_diagnostic.html#afe8453c0df2f289713ff124a65c5e630">Diagnostic</a>.</p>
 
 </div>
@@ -307,6 +340,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Simple name without spaces. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
 
 <p>Implements <a class="el" href="class_diagnostic.html#a1aea89138fc7565c5767ef02d13ac35a">Diagnostic</a>.</p>
 
@@ -336,6 +372,7 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>FourColorScreen functions. </p>
+<p>Reset the quadrant to its default option; also call base class Reset function </p>
 
 <p>Reimplemented from <a class="el" href="class_diagnostic.html#aa6099bd0552213d96f92946e2bb719b8">Diagnostic</a>.</p>
 
@@ -364,6 +401,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Update the quadrant based on the geodesic's final position. </p>
+
 <p>Implements <a class="el" href="class_diagnostic.html#a7493d9e89748cb188f4333381c631e23">Diagnostic</a>.</p>
 
 </div>
@@ -388,6 +427,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Note initialization to 0; this means the default value returned will be 0 (e.g. if <a class="el" href="_terminations_8h.html#a8cdefb1144dde7779068f9cd70ef5b7cab8d66c0e208c37512c92f3f2d0e6462f" title="STOP, encountered boundary sphere (set by BoundarySphereTermination)">Term::BoundarySphere</a> is not reached) </p>
 
 </div>
 </div>

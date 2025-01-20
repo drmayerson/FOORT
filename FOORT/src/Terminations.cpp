@@ -5,11 +5,21 @@
 
 #include <cmath> // needed for sqrt(), sin(), exp() etc (only on Linux)
 
-/// <summary>
-/// Termination helper function
-/// </summary>
+/**
+ * @file Terminations.cpp
+ * @author Daniel R. Mayerson
+ * @version 0.1
+ * @date 2025-01-14
+ * @copyright Copyright (c) 2025
+ */
 
-// Helper to create a new vector of Terminations, based on the bitflag
+/**
+ * @brief Create a Termination Vector object
+ *
+ * @param termflags bitflags for the terminations
+ * @param theGeodesic the geodesic
+ * @return TerminationUniqueVector
+ */
 TerminationUniqueVector CreateTerminationVector(TermBitflag termflags, Geodesic *const theGeodesic)
 {
 	// This should never happen if everything was set up correctly
@@ -64,18 +74,23 @@ TerminationUniqueVector CreateTerminationVector(TermBitflag termflags, Geodesic 
 	return theTermVector;
 }
 
-/// <summary>
-/// Termination (abstract base class) functions
-/// </summary>
+// Termination (abstract base class) functions
 
+/**
+ * @brief Reset to 0 to start integrating a new geodesic
+ */
 void Termination::Reset()
 {
-	// Reset to 0 to start integrating new geodesic
 	m_StepsSinceUpdated = 0;
 }
 
-// This helper function returns true if the Termination should update its internal status. Should be called from within
-// CheckTermination() with the appropriate TermOptions::UpdateEveryNSteps
+/**
+ * @brief Returns true if the Termination should update its internal status.
+ * @details Should be called from within CheckTermination() with the appropriate TermOptions::UpdateEveryNSteps
+ * @param UpdateNSteps the number of steps after which the terminations should be updated
+ * @return true
+ * @return false
+ */
 bool Termination::DecideUpdate(largecounter UpdateNSteps)
 {
 	bool decideupdate = false;
@@ -97,10 +112,12 @@ bool Termination::DecideUpdate(largecounter UpdateNSteps)
 	return decideupdate;
 }
 
-/// <summary>
-/// HorizonTermination functions
-/// </summary>
+// HorizonTermination functions
 
+/**
+ * @brief Termination checker for the horizon termination
+ * @return Term
+ */
 Term HorizonTermination::CheckTermination()
 {
 	Term ret = Term::Continue;
@@ -123,17 +140,22 @@ Term HorizonTermination::CheckTermination()
 	return ret;
 }
 
+/**
+ * @brief Description string getter for the Horizon Termination
+ * @return std::string
+ */
 std::string HorizonTermination::getFullDescriptionStr() const
 {
 	// Full description string
 	return "Horizon (stop at " + std::to_string(1 + TermOptions->AtHorizonEps) + "x(horizon radius))";
 }
 
-/// <summary>
-/// BoundarySphereTermination functions
-/// </summary>
+// BoundarySphereTermination functions
 
-// Check to see if Boundary Sphere is reached, if so return Term::BoundarySphere
+/**
+ * @brief Check if the boundary sphere has been reached
+ * @return Term
+ */
 Term BoundarySphereTermination::CheckTermination()
 {
 	Term ret = Term::Continue;
@@ -152,25 +174,31 @@ Term BoundarySphereTermination::CheckTermination()
 	return ret;
 }
 
+/**
+ * @brief Description string getter for the Boundary Sphere Termination
+ * @return std::string
+ */
 std::string BoundarySphereTermination::getFullDescriptionStr() const
 {
 	// Full description string
 	return "Boundary sphere (R = " + std::to_string(TermOptions->SphereRadius) + ")";
 }
 
-/// <summary>
-/// TimeOutTermination functions
-/// </summary>
+// TimeOutTermination functions
 
+/**
+ * @brief Reset m_CurNrSteps to 0 for new geodesic, and call base class implementation to reset base class member variables
+ */
 void TimeOutTermination::Reset()
 {
-	// Reset to 0 for new geodesic
 	m_CurNrSteps = 0;
-	// Call base class implementation to reset base class member variables
 	Termination::Reset();
 }
 
-// Check to see if enough steps have been taken to time out, if so return Term::TimeOut
+/**
+ * @brief Check if the geodesic has taken too many steps
+ * @return Term
+ */
 Term TimeOutTermination::CheckTermination()
 {
 	Term ret = Term::Continue;
@@ -191,17 +219,22 @@ Term TimeOutTermination::CheckTermination()
 	return ret;
 }
 
+/**
+ * @brief Description string getter for the Time Out Termination
+ * @return std::string
+ */
 std::string TimeOutTermination::getFullDescriptionStr() const
 {
 	// Full description string
 	return "Time out (max integration steps: " + std::to_string(TermOptions->MaxSteps) + ")";
 }
 
-/// <summary>
-/// ThetaSingularityTermination functions
-/// </summary>
+// ThetaSingularityTermination functions
 
-// Check to see if enough steps have been taken to time out, if so return Term::TimeOut
+/**
+ * @brief Check if the geodesic is too close to a pole
+ * @return Term
+ */
 Term ThetaSingularityTermination::CheckTermination()
 {
 	Term ret = Term::Continue;
@@ -218,16 +251,22 @@ Term ThetaSingularityTermination::CheckTermination()
 	return ret;
 }
 
+/**
+ * @brief Description string getter for the Theta Singularity Termination
+ * @return std::string
+ */
 std::string ThetaSingularityTermination::getFullDescriptionStr() const
 {
 	// Full description string
 	return "Theta singularity (epsilon: " + std::to_string(TermOptions->ThetaSingEpsilon) + ")";
 }
 
-/// <summary>
-/// NaNTermination functions
-/// </summary>
+// NaNTermination functions
 
+/**
+ * @brief Check if the geodesic contains a NaN
+ * @return Term
+ */
 Term NaNTermination::CheckTermination()
 {
 	Term ret = Term::Continue;
@@ -253,16 +292,22 @@ Term NaNTermination::CheckTermination()
 	return ret;
 }
 
+/**
+ * @brief Description string getter for the NaN Termination
+ * @return std::string
+ */
 std::string NaNTermination::getFullDescriptionStr() const
 {
 	// Full description string
 	return "NaN checker (" + std::string(TermOptions->OutputToConsole ? "outputting to console" : "no output to console") + ")";
 }
 
-/// <summary>
-/// GeneralSingularityTermination functions
-/// </summary>
+// GeneralSingularityTermination functions
 
+/**
+ * @brief Check if the geodesic is too close to a singularity
+ * @return Term
+ */
 Term GeneralSingularityTermination::CheckTermination()
 {
 	Term ret = Term::Continue;
@@ -296,6 +341,10 @@ Term GeneralSingularityTermination::CheckTermination()
 	return ret;
 }
 
+/**
+ * @brief List the singularities in a human-readable format
+ * @return std::string
+ */
 std::string GeneralSingularityTermination::SingularityToString(int singnr) const
 {
 	std::string singstring{"("};
@@ -324,6 +373,10 @@ std::string GeneralSingularityTermination::SingularityToString(int singnr) const
 	return singstring;
 }
 
+/**
+ * @brief Description string getter for the General Singularity Termination
+ * @return std::string
+ */
 std::string GeneralSingularityTermination::getFullDescriptionStr() const
 {
 	// Full description string
@@ -340,4 +393,4 @@ std::string GeneralSingularityTermination::getFullDescriptionStr() const
 	return "Singularities (" + std::to_string(TermOptions->Singularities.size()) + " singularities at: " + singstring + ", epsilon = " + std::to_string(TermOptions->Epsilon) + ", " + std::string(TermOptions->OutputToConsole ? "outputting to console" : "no output to console") + ")";
 }
 
-//// (New Termination classes can define their member functions here)
+// (New Termination classes can define their member functions here)

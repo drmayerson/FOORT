@@ -9,15 +9,30 @@
 #include "Spline.h" // needed for spline interpolation
 #include <sstream>	// needed for string stream
 
-/// <summary>
-/// Metric (abstract base class) functions
-/// </summary>
+/**
+ * @file Metric.h
+ * @author Daniel R. Mayerson
+ * @brief Declarations of abstract base Metric class and all its descendants.
+ * @version 0.1
+ * @date 2025-01-14
+ * @copyright Copyright (c) 2025
+ */
 
+// Metric (abstract base class) functions
+
+/**
+ * @brief Construct a new Metric object
+ * @param rlogscale Whether we are using a logarithmic radial scale
+ */
 Metric::Metric(bool rlogscale) : m_rLogScale{rlogscale}
 {
 }
 
-// Christoffel symbols of the metric (indices up, down, down)
+/**
+ * @brief Return the Christoffel symbols of the metric (indices up, down, down)
+ * @param p Point at which to evaluate the Christoffel symbols
+ * @return ThreeIndex
+ */
 ThreeIndex Metric::getChristoffel_udd(const Point &p) const
 {
 	// Populate metric derivatives with index down. Only evaluates numerical derivative of metric for a given coordinate
@@ -62,57 +77,81 @@ ThreeIndex Metric::getChristoffel_udd(const Point &p) const
 	return theChristoffel;
 }
 
-// Riemann tensor (indices up, down, down, down)
+/**
+ * @brief Riemann tensor of the metric (indices up, down, down, down)
+ * @param p Point at which to evaluate the Riemann tensor
+ * @note This needs to be implemented still.
+ * @return FourIndex
+ */
 FourIndex Metric::getRiemann_uddd(const Point &p) const
 {
-	// TO IMPLEMENT!
 	ScreenOutput("Called Riemann at" + toString(p));
 
 	return {};
 }
 
-// Kretschmann scalar (Riem^2)
+/**
+ * @brief Get the Kretschmann scalar at a point
+ * @details The Kretschmann scalar is defined as R_{abcd} R^{abcd}
+ * @note This needs to be implemented still.
+ * @param p Point at which to evaluate the Kretschmann scalar
+ * @return real
+ */
 real Metric::getKretschmann(const Point &p) const
 {
-	// TO IMPLEMENT!
 	ScreenOutput("Called Kretschmann at" + toString(p));
 
 	return 0;
 }
 
-// Generic description string
+/**
+ * @brief Base class description string getter
+ * @return std::string
+ */
 std::string Metric::getFullDescriptionStr() const
 {
 	return "Metric (no override description specified)";
 }
 
-// Getter for radial log scale
+/**
+ * @brief Get whether we are using a logarithmic radial scale
+ * @return true
+ * @return false
+ */
 bool Metric::getrLogScale() const
 {
 	return m_rLogScale;
 }
 
-/// <summary>
-/// SphericalHorizonMetric functions
-/// </summary>
+// SphericalHorizonMetric functions
 
-// Constructor, to be called with the horizon radius and a bool indicating whether we are using a logarithmic radial scale
+/**
+ * @brief Construct a new Spherical Horizon Metric object
+ * @param HorizonRadius Radius of the horizon
+ * @param rLogScale Whether we are using a logarithmic radial scale
+ */
 SphericalHorizonMetric::SphericalHorizonMetric(real HorizonRadius, bool rLogScale)
 	: m_HorizonRadius{HorizonRadius}, Metric(rLogScale)
 {
 }
 
-// Getter for horizon radius
+/**
+ * @brief Get the radius of the horizon
+ * @return real
+ */
 real SphericalHorizonMetric::getHorizonRadius() const
 {
 	return m_HorizonRadius;
 }
 
-/// <summary>
-/// KerrMetric functions
-/// </summary>
+// KerrMetric functions
 
-// Constructor, must be passed the Kerr a parameter and whether we are using a logarithmic radial scale
+/**
+ * @brief Construct a new Kerr Metric object
+ * @param aParam a parameter for the Kerr metric
+ * @param rLogScale Whether we are using a logarithmic radial scale
+ * @param mParam mass parameter for the Kerr metric
+ */
 KerrMetric::KerrMetric(real aParam, bool rLogScale, real mParam)
 	: m_aParam{aParam}, m_mParam{mParam},
 	  SphericalHorizonMetric(mParam + mParam * sqrt(1 - aParam * aParam), rLogScale) // initialize base class with horizon radius and rLogScale
@@ -132,7 +171,11 @@ KerrMetric::KerrMetric(real aParam, bool rLogScale, real mParam)
 	m_Symmetries = {0, 3};
 }
 
-// Kerr metric getter, indices down
+/**
+ * @brief Kerr metric getter, indices down
+ * @param p Point at which to evaluate the metric
+ * @return TwoIndex
+ */
 TwoIndex KerrMetric::getMetric_dd(const Point &p) const
 {
 	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
@@ -162,7 +205,11 @@ TwoIndex KerrMetric::getMetric_dd(const Point &p) const
 	return TwoIndex{{{g00, 0, 0, g03}, {0, g11, 0, 0}, {0, 0, g22, 0}, {g03, 0, 0, g33}}};
 }
 
-// Kerr metric getter, indices up
+/**
+ * @brief Kerr metric getter, indices up
+ * @param p Point at which to evaluate the metric
+ * @return TwoIndex
+ */
 TwoIndex KerrMetric::getMetric_uu(const Point &p) const
 {
 	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
@@ -193,17 +240,21 @@ TwoIndex KerrMetric::getMetric_uu(const Point &p) const
 	return TwoIndex{{{g00, 0, 0, g03}, {0, g11, 0, 0}, {0, 0, g22, 0}, {g03, 0, 0, g33}}};
 }
 
-// Kerr description string; also gives a parameter value and whether we are using logarithmic radial coordinate
+/**
+ * @brief Kerr metric description string getter
+ * @return std::string
+ */
 std::string KerrMetric::getFullDescriptionStr() const
 {
 	return "Kerr (a = " + std::to_string(m_aParam) + ", " + "m = " + std::to_string(m_mParam) + ", " + (m_rLogScale ? "using logarithmic r coord" : "using normal r coord") + ")";
 }
 
-/// <summary>
-/// FlatSpaceMetric functions
-/// </summary>
+// FlatSpaceMetric functions
 
-// Basic constructor (no arguments necessary)
+/**
+ * @brief Construct a new Flat Space Metric object.
+ * @param rlogscale
+ */
 FlatSpaceMetric::FlatSpaceMetric(bool rlogscale) : Metric(rlogscale)
 {
 	// Make sure we are in four spacetime dimensions
@@ -216,32 +267,47 @@ FlatSpaceMetric::FlatSpaceMetric(bool rlogscale) : Metric(rlogscale)
 	m_Symmetries = {0, 3};
 }
 
-// Flat metric getter, indices down
+/**
+ * @brief Flat metric getter, indices down
+ * @param p Point at which to evaluate the metric
+ * @return TwoIndex
+ */
 TwoIndex FlatSpaceMetric::getMetric_dd(const Point &p) const
 {
 	// Flat metric in spherical coordinates
 	return TwoIndex{{{-1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, p[1] * p[1], 0}, {0, 0, 0, p[1] * p[1] * sin(p[2]) * sin(p[2])}}};
 }
 
-// Flat metric getter, indices up
+/**
+ * @brief Flat metric getter, indices up
+ * @param p Point at which to evaluate the metric
+ * @return TwoIndex
+ */
 TwoIndex FlatSpaceMetric::getMetric_uu(const Point &p) const
 {
 	// Flat metric in spherical coordinates
 	return TwoIndex{{{-1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1 / (p[1] * p[1]), 0}, {0, 0, 0, 1 / (p[1] * p[1] * sin(p[2]) * sin(p[2]))}}};
 }
 
-// Description string for flat space
+/**
+ * @brief Flat metric description string getter
+ * @return std::string
+ */
 std::string FlatSpaceMetric::getFullDescriptionStr() const
 {
 	return "Flat space (" + std::string((m_rLogScale ? "using logarithmic r coord" : "using normal r coord")) + ")";
 }
 
-/// <summary>
-/// RasheedLarsenMetric functions
-/// </summary>
+// RasheedLarsenMetric functions
 
-// Constructor, must be passed the four RL parameters and whether we are using a logarithmic radial scale
-// We rescale all parameters by the mass to end up with a M = 1 BH
+/**
+ * @brief Construct a new Rasheed Larsen Metric object. All parameters are rescaled by the mass to end up with a M = 1 BH.
+ * @param mParam m parameter for the Rasheed-Larsen metric
+ * @param aParam a parameter for the Rasheed-Larsen metric
+ * @param pParam p parameter for the Rasheed-Larsen metric
+ * @param qParam q parameter for the Rasheed-Larsen metric
+ * @param rLogScale whether we are using a logarithmic radial scale
+ */
 RasheedLarsenMetric::RasheedLarsenMetric(real mParam, real aParam, real pParam, real qParam, bool rLogScale)
 	: m_aParam{aParam / ((pParam + qParam) / 4.0)},
 	  m_mParam{mParam / ((pParam + qParam) / 4.0)},
@@ -267,6 +333,11 @@ RasheedLarsenMetric::RasheedLarsenMetric(real mParam, real aParam, real pParam, 
 	m_Symmetries = {0, 3};
 }
 
+/**
+ * @brief Rasheed-Larsen metric getter, indices down
+ * @param p Point at which to evaluate the metric
+ * @return TwoIndex
+ */
 TwoIndex RasheedLarsenMetric::getMetric_dd(const Point &p) const
 {
 	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
@@ -305,6 +376,11 @@ TwoIndex RasheedLarsenMetric::getMetric_dd(const Point &p) const
 	return TwoIndex{{{g00, 0, 0, g03}, {0, g11, 0, 0}, {0, 0, g22, 0}, {g03, 0, 0, g33}}};
 }
 
+/**
+ * @brief Rasheed-Larsen metric getter, indices up
+ * @param p Point at which to evaluate the metric
+ * @return TwoIndex
+ */
 TwoIndex RasheedLarsenMetric::getMetric_uu(const Point &p) const
 {
 	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
@@ -343,18 +419,27 @@ TwoIndex RasheedLarsenMetric::getMetric_uu(const Point &p) const
 	return TwoIndex{{{g00, 0, 0, g03}, {0, g11, 0, 0}, {0, 0, g22, 0}, {g03, 0, 0, g33}}};
 }
 
-// Rasheed-Larsen description string; also gives a parameter value and whether we are using logarithmic radial coordinate
+/**
+ * @brief Rasheed-Larsen metric description string getter
+ * @return std::string
+ */
 std::string RasheedLarsenMetric::getFullDescriptionStr() const
 {
 	return "Rasheed-Larsen (m = " + std::to_string(m_mParam) + ", a = " + std::to_string(m_aParam) + ", p = " + std::to_string(m_pParam) + ", q = " + std::to_string(m_qParam) + ", " + (m_rLogScale ? "using logarithmic r coord" : "using normal r coord") + ")";
 }
 
-/// <summary>
-/// JohannsenMetric functions (implementation by Seppe Staelens)
-/// </summary>
+// JohannsenMetric functions (implementation by Seppe Staelens)
 
-// Constructor, must be passed the five Joh parameters and whether we are using a logarithmic radial scale
-// We always have a M = 1 BH
+/**
+ * @brief Construct a new Johannsen Metric object. We always have a M = 1 BH.
+ * @param aParam a parameter for the Johannsen metric
+ * @param alpha13Param alpha13 parameter for the Johannsen metric
+ * @param alpha22Param alpha22 parameter for the Johannsen metric
+ * @param alpha52Param alpha52 parameter for the Johannsen metric
+ * @param eps3Param eps3 parameter for the Johannsen metric
+ * @param rLogScale whether we are using a logarithmic radial scale
+ * @note Implementation by Seppe Staelens
+ */
 JohannsenMetric::JohannsenMetric(real aParam, real alpha13Param, real alpha22Param, real alpha52Param, real eps3Param, bool rLogScale)
 	: m_aParam{aParam},
 	  m_alpha13Param{alpha13Param},
@@ -382,6 +467,11 @@ JohannsenMetric::JohannsenMetric(real aParam, real alpha13Param, real alpha22Par
 	m_Symmetries = {0, 3};
 }
 
+/**
+ * @brief Johannsen metric getter, indices down
+ * @param p Point at which to evaluate the metric
+ * @return TwoIndex
+ */
 TwoIndex JohannsenMetric::getMetric_dd(const Point &p) const
 {
 	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
@@ -415,6 +505,11 @@ TwoIndex JohannsenMetric::getMetric_dd(const Point &p) const
 	return TwoIndex{{{g00, 0, 0, g03}, {0, g11, 0, 0}, {0, 0, g22, 0}, {g03, 0, 0, g33}}};
 }
 
+/**
+ * @brief Johannsen metric getter, indices up
+ * @param p Point at which to evaluate the metric
+ * @return TwoIndex
+ */
 TwoIndex JohannsenMetric::getMetric_uu(const Point &p) const
 {
 	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
@@ -448,19 +543,24 @@ TwoIndex JohannsenMetric::getMetric_uu(const Point &p) const
 	return TwoIndex{{{g00, 0, 0, g03}, {0, g11, 0, 0}, {0, 0, g22, 0}, {g03, 0, 0, g33}}};
 }
 
-// Johannsen description string; also gives a parameter value and whether we are using logarithmic radial coordinate
+/**
+ * @brief Johannsen metric description string getter
+ * @return std::string
+ */
 std::string JohannsenMetric::getFullDescriptionStr() const
 {
 	return "Johannsen (a = " + std::to_string(m_aParam) + ", alpha13 = " + std::to_string(m_alpha13Param) + ", alpha22 = " + std::to_string(m_alpha22Param) + ", alpha52 = " + std::to_string(m_alpha52Param) + ", epsilon3 = " + std::to_string(m_eps3Param) + ", " + (m_rLogScale ? "using logarithmic r coord" : "using normal r coord") + ")";
 }
 
-/// <summary>
-/// MankoNovikovMetric functions (implementation by Seppe Staelens)
-/// </summary>
+// MankoNovikovMetric functions (implementation by Seppe Staelens)
 
-// Constructor, must be passed the two MaNo parameters and whether we are using a logarithmic radial scale
-// We always have a M = 1 BH; the parameter a gives the angular momentum a = J/M^2
-// The horizon is at r = M + k
+/**
+ * @brief Construct a new Manko Novikov Metric object. We always have a M = 1 BH.
+ * @details The horizon is at r = M + k
+ * @param aParam a parameter for the Manko-Novikov metric. The angular momentum a = J/M^2
+ * @param alpha3Param alpha3 parameter for the Manko-Novikov metric
+ * @param rLogScale whether we are using a logarithmic radial scale
+ */
 MankoNovikovMetric::MankoNovikovMetric(real aParam, real alpha3Param, bool rLogScale)
 	: m_aParam{aParam},
 	  m_alpha3Param{alpha3Param},
@@ -482,6 +582,11 @@ MankoNovikovMetric::MankoNovikovMetric(real aParam, real alpha3Param, bool rLogS
 	m_Symmetries = {0, 3};
 }
 
+/**
+ * @brief Manko-Novikov metric getter, indices down
+ * @param p Point at which to evaluate the metric
+ * @return TwoIndex
+ */
 TwoIndex MankoNovikovMetric::getMetric_dd(const Point &p) const
 {
 
@@ -537,8 +642,11 @@ TwoIndex MankoNovikovMetric::getMetric_dd(const Point &p) const
 	return TwoIndex{{{g00, 0, 0, g03}, {0, g11, 0, 0}, {0, 0, g22, 0}, {g03, 0, 0, g33}}};
 }
 
-// done up to here
-
+/**
+ * @brief Manko-Novikov metric getter, indices up
+ * @param p Point at which to evaluate the metric
+ * @return TwoIndex
+ */
 TwoIndex MankoNovikovMetric::getMetric_uu(const Point &p) const
 {
 	// spherical coordinates
@@ -599,17 +707,22 @@ TwoIndex MankoNovikovMetric::getMetric_uu(const Point &p) const
 	return TwoIndex{{{g00, 0, 0, g03}, {0, g11, 0, 0}, {0, 0, g22, 0}, {g03, 0, 0, g33}}};
 }
 
-// Manko-Novikov description string; also gives a parameter value and whether we are using logarithmic radial coordinate
+/**
+ * @brief Manko-Novikov metric description string getter
+ * @return std::string
+ */
 std::string MankoNovikovMetric::getFullDescriptionStr() const
 {
 	return "Manko-Novikov (a = " + std::to_string(m_aParam) + ", alpha3 = " + std::to_string(m_alpha3Param) + ", " + (m_rLogScale ? "using logarithmic r coord" : "using normal r coord") + ")";
 }
 
-/// <summary>
-/// KerrSchildMetric functions
-/// </summary>
+// KerrSchildMetric functions
 
-// Constructor, must be passed the Kerr a parameter and whether we are using a logarithmic radial scale
+/**
+ * @brief Construct a new Kerr Schild Metric object. We always have a M = 1 BH.
+ * @param aParam a parameter for the Kerr-Schild metric
+ * @param rLogScale whether we are using a logarithmic radial scale
+ */
 KerrSchildMetric::KerrSchildMetric(real aParam, bool rLogScale)
 	: m_aParam{aParam},
 	  SphericalHorizonMetric(1 + sqrt(1 - aParam * aParam), rLogScale) // initialize base class with horizon radius and rLogScale
@@ -629,7 +742,11 @@ KerrSchildMetric::KerrSchildMetric(real aParam, bool rLogScale)
 	m_Symmetries = {0, 3};
 }
 
-// Kerr-Schild metric getter, indices down
+/**
+ * @brief Kerr-Schild metric getter, indices down
+ * @param p Point at which to evaluate the metric
+ * @return TwoIndex
+ */
 TwoIndex KerrSchildMetric::getMetric_dd(const Point &p) const
 {
 	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
@@ -659,7 +776,11 @@ TwoIndex KerrSchildMetric::getMetric_dd(const Point &p) const
 	return TwoIndex{{{g00, g01, 0, g03}, {g01, 0, 0, g13}, {0, 0, g22, 0}, {g03, g13, 0, g33}}};
 }
 
-// Kerr-Schild metric getter, indices up
+/**
+ * @brief Kerr-Schild metric getter, indices up
+ * @param p Point at which to evaluate the metric
+ * @return TwoIndex
+ */
 TwoIndex KerrSchildMetric::getMetric_uu(const Point &p) const
 {
 	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
@@ -691,32 +812,45 @@ TwoIndex KerrSchildMetric::getMetric_uu(const Point &p) const
 	return TwoIndex{{{g00, g01, 0, g03}, {g01, g11, 0, g13}, {0, 0, g22, 0}, {g03, g13, 0, g33}}};
 }
 
-// Kerr-Schild description string; also gives a parameter value and whether we are using logarithmic radial coordinate
+/**
+ * @brief Kerr-Schild metric description string getter
+ * @return std::string
+ */
 std::string KerrSchildMetric::getFullDescriptionStr() const
 {
 	return "Kerr-Schild (a = " + std::to_string(m_aParam) + ", " + (m_rLogScale ? "using logarithmic r coord" : "using normal r coord") + ")";
 }
 
-/// <summary>
-/// SingularityMetric functions
-/// </summary>
+// SingularityMetric functions
 
-// Constructor, to be called with the horizon radius and a bool indicating whether we are using a logarithmic radial scale
+/**
+ * @brief Construct a new Singularity Metric object
+ * @param thesings The singularities to include in the metric
+ * @param rLogScale whether we are using a logarithmic radial scale
+ */
 SingularityMetric::SingularityMetric(std::vector<Singularity> thesings, bool rLogScale)
 	: m_AllSingularities{thesings}, Metric(rLogScale)
 {
 }
 
-// Getter for horizon radius
+/**
+ * @brief Getters for the singularities
+ * @return std::vector<Singularity>
+ */
 std::vector<Singularity> SingularityMetric::getSingularities() const
 {
 	return m_AllSingularities;
 }
 
-/// <summary>
-/// ST3CrMetric functions
-/// </summary>
+// ST3CrMetric functions
 
+/**
+ * @brief Construct a new ST3Cr Metric object
+ * @param P P parameter for the ST3Cr metric
+ * @param q0 q0 parameter for the ST3Cr metric
+ * @param lambda lambda parameter for the ST3Cr metric
+ * @param rlogscale whether we are using a logarithmic radial scale
+ */
 ST3CrMetric::ST3CrMetric(real P, real q0, real lambda, bool rlogscale)
 	: m_P{P},
 	  m_q0{q0},
@@ -747,7 +881,13 @@ ST3CrMetric::ST3CrMetric(real P, real q0, real lambda, bool rlogscale)
 	m_Symmetries = {0, 3};
 }
 
-// Get omega given r_ij, theta_ij, l_ij
+/**
+ * @brief Get omega for the ST3Cr metric
+ * @param r r_ij
+ * @param theta theta_ij
+ * @param l l_ij
+ * @return real
+ */
 real ST3CrMetric::get_omega(real r, real theta, real l) const
 {
 	real cost = cos(theta);
@@ -759,14 +899,30 @@ real ST3CrMetric::get_omega(real r, real theta, real l) const
 
 // Numerically integrate part of omega_phi over 0,pi
 
-// function for prefactor * dphi' for ring
+/**
+ * @brief function for prefactor * dphi' for ring
+ * @param phi
+ * @param r
+ * @param theta
+ * @param l
+ * @param R
+ * @return real
+ */
 real ST3CrMetric::f_phi(real phi, real r, real theta, real l, real R) const
 {
 	real f_phi = m_q0 / (2. * pi * sqrt(R * R + l * l)) * (-(r * sqrt(l * l + R * R) * sin(theta) * (R * cos(phi) * (l - r * cos(theta)) - l * r * sin(theta))) / (l * l * R * R - 2 * l * r * R * R * cos(theta) + r * r * R * R * cos(theta) * cos(theta) - 2 * l * r * R * cos(phi) * (l - r * cos(theta)) * sin(theta) + l * l * r * r * cos(phi) * cos(phi) * sin(theta) * sin(theta) + l * l * r * r * sin(phi) * sin(phi) * sin(theta) * sin(theta) + r * r * R * R * sin(phi) * sin(phi) * sin(theta) * sin(theta)));
 	return f_phi;
 }
 
-// omega_phi ring functions
+/**
+ * @brief omega_phi ring functions
+ * @param phi
+ * @param r
+ * @param theta
+ * @param l
+ * @param R
+ * @return real
+ */
 real ST3CrMetric::f_om_phi(real phi, real r, real theta, real l, real R) const
 {
 	real r_ac = 1. / 4. * sqrt(l * l + 16. * r * r + 4. * R * R - 8. * l * r * cos(theta) + 8. * r * R * sin(phi - theta) - 8. * r * R * sin(phi + theta));
@@ -787,7 +943,11 @@ real ST3CrMetric::f_om_phi(real phi, real r, real theta, real l, real R) const
 	return f;
 }
 
-// ST3Cr metric getter, indices down
+/**
+ * @brief ST3Cr metric getter, indices down
+ * @param p Point at which to evaluate the metric
+ * @return TwoIndex
+ */
 TwoIndex ST3CrMetric::getMetric_dd(const Point &p) const
 {
 	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
@@ -805,6 +965,8 @@ TwoIndex ST3CrMetric::getMetric_dd(const Point &p) const
 	real r2 = sqrt(r * r + l * l / 4. + r * l * cost);
 	real r3 = sqrt(r * r + R * R + 2. * r * R * sint);
 
+	// comp_ellint_1 is the complete elliptic integral of the second kind. This is provided in the standard library from C++17 onwards.
+	// Older versions of C++ may find this in the std::tr1 library.
 	real cei = std::comp_ellint_1(sqrt(4. * r * R * sint / (r3 * r3)));
 	real MD0 = -2. * m_q0 / (pi * r3) * cei;
 
@@ -847,7 +1009,11 @@ TwoIndex ST3CrMetric::getMetric_dd(const Point &p) const
 	return TwoIndex{{{g00, 0, 0, g03}, {0, g11, 0, 0}, {0, 0, g22, 0}, {g03, 0, 0, g33}}};
 }
 
-// ST3Cr metric getter, indices up
+/**
+ * @brief ST3Cr metric getter, indices up
+ * @param p Point at which to evaluate the metric
+ * @return TwoIndex
+ */
 TwoIndex ST3CrMetric::getMetric_uu(const Point &p) const
 {
 	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
@@ -865,6 +1031,8 @@ TwoIndex ST3CrMetric::getMetric_uu(const Point &p) const
 	real r2 = sqrt(r * r + l * l / 4. + r * l * cost);
 	real r3 = sqrt(r * r + R * R + 2. * r * R * sint);
 
+	// comp_ellint_1 is the complete elliptic integral of the second kind. This is provided in the standard library from C++17 onwards.
+	// Older versions of C++ may find this in the std::tr1 library.
 	real cei = std::comp_ellint_1(sqrt(4. * r * R * sint / (r3 * r3)));
 	real MD0 = -2. * m_q0 / (pi * r3) * cei;
 
@@ -908,18 +1076,25 @@ TwoIndex ST3CrMetric::getMetric_uu(const Point &p) const
 	return TwoIndex{{{g00, 0, 0, g03}, {0, g11, 0, 0}, {0, 0, g22, 0}, {g03, 0, 0, g33}}};
 }
 
-// ST3Cr description string; also gives a parameter value and whether we are using logarithmic radial coordinate
+/**
+ * @brief ST3Cr metric description string getter
+ * @return std::string
+ */
 std::string ST3CrMetric::getFullDescriptionStr() const
 {
 	return "ST3Cr (P = " + std::to_string(m_P) + ", q0 = " + std::to_string(m_q0) + ", lambda = " + std::to_string(m_lambda) + ", " + (m_rLogScale ? "using logarithmic r coord" : "using normal r coord") + ")";
 }
 
-/// <summary>
-/// BosonStarMetric functions (implementation by Seppe Staelens)
-/// </summary>
-// Constructor, must be passed the two BS parameters and whether we are using a logarithmic radial scale
-// We always have a M = 1 BH; the parameter a gives the angular momentum a = J/M^2
-// The horizon is at r = M + k
+// BosonStarMetric functions (implementation by Seppe Staelens)
+
+/**
+ * @brief Construct a new Boson Star Metric object
+ * @param Phi_infinity value of Phi = log(lapse) at infinity
+ * @param num_lines number of lines in the data files
+ * @param rLogScale whether we are using a logarithmic radial scale
+ * @param Phi_filename filename for the Phi data
+ * @param m_filename filename for the mass aspect data
+ */
 BosonStarMetric::BosonStarMetric(double Phi_infinity, int num_lines, bool rLogScale,
 								 std::string Phi_filename, std::string m_filename) : Metric(rLogScale), m_Phi_infinity(Phi_infinity),
 																					 m_num_lines(num_lines), m_Phi_filename(Phi_filename), m_m_filename(m_filename)
@@ -935,6 +1110,9 @@ BosonStarMetric::BosonStarMetric(double Phi_infinity, int num_lines, bool rLogSc
 	read_data();
 }
 
+/**
+ * @brief Read the numerically obtained boson star metric data from the files
+ */
 void BosonStarMetric::read_data()
 {
 	// We have to interpolate the metric from the data files
@@ -977,6 +1155,12 @@ void BosonStarMetric::read_data()
 	m_PhiSpline.set_points(r_vals, phi_vals, tk::spline::cspline_hermite);
 	m_mSpline.set_points(r_vals, m_vals, tk::spline::cspline_hermite);
 }
+
+/**
+ * @brief BosonStar metric getter, indices down
+ * @param p Point at which to evaluate the metric
+ * @return TwoIndex
+ */
 TwoIndex BosonStarMetric::getMetric_dd(const Point &p) const
 {
 	// spherical coordinates
@@ -999,6 +1183,12 @@ TwoIndex BosonStarMetric::getMetric_dd(const Point &p) const
 	}
 	return TwoIndex{{{g00, 0, 0, 0}, {0, g11, 0, 0}, {0, 0, g22, 0}, {0, 0, 0, g33}}};
 }
+
+/**
+ * @brief BosonStar metric getter, indices up
+ * @param p Point at which to evaluate the metric
+ * @return TwoIndex
+ */
 TwoIndex BosonStarMetric::getMetric_uu(const Point &p) const
 {
 	// spherical coordinates
@@ -1023,6 +1213,11 @@ TwoIndex BosonStarMetric::getMetric_uu(const Point &p) const
 
 	return TwoIndex{{{g00, 0, 0, 0}, {0, g11, 0, 0}, {0, 0, g22, 0}, {0, 0, 0, g33}}};
 }
+
+/**
+ * @brief BosonStar metric description string getter
+ * @return std::string
+ */
 std::string BosonStarMetric::getFullDescriptionStr() const
 {
 	return "Boson star (Phi infinity = " + std::to_string(m_Phi_infinity) + ", num lines = " + std::to_string(m_num_lines) + ")";

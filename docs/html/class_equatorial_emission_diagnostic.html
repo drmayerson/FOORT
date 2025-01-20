@@ -93,6 +93,9 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p><a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> that calculates brightness intensity for the geodesic, based on a specified equatorial disc emission model.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_diagnostics_8h_source.html">Diagnostics.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for EquatorialEmissionDiagnostic:</div>
@@ -100,8 +103,8 @@ Inheritance diagram for EquatorialEmissionDiagnostic:</div>
  <div class="center">
   <img src="class_equatorial_emission_diagnostic.png" usemap="#EquatorialEmissionDiagnostic_map" alt=""/>
   <map id="EquatorialEmissionDiagnostic_map" name="EquatorialEmissionDiagnostic_map">
-<area href="class_equatorial_passes_diagnostic.html" alt="EquatorialPassesDiagnostic" shape="rect" coords="0,56,176,80"/>
-<area href="class_diagnostic.html" alt="Diagnostic" shape="rect" coords="0,0,176,24"/>
+<area href="class_equatorial_passes_diagnostic.html" title="Diagnostic that counts the number of passes through the equatorial plane." alt="EquatorialPassesDiagnostic" shape="rect" coords="0,56,176,80"/>
+<area href="class_diagnostic.html" title="Abstract base class for all diagnostics." alt="Diagnostic" shape="rect" coords="0,0,176,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -110,37 +113,49 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6eb121b8cd1345ac4e3622f6d9d4295d" id="r_a6eb121b8cd1345ac4e3622f6d9d4295d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6eb121b8cd1345ac4e3622f6d9d4295d">EquatorialEmissionDiagnostic</a> (<a class="el" href="class_geodesic.html">Geodesic</a> *const theGeodesic)</td></tr>
 <tr class="separator:a6eb121b8cd1345ac4e3622f6d9d4295d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa82b309ff6251efe28a5bbe6de5c3317" id="r_aa82b309ff6251efe28a5bbe6de5c3317"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa82b309ff6251efe28a5bbe6de5c3317">Reset</a> () final</td></tr>
-<tr class="memdesc:aa82b309ff6251efe28a5bbe6de5c3317"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_equatorial_emission_diagnostic.html">EquatorialEmissionDiagnostic</a> functions.  <br /></td></tr>
+<tr class="memdesc:aa82b309ff6251efe28a5bbe6de5c3317"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_equatorial_emission_diagnostic.html" title="Diagnostic that calculates brightness intensity for the geodesic, based on a specified equatorial dis...">EquatorialEmissionDiagnostic</a> functions.  <br /></td></tr>
 <tr class="separator:aa82b309ff6251efe28a5bbe6de5c3317"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74a99f2857ffd4e0f41ceb89b6180be5" id="r_a74a99f2857ffd4e0f41ceb89b6180be5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a74a99f2857ffd4e0f41ceb89b6180be5">UpdateData</a> () final</td></tr>
+<tr class="memdesc:a74a99f2857ffd4e0f41ceb89b6180be5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the intensity based on the emission model and the number of equatorial passes.  <br /></td></tr>
 <tr class="separator:a74a99f2857ffd4e0f41ceb89b6180be5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c3705b86a06a8d7f55d31688e3cc0db" id="r_a1c3705b86a06a8d7f55d31688e3cc0db"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1c3705b86a06a8d7f55d31688e3cc0db">getFullDataStr</a> () const final</td></tr>
+<tr class="memdesc:a1c3705b86a06a8d7f55d31688e3cc0db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the intensity and number of equatorial passes as a string.  <br /></td></tr>
 <tr class="separator:a1c3705b86a06a8d7f55d31688e3cc0db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a447f05479b3cc16a1b8489077143fe23" id="r_a447f05479b3cc16a1b8489077143fe23"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a447f05479b3cc16a1b8489077143fe23">getFinalDataVal</a> () const final</td></tr>
+<tr class="memdesc:a447f05479b3cc16a1b8489077143fe23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the intensity and number of equatorial passes as a vector of size two.  <br /></td></tr>
 <tr class="separator:a447f05479b3cc16a1b8489077143fe23"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c6aa5db59d1ebb6d43727a322861ce9" id="r_a0c6aa5db59d1ebb6d43727a322861ce9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0c6aa5db59d1ebb6d43727a322861ce9">FinalDataValDistance</a> (const std::vector&lt; <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> &gt; &amp;val1, const std::vector&lt; <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> &gt; &amp;val2) const final</td></tr>
+<tr class="memdesc:a0c6aa5db59d1ebb6d43727a322861ce9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the distance between two geodesics based on their intensity and number of equatorial passes.  <br /></td></tr>
 <tr class="separator:a0c6aa5db59d1ebb6d43727a322861ce9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a96693ae60d6d672d5de73f9f3e2f98bd" id="r_a96693ae60d6d672d5de73f9f3e2f98bd"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a96693ae60d6d672d5de73f9f3e2f98bd">getNameStr</a> () const final</td></tr>
+<tr class="memdesc:a96693ae60d6d672d5de73f9f3e2f98bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Simple name without spaces.  <br /></td></tr>
 <tr class="separator:a96693ae60d6d672d5de73f9f3e2f98bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a097c3d41571447a7b230ec1864edc073" id="r_a097c3d41571447a7b230ec1864edc073"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a097c3d41571447a7b230ec1864edc073">getFullDescriptionStr</a> () const final</td></tr>
+<tr class="memdesc:a097c3d41571447a7b230ec1864edc073"><td class="mdescLeft">&#160;</td><td class="mdescRight">More descriptive string (with spaces)  <br /></td></tr>
 <tr class="separator:a097c3d41571447a7b230ec1864edc073"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_equatorial_passes_diagnostic"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_class_equatorial_passes_diagnostic')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_equatorial_passes_diagnostic.html">EquatorialPassesDiagnostic</a></td></tr>
 <tr class="memitem:afd54848cba4bc5a31fcb2f6afc4031ec inherit pub_methods_class_equatorial_passes_diagnostic" id="r_afd54848cba4bc5a31fcb2f6afc4031ec"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_equatorial_passes_diagnostic.html#afd54848cba4bc5a31fcb2f6afc4031ec">EquatorialPassesDiagnostic</a> (<a class="el" href="class_geodesic.html">Geodesic</a> *const theGeodesic)</td></tr>
 <tr class="separator:afd54848cba4bc5a31fcb2f6afc4031ec inherit pub_methods_class_equatorial_passes_diagnostic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac43120595ee828e697d8a293a20e3252 inherit pub_methods_class_equatorial_passes_diagnostic" id="r_ac43120595ee828e697d8a293a20e3252"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_equatorial_passes_diagnostic.html#ac43120595ee828e697d8a293a20e3252">Reset</a> () override</td></tr>
-<tr class="memdesc:ac43120595ee828e697d8a293a20e3252 inherit pub_methods_class_equatorial_passes_diagnostic"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_equatorial_passes_diagnostic.html">EquatorialPassesDiagnostic</a> functions.  <br /></td></tr>
+<tr class="memdesc:ac43120595ee828e697d8a293a20e3252 inherit pub_methods_class_equatorial_passes_diagnostic"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_equatorial_passes_diagnostic.html" title="Diagnostic that counts the number of passes through the equatorial plane.">EquatorialPassesDiagnostic</a> functions.  <br /></td></tr>
 <tr class="separator:ac43120595ee828e697d8a293a20e3252 inherit pub_methods_class_equatorial_passes_diagnostic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3b141bdcc827ab9143b7d2056b594a2 inherit pub_methods_class_equatorial_passes_diagnostic" id="r_ae3b141bdcc827ab9143b7d2056b594a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_equatorial_passes_diagnostic.html#ae3b141bdcc827ab9143b7d2056b594a2">UpdateData</a> () override</td></tr>
+<tr class="memdesc:ae3b141bdcc827ab9143b7d2056b594a2 inherit pub_methods_class_equatorial_passes_diagnostic"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check to see if we have crossed the equatorial plane and update the number of passes.  <br /></td></tr>
 <tr class="separator:ae3b141bdcc827ab9143b7d2056b594a2 inherit pub_methods_class_equatorial_passes_diagnostic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4dc415cabca31c77d6603ce44707cbfb inherit pub_methods_class_equatorial_passes_diagnostic" id="r_a4dc415cabca31c77d6603ce44707cbfb"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_equatorial_passes_diagnostic.html#a4dc415cabca31c77d6603ce44707cbfb">getFullDataStr</a> () const override</td></tr>
+<tr class="memdesc:a4dc415cabca31c77d6603ce44707cbfb inherit pub_methods_class_equatorial_passes_diagnostic"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of equatorial passes as a string.  <br /></td></tr>
 <tr class="separator:a4dc415cabca31c77d6603ce44707cbfb inherit pub_methods_class_equatorial_passes_diagnostic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a990295465df940bf0e02e496e28f7d44 inherit pub_methods_class_equatorial_passes_diagnostic" id="r_a990295465df940bf0e02e496e28f7d44"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_equatorial_passes_diagnostic.html#a990295465df940bf0e02e496e28f7d44">getFinalDataVal</a> () const override</td></tr>
+<tr class="memdesc:a990295465df940bf0e02e496e28f7d44 inherit pub_methods_class_equatorial_passes_diagnostic"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of equatorial passes as a vector of size one.  <br /></td></tr>
 <tr class="separator:a990295465df940bf0e02e496e28f7d44 inherit pub_methods_class_equatorial_passes_diagnostic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad12f57c0e7080986bdd56cfbc62459b4 inherit pub_methods_class_equatorial_passes_diagnostic" id="r_ad12f57c0e7080986bdd56cfbc62459b4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_equatorial_passes_diagnostic.html#ad12f57c0e7080986bdd56cfbc62459b4">FinalDataValDistance</a> (const std::vector&lt; <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> &gt; &amp;val1, const std::vector&lt; <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> &gt; &amp;val2) const override</td></tr>
+<tr class="memdesc:ad12f57c0e7080986bdd56cfbc62459b4 inherit pub_methods_class_equatorial_passes_diagnostic"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the absolute value of the difference between the number of equatorial passes.  <br /></td></tr>
 <tr class="separator:ad12f57c0e7080986bdd56cfbc62459b4 inherit pub_methods_class_equatorial_passes_diagnostic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa2e2a7ca4d691b49099ada8332b26846 inherit pub_methods_class_equatorial_passes_diagnostic" id="r_aa2e2a7ca4d691b49099ada8332b26846"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_equatorial_passes_diagnostic.html#aa2e2a7ca4d691b49099ada8332b26846">getNameStr</a> () const override</td></tr>
+<tr class="memdesc:aa2e2a7ca4d691b49099ada8332b26846 inherit pub_methods_class_equatorial_passes_diagnostic"><td class="mdescLeft">&#160;</td><td class="mdescRight">Simple name without spaces.  <br /></td></tr>
 <tr class="separator:aa2e2a7ca4d691b49099ada8332b26846 inherit pub_methods_class_equatorial_passes_diagnostic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93260b69766e11b5e5c1eb05f264d75d inherit pub_methods_class_equatorial_passes_diagnostic" id="r_a93260b69766e11b5e5c1eb05f264d75d"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_equatorial_passes_diagnostic.html#a93260b69766e11b5e5c1eb05f264d75d">getFullDescriptionStr</a> () const override</td></tr>
+<tr class="memdesc:a93260b69766e11b5e5c1eb05f264d75d inherit pub_methods_class_equatorial_passes_diagnostic"><td class="mdescLeft">&#160;</td><td class="mdescRight">More descriptive string (with spaces)  <br /></td></tr>
 <tr class="separator:a93260b69766e11b5e5c1eb05f264d75d inherit pub_methods_class_equatorial_passes_diagnostic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_diagnostic"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_class_diagnostic')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_diagnostic.html">Diagnostic</a></td></tr>
 <tr class="memitem:a010f0d692df2efcb72de06bd54dffcbb inherit pub_methods_class_diagnostic" id="r_a010f0d692df2efcb72de06bd54dffcbb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_diagnostic.html#a010f0d692df2efcb72de06bd54dffcbb">Diagnostic</a> ()=delete</td></tr>
@@ -156,6 +171,7 @@ Static Public Attributes</h2></td></tr>
 <tr class="separator:a94ecdb73ae3aa12b0535afeee47cd2de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_static_attribs_class_equatorial_passes_diagnostic"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_static_attribs_class_equatorial_passes_diagnostic')"><img src="closed.png" alt="-"/>&#160;Static Public Attributes inherited from <a class="el" href="class_equatorial_passes_diagnostic.html">EquatorialPassesDiagnostic</a></td></tr>
 <tr class="memitem:aa5ba83fcefb2df3f43c8aac05d04c07e inherit pub_static_attribs_class_equatorial_passes_diagnostic" id="r_aa5ba83fcefb2df3f43c8aac05d04c07e"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="struct_equatorial_passes_options.html">EquatorialPassesOptions</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_equatorial_passes_diagnostic.html#aa5ba83fcefb2df3f43c8aac05d04c07e">DiagOptions</a></td></tr>
+<tr class="memdesc:aa5ba83fcefb2df3f43c8aac05d04c07e inherit pub_static_attribs_class_equatorial_passes_diagnostic"><td class="mdescLeft">&#160;</td><td class="mdescRight">Needs the extra option of a threshold.  <br /></td></tr>
 <tr class="separator:aa5ba83fcefb2df3f43c8aac05d04c07e inherit pub_static_attribs_class_equatorial_passes_diagnostic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
@@ -167,9 +183,11 @@ Private Attributes</h2></td></tr>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_class_diagnostic"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_methods_class_diagnostic')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_diagnostic.html">Diagnostic</a></td></tr>
 <tr class="memitem:a66292420a6bea4bda026429b3c773f92 inherit pro_methods_class_diagnostic" id="r_a66292420a6bea4bda026429b3c773f92"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_diagnostic.html#a66292420a6bea4bda026429b3c773f92">DecideUpdate</a> (const <a class="el" href="struct_update_frequency.html">UpdateFrequency</a> &amp;myUpdateFrequency)</td></tr>
+<tr class="memdesc:a66292420a6bea4bda026429b3c773f92 inherit pro_methods_class_diagnostic"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if the <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> should update its initial status.  <br /></td></tr>
 <tr class="separator:a66292420a6bea4bda026429b3c773f92 inherit pro_methods_class_diagnostic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_class_equatorial_passes_diagnostic"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_attribs_class_equatorial_passes_diagnostic')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_equatorial_passes_diagnostic.html">EquatorialPassesDiagnostic</a></td></tr>
 <tr class="memitem:a6cbf7c3d216edbae77c63faaba4b9ee0 inherit pro_attribs_class_equatorial_passes_diagnostic" id="r_a6cbf7c3d216edbae77c63faaba4b9ee0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_equatorial_passes_diagnostic.html#a6cbf7c3d216edbae77c63faaba4b9ee0">m_EquatPasses</a> {0}</td></tr>
+<tr class="memdesc:a6cbf7c3d216edbae77c63faaba4b9ee0 inherit pro_attribs_class_equatorial_passes_diagnostic"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keeps track of how many passes have been made.  <br /></td></tr>
 <tr class="separator:a6cbf7c3d216edbae77c63faaba4b9ee0 inherit pro_attribs_class_equatorial_passes_diagnostic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_class_diagnostic"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_attribs_class_diagnostic')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_diagnostic.html">Diagnostic</a></td></tr>
 <tr class="memitem:ae79ebd55e96575fec534955227c7a707 inherit pro_attribs_class_diagnostic" id="r_ae79ebd55e96575fec534955227c7a707"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_geodesic.html">Geodesic</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_diagnostic.html#ae79ebd55e96575fec534955227c7a707">m_OwnerGeodesic</a></td></tr>
@@ -177,7 +195,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a5741d8cf3a53c8a95bf00c7fae04af05 inherit pro_attribs_class_diagnostic" id="r_a5741d8cf3a53c8a95bf00c7fae04af05"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_diagnostic.html#a5741d8cf3a53c8a95bf00c7fae04af05">m_StepsSinceUpdated</a> {}</td></tr>
 <tr class="separator:a5741d8cf3a53c8a95bf00c7fae04af05 inherit pro_attribs_class_diagnostic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> that calculates brightness intensity for the geodesic, based on a specified equatorial disc emission model. </p>
+<p>Inherits from <a class="el" href="class_equatorial_passes_diagnostic.html" title="Diagnostic that counts the number of passes through the equatorial plane.">EquatorialPassesDiagnostic</a>, since it needs to keep track of when it passes through the equatorial plane. As a result it also keeps track of the number of equatorial passes. Both the intensity profile and fluid velocity profile are specified in the options struct. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a6eb121b8cd1345ac4e3622f6d9d4295d" name="a6eb121b8cd1345ac4e3622f6d9d4295d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6eb121b8cd1345ac4e3622f6d9d4295d">&#9670;&#160;</a></span>EquatorialEmissionDiagnostic()</h2>
 
@@ -231,6 +252,16 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the distance between two geodesics based on their intensity and number of equatorial passes. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">val1</td><td>first geodesic intensity and number of equatorial passes </td></tr>
+    <tr><td class="paramname">val2</td><td>second geodesic intensity and number of equatorial passes </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>real </dd></dl>
+
 <p>Implements <a class="el" href="class_diagnostic.html#a19d41db977e81ac34926b0f52a6d3026">Diagnostic</a>.</p>
 
 </div>
@@ -257,6 +288,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the intensity and number of equatorial passes as a vector of size two. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::vector&lt;real&gt; </dd></dl>
 
 <p>Implements <a class="el" href="class_diagnostic.html#a89cc0afe4b3309f282b36012bf333763">Diagnostic</a>.</p>
 
@@ -285,6 +319,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the intensity and number of equatorial passes as a string. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
+
 <p>Implements <a class="el" href="class_diagnostic.html#a6c9ba4698beacbeb7efc2a4d656152a3">Diagnostic</a>.</p>
 
 </div>
@@ -311,6 +348,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>More descriptive string (with spaces) </p>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
 
 <p>Reimplemented from <a class="el" href="class_diagnostic.html#afe8453c0df2f289713ff124a65c5e630">Diagnostic</a>.</p>
 
@@ -339,6 +379,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Simple name without spaces. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
+
 <p>Implements <a class="el" href="class_diagnostic.html#a1aea89138fc7565c5767ef02d13ac35a">Diagnostic</a>.</p>
 
 </div>
@@ -366,7 +409,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="class_equatorial_emission_diagnostic.html">EquatorialEmissionDiagnostic</a> functions. </p>
+<p><a class="el" href="class_equatorial_emission_diagnostic.html" title="Diagnostic that calculates brightness intensity for the geodesic, based on a specified equatorial dis...">EquatorialEmissionDiagnostic</a> functions. </p>
+<p>Reset the intensity and number of equatorial passes to zero and call base class Reset function </p>
 
 <p>Reimplemented from <a class="el" href="class_diagnostic.html#aa6099bd0552213d96f92946e2bb719b8">Diagnostic</a>.</p>
 
@@ -394,6 +438,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Update the intensity based on the emission model and the number of equatorial passes. </p>
 
 <p>Implements <a class="el" href="class_diagnostic.html#a7493d9e89748cb188f4333381c631e23">Diagnostic</a>.</p>
 

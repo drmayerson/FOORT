@@ -8,6 +8,19 @@
 #include <sstream>	// std::stringstream
 #include <iostream> // std::scientific
 
+/**
+ * @file Integrators.cpp
+ * @author Daniel R. Mayerson
+ * @version 0.1
+ * @date 2025-01-14
+ * @copyright Copyright (c) 2025
+ */
+
+/**
+ * @brief Description string getter for the Integrator
+ *
+ * @return std::string
+ */
 std::string Integrators::GetFullIntegratorDescription()
 {
 	// Helper function to convert (small) doubles to string in scientific notation
@@ -28,10 +41,15 @@ std::string Integrators::GetFullIntegratorDescription()
 	return fullintegratorstring + ", basic step size: " + to_string_scientific(Integrators::epsilon) + ", min. step size: " + to_string_scientific(Integrators::SmallestPossibleStepsize) + ", derivative h: " + to_string_scientific(Integrators::Derivative_hval);
 }
 
+/**
+ * @brief Determine the (affine parameter) step size to take
+ * @details algorithm as in Raptor (eqs (21)-(24)), which is taken from Noble et al. (2007) & Dolence et al. (2009)
+ * @param curpos current position
+ * @param curvel current velocity
+ * @return real
+ */
 real Integrators::GetAdaptiveStep(Point curpos, OneIndex curvel)
 {
-	//// Determine the (affine parameter) step size to take
-	// algorithm as in Raptor (eqs (21)-(24)), which is taken from Noble et al. (2007) & Dolence et al. (2009)
 	real dlambda_x1 = epsilon / (std::fabs(curvel[1]) + delta_nodiv0);
 	real dlambda_x2 = epsilon * std::min(curpos[2], pi - curpos[2]) / (std::fabs(curvel[2]) + delta_nodiv0);
 	real dlambda_x3 = epsilon / (std::fabs(curvel[3] + delta_nodiv0));
@@ -44,7 +62,16 @@ real Integrators::GetAdaptiveStep(Point curpos, OneIndex curvel)
 }
 
 // This is a GeodesicIntegratorFunc
-// Integrate the geodesic equation by one step using Runge-Kutta-4
+/**
+ * @brief Integrate the geodesic equation by one step using Runge-Kutta-4
+ * @param curpos current position
+ * @param curvel current velocity
+ * @param nextpos reference to next position
+ * @param nextvel reference to next velocity
+ * @param stepsize reference to the stepsize
+ * @param theMetric pointer to the Metric object
+ * @param theSource pointer to the Source object
+ */
 void Integrators::IntegrateGeodesicStep_RK4(Point curpos, OneIndex curvel,
 											Point &nextpos, OneIndex &nextvel, real &stepsize, const Metric *theMetric, const Source *theSource)
 {
@@ -90,7 +117,16 @@ void Integrators::IntegrateGeodesicStep_RK4(Point curpos, OneIndex curvel,
 }
 
 // This is a GeodesicIntegratorFunc
-// Integrate the geodesic equation by one step using velocity Verlet algorithm
+/**
+ * @brief Integrate the geodesic equation by one step using the Verlet algorithm
+ * @param curpos current position
+ * @param curvel current velocity
+ * @param nextpos reference to next position
+ * @param nextvel reference to next velocity
+ * @param stepsize reference to the stepsize
+ * @param theMetric pointer to the Metric object
+ * @param theSource pointer to the Source object
+ */
 void Integrators::IntegrateGeodesicStep_Verlet(Point curpos, OneIndex curvel,
 											   Point &nextpos, OneIndex &nextvel, real &stepsize, const Metric *theMetric, const Source *theSource)
 {

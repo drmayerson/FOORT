@@ -94,6 +94,9 @@ $(function(){ initResizable(false); });
   <div class="headertitle"><div class="title">ViewScreen.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Declarations of <a class="el" href="class_view_screen.html" title="This class is in charge of converting a pixel on the screen into physical initial conditions for a ge...">ViewScreen</a> class.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="_geometry_8h_source.html">Geometry.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_metric_8h_source.html">Metric.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_mesh_8h_source.html">Mesh.h</a>&quot;</code><br />
@@ -107,6 +110,7 @@ $(function(){ initResizable(false); });
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_view_screen.html">ViewScreen</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class is in charge of converting a pixel on the screen into physical initial conditions for a geodesic.  <a href="class_view_screen.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
@@ -115,9 +119,16 @@ Enumerations</h2></td></tr>
 , <a class="el" href="#a0d4e12928a4d05040961e205260a0e74a25c3ed952ab058c3507eda273128857c">Timelike</a> = -1
 , <a class="el" href="#a0d4e12928a4d05040961e205260a0e74a43e244bf87a67b19cec131e250ec22a1">Spacelike</a> = 1
  }</td></tr>
+<tr class="memdesc:a0d4e12928a4d05040961e205260a0e74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of geodesic being integrated.  <a href="#a0d4e12928a4d05040961e205260a0e74">More...</a><br /></td></tr>
 <tr class="separator:a0d4e12928a4d05040961e205260a0e74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Declarations of <a class="el" href="class_view_screen.html" title="This class is in charge of converting a pixel on the screen into physical initial conditions for a ge...">ViewScreen</a> class. </p>
+<dl class="section author"><dt>Author</dt><dd>Daniel R. Mayerson</dd></dl>
+<p>This class is in charge of converting a pixel on the screen (which the <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a> wants to integrate) into physical initial conditions for the position and velocity of a geodesic. </p><dl class="section version"><dt>Version</dt><dd>0.1 </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>2025-01-14 </dd></dl>
+<dl class="section copyright"><dt>Copyright</dt><dd>Copyright (c) 2025 </dd></dl>
+</div><h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a0d4e12928a4d05040961e205260a0e74" name="a0d4e12928a4d05040961e205260a0e74"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0d4e12928a4d05040961e205260a0e74">&#9670;&#160;</a></span>GeodesicType</h2>
 
@@ -137,6 +148,9 @@ Enumerations</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Type of geodesic being integrated. </p>
+<p>Null is the default, Timelike is -1, Spacelike is 1. Only Null is supported/implemented at the moment. </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a0d4e12928a4d05040961e205260a0e74abbb93ef26e3c101ff11cdd21cab08a94" name="a0d4e12928a4d05040961e205260a0e74abbb93ef26e3c101ff11cdd21cab08a94"></a>Null&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a0d4e12928a4d05040961e205260a0e74a25c3ed952ab058c3507eda273128857c" name="a0d4e12928a4d05040961e205260a0e74a25c3ed952ab058c3507eda273128857c"></a>Timelike&#160;</td><td class="fielddoc"></td></tr>

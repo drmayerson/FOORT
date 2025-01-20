@@ -91,6 +91,9 @@ $(function(){ initResizable(false); });
   <div class="headertitle"><div class="title">Config Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Namespace for all configuration functions that initialize objects based on configuration file.  
+<a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -102,30 +105,31 @@ Typedefs</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a95fbdb6ab0a4fd441cf467d45b9134d3" id="r_a95fbdb6ab0a4fd441cf467d45b9134d3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a95fbdb6ab0a4fd441cf467d45b9134d3">InitializeScreenOutput</a> (const <a class="el" href="#a2f5a1b7fb125483baf19aeae74128f97">ConfigCollection</a> &amp;theCfg)</td></tr>
+<tr class="memdesc:a95fbdb6ab0a4fd441cf467d45b9134d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize screen output options.  <br /></td></tr>
 <tr class="separator:a95fbdb6ab0a4fd441cf467d45b9134d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a59acbb4cc47d861d055fd0791d1dcf3d" id="r_a59acbb4cc47d861d055fd0791d1dcf3d"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="class_metric.html">Metric</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a59acbb4cc47d861d055fd0791d1dcf3d">GetMetric</a> (const <a class="el" href="#a2f5a1b7fb125483baf19aeae74128f97">ConfigCollection</a> &amp;theCfg)</td></tr>
-<tr class="memdesc:a59acbb4cc47d861d055fd0791d1dcf3d"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="#a59acbb4cc47d861d055fd0791d1dcf3d" title="Config::GetMetric(): Use configuration to create the correct Metric with specified parameters.">Config::GetMetric()</a>: Use configuration to create the correct <a class="el" href="class_metric.html">Metric</a> with specified parameters.  <br /></td></tr>
+<tr class="memdesc:a59acbb4cc47d861d055fd0791d1dcf3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use configuration to create the correct <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a> with specified parameters.  <br /></td></tr>
 <tr class="separator:a59acbb4cc47d861d055fd0791d1dcf3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20abff10fa31701f318afb0cc83a91c1" id="r_a20abff10fa31701f318afb0cc83a91c1"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="class_source.html">Source</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a20abff10fa31701f318afb0cc83a91c1">GetSource</a> (const <a class="el" href="#a2f5a1b7fb125483baf19aeae74128f97">ConfigCollection</a> &amp;theCfg, const <a class="el" href="class_metric.html">Metric</a> *const theMetric)</td></tr>
-<tr class="memdesc:a20abff10fa31701f318afb0cc83a91c1"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="#a20abff10fa31701f318afb0cc83a91c1" title="Config::GetSource(): Use configuration to create the correct Source with specified parameters.">Config::GetSource()</a>: Use configuration to create the correct <a class="el" href="class_source.html">Source</a> with specified parameters.  <br /></td></tr>
+<tr class="memdesc:a20abff10fa31701f318afb0cc83a91c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use configuration to create the correct <a class="el" href="class_source.html" title="Abstract Source base class.">Source</a> with specified parameters.  <br /></td></tr>
 <tr class="separator:a20abff10fa31701f318afb0cc83a91c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71cedb6107b19939ada2bd4d7ac90a87" id="r_a71cedb6107b19939ada2bd4d7ac90a87"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a71cedb6107b19939ada2bd4d7ac90a87">InitializeDiagnostics</a> (const <a class="el" href="#a2f5a1b7fb125483baf19aeae74128f97">ConfigCollection</a> &amp;theCfg, <a class="el" href="_diagnostics_8h.html#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> &amp;alldiags, <a class="el" href="_diagnostics_8h.html#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> &amp;valdiag, const <a class="el" href="class_metric.html">Metric</a> *const theMetric)</td></tr>
-<tr class="memdesc:a71cedb6107b19939ada2bd4d7ac90a87"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="#a71cedb6107b19939ada2bd4d7ac90a87" title="Config::InitializeDiagnostics(): Use configuration to set the Diagnostics bitflag appropriately; init...">Config::InitializeDiagnostics()</a>: Use configuration to set the Diagnostics bitflag appropriately; initialize all <a class="el" href="struct_diagnostic_options.html">DiagnosticOptions</a> for all Diagnostics that are turned on; and set bitflag for diagnostic to be used for coarseness evaluating in <a class="el" href="class_mesh.html">Mesh</a>.  <br /></td></tr>
+<tr class="memdesc:a71cedb6107b19939ada2bd4d7ac90a87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use configuration to set the Diagnostics bitflag appropriately; initialize all <a class="el" href="struct_diagnostic_options.html" title="Base class for DiagnosticOptions. Other Diagnostics can inherit from here if they require more option...">DiagnosticOptions</a> for all Diagnostics that are turned on; and set bitflag for diagnostic to be used for coarseness evaluating in <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a>.  <br /></td></tr>
 <tr class="separator:a71cedb6107b19939ada2bd4d7ac90a87"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7494f2f98a6d892baadb56927ee078cc" id="r_a7494f2f98a6d892baadb56927ee078cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7494f2f98a6d892baadb56927ee078cc">InitializeTerminations</a> (const <a class="el" href="#a2f5a1b7fb125483baf19aeae74128f97">ConfigCollection</a> &amp;theCfg, <a class="el" href="_terminations_8h.html#ade7ca271520105b2b5e784c013d36f87">TermBitflag</a> &amp;allterms, const <a class="el" href="class_metric.html">Metric</a> *const theMetric)</td></tr>
-<tr class="memdesc:a7494f2f98a6d892baadb56927ee078cc"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="#a7494f2f98a6d892baadb56927ee078cc" title="Config::InitializeTerminations(): Use configuration to set the Termination bitflag appropriately; and...">Config::InitializeTerminations()</a>: Use configuration to set the <a class="el" href="class_termination.html">Termination</a> bitflag appropriately; and initialize all <a class="el" href="struct_termination_options.html">TerminationOptions</a> for all Terminations that are turned on.  <br /></td></tr>
+<tr class="memdesc:a7494f2f98a6d892baadb56927ee078cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use configuration to set the <a class="el" href="class_termination.html" title="Abstract base class for all Terminations.">Termination</a> bitflag appropriately; and initialize all <a class="el" href="struct_termination_options.html" title="Base class for all TerminationOptions structs. Other TerminationOptions can inherit from here if they...">TerminationOptions</a> for all Terminations that are turned on.  <br /></td></tr>
 <tr class="separator:a7494f2f98a6d892baadb56927ee078cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace94ec95ebea7ce7472cd0207961788e" id="r_ace94ec95ebea7ce7472cd0207961788e"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="class_view_screen.html">ViewScreen</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ace94ec95ebea7ce7472cd0207961788e">GetViewScreen</a> (const <a class="el" href="#a2f5a1b7fb125483baf19aeae74128f97">ConfigCollection</a> &amp;theCfg, <a class="el" href="_diagnostics_8h.html#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> valdiag, const <a class="el" href="class_metric.html">Metric</a> *const theMetric)</td></tr>
-<tr class="memdesc:ace94ec95ebea7ce7472cd0207961788e"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="#ace94ec95ebea7ce7472cd0207961788e" title="Config::GetViewScreen(): Use configuration to create the ViewScreen object; with options set accordin...">Config::GetViewScreen()</a>: Use configuration to create the <a class="el" href="class_view_screen.html">ViewScreen</a> object; with options set according to the configuration.  <br /></td></tr>
+<tr class="memdesc:ace94ec95ebea7ce7472cd0207961788e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use configuration to create the <a class="el" href="class_view_screen.html" title="This class is in charge of converting a pixel on the screen into physical initial conditions for a ge...">ViewScreen</a> object with specified parameters.  <br /></td></tr>
 <tr class="separator:ace94ec95ebea7ce7472cd0207961788e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2804c9ca29183b5d058748b9c31571ed" id="r_a2804c9ca29183b5d058748b9c31571ed"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="class_mesh.html">Mesh</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2804c9ca29183b5d058748b9c31571ed">GetMesh</a> (const <a class="el" href="#a2f5a1b7fb125483baf19aeae74128f97">ConfigCollection</a> &amp;theCfg, <a class="el" href="_diagnostics_8h.html#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> valdiag)</td></tr>
-<tr class="memdesc:a2804c9ca29183b5d058748b9c31571ed"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="#a2804c9ca29183b5d058748b9c31571ed" title="Config::GetMesh(): Use configuration to create the Mesh object; with options set according to the con...">Config::GetMesh()</a>: Use configuration to create the <a class="el" href="class_mesh.html">Mesh</a> object; with options set according to the configuration. <a class="el" href="#ace94ec95ebea7ce7472cd0207961788e" title="Config::GetViewScreen(): Use configuration to create the ViewScreen object; with options set accordin...">Config::GetViewScreen()</a> calls this when creating the <a class="el" href="class_view_screen.html">ViewScreen</a> object.  <br /></td></tr>
+<tr class="memdesc:a2804c9ca29183b5d058748b9c31571ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use configuration to create the <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a> object with specified parameters.  <br /></td></tr>
 <tr class="separator:a2804c9ca29183b5d058748b9c31571ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6591bdad850fba9f052907027e8553a6" id="r_a6591bdad850fba9f052907027e8553a6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_integrators_8h.html#a0962fa2729941acaaa2c5887a0aad0fe">GeodesicIntegratorFunc</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6591bdad850fba9f052907027e8553a6">GetGeodesicIntegrator</a> (const <a class="el" href="#a2f5a1b7fb125483baf19aeae74128f97">ConfigCollection</a> &amp;theCfg)</td></tr>
-<tr class="memdesc:a6591bdad850fba9f052907027e8553a6"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="#a6591bdad850fba9f052907027e8553a6" title="Config::GetGeodesicIntegrator(): Returns a pointer to the integrator function to be used as specified...">Config::GetGeodesicIntegrator()</a>: Returns a pointer to the integrator function to be used as specified in the configuration file.  <br /></td></tr>
+<tr class="memdesc:a6591bdad850fba9f052907027e8553a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use configuration to set the GeodesicIntegratorFunc pointer to the correct integrator function.  <br /></td></tr>
 <tr class="separator:a6591bdad850fba9f052907027e8553a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab09308a86d6f9fe3ded18698da7ca3cd" id="r_ab09308a86d6f9fe3ded18698da7ca3cd"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="class_geodesic_output_handler.html">GeodesicOutputHandler</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab09308a86d6f9fe3ded18698da7ca3cd">GetOutputHandler</a> (const <a class="el" href="#a2f5a1b7fb125483baf19aeae74128f97">ConfigCollection</a> &amp;theCfg, <a class="el" href="_diagnostics_8h.html#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> alldiags, <a class="el" href="_diagnostics_8h.html#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> valdiag, std::string FirstLineInfo)</td></tr>
-<tr class="memdesc:ab09308a86d6f9fe3ded18698da7ca3cd"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="#ab09308a86d6f9fe3ded18698da7ca3cd" title="Config::GetOutputHandler(): Creates the GeodesicOutputHandler object with options specified according...">Config::GetOutputHandler()</a>: Creates the <a class="el" href="class_geodesic_output_handler.html">GeodesicOutputHandler</a> object with options specified according to the configuration file, for handling of geodesic outputs.  <br /></td></tr>
+<tr class="memdesc:ab09308a86d6f9fe3ded18698da7ca3cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use configuration to create the <a class="el" href="class_geodesic_output_handler.html" title="// GeodesicOutputHandler handles all of the output to file. It gets passed all of the output strings ...">GeodesicOutputHandler</a> object with specified parameters.  <br /></td></tr>
 <tr class="separator:ab09308a86d6f9fe3ded18698da7ca3cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
@@ -135,7 +139,9 @@ Variables</h2></td></tr>
 <tr class="memitem:a5dcf5929dab871b01bc51c2d92b0e2ca" id="r_a5dcf5929dab871b01bc51c2d92b0e2ca"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5dcf5929dab871b01bc51c2d92b0e2ca">Output_Other_Default</a> = <a class="el" href="_input_output_8h.html#a6bcb6b3fe3d480eff62b980e53515a37aa3f5a3d4e574903b3a1fd62c45e54cf4">OutputLevel::Level_1_PROC</a></td></tr>
 <tr class="separator:a5dcf5929dab871b01bc51c2d92b0e2ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Typedef Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Namespace for all configuration functions that initialize objects based on configuration file. </p>
+</div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="a2f5a1b7fb125483baf19aeae74128f97" name="a2f5a1b7fb125483baf19aeae74128f97"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2f5a1b7fb125483baf19aeae74128f97">&#9670;&#160;</a></span>ConfigCollection</h2>
 
@@ -180,7 +186,14 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="#a6591bdad850fba9f052907027e8553a6" title="Config::GetGeodesicIntegrator(): Returns a pointer to the integrator function to be used as specified...">Config::GetGeodesicIntegrator()</a>: Returns a pointer to the integrator function to be used as specified in the configuration file. </p>
+<p>Use configuration to set the GeodesicIntegratorFunc pointer to the correct integrator function. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">theCfg</td><td>Pointer to the configuration object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>GeodesicIntegratorFunc function </dd></dl>
 
 </div>
 </div>
@@ -203,7 +216,15 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="#a2804c9ca29183b5d058748b9c31571ed" title="Config::GetMesh(): Use configuration to create the Mesh object; with options set according to the con...">Config::GetMesh()</a>: Use configuration to create the <a class="el" href="class_mesh.html">Mesh</a> object; with options set according to the configuration. <a class="el" href="#ace94ec95ebea7ce7472cd0207961788e" title="Config::GetViewScreen(): Use configuration to create the ViewScreen object; with options set accordin...">Config::GetViewScreen()</a> calls this when creating the <a class="el" href="class_view_screen.html">ViewScreen</a> object. </p>
+<p>Use configuration to create the <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a> object with specified parameters. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">theCfg</td><td>Pointer to the configuration object </td></tr>
+    <tr><td class="paramname">valdiag</td><td><a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> bitflag used for coarseness evaluation in the <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a> object </dd></dl>
 
 </div>
 </div>
@@ -222,7 +243,14 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="#a59acbb4cc47d861d055fd0791d1dcf3d" title="Config::GetMetric(): Use configuration to create the correct Metric with specified parameters.">Config::GetMetric()</a>: Use configuration to create the correct <a class="el" href="class_metric.html">Metric</a> with specified parameters. </p>
+<p>Use configuration to create the correct <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a> with specified parameters. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">theCfg</td><td>Pointer to the configuration object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a> pointer </dd></dl>
 
 </div>
 </div>
@@ -255,7 +283,17 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="#ab09308a86d6f9fe3ded18698da7ca3cd" title="Config::GetOutputHandler(): Creates the GeodesicOutputHandler object with options specified according...">Config::GetOutputHandler()</a>: Creates the <a class="el" href="class_geodesic_output_handler.html">GeodesicOutputHandler</a> object with options specified according to the configuration file, for handling of geodesic outputs. </p>
+<p>Use configuration to create the <a class="el" href="class_geodesic_output_handler.html" title="// GeodesicOutputHandler handles all of the output to file. It gets passed all of the output strings ...">GeodesicOutputHandler</a> object with specified parameters. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">theCfg</td><td>Pointer to the configuration object </td></tr>
+    <tr><td class="paramname">alldiags</td><td>Diagnostics bitflags </td></tr>
+    <tr><td class="paramname">valdiag</td><td><a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> bitflag used for coarseness evaluation in the <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a> </td></tr>
+    <tr><td class="paramname">FirstLineInfo</td><td>String to be written as the first line in the output file </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the <a class="el" href="class_geodesic_output_handler.html" title="// GeodesicOutputHandler handles all of the output to file. It gets passed all of the output strings ...">GeodesicOutputHandler</a> object </dd></dl>
 
 </div>
 </div>
@@ -278,7 +316,15 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="#a20abff10fa31701f318afb0cc83a91c1" title="Config::GetSource(): Use configuration to create the correct Source with specified parameters.">Config::GetSource()</a>: Use configuration to create the correct <a class="el" href="class_source.html">Source</a> with specified parameters. </p>
+<p>Use configuration to create the correct <a class="el" href="class_source.html" title="Abstract Source base class.">Source</a> with specified parameters. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">theCfg</td><td>Pointer to the configuration object </td></tr>
+    <tr><td class="paramname">theMetric</td><td>Pointer to the <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a> object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the <a class="el" href="class_source.html" title="Abstract Source base class.">Source</a> object </dd></dl>
 
 </div>
 </div>
@@ -306,7 +352,16 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="#ace94ec95ebea7ce7472cd0207961788e" title="Config::GetViewScreen(): Use configuration to create the ViewScreen object; with options set accordin...">Config::GetViewScreen()</a>: Use configuration to create the <a class="el" href="class_view_screen.html">ViewScreen</a> object; with options set according to the configuration. </p>
+<p>Use configuration to create the <a class="el" href="class_view_screen.html" title="This class is in charge of converting a pixel on the screen into physical initial conditions for a ge...">ViewScreen</a> object with specified parameters. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">theCfg</td><td>Pointer to the configuration object </td></tr>
+    <tr><td class="paramname">valdiag</td><td><a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a> bitflag used for coarseness evaluation in the <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a> </td></tr>
+    <tr><td class="paramname">theMetric</td><td>Pointer to the <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a> object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the <a class="el" href="class_view_screen.html" title="This class is in charge of converting a pixel on the screen into physical initial conditions for a ge...">ViewScreen</a> object </dd></dl>
 
 </div>
 </div>
@@ -339,7 +394,16 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="#a71cedb6107b19939ada2bd4d7ac90a87" title="Config::InitializeDiagnostics(): Use configuration to set the Diagnostics bitflag appropriately; init...">Config::InitializeDiagnostics()</a>: Use configuration to set the Diagnostics bitflag appropriately; initialize all <a class="el" href="struct_diagnostic_options.html">DiagnosticOptions</a> for all Diagnostics that are turned on; and set bitflag for diagnostic to be used for coarseness evaluating in <a class="el" href="class_mesh.html">Mesh</a>. </p>
+<p>Use configuration to set the Diagnostics bitflag appropriately; initialize all <a class="el" href="struct_diagnostic_options.html" title="Base class for DiagnosticOptions. Other Diagnostics can inherit from here if they require more option...">DiagnosticOptions</a> for all Diagnostics that are turned on; and set bitflag for diagnostic to be used for coarseness evaluating in <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">theCfg</td><td>Pointer to the configuration object </td></tr>
+    <tr><td class="paramname">alldiags</td><td>Pointer to the diagnostics bitflags </td></tr>
+    <tr><td class="paramname">valdiag</td><td>Pointer to the diagnostics used for coarseness evaluation in the <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a> </td></tr>
+    <tr><td class="paramname">theMetric</td><td>Pointer to the <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a> object </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -357,6 +421,14 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Initialize screen output options. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">theCfg</td><td>Pointer to the configuration object </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -384,7 +456,15 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="#a7494f2f98a6d892baadb56927ee078cc" title="Config::InitializeTerminations(): Use configuration to set the Termination bitflag appropriately; and...">Config::InitializeTerminations()</a>: Use configuration to set the <a class="el" href="class_termination.html">Termination</a> bitflag appropriately; and initialize all <a class="el" href="struct_termination_options.html">TerminationOptions</a> for all Terminations that are turned on. </p>
+<p>Use configuration to set the <a class="el" href="class_termination.html" title="Abstract base class for all Terminations.">Termination</a> bitflag appropriately; and initialize all <a class="el" href="struct_termination_options.html" title="Base class for all TerminationOptions structs. Other TerminationOptions can inherit from here if they...">TerminationOptions</a> for all Terminations that are turned on. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">theCfg</td><td>Pointer to the configuration object </td></tr>
+    <tr><td class="paramname">allterms</td><td>Pointer to the termination bitflags </td></tr>
+    <tr><td class="paramname">theMetric</td><td>Pointer to the <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a> object </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

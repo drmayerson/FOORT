@@ -92,6 +92,9 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
+<p>The abstract base class for all Metrics.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_metric_8h_source.html">Metric.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for Metric:</div>
@@ -99,16 +102,16 @@ Inheritance diagram for Metric:</div>
  <div class="center">
   <img src="class_metric.png" usemap="#Metric_map" alt=""/>
   <map id="Metric_map" name="Metric_map">
-<area href="class_boson_star_metric.html" alt="BosonStarMetric" shape="rect" coords="0,56,146,80"/>
-<area href="class_flat_space_metric.html" alt="FlatSpaceMetric" shape="rect" coords="156,56,302,80"/>
-<area href="class_singularity_metric.html" alt="SingularityMetric" shape="rect" coords="312,56,458,80"/>
-<area href="class_spherical_horizon_metric.html" alt="SphericalHorizonMetric" shape="rect" coords="780,56,926,80"/>
-<area href="class_s_t3_cr_metric.html" alt="ST3CrMetric" shape="rect" coords="312,112,458,136"/>
-<area href="class_johannsen_metric.html" alt="JohannsenMetric" shape="rect" coords="468,112,614,136"/>
-<area href="class_kerr_metric.html" alt="KerrMetric" shape="rect" coords="624,112,770,136"/>
-<area href="class_kerr_schild_metric.html" alt="KerrSchildMetric" shape="rect" coords="780,112,926,136"/>
-<area href="class_manko_novikov_metric.html" alt="MankoNovikovMetric" shape="rect" coords="936,112,1082,136"/>
-<area href="class_rasheed_larsen_metric.html" alt="RasheedLarsenMetric" shape="rect" coords="1092,112,1238,136"/>
+<area href="class_boson_star_metric.html" title="Boson star metric with solitonic potential." alt="BosonStarMetric" shape="rect" coords="0,56,146,80"/>
+<area href="class_flat_space_metric.html" title="Flat space metric in 4D." alt="FlatSpaceMetric" shape="rect" coords="156,56,302,80"/>
+<area href="class_singularity_metric.html" title="Abstract base class for a metric with an arbitrary number of singularities (of arbitrary codimension)" alt="SingularityMetric" shape="rect" coords="312,56,458,80"/>
+<area href="class_spherical_horizon_metric.html" title="Abstract base class for a metric with a spherical horizon (i.e. horizon at constant radius r)" alt="SphericalHorizonMetric" shape="rect" coords="780,56,926,80"/>
+<area href="class_s_t3_cr_metric.html" title="Ring fuzzball metric." alt="ST3CrMetric" shape="rect" coords="312,112,458,136"/>
+<area href="class_johannsen_metric.html" title="Johannsen black hole metric." alt="JohannsenMetric" shape="rect" coords="468,112,614,136"/>
+<area href="class_kerr_metric.html" title="The Kerr metric." alt="KerrMetric" shape="rect" coords="624,112,770,136"/>
+<area href="class_kerr_schild_metric.html" title="Kerr metric in Kerr-Schild coordinates." alt="KerrSchildMetric" shape="rect" coords="780,112,926,136"/>
+<area href="class_manko_novikov_metric.html" title="Mano-Novikov metric (with angular momentum and M3 parameter turned on)" alt="MankoNovikovMetric" shape="rect" coords="936,112,1082,136"/>
+<area href="class_rasheed_larsen_metric.html" title="Rasheed-Larsen black hole." alt="RasheedLarsenMetric" shape="rect" coords="1092,112,1238,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -117,31 +120,40 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a7d6124dba09b572c6123ada4704873e8" id="r_a7d6124dba09b572c6123ada4704873e8"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7d6124dba09b572c6123ada4704873e8">~Metric</a> ()=default</td></tr>
 <tr class="separator:a7d6124dba09b572c6123ada4704873e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb49fde3a5b86106b50f8d8ead78125b" id="r_afb49fde3a5b86106b50f8d8ead78125b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afb49fde3a5b86106b50f8d8ead78125b">Metric</a> (bool rlogscale=false)</td></tr>
-<tr class="memdesc:afb49fde3a5b86106b50f8d8ead78125b"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_metric.html">Metric</a> (abstract base class) functions.  <br /></td></tr>
+<tr class="memdesc:afb49fde3a5b86106b50f8d8ead78125b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a> object.  <br /></td></tr>
 <tr class="separator:afb49fde3a5b86106b50f8d8ead78125b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61fe8a3c276a36d782573043fdcb6966" id="r_a61fe8a3c276a36d782573043fdcb6966"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="_geometry_8h.html#a9cd1cb43637d1e6e730925d90d0b068d">TwoIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a61fe8a3c276a36d782573043fdcb6966">getMetric_dd</a> (const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p) const =0</td></tr>
 <tr class="separator:a61fe8a3c276a36d782573043fdcb6966"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f4ae22cfe486e974cc184e31b88bb73" id="r_a8f4ae22cfe486e974cc184e31b88bb73"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="_geometry_8h.html#a9cd1cb43637d1e6e730925d90d0b068d">TwoIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8f4ae22cfe486e974cc184e31b88bb73">getMetric_uu</a> (const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p) const =0</td></tr>
 <tr class="separator:a8f4ae22cfe486e974cc184e31b88bb73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a992c9e48ed03548713fbfd3be0ebc4da" id="r_a992c9e48ed03548713fbfd3be0ebc4da"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="_geometry_8h.html#ab418a89a927c785b2610da4cc7f40cf5">ThreeIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a992c9e48ed03548713fbfd3be0ebc4da">getChristoffel_udd</a> (const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p) const</td></tr>
+<tr class="memdesc:a992c9e48ed03548713fbfd3be0ebc4da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the Christoffel symbols of the metric (indices up, down, down)  <br /></td></tr>
 <tr class="separator:a992c9e48ed03548713fbfd3be0ebc4da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a58d39502395541ff9c46f48540c03b" id="r_a1a58d39502395541ff9c46f48540c03b"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="_geometry_8h.html#a07b49904b9472e4e238e844f0ff48a50">FourIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1a58d39502395541ff9c46f48540c03b">getRiemann_uddd</a> (const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p) const</td></tr>
+<tr class="memdesc:a1a58d39502395541ff9c46f48540c03b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Riemann tensor of the metric (indices up, down, down, down)  <br /></td></tr>
 <tr class="separator:a1a58d39502395541ff9c46f48540c03b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ad8c08271e4010a610565d7894855a6" id="r_a3ad8c08271e4010a610565d7894855a6"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3ad8c08271e4010a610565d7894855a6">getKretschmann</a> (const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p) const</td></tr>
+<tr class="memdesc:a3ad8c08271e4010a610565d7894855a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the Kretschmann scalar at a point.  <br /></td></tr>
 <tr class="separator:a3ad8c08271e4010a610565d7894855a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b0e0169c9b0cf7ca4f0c67a2cde8db3" id="r_a6b0e0169c9b0cf7ca4f0c67a2cde8db3"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6b0e0169c9b0cf7ca4f0c67a2cde8db3">getFullDescriptionStr</a> () const</td></tr>
+<tr class="memdesc:a6b0e0169c9b0cf7ca4f0c67a2cde8db3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base class description string getter.  <br /></td></tr>
 <tr class="separator:a6b0e0169c9b0cf7ca4f0c67a2cde8db3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae29832cf536215e598893ece88e58170" id="r_ae29832cf536215e598893ece88e58170"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae29832cf536215e598893ece88e58170">getrLogScale</a> () const</td></tr>
+<tr class="memdesc:ae29832cf536215e598893ece88e58170"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get whether we are using a logarithmic radial scale.  <br /></td></tr>
 <tr class="separator:ae29832cf536215e598893ece88e58170"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:a2e4146bcd1d23b95bdd3e7974643e8a5" id="r_a2e4146bcd1d23b95bdd3e7974643e8a5"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2e4146bcd1d23b95bdd3e7974643e8a5">m_Symmetries</a> {}</td></tr>
+<tr class="memdesc:a2e4146bcd1d23b95bdd3e7974643e8a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">The symmetries (coordinate Killing vectors) of the metric. Should be set by descendant constructor.  <br /></td></tr>
 <tr class="separator:a2e4146bcd1d23b95bdd3e7974643e8a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14194404785702d6c7d7afb2ef1de717" id="r_a14194404785702d6c7d7afb2ef1de717"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a14194404785702d6c7d7afb2ef1de717">m_rLogScale</a></td></tr>
+<tr class="memdesc:a14194404785702d6c7d7afb2ef1de717"><td class="mdescLeft">&#160;</td><td class="mdescRight">Are we using a logarithmic r coordinate?  <br /></td></tr>
 <tr class="separator:a14194404785702d6c7d7afb2ef1de717"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>The abstract base class for all Metrics. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a7d6124dba09b572c6123ada4704873e8" name="a7d6124dba09b572c6123ada4704873e8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7d6124dba09b572c6123ada4704873e8">&#9670;&#160;</a></span>~Metric()</h2>
 
@@ -182,7 +194,13 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="class_metric.html">Metric</a> (abstract base class) functions. </p>
+<p>Construct a new <a class="el" href="class_metric.html" title="The abstract base class for all Metrics.">Metric</a> object. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rlogscale</td><td>Whether we are using a logarithmic radial scale </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -210,6 +228,15 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the Christoffel symbols of the metric (indices up, down, down) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Point at which to evaluate the Christoffel symbols </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>ThreeIndex </dd></dl>
+
 </div>
 </div>
 <a id="a6b0e0169c9b0cf7ca4f0c67a2cde8db3" name="a6b0e0169c9b0cf7ca4f0c67a2cde8db3"></a>
@@ -234,6 +261,9 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Base class description string getter. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::string </dd></dl>
 
 <p>Reimplemented in <a class="el" href="class_boson_star_metric.html#a2bb6402afaca74d3fd1e46c21af7047f">BosonStarMetric</a>, <a class="el" href="class_flat_space_metric.html#a4f297954264a89d385ca874e8038f1ff">FlatSpaceMetric</a>, <a class="el" href="class_johannsen_metric.html#a8d7bb689ad3c2a08b9b386284d2e1584">JohannsenMetric</a>, <a class="el" href="class_kerr_metric.html#a581ead02add5bb15d1b467d69e79a2c7">KerrMetric</a>, <a class="el" href="class_kerr_schild_metric.html#a33bfa0742810a494e45d6f8b72956e50">KerrSchildMetric</a>, <a class="el" href="class_manko_novikov_metric.html#a84291afda877bdcdd2b9238eb0487cdc">MankoNovikovMetric</a>, <a class="el" href="class_rasheed_larsen_metric.html#a9e0c59c700ca8c7a8339e5243c309755">RasheedLarsenMetric</a>, and <a class="el" href="class_s_t3_cr_metric.html#ae446615948cadc2added393bb5b92bcc">ST3CrMetric</a>.</p>
 
@@ -261,6 +291,16 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Get the Kretschmann scalar at a point. </p>
+<p>The Kretschmann scalar is defined as R_{abcd} R^{abcd} </p><dl class="section note"><dt>Note</dt><dd>This needs to be implemented still. </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Point at which to evaluate the Kretschmann scalar </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>real </dd></dl>
 
 </div>
 </div>
@@ -341,6 +381,16 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Riemann tensor of the metric (indices up, down, down, down) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Point at which to evaluate the Riemann tensor </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>Note</dt><dd>This needs to be implemented still. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>FourIndex </dd></dl>
+
 </div>
 </div>
 <a id="ae29832cf536215e598893ece88e58170" name="ae29832cf536215e598893ece88e58170"></a>
@@ -357,6 +407,11 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Get whether we are using a logarithmic radial scale. </p>
+<dl class="section return"><dt>Returns</dt><dd>true </dd>
+<dd>
+false </dd></dl>
 
 </div>
 </div>
@@ -381,6 +436,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Are we using a logarithmic r coordinate? </p>
+
 </div>
 </div>
 <a id="a2e4146bcd1d23b95bdd3e7974643e8a5" name="a2e4146bcd1d23b95bdd3e7974643e8a5"></a>
@@ -402,6 +459,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The symmetries (coordinate Killing vectors) of the metric. Should be set by descendant constructor. </p>
 
 </div>
 </div>

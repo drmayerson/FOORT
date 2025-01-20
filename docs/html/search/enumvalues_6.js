@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['nan_0',['NaN',['../_terminations_8h.html#a8cdefb1144dde7779068f9cd70ef5b7ca7ecfb3bf076a6a9635f975fe96ac97fd',1,'Terminations.h']]],
-  ['null_1',['Null',['../_view_screen_8h.html#a0d4e12928a4d05040961e205260a0e74abbb93ef26e3c101ff11cdd21cab08a94',1,'ViewScreen.h']]]
+  ['maxlevel_0',['MaxLevel',['../_input_output_8h.html#a6bcb6b3fe3d480eff62b980e53515a37ab1e6fa4db42923f170a17ab2ea0798d2',1,'InputOutput.h']]],
+  ['maxterms_1',['Maxterms',['../_terminations_8h.html#a8cdefb1144dde7779068f9cd70ef5b7ca133dce88000626808d16e3f6d3a18eb0',1,'Terminations.h']]]
 ];
