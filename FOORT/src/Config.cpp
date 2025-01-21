@@ -44,10 +44,6 @@ std::unique_ptr<MyTermOptions> MyTermination::DiagOptions;
 */
 //// END TERMINATION ADD POINT D.1 ////
 
-///////////////////////////////////////////////////////////////////////////////////
-// Config namespace and all of its functions are only defined in CONFIGURATION_MODE
-#ifdef CONFIGURATION_MODE
-
 //! \brief Initialize screen output options
 //! \param theCfg Pointer to the configuration object
 void Config::InitializeScreenOutput(const ConfigCollection &theCfg)
@@ -1295,5 +1291,3 @@ std::unique_ptr<GeodesicOutputHandler> Config::GetOutputHandler(const ConfigColl
 
 	return TheHandler;
 }
-
-#endif // CONFIGURATION_MODE

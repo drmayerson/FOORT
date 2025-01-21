@@ -93,6 +93,9 @@ $(function(){ initResizable(false); });
   <div class="headertitle"><div class="title">Main.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Main function for FOORT.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="_config_8h_source.html">Config.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_diagnostics_8h_source.html">Diagnostics.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_geodesic_8h_source.html">Geodesic.h</a>&quot;</code><br />
@@ -108,63 +111,16 @@ $(function(){ initResizable(false); });
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a357b81da139d8647f37e1c857cc9f8d2" id="r_a357b81da139d8647f37e1c857cc9f8d2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a357b81da139d8647f37e1c857cc9f8d2">LoadPrecompiledOptions</a> (std::unique_ptr&lt; <a class="el" href="class_metric.html">Metric</a> &gt; &amp;theM, std::unique_ptr&lt; <a class="el" href="class_source.html">Source</a> &gt; &amp;theS, <a class="el" href="_diagnostics_8h.html#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> &amp;AllDiags, <a class="el" href="_diagnostics_8h.html#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> &amp;ValDiag, <a class="el" href="_terminations_8h.html#ade7ca271520105b2b5e784c013d36f87">TermBitflag</a> &amp;AllTerms, std::unique_ptr&lt; <a class="el" href="class_view_screen.html">ViewScreen</a> &gt; &amp;theView, <a class="el" href="_integrators_8h.html#a0962fa2729941acaaa2c5887a0aad0fe">GeodesicIntegratorFunc</a> &amp;theIntegrator, std::unique_ptr&lt; <a class="el" href="class_geodesic_output_handler.html">GeodesicOutputHandler</a> &gt; &amp;theOutputHandler)</td></tr>
-<tr class="separator:a357b81da139d8647f37e1c857cc9f8d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ddf1224851353fc92bfbff6f499fa97" id="r_a0ddf1224851353fc92bfbff6f499fa97"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0ddf1224851353fc92bfbff6f499fa97">main</a> (int argc, char *argv[])</td></tr>
 <tr class="separator:a0ddf1224851353fc92bfbff6f499fa97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
-<a id="a357b81da139d8647f37e1c857cc9f8d2" name="a357b81da139d8647f37e1c857cc9f8d2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a357b81da139d8647f37e1c857cc9f8d2">&#9670;&#160;</a></span>LoadPrecompiledOptions()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void LoadPrecompiledOptions </td>
-          <td>(</td>
-          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="class_metric.html">Metric</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>theM</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="class_source.html">Source</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>theS</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="_diagnostics_8h.html#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>AllDiags</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="_diagnostics_8h.html#af7f2400872c056241d14f2667f6615f2">DiagBitflag</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>ValDiag</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="_terminations_8h.html#ade7ca271520105b2b5e784c013d36f87">TermBitflag</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>AllTerms</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="class_view_screen.html">ViewScreen</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>theView</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="_integrators_8h.html#a0962fa2729941acaaa2c5887a0aad0fe">GeodesicIntegratorFunc</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>theIntegrator</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="class_geodesic_output_handler.html">GeodesicOutputHandler</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>theOutputHandler</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Main function for FOORT. </p>
+<dl class="section author"><dt>Author</dt><dd>Daniel R. Mayerson </dd></dl>
+<dl class="section version"><dt>Version</dt><dd>1.0 </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>2025-1-21 </dd></dl>
+<dl class="section copyright"><dt>Copyright</dt><dd>Copyright (c) 2025 </dd></dl>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="a0ddf1224851353fc92bfbff6f499fa97" name="a0ddf1224851353fc92bfbff6f499fa97"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0ddf1224851353fc92bfbff6f499fa97">&#9670;&#160;</a></span>main()</h2>
 

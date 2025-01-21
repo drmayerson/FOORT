@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['largecounter_5fmax_0',['LARGECOUNTER_MAX',['../_geometry_8h.html#adb5bf7146b49bc73adb4d4fd20cbf916',1,'Geometry.h']]]
+  ['pixel_5fmax_0',['PIXEL_MAX',['../_geometry_8h.html#a3275dc11eb3b45b4e8d679fa053f9aba',1,'Geometry.h']]]
 ];

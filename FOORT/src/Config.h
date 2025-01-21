@@ -10,11 +10,6 @@
  * @copyright Copyright (c) 2024
  */
 
-//////////////////////////////////////////////////////////
-// OUTDATED: should remain defined for now
-#define CONFIGURATION_MODE
-//////////////////////////////////////////////////////////
-
 #include "Geometry.h"
 #include "Metric.h"
 #include "Diagnostics.h"
