@@ -9,7 +9,7 @@ The code files are all in the `FOORT/src` subfolder.
 #### CMake
 
 The executable can be built with CMake, which should be installed first (for regular Makefiles, see further). The advantage of this method it that, in principle, CMake
-will automatically detect your relevant compilers.
+will automatically detect your relevant compilers. Furthermore, it will enable you to generate the automated documentation and run the tests, if needed.
 
 One can then run
 
@@ -34,11 +34,11 @@ export CXX=/opt/homebrew/bin/g++-14
 export SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk/
 ```
 
-For convenience, this is stored in `alternative_builds/MacOS_workaround.sh`, which should be executed with `source \the\path\` in the terminal. You may need to `rm -rf build` in order to start clean.
+For convenience, this is stored in `alternative_builds/MacOS_workaround.sh`, which should be executed with `source \the\path\` in the terminal in case issues are encountered. You may need to `rm -rf build` in order to start clean.
 
 #### Old MakeFiles
 
-Alternatively, old Makefiles can be found in `alternative_builds/old_makefiles`. These can be system dependant, however, but should be adaptable to your needs.
+Alternatively, old Makefiles can be found in `alternative_builds/old_makefiles`. These can be system dependent, however, but should be adaptable to your needs.
 
 ### WINDOWS VISUAL STUDIO
 
