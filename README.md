@@ -24,6 +24,12 @@ which will cause the executable to be stored in the `FOORT/bin` subdirectory. CM
 rm -rf build
 ```
 
+#### CMake on clusters / supercomputers
+
+Typically, compiling with CMake on an HPC-cluster requires loading the relevant CMake module. This code has been succesfully compiled on CSD3 (Cambridge) and Cosma7 (Durham) using the latest CMake modules.
+
+One could get an error if the version of CMake is not recent enough. Alternatively, `gcc` version 7.5 (and presumably lower) raised an issue of not finding the `filesystem` header. If this problem is encountered, one should change this header to `<experimental/filesystem>`. With this one change, the code also compiled on Fawcett, a smaller cluster (DAMTP, Cambridge).
+
 #### MacOS Troubleshooting
 
 Recent versions of MacOS may encounter issues with CMake. The following seems to resolve current issues.
