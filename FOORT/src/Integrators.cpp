@@ -54,7 +54,7 @@ real Integrators::GetAdaptiveStep(Point curpos, OneIndex curvel)
 	real dlambda_x2 = epsilon * std::min(curpos[2], pi - curpos[2]) / (std::fabs(curvel[2]) + delta_nodiv0);
 	real dlambda_x3 = epsilon / (std::fabs(curvel[3] + delta_nodiv0));
 
-	real h = 1 / (1 / std::fabs(dlambda_x1) + 1 / std::fabs(dlambda_x2) + 1 / std::fabs(dlambda_x3));
+	real h = 1. / (1. / std::fabs(dlambda_x1) + 1. / std::fabs(dlambda_x2) + 1. / std::fabs(dlambda_x3));
 	// Make sure we take at least the smallest allowed step size
 	h = std::max(h, SmallestPossibleStepsize);
 
@@ -136,9 +136,8 @@ void Integrators::IntegrateGeodesicStep_Verlet(Point curpos, OneIndex curvel,
 	// The rhs of the geodesic equation for the velocity is:
 	// d/d\lambda(u^a) = - Gamma^a_{bc} u^b u^c + [Source(x,u)]^a;
 	// This helper function computes the rhs of the geodesic equation
-	auto geoRHS = [theMetric, theSource](Point p, OneIndex v) -> OneIndex
+	auto geoRHS = [theMetric, theSource](Point p, OneIndex v, ThreeIndex christ) -> OneIndex
 	{
-		ThreeIndex christ{theMetric->getChristoffel_udd(p)};
 		OneIndex ret{theSource->getSource(p, v)};
 		for (int i = 0; i < dimension; ++i)
 			for (int j = 0; j < dimension; ++j)
@@ -159,13 +158,17 @@ void Integrators::IntegrateGeodesicStep_Verlet(Point curpos, OneIndex curvel,
 	};
 
 	//// Perform velocity Verlet algorithm (see Dolence et al. (2009) eq. (14))
-	OneIndex accelcur{geoRHS(curpos, curvel)};
+	ThreeIndex christ{theMetric->getChristoffel_udd(curpos)};
+
+	OneIndex accelcur{geoRHS(curpos, curvel, christ)};
 
 	nextpos = curpos + h * curvel + h * h / 2.0 * accelcur;
 
 	OneIndex velintermed{curvel + h * accelcur};
 
-	OneIndex accelstep{geoRHS(nextpos, velintermed)};
+	christ = theMetric->getChristoffel_udd(nextpos);
+
+	OneIndex accelstep{geoRHS(nextpos, velintermed, christ)};
 
 	nextvel = curvel + h / 2.0 * (accelcur + accelstep);
 
@@ -173,7 +176,7 @@ void Integrators::IntegrateGeodesicStep_Verlet(Point curpos, OneIndex curvel,
 	while (VerletVelocityTolerance > 0.0 && cartvecsq(nextvel - velintermed) / cartvecsq(nextvel) > VerletVelocityTolerance * VerletVelocityTolerance)
 	{
 		velintermed = nextvel;
-		accelstep = geoRHS(nextpos, velintermed);
+		accelstep = geoRHS(nextpos, velintermed, christ);
 		nextvel = curvel + h / 2.0 * (accelcur + accelstep);
 	}
 
