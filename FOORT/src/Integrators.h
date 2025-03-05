@@ -31,7 +31,7 @@ namespace Integrators
 	//! This is used to avoid dividing by zero
 	constexpr real delta_nodiv0 = 1e-20;
 
-	//! The amount of any coordinate that we shift to calculate derivatives (using central difference)
+	//! The spacing used in stencils for the calculation of numerical derivatives (e.g. in Christoffel symbols)
 	inline real Derivative_hval{1e-7};
 
 	//! The name of the integrator selected

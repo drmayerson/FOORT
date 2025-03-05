@@ -8,6 +8,8 @@ FOORT/*.o
 FOORT/FOORT
 *vscode*
 PostProc/*
+!PostProc/*.py
+!PostProc/Doxyfile
 FOORT/Output/BS*
 build/*
 FOORT/bin/*

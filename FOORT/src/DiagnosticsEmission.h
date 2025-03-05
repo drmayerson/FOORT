@@ -36,8 +36,7 @@ public:
 };
 
 /**
- * @brief The Johnson SU emission model used in GLM
- *
+ * @brief The Johnson SU emission model used in GLM 2020, PRD 102(12):124004
  */
 struct GLMJohnsonSUEmission final : public EmissionModel
 {
@@ -91,8 +90,7 @@ protected:
 /**
  * @brief General circular radial fluid velocity model
  * @details This fluid velocity model has three tuneable parameters and represents fluid travelling at a mix of
- * ()sub)Keplerian circular orbits and radially infalling orbits in the equatorial plane
- *
+ * (sub)Keplerian circular orbits and radially infalling orbits in the equatorial plane
  */
 struct GeneralCircularRadialFluid final : public FluidVelocityModel
 {

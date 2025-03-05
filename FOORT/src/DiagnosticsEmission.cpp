@@ -53,13 +53,10 @@ std::string GLMJohnsonSUEmission::getFullDescriptionStr() const
 	return "GLM Johnson SU emission (mu = " + std::to_string(m_mu) + ", gamma = " + std::to_string(m_gamma) + ", sigma = " + std::to_string(m_sigma) + ")";
 }
 
-/// <summary>
-/// FluidVelocityModel functions
-/// </summary>
+// FluidVelocityModel functions
 
 /**
  * @brief Base class default string getter
- *
  * @return std::string
  */
 std::string FluidVelocityModel::getFullDescriptionStr() const
@@ -69,7 +66,6 @@ std::string FluidVelocityModel::getFullDescriptionStr() const
 
 /**
  * @brief Get the local four-velocity of the fluid according to the GeneralCircularRadial model
- *
  * @param p Point at which to calculate the four-velocity
  * @return OneIndex Local four-velocity with index down
  */
