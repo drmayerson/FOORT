@@ -194,7 +194,7 @@ TwoIndex KerrMetric::getMetric_dd(const Point &p) const
 	real g11 = sigma / delta;
 	real g22 = sigma;
 	real g33 = A_ / sigma * sint * sint;
-	real g03 = -2. * m_aParam * pow(m_mParam, 3.) * r * sint * sint / sigma;
+	real g03 = -2. * m_mParam * r * m_aParam * m_mParam * sint * sint / sigma;
 
 	// If the log scale is set on, the true coordinate we are calculating the metric in is u = log(r), so dr = r du
 	if (m_rLogScale)
@@ -229,7 +229,7 @@ TwoIndex KerrMetric::getMetric_uu(const Point &p) const
 	real g22 = 1. / sigma;
 	real g33 = (delta - m_aParam * m_aParam * m_mParam * m_mParam * sint * sint) /
 			   (sigma * delta * sint * sint);
-	real g03 = -2. * m_aParam * m_mParam * r / (sigma * delta);
+	real g03 = -2. * m_aParam * m_mParam * m_mParam * r / (sigma * delta);
 
 	// If the log scale is set on, the true coordinate we are calculating the metric in is u = log(r), so , so dr = r du
 	if (m_rLogScale)

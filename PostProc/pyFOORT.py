@@ -296,8 +296,8 @@ def FOORTToFourColorScreenImage(
     FilePrefix: str,
     NrFiles: int = 1,
     FirstLineDescription: bool = True,
-    DisplayImageTitle: bool = True,
-    Verbose: bool = True,
+    DisplayImageTitle: bool = False,
+    Verbose: bool = False,
     GridFraction: float = 1,
     FileOutput: str = None,
 ) -> None:
@@ -306,8 +306,8 @@ def FOORTToFourColorScreenImage(
     @param FilePrefix: Prefix of the FOORT output files
     @param NrFiles: Number of files to load (default 1)
     @param FirstLineDescription: Whether the first line of the file contains information (default True)
-    @param DisplayImageTitle: Whether to display the image title (default True)
-    @param Verbose: Whether to print progress information (default True)
+    @param DisplayImageTitle: Whether to display the image title (default False)
+    @param Verbose: Whether to print progress information (default False)
     @param GridFraction: Fraction of grid size to use (default 1)
     @param FileOutput: File to save image to (default None)
     """
@@ -361,11 +361,11 @@ def FOORTToEquatorialPassesImage(
     DiagType: str = "EquatorialPasses",
     NrFiles: int = 1,
     FirstLineDescription: bool = True,
-    DisplayImageTitle: bool = True,
+    DisplayImageTitle: bool = False,
     PassesRange: tuple[int] = None,
     PlotOnlyInOutBH: int = None,
     PlotAbsPass: bool = True,
-    Verbose: bool = True,
+    Verbose: bool = False,
     GridFraction: float = 1,
     FileOutput: str = None,
 ) -> None:
@@ -375,11 +375,11 @@ def FOORTToEquatorialPassesImage(
     @param DiagType: Type of diagnostic to load, e.g. "EquatorialPasses", "EquatorialEmission"
     @param NrFiles: Number of files to load (default 1)
     @param FirstLineDescription: Whether the first line of the file contains information (default True)
-    @param DisplayImageTitle: Whether to display the image title (default True)
+    @param DisplayImageTitle: Whether to display the image title (default False)
     @param PassesRange: Range of passes to display (default None)
     @param PlotOnlyInOutBH: Whether to plot only in/out of black hole (default None)
     @param PlotAbsPass: Whether to plot absolute value of passes (default True)
-    @param Verbose: Whether to print progress information (default True)
+    @param Verbose: Whether to print progress information (default False)
     @param GridFraction: Fraction of grid size to use (default 1)
     @param FileOutput: File to save image to (default None)
     """
@@ -457,8 +457,8 @@ def FOORTToEquatorialEmissionImage(
     FilePrefix: str,
     NrFiles: int = 1,
     FirstLineDescription: bool = True,
-    DisplayImageTitle: bool = True,
-    Verbose: bool = True,
+    DisplayImageTitle: bool = False,
+    Verbose: bool = False,
     GridFraction: float = 1,
     TruncateRange: tuple[float] = None,
     LimitRange: tuple[float] = (0.0, 100000.0),
@@ -470,8 +470,8 @@ def FOORTToEquatorialEmissionImage(
     @param FilePrefix: Prefix of the FOORT output files
     @param NrFiles: Number of files to load (default 1)
     @param FirstLineDescription: Whether the first line of the file contains information (default True)
-    @param DisplayImageTitle: Whether to display the image title (default True)
-    @param Verbose: Whether to print progress information (default True)
+    @param DisplayImageTitle: Whether to display the image title (default False)
+    @param Verbose: Whether to print progress information (default False)
     @param GridFraction: Fraction of grid size to use (default 1)
     @param TruncateRange: Range to truncate data to (default None)
     @param LimitRange: Range to limit data to (default (0., 100000.))
@@ -604,8 +604,8 @@ def FOORTToDistortedBackground(
     BlackConditionRadius: float = 4.0,
     NrFiles: int = 1,
     FirstLineDescription: bool = True,
-    DisplayImageTitle: bool = True,
-    Verbose: bool = True,
+    DisplayImageTitle: bool = False,
+    Verbose: bool = False,
     GridFraction: float = 1,
     FileOutput: str = None,
 ) -> None:
@@ -616,8 +616,8 @@ def FOORTToDistortedBackground(
     @param BlackConditionRadius: Radius for black condition (default 4.0)
     @param NrFiles: Number of files to load (default 1)
     @param FirstLineDescription: Whether the first line of the file contains information (default True)
-    @param DisplayImageTitle: Whether to display the image title (default True)
-    @param Verbose: Whether to print progress information (default True)
+    @param DisplayImageTitle: Whether to display the image title (default False)
+    @param Verbose: Whether to print progress information (default False)
     @param GridFraction: Fraction of grid size to use (default 1)
     @param FileOutput: File to save image to (default None)
     """

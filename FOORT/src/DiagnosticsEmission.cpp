@@ -347,7 +347,7 @@ OneIndex GeneralCircularRadialFluid::GetRadialVelocityd(const Point &p) const
 }
 
 /**
- * @brief Helper function to find the ISCO
+ * @brief Helper function to find the ISCO of the spacetime, if it exists.
  * @details This helper function finds the ISCO. We use a binary search to converge on the ISCO value; the initial outer bounds for a metric with horizon are the horizon radius and 10*(horizon radius) (in true radii, not log(r) coordinates)
  */
 void GeneralCircularRadialFluid::FindISCO()

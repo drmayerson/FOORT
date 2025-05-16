@@ -90,7 +90,7 @@ protected:
 /**
  * @brief General circular radial fluid velocity model
  * @details This fluid velocity model has three tuneable parameters and represents fluid travelling at a mix of
- * (sub)Keplerian circular orbits and radially infalling orbits in the equatorial plane
+ * (sub)Keplerian circular orbits and radially infalling orbits in the equatorial plane. Details can be found in e.g. https://doi.org/10.1103/PhysRevD.107.043030 .
  */
 struct GeneralCircularRadialFluid final : public FluidVelocityModel
 {
