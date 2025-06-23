@@ -6,8 +6,10 @@
 #include <cmath>	 // needed for sqrt() and sin() etc (only on Linux)
 #include <algorithm> // needed for std::find
 
-#include "Spline.h" // needed for spline interpolation
-#include <sstream>	// needed for string stream
+#include "Spline.h"		  // needed for spline interpolation
+#include "Grid.h"		  // needed for the grid class, for the Rotating Boson star metric
+#include "Interpolator.h" // needed for the Interpolator class
+#include <sstream>		  // needed for string stream
 
 /**
  * @file Metric.h
@@ -1221,6 +1223,111 @@ TwoIndex BosonStarMetric::getMetric_uu(const Point &p) const
 std::string BosonStarMetric::getFullDescriptionStr() const
 {
 	return "Boson star (Phi infinity = " + std::to_string(m_Phi_infinity) + ", num lines = " + std::to_string(m_num_lines) + ")";
+}
+
+// RotatingBosonStarMetric functions (implementation by Seppe Staelens)
+
+/**
+ * @brief Construct a new Rotating Boson Star Metric object
+ * @param rLogScale whether we are using a logarithmic radial scale
+ */
+RotatingBosonStarMetric::RotatingBosonStarMetric(bool rLogScale, int num_x, int num_th) : Metric(rLogScale),
+																						  m_grid_f(new Grid(num_th, num_x)),
+																						  m_grid_l(new Grid(num_th, num_x)),
+																						  m_grid_g(new Grid(num_th, num_x)),
+																						  m_grid_Omega(new Grid(num_th, num_x)),
+																						  m_interpolator(new Interpolator(num_x, num_th))
+
+{
+	// Make sure we are in four spacetime dimensions
+	if constexpr (dimension != 4)
+	{
+		ScreenOutput("Rotating boson star is only defined in four dimensions!", OutputLevel::Level_0_WARNING);
+	}
+	// Rotating Boson star has a Killing vector along t and phi, so we initialize the symmetries accordingly
+	m_Symmetries = {0, 3};
+
+	// Read the different metric functions
+	m_grid_f->initialize_from_file("RotatingBosonStar/f.txt");
+	m_grid_l->initialize_from_file("RotatingBosonStar/l.txt");
+	m_grid_g->initialize_from_file("RotatingBosonStar/g.txt");
+	m_grid_Omega->initialize_from_file("RotatingBosonStar/omega.txt");
+}
+
+/**
+ * @brief RotatingBosonStar metric getter, indices down
+ * @param p Point at which to evaluate the metric
+ * @return TwoIndex
+ */
+TwoIndex RotatingBosonStarMetric::getMetric_dd(const Point &p) const
+{
+	// spherical coordinates
+	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
+	real r = m_rLogScale ? exp(p[1]) : p[1];
+	real x = r / (1. + r);
+	real theta = p[2];
+	real sint = sin(theta);
+
+	real f = m_interpolator->interpolate(m_grid_f, x, theta);
+	real l = m_interpolator->interpolate(m_grid_l, x, theta);
+	real g = m_interpolator->interpolate(m_grid_g, x, theta);
+	real Omega = m_interpolator->interpolate(m_grid_Omega, x, theta);
+
+	// Covariant metric elements
+	real g00 = -(f - l * Omega * Omega * sint * sint / f);
+	real g11 = l * g / f;
+	real g22 = g11 * r * r;
+	real g33 = l * r * r * sint * sint / f;
+	real g03 = -l * r * Omega * sint * sint / f;
+	// If the log scale is set on, the true coordinate we are calculating the metric in is u = log(r), so dr = r du
+	if (m_rLogScale)
+	{
+		g11 *= (r * r);
+	}
+	return TwoIndex{{{g00, 0, 0, g03}, {0, g11, 0, 0}, {0, 0, g22, 0}, {g03, 0, 0, g33}}};
+}
+
+/**
+ * @brief RotatingBosonStar metric getter, indices up
+ * @param p Point at which to evaluate the metric
+ * @return TwoIndex
+ */
+TwoIndex RotatingBosonStarMetric::getMetric_uu(const Point &p) const
+{
+	// spherical coordinates
+	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
+	real r = m_rLogScale ? exp(p[1]) : p[1];
+	real x = r / (1. + r);
+	real theta = p[2];
+	real sint = sin(theta);
+
+	real f = m_interpolator->interpolate(m_grid_f, x, theta);
+	real l = m_interpolator->interpolate(m_grid_l, x, theta);
+	real g = m_interpolator->interpolate(m_grid_g, x, theta);
+	real Omega = m_interpolator->interpolate(m_grid_Omega, x, theta);
+
+	// Contravariant metric elements
+	real g00 = -1 / f;
+	real g11 = f / (l * g);
+	real g22 = g11 / (r * r);
+	real g33 = (f - l * Omega * Omega * sint * sint / f) / (l * r * r * sint * sint);
+	real g03 = Omega / (r * f);
+	// If the log scale is set on, the true coordinate we are calculating the metric in is u = log(r), so , so dr = r du
+	if (m_rLogScale)
+	{
+		g11 *= 1.0 / (r * r);
+	}
+
+	return TwoIndex{{{g00, 0, 0, g03}, {0, g11, 0, 0}, {0, 0, g22, 0}, {g03, 0, 0, g33}}};
+}
+
+/**
+ * @brief RotatingBosonStar metric description string getter
+ * @return std::string
+ */
+std::string RotatingBosonStarMetric::getFullDescriptionStr() const
+{
+	return "Rotating boson star";
 }
 
 //// (New Metric classes can define their member functions here)

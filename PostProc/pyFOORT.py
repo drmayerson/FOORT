@@ -270,6 +270,7 @@ def GridToFourColorScreenImage(
     ImageTitle: str = None,
     FileOutput: str = None,
     Verbose: bool = True,
+    NoHorizon: bool = False,
 ) -> None:
     """!
     @brief Convert grid to four-color screen image
@@ -279,9 +280,14 @@ def GridToFourColorScreenImage(
     @param Verbose: Whether to print progress information
     """
     # Define our own color map for the four-color screen image
-    FourColorScreenColorMap = colors.ListedColormap(
-        ["black", "blue", "yellow", "red", "limegreen"]
-    )
+    if NoHorizon:
+        FourColorScreenColorMap = colors.ListedColormap(
+            ["blue", "yellow", "red", "limegreen"]
+        )
+    else:
+        FourColorScreenColorMap = colors.ListedColormap(
+            ["black", "blue", "yellow", "red", "limegreen"]
+        )
 
     DisplayImage(
         FOORTGrid,
@@ -300,6 +306,7 @@ def FOORTToFourColorScreenImage(
     Verbose: bool = False,
     GridFraction: float = 1,
     FileOutput: str = None,
+    NoHorizon: bool = False,
 ) -> None:
     """!
     @brief Convert FOORT output to four-color screen image
@@ -325,7 +332,11 @@ def FOORTToFourColorScreenImage(
     FOORTGrid = DataToGrid(FOORTData, GridFraction=GridFraction, Verbose=Verbose)
     # Display image
     GridToFourColorScreenImage(
-        FOORTGrid, ImageTitle=FirstLineInfo, FileOutput=FileOutput, Verbose=Verbose
+        FOORTGrid,
+        ImageTitle=FirstLineInfo,
+        FileOutput=FileOutput,
+        Verbose=Verbose,
+        NoHorizon=NoHorizon,
     )
 
 
