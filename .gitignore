@@ -8,7 +8,16 @@ FOORT/*.o
 FOORT/FOORT
 *vscode*
 PostProc/*
+!PostProc/*.py
+!PostProc/Doxyfile
 FOORT/Output/BS*
+build/*
+FOORT/bin/*
+FOORT.zip
+docs/latex/*
+!docs/latex/refman.pdf
+FOORT/*.cfg
+.DS_Store
 
 # User-specific files
 *.rsuser
