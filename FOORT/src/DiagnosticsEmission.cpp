@@ -180,7 +180,7 @@ std::string GeneralCircularRadialFluid::getFullDescriptionStr() const
 	if (m_ISCOexists && m_theMetric->getrLogScale())
 		trueISCOradius = exp(m_ISCOr);
 
-	return "Circular/radial flow (sub-Keplerian parameter xi = " + std::to_string(m_subKeplerParam) + ", beta_r = " + std::to_string(m_betaR) + ", beta_phi = " + std::to_string(m_betaPhi) + "; " + (m_ISCOexists ? "ISCO = " + std::to_string(trueISCOradius) : "no ISCO found") + ")";
+	return "Circular/radial flow (sub-Keplerian parameter xi = " + std::to_string(m_subKeplerParam) + ", beta_r = " + std::to_string(m_betaR) + ", beta_phi = " + std::to_string(m_betaPhi) + "; " + (m_ISCOexists ? "ISCO = " + std::to_string(trueISCOradius) : "no ISCO found") + "; " + "ISCO lower bound = " + std::to_string(m_ISCOlowerbound) + ", ISCO upper bound = " + std::to_string(m_ISCOupperbound) + ")";
 }
 
 /**
@@ -352,13 +352,19 @@ OneIndex GeneralCircularRadialFluid::GetRadialVelocityd(const Point &p) const
  */
 void GeneralCircularRadialFluid::FindISCO()
 {
-	real lowerbound{0.0};
-	real upperbound{1000.0};
+	real lowerbound{m_ISCOlowerbound};
+	real upperbound{m_ISCOupperbound};
 	const SphericalHorizonMetric *sphermetric = dynamic_cast<const SphericalHorizonMetric *>(m_theMetric);
 	if (sphermetric)
 	{
 		lowerbound = sphermetric->getrLogScale() ? log(sphermetric->getHorizonRadius()) : sphermetric->getHorizonRadius();
 		upperbound = sphermetric->getrLogScale() ? log(10.0 * sphermetric->getHorizonRadius()) : 10.0 * sphermetric->getHorizonRadius();
+	}
+	else if (m_theMetric->getrLogScale())
+	{
+		// If not a spherical horizon metric, but we are using log(r) coordinates, then set the lower bound to 0.0
+		lowerbound = log(m_ISCOlowerbound); // ln(0.05) = -3.912023005428146
+		upperbound = log(m_ISCOupperbound); // ln(1000.0) = 6.907755278982137
 	}
 
 	// Perform binary search for ISCO

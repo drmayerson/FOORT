@@ -606,7 +606,9 @@ void Config::InitializeDiagnostics(const ConfigCollection &theCfg, DiagBitflag &
 			real defaultxi{1.0};
 			real defaultbetar{1.0};
 			real defaultbetaphi{1.0};
-			std::unique_ptr<FluidVelocityModel> theFluidModel{new GeneralCircularRadialFluid(defaultxi, defaultbetar, defaultbetaphi, theMetric)};
+			real defaultiscolowerbound{0.0};
+			real defaultiscoupperbound{1000.0};
+			std::unique_ptr<FluidVelocityModel> theFluidModel{new GeneralCircularRadialFluid(defaultxi, defaultbetar, defaultbetaphi, theMetric, defaultiscolowerbound, defaultiscoupperbound)};
 
 			// Read in fluid velocity model
 			std::string fluidmodelstring{""};
@@ -616,11 +618,15 @@ void Config::InitializeDiagnostics(const ConfigCollection &theCfg, DiagBitflag &
 				real subKeplerianparam{defaultxi};
 				real betaR{defaultbetar};
 				real betaPhi{defaultbetaphi};
+				real iscolowerbound{defaultiscolowerbound};
+				real iscoupperbound{defaultiscoupperbound};
 				AllDiagSettings["EquatorialEmission"].LookupValue("xi", subKeplerianparam);
 				AllDiagSettings["EquatorialEmission"].LookupValue("betar", betaR);
 				AllDiagSettings["EquatorialEmission"].LookupValue("betaphi", betaPhi);
+				AllDiagSettings["EquatorialEmission"].LookupValue("ISCOLowerBound", iscolowerbound);
+				AllDiagSettings["EquatorialEmission"].LookupValue("ISCOUpperBound", iscoupperbound);
 
-				theFluidModel = std::unique_ptr<FluidVelocityModel>{new GeneralCircularRadialFluid(subKeplerianparam, betaR, betaPhi, theMetric)};
+				theFluidModel = std::unique_ptr<FluidVelocityModel>{new GeneralCircularRadialFluid(subKeplerianparam, betaR, betaPhi, theMetric, iscolowerbound, iscoupperbound)};
 			}
 			// Other fluid velocity models can be checked for here...
 
