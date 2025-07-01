@@ -138,6 +138,7 @@ def DataToGrid(
     TruncateRange: tuple[int] = None,
     LimitRange: tuple[float] = None,
     Diag2RangeSelect: tuple[int] = None,
+    Diag2AdvancedSelect: list[int] = None,
     Verbose: bool = True,
 ) -> np.ndarray:
     """!
@@ -149,8 +150,10 @@ def DataToGrid(
     @param TruncateRange: Range to truncate data to (default None)
     @param LimitRange: Range to limit data to (default None)
     @param Diag2RangeSelect: Range of second diagnostic to select (default None)
+    @param Diag2AdvancedSelect: List of second diagnostic values to select (default None)
     @param Verbose: Whether to print progress information (default True)
     @return reshaped_data: Interpolated grid of specified size
+    @note: If both Diag2RangeSelect and Diag2AdvancedSelect are given, the advanced selection is used.
     """
     if Verbose:
         print("Reshaping and interpolating grid...")
@@ -189,8 +192,20 @@ def DataToGrid(
     # Only keep values of the first diagnostic (should be equatorial emission)
     # for pixels where the second diagnostic (=equatorial passes) is in a given range
     # note the abs(.) to take absolute value of the equatorial passes!
-    if Diag2RangeSelect and DiagToUse == 1:
-        RawDataDiag2 = np.abs(np.array(FOORTData["diag2"]))
+    if Diag2AdvancedSelect and Diag2RangeSelect:
+        print(
+            "Both a range and advanced selection are given for diagnostic 2. Continuing with the advanced selection, ignoring the range."
+        )
+    if Diag2AdvancedSelect and DiagToUse == 1:
+        # Zero for all values that are not in the list, and all values in the list are set to 1
+        RawDataDiag2 = np.array(FOORTData["diag2"])
+        mask = np.zeros_like(RawDataDiag2)
+        for val in Diag2AdvancedSelect:
+            mask[RawDataDiag2 == val] = 1
+        # Now we can simply multiply these two arrays to select the wanted pixels of the first diagnostic
+        RawData = np.multiply(RawData, mask)
+    elif Diag2RangeSelect and DiagToUse == 1:
+        RawDataDiag2 = np.array(FOORTData["diag2"])
         # Zero out all values outside the range, and all set values inside the range to 1
         RawDataDiag2[RawDataDiag2 < Diag2RangeSelect[0]] = 0
         RawDataDiag2[RawDataDiag2 > Diag2RangeSelect[1]] = 0
@@ -212,6 +227,7 @@ def DisplayImage(
     ImageTitle: str = None,
     FileOutput: str = None,
     Verbose: bool = True,
+    Ax: plt.axes = None,
 ) -> None:
     """!
     @brief Display image from grid
@@ -221,18 +237,23 @@ def DisplayImage(
     @param ImageTitle: Title of image (default None)
     @param FileOutput: File to save image to (default None)
     @param Verbose: Whether to print progress information (default True)
+    @param Ax: Axes to plot on (default None, creates new axes)
     """
     if Verbose:
         print("Displaying image...")
 
     # plot the picture
     # leave room for title
-    if ImageTitle:
-        fig = plt.figure(figsize=(8, 10.3))
-        plt.subplots_adjust(top=0.777)
+    if Ax == None:
+        if ImageTitle:
+            fig = plt.figure(figsize=(8, 10.3))
+            plt.subplots_adjust(top=0.777)
+        else:
+            fig = plt.figure(figsize=(8, 8))
+    if Ax:
+        ax = Ax
     else:
-        fig = plt.figure(figsize=(8, 8))
-    ax = plt.axes()
+        ax = plt.axes()
     if ColorMinMax:
         ax.imshow(
             FOORTGrid,
@@ -257,9 +278,10 @@ def DisplayImage(
             print("Saved image to file " + FileOutput + ".")
 
     # Show the plot!
-    plt.show()
-    if Verbose:
-        print("Done displaying image.")
+    if Ax == None:
+        plt.show()
+        if Verbose:
+            print("Done displaying image.")
 
 
 # --- SPECIFIC GRID TO IMAGE AND COMBINATION FILE TO IMAGE FUNCTIONS PER DIAGNOSTIC --- #
@@ -432,6 +454,7 @@ def GridToEquatorialEmissionImage(
     ImageTitle: str = None,
     FileOutput: str = None,
     Verbose: bool = True,
+    Ax: plt.axes = None,
 ) -> None:
     """!
     @brief Convert grid to equatorial emission image
@@ -439,6 +462,7 @@ def GridToEquatorialEmissionImage(
     @param ImageTitle: Title of image (default None)
     @param FileOutput: File to save image to (default None)
     @param Verbose: Whether to print progress information (default True)
+    @param Ax: Axes to plot on (default None, creates new axes)
     """
     max_ring = np.max(FOORTGrid)
     min_ring = np.min(FOORTGrid)
@@ -450,6 +474,7 @@ def GridToEquatorialEmissionImage(
         ImageTitle=ImageTitle,
         FileOutput=FileOutput,
         Verbose=Verbose,
+        Ax=Ax,
     )
 
 
@@ -463,7 +488,10 @@ def FOORTToEquatorialEmissionImage(
     TruncateRange: tuple[float] = None,
     LimitRange: tuple[float] = (0.0, 100000.0),
     EquatPassesRange: tuple[int] = None,
+    EquatPassesSelection: list[int] = None,
     FileOutput: str = None,
+    LightRingRadius: float = None,
+    Ax: plt.axes = None,
 ) -> None:
     """!
     @brief Convert FOORT output to equatorial emission image
@@ -476,16 +504,28 @@ def FOORTToEquatorialEmissionImage(
     @param TruncateRange: Range to truncate data to (default None)
     @param LimitRange: Range to limit data to (default (0., 100000.))
     @param EquatPassesRange: Range of equatorial passes to select (default None)
+    @param EquatPassesSelection: List of equatorial passes to select (default None)
     @param FileOutput: File to save image to (default None)
+    @param LightRingRadius: Radius of the light ring, if one is present (default None). When used, this separates "inner" and "outer" photon rings.
+    @param Ax: Axes to plot on (default None, creates new axes)
     """
     # Load in raw FOORT output data
-    FOORTData, FirstLineInfo = LoadFOORTRawData(
-        FilePrefix,
-        "EquatorialEmission",
-        NrFiles=NrFiles,
-        FirstLineDescription=FirstLineDescription,
-        Verbose=Verbose,
-    )
+    if LightRingRadius:
+        FOORTData, FirstLineInfo = ModifiedEquatorialEmission(
+            FilePrefix,
+            NrFiles=NrFiles,
+            FirstLineDescription=FirstLineDescription,
+            Verbose=Verbose,
+            LightRingRadius=LightRingRadius,
+        )
+    else:
+        FOORTData, FirstLineInfo = LoadFOORTRawData(
+            FilePrefix,
+            "EquatorialEmission",
+            NrFiles=NrFiles,
+            FirstLineDescription=FirstLineDescription,
+            Verbose=Verbose,
+        )
     if DisplayImageTitle == False:
         FirstLineInfo = None
 
@@ -495,13 +535,18 @@ def FOORTToEquatorialEmissionImage(
         TruncateRange=TruncateRange,
         LimitRange=LimitRange,
         Diag2RangeSelect=EquatPassesRange,
+        Diag2AdvancedSelect=EquatPassesSelection,
         GridFraction=GridFraction,
         Verbose=Verbose,
     )
 
     # Display image
     GridToEquatorialEmissionImage(
-        FOORTGrid, ImageTitle=FirstLineInfo, FileOutput=FileOutput, Verbose=Verbose
+        FOORTGrid,
+        ImageTitle=FirstLineInfo,
+        FileOutput=FileOutput,
+        Verbose=Verbose,
+        Ax=Ax,
     )
 
 
@@ -644,3 +689,44 @@ def FOORTToDistortedBackground(
         FileOutput=FileOutput,
         Verbose=Verbose,
     )
+
+
+def ModifiedEquatorialEmission(
+    FilePrefix: str,
+    NrFiles: int = 1,
+    FirstLineDescription: bool = True,
+    Verbose: bool = False,
+    LightRingRadius: float = 3.0,
+) -> tuple[pd.DataFrame, str]:
+    """!
+    @brief Load FOORT output data and modify equatorial emission data to include closest radius mask
+    @param FilePrefix: Prefix of the FOORT output files
+    @param NrFiles: Number of files to load (default 1)
+    @param FirstLineDescription: Whether the first line of the file contains information (default True).
+    @param Verbose: Whether to print progress information (default False)
+    @param LightRingRadius: Radius of the light ring (default 3.0, Schwarzschild value)
+    @return EquatorialEmission_df: DataFrame containing equatorial emission data with closest radius mask applied
+    @return FirstLineInfo: Information contained in first line of the file
+    @note: This function modifies the equatorial emission data to include a mask based on the closest radius encountered: if this is smaller than the light ring radius, the number of equatorial passes gets multiplied with a minus sign.
+    The mask is applied to the second diagnostic (diag2) of the equatorial emission data.
+    """
+    EquatorialEmission_df, FirstLineInfo = LoadFOORTRawData(
+        FilePrefix,
+        "EquatorialEmission",
+        NrFiles=NrFiles,
+        FirstLineDescription=FirstLineDescription,
+        Verbose=Verbose,
+    )
+    ClosestRadius_df, _ = LoadFOORTRawData(
+        FilePrefix,
+        "ClosestRadius",
+        NrFiles=NrFiles,
+        FirstLineDescription=FirstLineDescription,
+        Verbose=Verbose,
+    )
+    ClosestRadius_mask = (ClosestRadius_df["diag1"] >= LightRingRadius) * 1 - (
+        ClosestRadius_df["diag1"] < LightRingRadius
+    ) * 1
+    EquatorialEmission_df["diag2"] = EquatorialEmission_df["diag2"] * ClosestRadius_mask
+
+    return EquatorialEmission_df, FirstLineInfo
