@@ -44,7 +44,7 @@ def RadonToComplexVis(
     PaddingFactor: float = 25,
     Verbose: bool = True,
     sample_spacing: float = 1.0,
-) -> np.ndarray:
+) -> tuple[np.ndarray, np.ndarray]:
     """!
     @brief Calculates the complex visibility from a given radon transform.
     @param FOORTRadon: The radon transform to calculate the complex visibility from.
@@ -192,7 +192,7 @@ def FOORTToVisAmp(
     * 1e-6
     * np.pi
     / (180 * 60 * 60),  # in radians (default = 50 microarcseconds)
-) -> tuple[np.ndarray, str]:
+) -> tuple[np.ndarray, np.ndarray, str]:
     """!
     @brief Converts FOORT output data to visibility amplitudes.
     @param FilePrefix: The prefix of the FOORT output files.
