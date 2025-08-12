@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt  # Used to plot images
 from matplotlib import cm  # Color maps
 import matplotlib.colors as colors  # Specific colors
 from scipy import ndimage  # Used to map/distort background image
+from scipy.interpolate import RectBivariateSpline
 
 # --- BASIC FUNCTIONS FOR ALL DIAGNOSTICS --- #
 
@@ -730,3 +731,99 @@ def ModifiedEquatorialEmission(
     EquatorialEmission_df["diag2"] = EquatorialEmission_df["diag2"] * ClosestRadius_mask
 
     return EquatorialEmission_df, FirstLineInfo
+
+
+def FOORTToEquatorialEmissionLineout(
+    FilePrefix: str,
+    NrFiles: int = 1,
+    FirstLineDescription: bool = True,
+    DisplayImageTitle: bool = False,
+    Verbose: bool = False,
+    GridFraction: float = 1,
+    TruncateRange: tuple[float] = None,
+    LimitRange: tuple[float] = (0.0, 100000.0),
+    EquatPassesRange: tuple[int] = None,
+    EquatPassesSelection: list[int] = None,
+    FileOutput: str = None,
+    LightRingRadius: float = None,
+    Ax: plt.axes = None,
+    angle: float = 20.0,
+    ipl_points: int = 1000,
+) -> None:
+    """!
+    @brief Convert FOORT output to equatorial emission image
+    @param FilePrefix: Prefix of the FOORT output files
+    @param NrFiles: Number of files to load (default 1)
+    @param FirstLineDescription: Whether the first line of the file contains information (default True)
+    @param DisplayImageTitle: Whether to display the image title (default False)
+    @param Verbose: Whether to print progress information (default False)
+    @param GridFraction: Fraction of grid size to use (default 1)
+    @param TruncateRange: Range to truncate data to (default None)
+    @param LimitRange: Range to limit data to (default (0., 100000.))
+    @param EquatPassesRange: Range of equatorial passes to select (default None)
+    @param FileOutput: File to save image to (default None)
+    @param LightRingRadius: Radius of the light ring (default None)
+    @param Ax: Matplotlib axes to plot on (default None)
+    @param angle: Angle to plot the emission at (default 20.)
+    @param ipl_points: Number of points to interpolate (default 1000)
+    """
+
+    if not (min(abs(angle), abs(angle - 180)) <= 45):
+        raise ValueError(
+            "At the moment, only angles between -45 and 45 degrees are supported."
+        )
+
+    # Load in raw FOORT output data
+    if LightRingRadius:
+        FOORTData, FirstLineInfo = ModifiedEquatorialEmission(
+            FilePrefix,
+            NrFiles=NrFiles,
+            FirstLineDescription=FirstLineDescription,
+            Verbose=Verbose,
+            LightRingRadius=LightRingRadius,
+        )
+    else:
+        FOORTData, FirstLineInfo = LoadFOORTRawData(
+            FilePrefix,
+            "EquatorialEmission",
+            NrFiles=NrFiles,
+            FirstLineDescription=FirstLineDescription,
+            Verbose=Verbose,
+        )
+    if DisplayImageTitle == False:
+        FirstLineInfo = None
+
+    # Convert data to grid
+    FOORTGrid = DataToGrid(
+        FOORTData,
+        TruncateRange=TruncateRange,
+        LimitRange=LimitRange,
+        Diag2RangeSelect=EquatPassesRange,
+        Diag2AdvancedSelect=EquatPassesSelection,
+        GridFraction=GridFraction,
+        Verbose=Verbose,
+    )
+
+    x_dim = FOORTGrid.shape[0]
+    y_dim = FOORTGrid.shape[1]
+    intpl = RectBivariateSpline(range(x_dim), range(y_dim), FOORTGrid)
+    if min(abs(angle), abs(angle - 180)) <= 45:
+        x = np.linspace(0, x_dim, ipl_points)
+        y = np.tan(angle * np.pi / 180) * (x - x_dim // 2) + y_dim // 2
+
+    I = np.diag(intpl(x, y))
+
+    if Ax is None:
+        fig, ax = plt.subplots(figsize=(8, 8))
+    else:
+        ax = Ax
+
+    ax.plot(x, I, color="black", linewidth=1.0)
+
+    # Save the picture to file if applicable
+    if FileOutput and (Ax is None):
+        fig.savefig(FileOutput, format="pdf")
+        if Verbose:
+            print("Saved image to file " + FileOutput + ".")
+    elif FileOutput:
+        print("Not saving figure as ax is given externally.")
