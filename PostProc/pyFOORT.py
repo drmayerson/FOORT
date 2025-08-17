@@ -293,18 +293,25 @@ def GridToFourColorScreenImage(
     ImageTitle: str = None,
     FileOutput: str = None,
     Verbose: bool = True,
+    NoHorizon: bool = False,
 ) -> None:
     """!
     @brief Convert grid to four-color screen image
     @param FOORTGrid: Grid data to display as image
     @param ImageTitle: Title of image (default None)
     @param FileOutput: File to save image to (default None)
-    @param Verbose: Whether to print progress information
+    @param Verbose: Whether to print progress information (default True)
+    @param NoHorizon: Set to True if the spacetime does not have a horizon, disabling the black color (default False)
     """
     # Define our own color map for the four-color screen image
-    FourColorScreenColorMap = colors.ListedColormap(
-        ["black", "blue", "yellow", "red", "limegreen"]
-    )
+    if NoHorizon:
+        FourColorScreenColorMap = colors.ListedColormap(
+            ["blue", "yellow", "red", "limegreen"]
+        )
+    else:
+        FourColorScreenColorMap = colors.ListedColormap(
+            ["black", "blue", "yellow", "red", "limegreen"]
+        )
 
     DisplayImage(
         FOORTGrid,
@@ -323,6 +330,7 @@ def FOORTToFourColorScreenImage(
     Verbose: bool = False,
     GridFraction: float = 1,
     FileOutput: str = None,
+    NoHorizon: bool = False,
 ) -> None:
     """!
     @brief Convert FOORT output to four-color screen image
@@ -333,6 +341,7 @@ def FOORTToFourColorScreenImage(
     @param Verbose: Whether to print progress information (default False)
     @param GridFraction: Fraction of grid size to use (default 1)
     @param FileOutput: File to save image to (default None)
+    @param NoHorizon: Set to True if the spacetime does not have a horizon, disabling the black color (default False)
     """
     # Load in raw FOORT output data
     FOORTData, FirstLineInfo = LoadFOORTRawData(
@@ -348,7 +357,11 @@ def FOORTToFourColorScreenImage(
     FOORTGrid = DataToGrid(FOORTData, GridFraction=GridFraction, Verbose=Verbose)
     # Display image
     GridToFourColorScreenImage(
-        FOORTGrid, ImageTitle=FirstLineInfo, FileOutput=FileOutput, Verbose=Verbose
+        FOORTGrid,
+        ImageTitle=FirstLineInfo,
+        FileOutput=FileOutput,
+        Verbose=Verbose,
+        NoHorizon=NoHorizon,
     )
 
 
