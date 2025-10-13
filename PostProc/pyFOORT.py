@@ -457,6 +457,9 @@ def FOORTToEquatorialPassesImage(
         Verbose=Verbose,
     )
 
+    if FOORTGrid.dtype != np.int64:
+        FOORTGrid = FOORTGrid.astype(np.int64)
+
     # Display image
     GridToEquatorialPassesImage(
         FOORTGrid, ImageTitle=FirstLineInfo, FileOutput=FileOutput, Verbose=Verbose
