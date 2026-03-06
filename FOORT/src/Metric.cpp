@@ -5,6 +5,7 @@
 
 #include <cmath>	 // needed for sqrt() and sin() etc (only on Linux)
 #include <algorithm> // needed for std::find
+#include <iomanip>	 // needed for std::setprecision, for error messages
 
 #include "Spline.h"		  // needed for spline interpolation
 #include "Grid.h"		  // needed for the grid class, for the Rotating Boson star metric
@@ -1233,12 +1234,20 @@ std::string BosonStarMetric::getFullDescriptionStr() const
  */
 RotatingBosonStarMetric::RotatingBosonStarMetric(bool rLogScale, std::string MetricFolder, 
 												 int num_x, int num_th, real L) :   Metric(rLogScale),
-																			m_grid_f(new Grid(num_th, num_x)),
-																			m_grid_l(new Grid(num_th, num_x)),
-																			m_grid_g(new Grid(num_th, num_x)),
-																			m_grid_Omega(new Grid(num_th, num_x)),
-																			m_interpolator(new Interpolator(num_x, num_th,
-																			MetricFolder + "x.txt", MetricFolder + "theta.txt")),
+																			// m_grid_f(new Grid(num_th, num_x)),
+																			// m_grid_l(new Grid(num_th, num_x)),
+																			// m_grid_g(new Grid(num_th, num_x)),
+																			// m_grid_Omega(new Grid(num_th, num_x)),
+																			// m_interpolator(new Interpolator(num_x, num_th,
+																			// MetricFolder + "x.txt", MetricFolder + "theta.txt")),
+																			m_fInterpolator(new BicubicSplineInterpolator(MetricFolder + "x.txt", 
+																				MetricFolder + "theta.txt")),
+																			m_lInterpolator(new BicubicSplineInterpolator(MetricFolder + "l.txt", 
+																				MetricFolder + "theta.txt")),
+																			m_gInterpolator(new BicubicSplineInterpolator(MetricFolder + "g.txt", 
+																				MetricFolder + "theta.txt")),
+																			m_OmegaInterpolator(new BicubicSplineInterpolator(MetricFolder + "omega.txt", 
+																				MetricFolder + "theta.txt")),
 																			m_L(L)
 
 {
@@ -1251,10 +1260,21 @@ RotatingBosonStarMetric::RotatingBosonStarMetric(bool rLogScale, std::string Met
 	m_Symmetries = {0, 3};
 
 	// Read the different metric functions
-	m_grid_f->initialize_from_file(MetricFolder + "f.txt");
-	m_grid_l->initialize_from_file(MetricFolder + "l.txt");
-	m_grid_g->initialize_from_file(MetricFolder + "g.txt");
-	m_grid_Omega->initialize_from_file(MetricFolder + "omega.txt");
+	Grid m_grid_f(num_th, num_x);
+	m_grid_f.initialize_from_file(MetricFolder + "f.txt");
+	m_fInterpolator->set_grid(&m_grid_f);
+
+	Grid m_grid_l(num_th, num_x);
+	m_grid_l.initialize_from_file(MetricFolder + "l.txt");
+	m_lInterpolator->set_grid(&m_grid_l);
+
+	Grid m_grid_g(num_th, num_x);
+	m_grid_g.initialize_from_file(MetricFolder + "g.txt");
+	m_gInterpolator->set_grid(&m_grid_g);
+
+	Grid m_grid_Omega(num_th, num_x);
+	m_grid_Omega.initialize_from_file(MetricFolder + "omega.txt");
+	m_OmegaInterpolator->set_grid(&m_grid_Omega);
 }
 
 /**
@@ -1268,13 +1288,24 @@ TwoIndex RotatingBosonStarMetric::getMetric_dd(const Point &p) const
 	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
 	real r = m_rLogScale ? exp(p[1]) : p[1];
 	real x = m_L*r / (1. + r);
+	if (x > 0.999)
+	{
+		std::cout << std::fixed << std::setprecision(10)
+			<< "Error: Point (x = " << x << ", theta = " << p[2]
+			<< ") is larger than 0.9:99 (m_L = " << m_L << ", r = " << r << ").";	
+	}
 	real theta = p[2];
 	real sint = sin(theta);
 
-	real f = m_interpolator->interpolate(m_grid_f, x, theta);
-	real l = m_interpolator->interpolate(m_grid_l, x, theta);
-	real g = m_interpolator->interpolate(m_grid_g, x, theta);
-	real Omega = m_interpolator->interpolate(m_grid_Omega, x, theta);
+	// real f = m_interpolator->interpolate(m_grid_f, x, theta);
+	// real l = m_interpolator->interpolate(m_grid_l, x, theta);
+	// real g = m_interpolator->interpolate(m_grid_g, x, theta);
+	// real Omega = m_interpolator->interpolate(m_grid_Omega, x, theta);
+
+	real f = m_fInterpolator->interpolate(x, theta);
+	real l = m_lInterpolator->interpolate(x, theta);
+	real g = m_gInterpolator->interpolate(x, theta);
+	real Omega = m_OmegaInterpolator->interpolate(x, theta);
 
 	// Covariant metric elements
 	real g00 = -(f - l * Omega * Omega * sint * sint / f);
@@ -1301,13 +1332,23 @@ TwoIndex RotatingBosonStarMetric::getMetric_uu(const Point &p) const
 	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
 	real r = m_rLogScale ? exp(p[1]) : p[1];
 	real x = m_L*r / (1. + r);
+	if (x > 0.999)
+	{
+		std::cout << std::fixed << std::setprecision(10)
+			<< "Error: Point (x = " << x << ", theta = " << p[2]
+			<< ") is larger than 0.9:99 (m_L = " << m_L << ", r = " << r << ").";	
+	}
 	real theta = p[2];
 	real sint = sin(theta);
 
-	real f = m_interpolator->interpolate(m_grid_f, x, theta);
-	real l = m_interpolator->interpolate(m_grid_l, x, theta);
-	real g = m_interpolator->interpolate(m_grid_g, x, theta);
-	real Omega = m_interpolator->interpolate(m_grid_Omega, x, theta);
+	// real f = m_interpolator->interpolate(m_grid_f, x, theta);
+	// real l = m_interpolator->interpolate(m_grid_l, x, theta);
+	// real g = m_interpolator->interpolate(m_grid_g, x, theta);
+	// real Omega = m_interpolator->interpolate(m_grid_Omega, x, theta);
+	real f = m_fInterpolator->interpolate(x, theta);
+	real l = m_lInterpolator->interpolate(x, theta);
+	real g = m_gInterpolator->interpolate(x, theta);
+	real Omega = m_OmegaInterpolator->interpolate(x, theta);
 
 	// Contravariant metric elements
 	real g00 = -1 / f;

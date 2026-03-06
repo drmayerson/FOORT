@@ -19,7 +19,7 @@ public:
     double *m_theta; // Pointer to the theta values
 
     //! Constructor
-    Interpolator(int dim_x, int dim_th, std::string x_file = "RotatingBosonStar/x.txt", std::string th_file = "RotatingBosonStar/theta.txt");
+    Interpolator(int dim_x, int dim_th, std::string x_file, std::string th_file);
 
     //! Destructor
     ~Interpolator()
@@ -40,16 +40,44 @@ private:
 class BicubicSplineInterpolator
 {
 public:
-    BicubicSplineInterpolator(const std::vector<double> &x_coords,
-                              const std::vector<double> &theta_coords,
-                              const Grid *grid)
-        : m_x(x_coords), m_theta(theta_coords)
+
+    BicubicSplineInterpolator(const std::string x_file = "RotatingBosonStar/x.txt", 
+                              const std::string th_file = "RotatingBosonStar/theta.txt")
+    {
+        // Load x and theta coordinates from files
+        std::ifstream x_input(x_file);
+        std::ifstream th_input(th_file);
+
+        if (!th_input || !x_input)
+        {
+            std::cerr << "Error opening file!" << std::endl;
+            throw std::runtime_error("File not found");
+        }
+
+        double val;
+        while (x_input >> val) {
+            m_x.push_back(val);
+        }
+        while (th_input >> val) {
+            m_theta.push_back(val);
+        }
+    }
+
+    // BicubicSplineInterpolator(const std::vector<double> &x_coords,
+    //                           const std::vector<double> &theta_coords,
+    //                           const Grid *grid)
+    //     : m_x(x_coords), m_theta(theta_coords)
+    // {
+        
+    //     compute_spline_coefficients(grid); 
+    // }
+
+    void set_grid(const Grid *grid)
     {
         // Precompute spline coefficients for better performance
         // This is more complex but provides C2 continuity
         compute_spline_coefficients(grid);
     }
-
     double interpolate(double p_x, double p_theta,
                        bool allow_extrapolation = false) const;
 

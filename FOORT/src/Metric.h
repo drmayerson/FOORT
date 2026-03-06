@@ -346,15 +346,21 @@ public:
 
 	// protected:
 	//! The grids with the metric functions
-	Grid *m_grid_f;
-	Grid *m_grid_l;
-	Grid *m_grid_g;
-	Grid *m_grid_Omega;
+	// Grid *m_grid_f;
+	// Grid *m_grid_l;
+	// Grid *m_grid_g;
+	// Grid *m_grid_Omega;
+
+	//! The grid interpolators
+	BicubicSplineInterpolator *m_fInterpolator;
+	BicubicSplineInterpolator *m_lInterpolator;
+	BicubicSplineInterpolator *m_gInterpolator;
+	BicubicSplineInterpolator *m_OmegaInterpolator;
 
 	const real m_L;
 
 	//! The interpolator for the metric functions
-	Interpolator *m_interpolator;
+	// Interpolator *m_interpolator;
 };
 
 //// METRIC ADD POINT A ////
