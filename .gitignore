@@ -3,6 +3,11 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Additional
+FOORT/cfgs/*
+FOORT/Output/*
+Benchmarking/Seppe/*
+
 # FOORT compilation files
 FOORT/*.o
 FOORT/FOORT

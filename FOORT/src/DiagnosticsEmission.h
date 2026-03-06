@@ -95,8 +95,10 @@ protected:
 struct GeneralCircularRadialFluid final : public FluidVelocityModel
 {
 	// Constructor with three parameters and Metric pointer (which is passed to base class constructor)
-	GeneralCircularRadialFluid(real subKeplerParam, real betar, real betaphi, const Metric *const theMetric) : m_subKeplerParam{fmin(fmax(subKeplerParam, 0.0), 1.0)}, m_betaR{fmin(fmax(betar, 0.0), 1.0)},
-																											   m_betaPhi{fmin(fmax(betaphi, 0.0), 1.0)}, FluidVelocityModel(theMetric)
+	GeneralCircularRadialFluid(real subKeplerParam, real betar, real betaphi, const Metric *const theMetric,
+							   real ISCO_lowerbound, real ISCO_upperbound) : m_subKeplerParam{fmin(fmax(subKeplerParam, 0.0), 1.0)}, m_betaR{fmin(fmax(betar, 0.0), 1.0)},
+																			 m_betaPhi{fmin(fmax(betaphi, 0.0), 1.0)}, FluidVelocityModel(theMetric),
+																			 m_ISCOlowerbound{ISCO_lowerbound}, m_ISCOupperbound{ISCO_upperbound}
 	{
 		// Do some checks on three params, which must lie between 0.0 and 1.0 (note that they are adjusted as such in
 		// initializer above)
@@ -150,6 +152,10 @@ private:
 	bool m_ISCOexists{false};
 	//! ISCO radius
 	real m_ISCOr{-1.0};
+	//! Lower bound for ISCO radius search
+	real m_ISCOlowerbound;
+	//! Upper bound for ISCO radius search
+	real m_ISCOupperbound;
 	//! ISCO t momentum
 	real m_ISCOpt{};
 	//! ISCO phi momentum

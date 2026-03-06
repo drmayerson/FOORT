@@ -36,15 +36,23 @@ Recent versions of MacOS may encounter issues with CMake. The following seems to
 (Found in [this issue](https://gist.github.com/scivision/d69faebbc56da9714798087b56de925a))
 
 ```
+export CC=/opt/homebrew/bin/gcc-14
 export CXX=/opt/homebrew/bin/g++-14
+export FC=/opt/homebrew/bin/gfortran-14
 export SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk/
 ```
 
-For convenience, this is stored in `alternative_builds/MacOS_workaround.sh`, which should be executed with `source \the\path\` in the terminal in case issues are encountered. You may need to `rm -rf build` in order to start clean.
+For convenience, this is stored in `alternative_builds/MacOS_workaround.sh`, which should be executed with `source \the\path\` in the terminal in case issues are encountered. You may need to `rm -rf build` in order to start clean. In case this doesn't work (which is not unlikely - some of it is black magic), one can also revert to the `makefile_mac` as described below.
 
 #### Old MakeFiles
 
-Alternatively, old Makefiles can be found in `alternative_builds/old_makefiles`. These can be system dependent, however, but should be adaptable to your needs.
+Alternatively, old Makefiles can be found in `alternative_builds/old_makefiles`. These can be system dependent, however, but should be adaptable to your needs. If the user wants to use these, the relevant makefile should be copied into the `src` folder, in which
+
+```
+make -f <makefile>
+```
+
+should be run, where `<makefile>` should be replaced with the name of the relevant file.
 
 ### WINDOWS VISUAL STUDIO
 
