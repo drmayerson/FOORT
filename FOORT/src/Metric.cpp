@@ -1231,12 +1231,15 @@ std::string BosonStarMetric::getFullDescriptionStr() const
  * @brief Construct a new Rotating Boson Star Metric object
  * @param rLogScale whether we are using a logarithmic radial scale
  */
-RotatingBosonStarMetric::RotatingBosonStarMetric(bool rLogScale, int num_x, int num_th) : Metric(rLogScale),
-																						  m_grid_f(new Grid(num_th, num_x)),
-																						  m_grid_l(new Grid(num_th, num_x)),
-																						  m_grid_g(new Grid(num_th, num_x)),
-																						  m_grid_Omega(new Grid(num_th, num_x)),
-																						  m_interpolator(new Interpolator(num_x, num_th))
+RotatingBosonStarMetric::RotatingBosonStarMetric(bool rLogScale, std::string MetricFolder, 
+												 int num_x, int num_th, real L) :   Metric(rLogScale),
+																			m_grid_f(new Grid(num_th, num_x)),
+																			m_grid_l(new Grid(num_th, num_x)),
+																			m_grid_g(new Grid(num_th, num_x)),
+																			m_grid_Omega(new Grid(num_th, num_x)),
+																			m_interpolator(new Interpolator(num_x, num_th,
+																			MetricFolder + "x.txt", MetricFolder + "theta.txt")),
+																			m_L(L)
 
 {
 	// Make sure we are in four spacetime dimensions
@@ -1248,10 +1251,10 @@ RotatingBosonStarMetric::RotatingBosonStarMetric(bool rLogScale, int num_x, int 
 	m_Symmetries = {0, 3};
 
 	// Read the different metric functions
-	m_grid_f->initialize_from_file("RotatingBosonStar/f.txt");
-	m_grid_l->initialize_from_file("RotatingBosonStar/l.txt");
-	m_grid_g->initialize_from_file("RotatingBosonStar/g.txt");
-	m_grid_Omega->initialize_from_file("RotatingBosonStar/omega.txt");
+	m_grid_f->initialize_from_file(MetricFolder + "f.txt");
+	m_grid_l->initialize_from_file(MetricFolder + "l.txt");
+	m_grid_g->initialize_from_file(MetricFolder + "g.txt");
+	m_grid_Omega->initialize_from_file(MetricFolder + "omega.txt");
 }
 
 /**
@@ -1264,7 +1267,7 @@ TwoIndex RotatingBosonStarMetric::getMetric_dd(const Point &p) const
 	// spherical coordinates
 	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
 	real r = m_rLogScale ? exp(p[1]) : p[1];
-	real x = r / (1. + r);
+	real x = m_L*r / (1. + r);
 	real theta = p[2];
 	real sint = sin(theta);
 
@@ -1297,7 +1300,7 @@ TwoIndex RotatingBosonStarMetric::getMetric_uu(const Point &p) const
 	// spherical coordinates
 	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
 	real r = m_rLogScale ? exp(p[1]) : p[1];
-	real x = r / (1. + r);
+	real x = m_L*r / (1. + r);
 	real theta = p[2];
 	real sint = sin(theta);
 

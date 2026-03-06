@@ -124,6 +124,12 @@ def LoadFOORTRawData(
         df_list.append(new_data)
         data = pd.concat(df_list)
 
+    if data.isna().any().any():
+        print(
+            "Warning: NaN values detected in data. These will be dropped before further processing."
+        )
+        data.dropna(inplace=True)  # drop any NaN values that may have appeared
+
     # We are done loading!
     if Verbose:
         print("Done loading FOORT data.")
@@ -183,8 +189,10 @@ def DataToGrid(
         RawData[RawData < TruncateRange[0]] = 0
     # Limit the allowed range (e.g. for emission, if there is a minimum/maximum emission we want to allow)
     if LimitRange:
+        print("Limiting data to range " + str(LimitRange) + ".")
         RawData[RawData > LimitRange[1]] = LimitRange[1]
         RawData[RawData < LimitRange[0]] = LimitRange[0]
+        print("Max value after limiting: " + str(RawData.max()))
 
     # Only keep values of the first diagnostic (should be equatorial emission)
     # for pixels where the second diagnostic (=equatorial passes) is in a given range
@@ -431,6 +439,9 @@ def FOORTToEquatorialPassesImage(
         GridFraction=GridFraction,
         Verbose=Verbose,
     )
+
+    if FOORTGrid.dtype != np.int64:
+        FOORTGrid = FOORTGrid.astype(np.int64)
 
     # Display image
     GridToEquatorialPassesImage(

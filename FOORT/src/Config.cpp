@@ -301,10 +301,18 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 			// First setting to look up: using a logarithmic r coordinate or not.
 			// Don't need to output message if setting not found
 			bool rLogScale{false};
+			std::string MetricFolder{"RotatingBosonStar/data_Will/"};
+			int NumX{500};
+			int NumTh{399};
+			real L{1.};
 			MetricSettings.LookupValue("RLogScale", rLogScale);
+			MetricSettings.LookupValue("MetricFolder", MetricFolder);
+			MetricSettings.LookupValue("NumX", NumX);
+			MetricSettings.LookupValue("NumTh", NumTh);
+			MetricSettings.LookupValue("L", L);
 
 			// All settings complete; create Metric object!
-			TheMetric = std::unique_ptr<Metric>(new RotatingBosonStarMetric(rLogScale, 500, 399));
+			TheMetric = std::unique_ptr<Metric>(new RotatingBosonStarMetric(rLogScale, MetricFolder, NumX, NumTh, L));
 		}
 		//// METRIC ADD POINT B ////
 		// Add an else if clause to check for your new Metric object!

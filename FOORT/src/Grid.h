@@ -23,6 +23,8 @@ public:
 
     //! Overload the () operator to access the data
     double &operator()(int i, int j) { return this->data[i * N_col + j]; }
+    //! Overload the () operator to access the data (const version)
+    const double &operator()(int i, int j) const { return this->data[i * N_col + j]; }
 
     void initialize_from_file(std::string file);
 };

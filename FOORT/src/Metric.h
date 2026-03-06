@@ -336,7 +336,7 @@ class RotatingBosonStarMetric final : public Metric
 {
 public:
 	// Simple (default) constructor is all that is needed
-	RotatingBosonStarMetric(bool rLogScale = false, int num_x = 500, int num_th = 399);
+	RotatingBosonStarMetric(bool rLogScale = false, std::string MetricFolder = "RotatingBosonStar/data_Will/", int num_x = 500, int num_th = 399, real L = 1.);
 
 	// The override of the basic metric getter functions
 	TwoIndex getMetric_dd(const Point &p) const final;
@@ -350,6 +350,8 @@ public:
 	Grid *m_grid_l;
 	Grid *m_grid_g;
 	Grid *m_grid_Omega;
+
+	const real m_L;
 
 	//! The interpolator for the metric functions
 	Interpolator *m_interpolator;
