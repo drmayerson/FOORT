@@ -87,7 +87,6 @@ int main(int argc, char *argv[])
     DiagBitflag AllDiags, ValDiag;
     Config::InitializeDiagnostics(cfgObject, AllDiags, ValDiag, theM.get());
 
-    std::cout << "Made it past diagnostics initialization.\n";
     // Initialize Terminations (InitializeTerminations returns the bitflags and initializes the appropriate
     // static TerminationOptions structs)
     TermBitflag AllTerms;

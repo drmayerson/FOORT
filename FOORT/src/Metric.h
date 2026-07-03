@@ -336,7 +336,8 @@ class RotatingBosonStarMetric final : public Metric
 {
 public:
 	// Simple (default) constructor is all that is needed
-	RotatingBosonStarMetric(bool rLogScale = false, std::string MetricFolder = "RotatingBosonStar/data_Will/", int num_x = 500, int num_th = 399, real L = 1.);
+	RotatingBosonStarMetric(bool rLogScale = false, std::string MetricFolder = "RotatingBosonStar/data_Will/", int num_x = 500, int num_th = 399, real L = 1., bool FlipAngularMomentum = false);
+	~RotatingBosonStarMetric();
 
 	// The override of the basic metric getter functions
 	TwoIndex getMetric_dd(const Point &p) const final;
@@ -344,13 +345,14 @@ public:
 	// The override of the description string getter
 	std::string getFullDescriptionStr() const final;
 
-	// protected:
+private:
 	//! The grids with the metric functions
-	// Grid *m_grid_f;
-	// Grid *m_grid_l;
-	// Grid *m_grid_g;
-	// Grid *m_grid_Omega;
+	Grid *m_grid_f;
+	Grid *m_grid_l;
+	Grid *m_grid_g;
+	Grid *m_grid_Omega;
 
+public:
 	//! The grid interpolators
 	BicubicSplineInterpolator *m_fInterpolator;
 	BicubicSplineInterpolator *m_lInterpolator;
@@ -358,6 +360,8 @@ public:
 	BicubicSplineInterpolator *m_OmegaInterpolator;
 
 	const real m_L;
+	// Sign multiplier for Omega: +1 for normal rotation, -1 for flipped rotation
+	const int m_OmegaSign;
 
 	//! The interpolator for the metric functions
 	// Interpolator *m_interpolator;

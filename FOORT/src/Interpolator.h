@@ -40,8 +40,7 @@ private:
 class BicubicSplineInterpolator
 {
 public:
-
-    BicubicSplineInterpolator(const std::string x_file = "RotatingBosonStar/x.txt", 
+    BicubicSplineInterpolator(const std::string x_file = "RotatingBosonStar/x.txt",
                               const std::string th_file = "RotatingBosonStar/theta.txt")
     {
         // Load x and theta coordinates from files
@@ -55,12 +54,18 @@ public:
         }
 
         double val;
-        while (x_input >> val) {
+        while (x_input >> val)
+        {
             m_x.push_back(val);
         }
-        while (th_input >> val) {
+        while (th_input >> val)
+        {
             m_theta.push_back(val);
         }
+
+        // Explicitly close files
+        x_input.close();
+        th_input.close();
     }
 
     // BicubicSplineInterpolator(const std::vector<double> &x_coords,
@@ -68,8 +73,8 @@ public:
     //                           const Grid *grid)
     //     : m_x(x_coords), m_theta(theta_coords)
     // {
-        
-    //     compute_spline_coefficients(grid); 
+
+    //     compute_spline_coefficients(grid);
     // }
 
     void set_grid(const Grid *grid)
@@ -77,6 +82,7 @@ public:
         // Precompute spline coefficients for better performance
         // This is more complex but provides C2 continuity
         compute_spline_coefficients(grid);
+        std::cout << "Interpolation domain set: x in [" << m_x.front() << ", " << m_x.back() << "], theta in [" << m_theta.front() << ", " << m_theta.back() << "].\n";
     }
     double interpolate(double p_x, double p_theta,
                        bool allow_extrapolation = false) const;

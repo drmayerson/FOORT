@@ -282,7 +282,8 @@ def DisplayImage(
 
     # Save the picture to file if applicable
     if FileOutput:
-        plt.savefig(FileOutput, format="pdf")
+        plt.tight_layout()
+        plt.savefig(FileOutput, format="png")
         if Verbose:
             print("Saved image to file " + FileOutput + ".")
 
@@ -302,6 +303,7 @@ def GridToFourColorScreenImage(
     FileOutput: str = None,
     Verbose: bool = True,
     NoHorizon: bool = False,
+    Ax: plt.axes = None,
 ) -> None:
     """!
     @brief Convert grid to four-color screen image
@@ -310,6 +312,7 @@ def GridToFourColorScreenImage(
     @param FileOutput: File to save image to (default None)
     @param Verbose: Whether to print progress information (default True)
     @param NoHorizon: Set to True if the spacetime does not have a horizon, disabling the black color (default False)
+    @param Ax: Axes to plot on (default None, creates new axes)
     """
     # Define our own color map for the four-color screen image
     if NoHorizon:
@@ -327,6 +330,7 @@ def GridToFourColorScreenImage(
         ImageTitle=ImageTitle,
         FileOutput=FileOutput,
         Verbose=Verbose,
+        Ax=Ax
     )
 
 
@@ -339,6 +343,7 @@ def FOORTToFourColorScreenImage(
     GridFraction: float = 1,
     FileOutput: str = None,
     NoHorizon: bool = False,
+    Ax: plt.axes = None,
 ) -> None:
     """!
     @brief Convert FOORT output to four-color screen image
@@ -350,6 +355,7 @@ def FOORTToFourColorScreenImage(
     @param GridFraction: Fraction of grid size to use (default 1)
     @param FileOutput: File to save image to (default None)
     @param NoHorizon: Set to True if the spacetime does not have a horizon, disabling the black color (default False)
+    @param Ax: Axes to plot on (default None, creates new axes)
     """
     # Load in raw FOORT output data
     FOORTData, FirstLineInfo = LoadFOORTRawData(
@@ -370,6 +376,7 @@ def FOORTToFourColorScreenImage(
         FileOutput=FileOutput,
         Verbose=Verbose,
         NoHorizon=NoHorizon,
+        Ax=Ax
     )
 
 
@@ -378,6 +385,7 @@ def GridToEquatorialPassesImage(
     ImageTitle: str = None,
     FileOutput: str = None,
     Verbose: bool = True,
+    Ax: plt.axes = None,
 ) -> None:
     """!
     @brief Convert grid to equatorial passes image
@@ -385,6 +393,7 @@ def GridToEquatorialPassesImage(
     @param ImageTitle: Title of image (default None)
     @param FileOutput: File to save image to (default None)
     @param Verbose: Whether to print progress information (default True)
+    @param Ax: Axes to plot on (default None, creates new axes)
     """
     # Color map for equatorial passes
     EquatorialPassesColorMap = cm.get_cmap(
@@ -397,6 +406,7 @@ def GridToEquatorialPassesImage(
         ImageTitle=ImageTitle,
         FileOutput=FileOutput,
         Verbose=Verbose,
+        Ax=Ax
     )
 
 
@@ -412,6 +422,7 @@ def FOORTToEquatorialPassesImage(
     Verbose: bool = False,
     GridFraction: float = 1,
     FileOutput: str = None,
+    Ax: plt.axes = None,
 ) -> None:
     """!
     @brief Convert FOORT output to equatorial passes image
@@ -426,6 +437,7 @@ def FOORTToEquatorialPassesImage(
     @param Verbose: Whether to print progress information (default False)
     @param GridFraction: Fraction of grid size to use (default 1)
     @param FileOutput: File to save image to (default None)
+    @param Ax: Axes to plot on (default None, creates new axes)
     """
     # Load in raw FOORT output data
     FOORTData, FirstLineInfo = LoadFOORTRawData(
@@ -470,7 +482,7 @@ def FOORTToEquatorialPassesImage(
 
     # Display image
     GridToEquatorialPassesImage(
-        FOORTGrid, ImageTitle=FirstLineInfo, FileOutput=FileOutput, Verbose=Verbose
+        FOORTGrid, ImageTitle=FirstLineInfo, FileOutput=FileOutput, Verbose=Verbose, Ax=Ax
     )
 
 
@@ -773,7 +785,10 @@ def FOORTToEquatorialEmissionLineout(
     Ax: plt.axes = None,
     angle: float = 20.0,
     ipl_points: int = 1000,
-) -> None:
+    x_scale = 100,  # fiducial scale in micro as,
+    return_lineout: bool = False,
+    **plot_kwargs,
+) -> None | tuple[np.ndarray, np.ndarray]:
     """!
     @brief Convert FOORT output to equatorial emission image
     @param FilePrefix: Prefix of the FOORT output files
@@ -790,6 +805,8 @@ def FOORTToEquatorialEmissionLineout(
     @param Ax: Matplotlib axes to plot on (default None)
     @param angle: Angle to plot the emission at (default 20.)
     @param ipl_points: Number of points to interpolate (default 1000)
+    @param x_scale: Scale of the x-axis in microarcseconds (default 100)
+    @param return_lineout: Whether to return the lineout data as arrays (default False)
     """
 
     if not (min(abs(angle), abs(angle - 180)) <= 45):
@@ -842,7 +859,10 @@ def FOORTToEquatorialEmissionLineout(
     else:
         ax = Ax
 
-    ax.plot(x, I, color="black", linewidth=1.0)
+    slice_length = x_scale / np.cos(angle * np.pi / 180)
+
+    distance = x * slice_length/ x_dim
+    ax.plot(distance, I, linewidth=1.0, **plot_kwargs)
 
     # Save the picture to file if applicable
     if FileOutput and (Ax is None):
@@ -851,3 +871,132 @@ def FOORTToEquatorialEmissionLineout(
             print("Saved image to file " + FileOutput + ".")
     elif FileOutput:
         print("Not saving figure as ax is given externally.")
+
+    if return_lineout:
+        return distance, I
+
+def GridToClosestRadiusImage(
+    FOORTGrid: np.ndarray,
+    ImageTitle: str = None,
+    FileOutput: str = None,
+    Verbose: bool = True,
+    Ax: plt.axes = None,
+    logscale: bool = False,
+    contours: list[float] | None = None,
+    MaskFloorForContours: bool = True,
+) -> None:
+    """!
+    @brief Convert grid to closest radius image
+    @param FOORTGrid: Grid data to display as image
+    @param ImageTitle: Title of image (default None)
+    @param FileOutput: File to save image to (default None)
+    @param Verbose: Whether to print progress information (default True)
+    @param Ax: Axes to plot on (default None, creates new axes)
+    """
+    # Color map for closest radius: always scale from 0 to the max value
+    ClosestRadiusColorMap = "viridis"
+    if logscale:
+        FOORTGrid = np.log10(FOORTGrid + 1e-10)  # add small value to avoid log(0)
+    min_radius = np.min(FOORTGrid)
+    max_radius = np.max(FOORTGrid)
+    print("Closest radius values range from " + str(min_radius) + " to " + str(max_radius) + ".")
+
+    DisplayImage(
+        FOORTGrid,
+        ClosestRadiusColorMap,
+        ColorMinMax=(min_radius, max_radius),
+        ImageTitle=ImageTitle,
+        FileOutput=FileOutput,
+        Verbose=Verbose,
+        Ax=Ax
+    )
+
+    # Add contour lines for given radii
+    if contours is not None:
+        if Ax is None:
+            print("Cannot add contours if ax is None, as the figure and axes are created in the DisplayImage function. Not adding contours.")
+            return
+
+        contour_grid = FOORTGrid
+        if MaskFloorForContours:
+            # Mask clipped floor values to avoid spurious contours around masked regions.
+            contour_grid = np.ma.masked_where(
+                np.isclose(FOORTGrid, min_radius, rtol=0.0, atol=1e-12),
+                FOORTGrid,
+            )
+
+        CS = Ax.contour(contour_grid, levels=contours, colors='white', linewidths=0.5)
+        Ax.clabel(CS, inline=True, fontsize=8, fmt='%.2f')
+        if FileOutput:
+            print("Not saving figure with contours as ax is given externally.")
+        
+
+
+
+def FOORTToClosestRadius(
+    FilePrefix: str,
+    NrFiles: int = 1,
+    FirstLineDescription: bool = True,
+    DisplayImageTitle: bool = False,
+    Verbose: bool = False,
+    GridFraction: float = 1,
+    TruncateRange: tuple[float] = None,
+    LimitRange: tuple[float] = None,
+    Diag2RangeSelect: tuple[int] = None,
+    Diag2AdvancedSelect: list[int] = None,
+    FileOutput: str = None,
+    Ax: plt.axes = None,
+    logscale: bool = False,
+    contours: list[float] | None = None,
+    MaskFloorForContours: bool = True,
+) -> None:
+    """!
+    @brief Convert FOORT output to closest radius image
+    @param FilePrefix: Prefix of the FOORT output files
+    @param NrFiles: Number of files to load (default 1)
+    @param FirstLineDescription: Whether the first line of the file contains information (default True)
+    @param DisplayImageTitle: Whether to display the image title (default False)
+    @param Verbose: Whether to print progress information (default False)
+    @param GridFraction: Fraction of grid size to use (default 1)
+    @param TruncateRange: Range to truncate data to (default None)
+    @param LimitRange: Range to limit data to (default None)
+    @param Diag2RangeSelect: Range of second diagnostic to select (default None)
+    @param Diag2AdvancedSelect: List of second diagnostic values to select (default None)
+    @param FileOutput: File to save image to (default None)
+    @param Ax: Matplotlib axes to plot on (default None)
+    @param logscale: Whether to apply log scale to the closest radius values (default False)
+    """
+
+    # Load in raw FOORT output data
+    FOORTData, FirstLineInfo = LoadFOORTRawData(
+        FilePrefix,
+        "ClosestRadius",
+        NrFiles=NrFiles,
+        FirstLineDescription=FirstLineDescription,
+        Verbose=Verbose,
+    )
+    if DisplayImageTitle == False:
+        FirstLineInfo = None
+
+    # Convert data to grid
+    FOORTGrid = DataToGrid(
+        FOORTData,
+        TruncateRange=TruncateRange,
+        LimitRange=LimitRange,
+        Diag2RangeSelect=Diag2RangeSelect,
+        Diag2AdvancedSelect=Diag2AdvancedSelect,
+        GridFraction=GridFraction,
+        Verbose=Verbose,
+    )
+
+    # Display image
+    GridToClosestRadiusImage(
+        FOORTGrid,
+        ImageTitle=FirstLineInfo,
+        FileOutput=FileOutput,
+        Verbose=Verbose,
+        Ax=Ax,
+        logscale=logscale,
+        contours=contours,
+        MaskFloorForContours=MaskFloorForContours,
+    )

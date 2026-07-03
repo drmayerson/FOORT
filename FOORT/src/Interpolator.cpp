@@ -107,20 +107,6 @@ double BicubicSplineInterpolator::interpolate(double p_x, double p_theta,
     i = std::min(i, m_x.size() - 2);
     j = std::min(j, m_theta.size() - 2);
 
-    if (!allow_extrapolation)
-    {
-        if (p_x < m_x.front() || p_x > m_x.back() ||
-            p_theta < m_theta.front() || p_theta > m_theta.back())
-        {
-            std::cerr << std::fixed << std::setprecision(10)
-                      << "Error: Point (" << p_x << ", " << p_theta
-                      << ") is outside interpolation domain: ("
-                      << m_x.front() << ", " << m_x.back() << ") x ("
-                      << m_theta.front() << ", " << m_theta.back() << ")." << std::endl;
-            throw std::out_of_range("Point outside interpolation domain");
-        }
-    }
-
     // Normalized coordinates within cell
     double tx = (p_x - m_x[i]) / (m_x[i + 1] - m_x[i]);
     double ty = (p_theta - m_theta[j]) / (m_theta[j + 1] - m_theta[j]);
@@ -135,6 +121,7 @@ double BicubicSplineInterpolator::interpolate(double p_x, double p_theta,
             result += coeff * std::pow(tx, px) * std::pow(ty, py);
         }
     }
+    
     return result;
 }
 
@@ -161,21 +148,22 @@ void BicubicSplineInterpolator::compute_spline_coefficients(const Grid *grid)
             double f11 = (*grid)(j + 1, i + 1);
 
             // Estimate derivatives using finite differences
-            // (More sophisticated approaches would compute actual derivatives)
-            double fx00 = estimate_dx(grid, j, i);
-            double fx10 = estimate_dx(grid, j, i + 1);
-            double fx01 = estimate_dx(grid, j + 1, i);
-            double fx11 = estimate_dx(grid, j + 1, i + 1);
+            // IMPORTANT: Need to scale derivatives by cell width for bicubic Hermite formula
+            // which expects df/dt (derivative wrt normalized parameter), not df/dx
+            double fx00 = estimate_dx(grid, j, i) * (m_x[i + 1] - m_x[i]);
+            double fx10 = estimate_dx(grid, j, i + 1) * (m_x[i + 1] - m_x[i]);
+            double fx01 = estimate_dx(grid, j + 1, i) * (m_x[i + 1] - m_x[i]);
+            double fx11 = estimate_dx(grid, j + 1, i + 1) * (m_x[i + 1] - m_x[i]);
 
-            double fy00 = estimate_dy(grid, j, i);
-            double fy10 = estimate_dy(grid, j, i + 1);
-            double fy01 = estimate_dy(grid, j + 1, i);
-            double fy11 = estimate_dy(grid, j + 1, i + 1);
+            double fy00 = estimate_dy(grid, j, i) * (m_theta[j + 1] - m_theta[j]);
+            double fy10 = estimate_dy(grid, j, i + 1) * (m_theta[j + 1] - m_theta[j]);
+            double fy01 = estimate_dy(grid, j + 1, i) * (m_theta[j + 1] - m_theta[j]);
+            double fy11 = estimate_dy(grid, j + 1, i + 1) * (m_theta[j + 1] - m_theta[j]);
 
-            double fxy00 = estimate_dxdy(grid, j, i);
-            double fxy10 = estimate_dxdy(grid, j, i + 1);
-            double fxy01 = estimate_dxdy(grid, j + 1, i);
-            double fxy11 = estimate_dxdy(grid, j + 1, i + 1);
+            double fxy00 = estimate_dxdy(grid, j, i) * (m_x[i + 1] - m_x[i]) * (m_theta[j + 1] - m_theta[j]);
+            double fxy10 = estimate_dxdy(grid, j, i + 1) * (m_x[i + 1] - m_x[i]) * (m_theta[j + 1] - m_theta[j]);
+            double fxy01 = estimate_dxdy(grid, j + 1, i) * (m_x[i + 1] - m_x[i]) * (m_theta[j + 1] - m_theta[j]);
+            double fxy11 = estimate_dxdy(grid, j + 1, i + 1) * (m_x[i + 1] - m_x[i]) * (m_theta[j + 1] - m_theta[j]);
 
             // Solve for bicubic coefficients (matrix inversion)
             compute_cell_coefficients(m_coeffs[cell_idx],
