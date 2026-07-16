@@ -3,9 +3,11 @@
 
 #include "Geometry.h" // Needed for basic tensor objects etc.
 
-#include "Spline.h"
-#include <string> // for strings
-#include <vector> // needed for the (non-fixed size) vector of symmetries in the metric
+#include "Spline.h"		  // needed for spline interpolation, for the Boson star metric
+#include "Grid.h"		  // needed for the grid class, for the Rotating Boson star metric
+#include "Interpolator.h" // needed for the Interpolator class, for the Rotating Boson star metric
+#include <string>		  // for strings
+#include <vector>		  // needed for the (non-fixed size) vector of symmetries in the metric
 
 /**
  * @file Metric.h
@@ -328,6 +330,41 @@ protected:
 
 	//! function to read the data
 	void read_data();
+};
+
+class RotatingBosonStarMetric final : public Metric
+{
+public:
+	// Simple (default) constructor is all that is needed
+	RotatingBosonStarMetric(bool rLogScale = false, std::string MetricFolder = "RotatingBosonStar/data_Will/", int num_x = 500, int num_th = 399, real L = 1., bool FlipAngularMomentum = false);
+	~RotatingBosonStarMetric();
+
+	// The override of the basic metric getter functions
+	TwoIndex getMetric_dd(const Point &p) const final;
+	TwoIndex getMetric_uu(const Point &p) const final;
+	// The override of the description string getter
+	std::string getFullDescriptionStr() const final;
+
+private:
+	//! The grids with the metric functions
+	Grid *m_grid_f;
+	Grid *m_grid_l;
+	Grid *m_grid_g;
+	Grid *m_grid_Omega;
+
+public:
+	//! The grid interpolators
+	BicubicSplineInterpolator *m_fInterpolator;
+	BicubicSplineInterpolator *m_lInterpolator;
+	BicubicSplineInterpolator *m_gInterpolator;
+	BicubicSplineInterpolator *m_OmegaInterpolator;
+
+	const real m_L;
+	// Sign multiplier for Omega: +1 for normal rotation, -1 for flipped rotation
+	const int m_OmegaSign;
+
+	//! The interpolator for the metric functions
+	// Interpolator *m_interpolator;
 };
 
 //// METRIC ADD POINT A ////
