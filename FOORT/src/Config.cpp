@@ -294,6 +294,28 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 			// All settings complete; create Metric object!
 			TheMetric = std::unique_ptr<Metric>(new BosonStarMetric(Phi_infinity, num_lines, rLogScale, Phi_filename, m_filename));
 		}
+		else if (MetricName == "rotatingbosonstar")
+		{
+			// The rotating boson star with solitonic potential
+
+			// First setting to look up: using a logarithmic r coordinate or not.
+			// Don't need to output message if setting not found
+			bool rLogScale{false};
+			bool flipAngularMomentum{false};
+			std::string MetricFolder{"RotatingBosonStar/data_Will/"};
+			int NumX{500};
+			int NumTh{399};
+			real L{1.};
+			MetricSettings.LookupValue("RLogScale", rLogScale);
+			MetricSettings.LookupValue("FlipAngularMomentum", flipAngularMomentum);
+			MetricSettings.LookupValue("MetricFolder", MetricFolder);
+			MetricSettings.LookupValue("NumX", NumX);
+			MetricSettings.LookupValue("NumTh", NumTh);
+			MetricSettings.LookupValue("L", L);
+
+			// All settings complete; create Metric object!
+			TheMetric = std::unique_ptr<Metric>(new RotatingBosonStarMetric(rLogScale, MetricFolder, NumX, NumTh, L, flipAngularMomentum));
+		}
 		//// METRIC ADD POINT B ////
 		// Add an else if clause to check for your new Metric object!
 		// To look for additional options in the metric configuration, use
@@ -602,26 +624,32 @@ void Config::InitializeDiagnostics(const ConfigCollection &theCfg, DiagBitflag &
 
 			//// Fluid four-velocity model selection and initialization ////
 
-			// Default fluid model and default parameters
-			real defaultxi{1.0};
-			real defaultbetar{1.0};
-			real defaultbetaphi{1.0};
-			std::unique_ptr<FluidVelocityModel> theFluidModel{new GeneralCircularRadialFluid(defaultxi, defaultbetar, defaultbetaphi, theMetric)};
+			// Fluid four-velocity model parameters (with sensible defaults)
+			real subKeplerianparam{1.0};
+			real betaR{1.0};
+			real betaPhi{1.0};
+			real iscolowerbound{0.05};
+			real iscoupperbound{1000.0};
 
 			// Read in fluid velocity model
-			std::string fluidmodelstring{""};
+			std::string fluidmodelstring{"GeneralCircularRadial"};
 			AllDiagSettings["EquatorialEmission"].LookupValue("FluidVelocityModel", fluidmodelstring);
 			if (fluidmodelstring == "GeneralCircularRadial")
 			{
-				real subKeplerianparam{defaultxi};
-				real betaR{defaultbetar};
-				real betaPhi{defaultbetaphi};
 				AllDiagSettings["EquatorialEmission"].LookupValue("xi", subKeplerianparam);
 				AllDiagSettings["EquatorialEmission"].LookupValue("betar", betaR);
 				AllDiagSettings["EquatorialEmission"].LookupValue("betaphi", betaPhi);
-
-				theFluidModel = std::unique_ptr<FluidVelocityModel>{new GeneralCircularRadialFluid(subKeplerianparam, betaR, betaPhi, theMetric)};
+				AllDiagSettings["EquatorialEmission"].LookupValue("ISCOLowerBound", iscolowerbound);
+				AllDiagSettings["EquatorialEmission"].LookupValue("ISCOUpperBound", iscoupperbound);
 			}
+			else
+			{
+				ScreenOutput("Unknown FluidVelocityModel \"" + fluidmodelstring + "\". Using default GeneralCircularRadial model.",
+							 Output_Other_Default);
+			}
+
+			std::unique_ptr<FluidVelocityModel> theFluidModel{
+				new GeneralCircularRadialFluid(subKeplerianparam, betaR, betaPhi, theMetric, iscolowerbound, iscoupperbound)};
 			// Other fluid velocity models can be checked for here...
 
 			// Set EquatorialEmissionDiagnostic options struct
