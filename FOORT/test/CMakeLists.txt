@@ -6,9 +6,9 @@ target_include_directories(test_integrator PUBLIC ${CMAKE_SOURCE_DIR}/FOORT/src)
 target_include_directories(test_einstein_ring PUBLIC ${CMAKE_SOURCE_DIR}/FOORT/src)
 target_include_directories(test_boson_star_geodesic PUBLIC ${CMAKE_SOURCE_DIR}/FOORT/src)
 
-target_link_libraries(test_integrator PUBLIC config_lib metric_lib input_output_lib GTest::gtest_main)
-target_link_libraries(test_einstein_ring PUBLIC config_lib metric_lib input_output_lib GTest::gtest_main)
-target_link_libraries(test_boson_star_geodesic PUBLIC config_lib metric_lib input_output_lib GTest::gtest_main)
+target_link_libraries(test_integrator PUBLIC config_lib metric_lib input_output_lib GTest::gtest_main filesystem_compat)
+target_link_libraries(test_einstein_ring PUBLIC config_lib metric_lib input_output_lib GTest::gtest_main filesystem_compat)
+target_link_libraries(test_boson_star_geodesic PUBLIC config_lib metric_lib input_output_lib GTest::gtest_main filesystem_compat)
 
 include(GoogleTest)
 gtest_discover_tests(test_integrator)
