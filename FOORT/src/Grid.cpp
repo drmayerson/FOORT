@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 #include "Grid.h"
 
 //! A class for a 2D grid that contains the values of the necessary functions.
@@ -19,6 +20,7 @@ void Grid::initialize_from_file(std::string file)
     if (!inputFile)
     {
         std::cerr << "Error opening file!" << std::endl;
+        throw std::runtime_error("File not found");
     }
 
     std::string line;
@@ -27,11 +29,16 @@ void Grid::initialize_from_file(std::string file)
 
     while (std::getline(inputFile, line))
     {
+        if (i >= N_row)
+            throw std::runtime_error("Grid data file " + file + " has more rows than N_row=" + std::to_string(N_row));
+
         std::istringstream iss(line);
 
         double val;
         while (iss >> val)
         {
+            if (j >= N_col)
+                throw std::runtime_error("Grid data file " + file + " has more columns than N_col=" + std::to_string(N_col));
             data[i * N_col + j] = val;
             j += 1;
         }
