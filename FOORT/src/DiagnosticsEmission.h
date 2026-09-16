@@ -5,8 +5,9 @@
 #include "Metric.h"		 // for Metric functions
 #include "InputOutput.h" // for ScreenOutput
 
-#include <string> // for strings
-#include <cmath>  // for fmax, fmin
+#include <string>	 // for strings
+#include <cmath>	 // for fmax, fmin
+#include <stdexcept> // for std::runtime_error
 
 /**
  * @file DiagnosticsEmission.h
@@ -116,6 +117,13 @@ struct GeneralCircularRadialFluid final : public FluidVelocityModel
 			ScreenOutput("beta_phi parameter must be between 0 and 1; adjusting to 0", OutputLevel::Level_0_WARNING);
 		if (betaphi > 1.0)
 			ScreenOutput("beta_phi parameter must be between 0 and 1; adjusting to 1", OutputLevel::Level_0_WARNING);
+
+		// ISCO search bounds must be positive and correctly ordered, or the binary search in
+		// FindISCO() silently produces a wrong or unconverged ISCO (NaN bounds under log(r)
+		// coordinates, or an empty search range)
+		if (ISCO_lowerbound <= 0.0 || ISCO_upperbound <= 0.0 || ISCO_lowerbound >= ISCO_upperbound)
+			throw std::runtime_error("ISCOLowerBound and ISCOUpperBound must be positive with ISCOLowerBound < ISCOUpperBound (got lower=" +
+									 std::to_string(ISCO_lowerbound) + ", upper=" + std::to_string(ISCO_upperbound) + ")");
 
 		// Find the (equatorial) ISCO for this Metric
 		FindISCO();
