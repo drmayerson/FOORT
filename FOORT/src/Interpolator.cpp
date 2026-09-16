@@ -97,6 +97,16 @@ double Interpolator::interpolate(Grid *grid, double p_x, double p_theta)
 double BicubicSplineInterpolator::interpolate(double p_x, double p_theta,
                                               bool allow_extrapolation) const
 {
+    if (!allow_extrapolation &&
+        (p_x < m_x.front() || p_x > m_x.back() || p_theta < m_theta.front() || p_theta > m_theta.back()))
+    {
+        throw std::runtime_error("BicubicSplineInterpolator::interpolate: query point (" +
+                                 std::to_string(p_x) + ", " + std::to_string(p_theta) +
+                                 ") is outside the interpolation domain [" + std::to_string(m_x.front()) +
+                                 ", " + std::to_string(m_x.back()) + "] x [" + std::to_string(m_theta.front()) +
+                                 ", " + std::to_string(m_theta.back()) + "]");
+    }
+
     // Find cell containing the point
     auto x_it = std::lower_bound(m_x.begin(), m_x.end(), p_x);
     auto th_it = std::lower_bound(m_theta.begin(), m_theta.end(), p_theta);
