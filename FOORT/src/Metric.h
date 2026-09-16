@@ -8,6 +8,7 @@
 #include "Interpolator.h" // needed for the Interpolator class, for the Rotating Boson star metric
 #include <string>		  // for strings
 #include <vector>		  // needed for the (non-fixed size) vector of symmetries in the metric
+#include <memory>		  // for std::unique_ptr, for the Rotating Boson star metric's grids/interpolators
 
 /**
  * @file Metric.h
@@ -337,7 +338,7 @@ class RotatingBosonStarMetric final : public Metric
 public:
 	// Simple (default) constructor is all that is needed
 	RotatingBosonStarMetric(bool rLogScale = false, std::string MetricFolder = "RotatingBosonStar/data_Will/", int num_x = 500, int num_th = 399, bool FlipAngularMomentum = false);
-	~RotatingBosonStarMetric();
+	~RotatingBosonStarMetric() = default;
 
 	// The override of the basic metric getter functions
 	TwoIndex getMetric_dd(const Point &p) const final;
@@ -347,17 +348,17 @@ public:
 
 private:
 	//! The grids with the metric functions
-	Grid *m_grid_f;
-	Grid *m_grid_l;
-	Grid *m_grid_g;
-	Grid *m_grid_Omega;
+	std::unique_ptr<Grid> m_grid_f;
+	std::unique_ptr<Grid> m_grid_l;
+	std::unique_ptr<Grid> m_grid_g;
+	std::unique_ptr<Grid> m_grid_Omega;
 
 public:
 	//! The grid interpolators
-	BicubicSplineInterpolator *m_fInterpolator;
-	BicubicSplineInterpolator *m_lInterpolator;
-	BicubicSplineInterpolator *m_gInterpolator;
-	BicubicSplineInterpolator *m_OmegaInterpolator;
+	std::unique_ptr<BicubicSplineInterpolator> m_fInterpolator;
+	std::unique_ptr<BicubicSplineInterpolator> m_lInterpolator;
+	std::unique_ptr<BicubicSplineInterpolator> m_gInterpolator;
+	std::unique_ptr<BicubicSplineInterpolator> m_OmegaInterpolator;
 
 	// Sign multiplier for Omega: +1 for normal rotation, -1 for flipped rotation
 	const int m_OmegaSign;

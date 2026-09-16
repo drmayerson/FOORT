@@ -1235,17 +1235,17 @@ std::string BosonStarMetric::getFullDescriptionStr() const
  */
 RotatingBosonStarMetric::RotatingBosonStarMetric(bool rLogScale, std::string MetricFolder,
 												 int num_x, int num_th, bool FlipAngularMomentum) : Metric(rLogScale),
-																				  m_grid_f(new Grid(num_th, num_x)),
-																				  m_grid_l(new Grid(num_th, num_x)),
-																				  m_grid_g(new Grid(num_th, num_x)),
-																				  m_grid_Omega(new Grid(num_th, num_x)),
-																				  m_fInterpolator(new BicubicSplineInterpolator(MetricFolder + "x.txt",
+																				  m_grid_f(std::make_unique<Grid>(num_th, num_x)),
+																				  m_grid_l(std::make_unique<Grid>(num_th, num_x)),
+																				  m_grid_g(std::make_unique<Grid>(num_th, num_x)),
+																				  m_grid_Omega(std::make_unique<Grid>(num_th, num_x)),
+																				  m_fInterpolator(std::make_unique<BicubicSplineInterpolator>(MetricFolder + "x.txt",
 																																MetricFolder + "theta.txt")),
-																				  m_lInterpolator(new BicubicSplineInterpolator(MetricFolder + "x.txt",
+																				  m_lInterpolator(std::make_unique<BicubicSplineInterpolator>(MetricFolder + "x.txt",
 																																MetricFolder + "theta.txt")),
-																				  m_gInterpolator(new BicubicSplineInterpolator(MetricFolder + "x.txt",
+																				  m_gInterpolator(std::make_unique<BicubicSplineInterpolator>(MetricFolder + "x.txt",
 																																MetricFolder + "theta.txt")),
-																				  m_OmegaInterpolator(new BicubicSplineInterpolator(MetricFolder + "x.txt",
+																				  m_OmegaInterpolator(std::make_unique<BicubicSplineInterpolator>(MetricFolder + "x.txt",
 																																	MetricFolder + "theta.txt")),
 																										  m_OmegaSign(FlipAngularMomentum ? -1 : 1)
 
@@ -1260,28 +1260,16 @@ RotatingBosonStarMetric::RotatingBosonStarMetric(bool rLogScale, std::string Met
 
 	// Read the different metric functions
 	m_grid_f->initialize_from_file(MetricFolder + "f.txt");
-	m_fInterpolator->set_grid(m_grid_f);
+	m_fInterpolator->set_grid(m_grid_f.get());
 
 	m_grid_l->initialize_from_file(MetricFolder + "l.txt");
-	m_lInterpolator->set_grid(m_grid_l);
+	m_lInterpolator->set_grid(m_grid_l.get());
 
 	m_grid_g->initialize_from_file(MetricFolder + "g.txt");
-	m_gInterpolator->set_grid(m_grid_g);
+	m_gInterpolator->set_grid(m_grid_g.get());
 
 	m_grid_Omega->initialize_from_file(MetricFolder + "omega.txt");
-	m_OmegaInterpolator->set_grid(m_grid_Omega);
-}
-
-RotatingBosonStarMetric::~RotatingBosonStarMetric()
-{
-	delete m_grid_f;
-	delete m_grid_l;
-	delete m_grid_g;
-	delete m_grid_Omega;
-	delete m_fInterpolator;
-	delete m_lInterpolator;
-	delete m_gInterpolator;
-	delete m_OmegaInterpolator;
+	m_OmegaInterpolator->set_grid(m_grid_Omega.get());
 }
 
 /**
