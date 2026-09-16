@@ -19,7 +19,7 @@ endif()
 
 set(CMAKE_CXX_FLAGS "-fopenmp -Wno-unused-result")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
-set(CMAKE_EXE_LINKER_FLAGS "-lm -lstdc++fs")
+set(CMAKE_EXE_LINKER_FLAGS "-lm")
 
 option(FOORT_BUILD_TESTS "Build the FOORT test suite (fetches GoogleTest)" ON)
 
