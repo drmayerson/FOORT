@@ -10,8 +10,8 @@ import pandas as pd  # Used for loading FOORT files
 from scipy.interpolate import (
     griddata,
 )  # used to create (interpolated) grid from FOORT data
+import matplotlib as mpl
 import matplotlib.pyplot as plt  # Used to plot images
-from matplotlib import cm  # Color maps
 import matplotlib.colors as colors  # Specific colors
 from scipy import ndimage  # Used to map/distort background image
 from scipy.interpolate import RectBivariateSpline
@@ -292,6 +292,9 @@ def DisplayImage(
         plt.show()
         if Verbose:
             print("Done displaying image.")
+    else:
+        ax.axis("off")
+        ax.grid(False)
 
 
 # --- SPECIFIC GRID TO IMAGE AND COMBINATION FILE TO IMAGE FUNCTIONS PER DIAGNOSTIC --- #
@@ -396,8 +399,8 @@ def GridToEquatorialPassesImage(
     @param Ax: Axes to plot on (default None, creates new axes)
     """
     # Color map for equatorial passes
-    EquatorialPassesColorMap = cm.get_cmap(
-        "magma", np.max(FOORTGrid) - np.min(FOORTGrid) + 1
+    EquatorialPassesColorMap = mpl.colormaps["magma"].resampled(
+        np.max(FOORTGrid) - np.min(FOORTGrid) + 1
     )
 
     DisplayImage(
