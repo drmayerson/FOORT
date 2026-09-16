@@ -1287,10 +1287,6 @@ TwoIndex RotatingBosonStarMetric::getMetric_dd(const Point &p) const
 	real theta = p[2];
 	real sint = sin(theta);
 
-	// real f = m_interpolator->interpolate(m_grid_f, x, theta);
-	// real l = m_interpolator->interpolate(m_grid_l, x, theta);
-	// real g = m_interpolator->interpolate(m_grid_g, x, theta);
-	// real Omega = m_interpolator->interpolate(m_grid_Omega, x, theta);
 
 	real f = m_fInterpolator->interpolate(x, theta);
 	real l = m_lInterpolator->interpolate(x, theta);
@@ -1326,10 +1322,6 @@ TwoIndex RotatingBosonStarMetric::getMetric_uu(const Point &p) const
 	real theta = p[2];
 	real sint = sin(theta);
 
-	// real f = m_interpolator->interpolate(m_grid_f, x, theta);
-	// real l = m_interpolator->interpolate(m_grid_l, x, theta);
-	// real g = m_interpolator->interpolate(m_grid_g, x, theta);
-	// real Omega = m_interpolator->interpolate(m_grid_Omega, x, theta);
 	real f = m_fInterpolator->interpolate(x, theta);
 	real l = m_lInterpolator->interpolate(x, theta);
 	real g = m_gInterpolator->interpolate(x, theta);

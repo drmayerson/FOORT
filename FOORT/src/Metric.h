@@ -362,9 +362,6 @@ public:
 
 	// Sign multiplier for Omega: +1 for normal rotation, -1 for flipped rotation
 	const int m_OmegaSign;
-
-	//! The interpolator for the metric functions
-	// Interpolator *m_interpolator;
 };
 
 //// METRIC ADD POINT A ////
