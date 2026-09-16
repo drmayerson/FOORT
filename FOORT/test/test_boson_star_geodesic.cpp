@@ -183,7 +183,7 @@ TEST(BosonStar, stable_light_ring)
     const GeodesicResult result = IntegrateBosonStarLightRing(
         kStableLightRingRadius,
         kStableLightRingRadius,
-        "boson_star_stable_light_ring.dat");
+        "test/boson_star_stable_light_ring.dat");
 
     EXPECT_GT(result.step_count, 0) << "Geodesic should integrate for at least one step.";
     EXPECT_TRUE(std::isfinite(result.final_r)) << "Final radius should be finite.";
@@ -201,7 +201,7 @@ TEST(BosonStar, unstable_light_ring)
     const GeodesicResult result = IntegrateBosonStarLightRing(
         kUnstableLightRingRadius,
         kUnstableLightRingRadius + perturbation,
-        "boson_star_unstable_light_ring.dat");
+        "test/boson_star_unstable_light_ring.dat");
 
     EXPECT_GT(result.step_count, 0) << "Geodesic should integrate for at least one step.";
     EXPECT_TRUE(std::isfinite(result.final_r)) << "Final radius should be finite.";

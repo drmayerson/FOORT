@@ -1,0 +1,38 @@
+var _terminations_8h =
+[
+    [ "Termination", "class_termination.html", "class_termination" ],
+    [ "HorizonTermination", "class_horizon_termination.html", "class_horizon_termination" ],
+    [ "BoundarySphereTermination", "class_boundary_sphere_termination.html", "class_boundary_sphere_termination" ],
+    [ "TimeOutTermination", "class_time_out_termination.html", "class_time_out_termination" ],
+    [ "ThetaSingularityTermination", "class_theta_singularity_termination.html", "class_theta_singularity_termination" ],
+    [ "NaNTermination", "class_na_n_termination.html", "class_na_n_termination" ],
+    [ "GeneralSingularityTermination", "class_general_singularity_termination.html", "class_general_singularity_termination" ],
+    [ "TerminationOptions", "struct_termination_options.html", "struct_termination_options" ],
+    [ "HorizonTermOptions", "struct_horizon_term_options.html", "struct_horizon_term_options" ],
+    [ "BoundarySphereTermOptions", "struct_boundary_sphere_term_options.html", "struct_boundary_sphere_term_options" ],
+    [ "TimeOutTermOptions", "struct_time_out_term_options.html", "struct_time_out_term_options" ],
+    [ "ThetaSingularityTermOptions", "struct_theta_singularity_term_options.html", "struct_theta_singularity_term_options" ],
+    [ "NaNTermOptions", "struct_na_n_term_options.html", "struct_na_n_term_options" ],
+    [ "GeneralSingularityTermOptions", "struct_general_singularity_term_options.html", "struct_general_singularity_term_options" ],
+    [ "TermBitflag", "_terminations_8h.html#ade7ca271520105b2b5e784c013d36f87", null ],
+    [ "TerminationUniqueVector", "_terminations_8h.html#a342f3aa673b10e75b5d32bc9455f854e", null ],
+    [ "Term", "_terminations_8h.html#a8cdefb1144dde7779068f9cd70ef5b7c", [
+      [ "Uninitialized", "_terminations_8h.html#a8cdefb1144dde7779068f9cd70ef5b7caf704f57ea420275ad51bf55b7dec2c96", null ],
+      [ "Continue", "_terminations_8h.html#a8cdefb1144dde7779068f9cd70ef5b7caa0bfb8e59e6c13fc8d990781f77694fe", null ],
+      [ "Horizon", "_terminations_8h.html#a8cdefb1144dde7779068f9cd70ef5b7ca85fb7708d989f936cb51ef53a8af080f", null ],
+      [ "BoundarySphere", "_terminations_8h.html#a8cdefb1144dde7779068f9cd70ef5b7cab8d66c0e208c37512c92f3f2d0e6462f", null ],
+      [ "TimeOut", "_terminations_8h.html#a8cdefb1144dde7779068f9cd70ef5b7ca5c642867bcd564f28fbb79aec4501efa", null ],
+      [ "ThetaSingularity", "_terminations_8h.html#a8cdefb1144dde7779068f9cd70ef5b7ca347e0797ad5d748fa27502c6c4ce490e", null ],
+      [ "NaN", "_terminations_8h.html#a8cdefb1144dde7779068f9cd70ef5b7ca7ecfb3bf076a6a9635f975fe96ac97fd", null ],
+      [ "GeneralSingularity", "_terminations_8h.html#a8cdefb1144dde7779068f9cd70ef5b7ca2a06f59659f37b2ce896373cf11d82ed", null ],
+      [ "Maxterms", "_terminations_8h.html#a8cdefb1144dde7779068f9cd70ef5b7ca133dce88000626808d16e3f6d3a18eb0", null ]
+    ] ],
+    [ "CreateTerminationVector", "_terminations_8h.html#abc8528035cc942964e9e1aa5861624d0", null ],
+    [ "Term_BoundarySphere", "_terminations_8h.html#a7f429bfe7fd68870c236cd02c27b89f8", null ],
+    [ "Term_GeneralSingularity", "_terminations_8h.html#aee34f3f06b162294102b3758096407ee", null ],
+    [ "Term_Horizon", "_terminations_8h.html#addd5a245adb57044b3310ae414e9b8f2", null ],
+    [ "Term_NaN", "_terminations_8h.html#a764a44176be0507944bccec061ea8d23", null ],
+    [ "Term_None", "_terminations_8h.html#a61723cec7938556326d6bf1beb223e35", null ],
+    [ "Term_ThetaSingularity", "_terminations_8h.html#a52761bdb659193379978574601d3da37", null ],
+    [ "Term_TimeOut", "_terminations_8h.html#a387cdb7b511f998404acb98ecd9f51e5", null ]
+];

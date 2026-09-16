@@ -13,6 +13,7 @@ FOORT/cfgs/*
 !FOORT/cfgs/Test_temp.cfg
 !FOORT/cfgs/KerrExample.cfg
 !FOORT/cfgs/JohannsenExample.cfg
+
 FOORT/Output/*
 !FOORT/Output/adaptivemesh_bare.png
 !FOORT/Output/adaptivemesh_interpol.png
@@ -46,6 +47,7 @@ docs/latex/*
 !docs/latex/refman.pdf
 FOORT/*.cfg
 .DS_Store
+FOORT/test/boson_star_*.dat
 
 # User-specific files
 *.rsuser
