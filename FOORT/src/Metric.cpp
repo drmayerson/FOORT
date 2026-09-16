@@ -1234,7 +1234,7 @@ std::string BosonStarMetric::getFullDescriptionStr() const
  * @param FlipAngularMomentum whether to flip the sign of Omega (reverse rotation direction)
  */
 RotatingBosonStarMetric::RotatingBosonStarMetric(bool rLogScale, std::string MetricFolder,
-												 int num_x, int num_th, real L, bool FlipAngularMomentum) : Metric(rLogScale),
+												 int num_x, int num_th, bool FlipAngularMomentum) : Metric(rLogScale),
 																				  m_grid_f(new Grid(num_th, num_x)),
 																				  m_grid_l(new Grid(num_th, num_x)),
 																				  m_grid_g(new Grid(num_th, num_x)),
@@ -1247,7 +1247,6 @@ RotatingBosonStarMetric::RotatingBosonStarMetric(bool rLogScale, std::string Met
 																																MetricFolder + "theta.txt")),
 																				  m_OmegaInterpolator(new BicubicSplineInterpolator(MetricFolder + "x.txt",
 																																	MetricFolder + "theta.txt")),
-																										  m_L(L),
 																										  m_OmegaSign(FlipAngularMomentum ? -1 : 1)
 
 {
@@ -1296,7 +1295,7 @@ TwoIndex RotatingBosonStarMetric::getMetric_dd(const Point &p) const
 	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
 	real r = m_rLogScale ? exp(p[1]) : p[1];
 	r += 1e-9; // to avoid r = 0
-	real x = m_L * r / (1. + r);
+	real x = r / (1. + r); // compactified coordinate (L = 1)
 	real theta = p[2];
 	real sint = sin(theta);
 
@@ -1335,7 +1334,7 @@ TwoIndex RotatingBosonStarMetric::getMetric_uu(const Point &p) const
 	// If logscale is turned on, then the first coordinate is actually u = log(r), so r = e^u
 	real r = m_rLogScale ? exp(p[1]) : p[1];
 	r += 1e-9; // to avoid r = 0
-	real x = m_L * r / (1. + r);
+	real x = r / (1. + r); // compactified coordinate (L = 1)
 	real theta = p[2];
 	real sint = sin(theta);
 

@@ -336,7 +336,7 @@ class RotatingBosonStarMetric final : public Metric
 {
 public:
 	// Simple (default) constructor is all that is needed
-	RotatingBosonStarMetric(bool rLogScale = false, std::string MetricFolder = "RotatingBosonStar/data_Will/", int num_x = 500, int num_th = 399, real L = 1., bool FlipAngularMomentum = false);
+	RotatingBosonStarMetric(bool rLogScale = false, std::string MetricFolder = "RotatingBosonStar/data_Will/", int num_x = 500, int num_th = 399, bool FlipAngularMomentum = false);
 	~RotatingBosonStarMetric();
 
 	// The override of the basic metric getter functions
@@ -359,7 +359,6 @@ public:
 	BicubicSplineInterpolator *m_gInterpolator;
 	BicubicSplineInterpolator *m_OmegaInterpolator;
 
-	const real m_L;
 	// Sign multiplier for Omega: +1 for normal rotation, -1 for flipped rotation
 	const int m_OmegaSign;
 

@@ -24,7 +24,6 @@ namespace
 
     constexpr int kNumX = 1500;
     constexpr int kNumTh = 200;
-    constexpr real kL = 1.0;
 
     struct GeodesicResult
     {
@@ -134,8 +133,8 @@ namespace
         const std::string metric_folder = ResolveRotatingBosonStarDataFolder();
 
         std::unique_ptr<Metric> theM = std::unique_ptr<Metric>(
-            new RotatingBosonStarMetric(rLogScale, metric_folder, kNumX, 
-                kNumTh, kL, true));
+            new RotatingBosonStarMetric(rLogScale, metric_folder, kNumX,
+                kNumTh, true));
         std::unique_ptr<Source> theS = std::unique_ptr<Source>(new NoSource(theM.get()));
 
         GeodesicPositionDiagnostic::DiagOptions =

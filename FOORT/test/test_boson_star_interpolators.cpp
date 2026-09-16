@@ -17,10 +17,9 @@ TEST(RotatingBosonStarInterpolators, test_interpolators_at_various_points)
     std::string MetricFolder = "RotatingBosonStar/data_C38/";
     int NumX = 1500;
     int NumTh = 200;
-    real L = 1.0;
 
     std::unique_ptr<Metric> theM = std::unique_ptr<Metric>(
-        new RotatingBosonStarMetric(rLogScale, MetricFolder, NumX, NumTh, L));
+        new RotatingBosonStarMetric(rLogScale, MetricFolder, NumX, NumTh));
 
     auto metric = static_cast<RotatingBosonStarMetric *>(theM.get());
 
@@ -29,7 +28,7 @@ TEST(RotatingBosonStarInterpolators, test_interpolators_at_various_points)
     outfile << std::scientific << std::setprecision(10);
     outfile << "Testing RotatingBosonStarMetric interpolators\n";
     outfile << "MetricFolder: " << MetricFolder << "\n";
-    outfile << "NumX: " << NumX << ", NumTh: " << NumTh << ", L: " << L << "\n";
+    outfile << "NumX: " << NumX << ", NumTh: " << NumTh << "\n";
     outfile << "rLogScale: " << (rLogScale ? "true" : "false") << "\n\n";
 
     // Test points: various x and theta values

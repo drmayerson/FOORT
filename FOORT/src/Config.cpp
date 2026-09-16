@@ -305,16 +305,14 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 			std::string MetricFolder{"RotatingBosonStar/data_Will/"};
 			int NumX{500};
 			int NumTh{399};
-			real L{1.};
 			MetricSettings.LookupValue("RLogScale", rLogScale);
 			MetricSettings.LookupValue("FlipAngularMomentum", flipAngularMomentum);
 			MetricSettings.LookupValue("MetricFolder", MetricFolder);
 			MetricSettings.LookupValue("NumX", NumX);
 			MetricSettings.LookupValue("NumTh", NumTh);
-			MetricSettings.LookupValue("L", L);
 
 			// All settings complete; create Metric object!
-			TheMetric = std::unique_ptr<Metric>(new RotatingBosonStarMetric(rLogScale, MetricFolder, NumX, NumTh, L, flipAngularMomentum));
+			TheMetric = std::unique_ptr<Metric>(new RotatingBosonStarMetric(rLogScale, MetricFolder, NumX, NumTh, flipAngularMomentum));
 		}
 		//// METRIC ADD POINT B ////
 		// Add an else if clause to check for your new Metric object!
