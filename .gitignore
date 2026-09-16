@@ -5,8 +5,28 @@
 
 # Additional
 FOORT/cfgs/*
+!FOORT/cfgs/BosonStar.cfg
+!FOORT/cfgs/Test.cfg
+!FOORT/cfgs/Test_FBdetail.cfg
+!FOORT/cfgs/Test_MNrun.cfg
+!FOORT/cfgs/Test_Pedro.cfg
+!FOORT/cfgs/Test_temp.cfg
 FOORT/Output/*
-Benchmarking/Seppe/*
+!FOORT/Output/adaptivemesh_bare.png
+!FOORT/Output/adaptivemesh_interpol.png
+!FOORT/Output/debug_EquatPasses.dat
+!FOORT/Output/debug_FourColorScreen.dat
+!FOORT/Output/diffgeo.m
+!FOORT/Output/ring_sn3.png
+!FOORT/Output/rings_all.png
+!FOORT/Output/rings_n2.png
+!FOORT/Output/rings_n4.png
+!FOORT/Output/sampleoutput_adaptivemesh_221202-125808_FourColorScreen.dat
+!FOORT/Output/sampleoutput_adaptivemesh_rings_221202-140701_EquatPasses.dat
+!FOORT/Output/sampleoutput_adaptivemesh_rings_221202-140701_FourColorScreen.dat
+!FOORT/Output/sampleoutput_pictures.nb
+!FOORT/Output/sampleoutput_simplemesh_221202-125440_FourColorScreen.dat
+!FOORT/Output/simplemesh.png
 
 # FOORT compilation files
 FOORT/*.o
@@ -15,7 +35,6 @@ FOORT/FOORT
 PostProc/*
 !PostProc/*.py
 !PostProc/Doxyfile
-FOORT/Output/BS*
 build/*
 FOORT/bin/*
 FOORT.zip
