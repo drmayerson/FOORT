@@ -764,10 +764,21 @@ def ModifiedEquatorialEmission(
         FirstLineDescription=FirstLineDescription,
         Verbose=Verbose,
     )
-    ClosestRadius_mask = (ClosestRadius_df["diag1"] >= LightRingRadius) * 1 - (
-        ClosestRadius_df["diag1"] < LightRingRadius
+    # Merge on (x, y) rather than relying on index alignment: EquatorialEmission_df and
+    # ClosestRadius_df are loaded from separate files and may have had different rows
+    # dropped independently (LoadFOORTRawData drops NaN rows per-file), so their row
+    # labels can't be assumed to correspond after loading.
+    merged_df = EquatorialEmission_df.merge(
+        ClosestRadius_df[["x", "y", "diag1"]],
+        on=["x", "y"],
+        how="inner",
+        suffixes=("", "_closest"),
+    )
+    ClosestRadius_mask = (merged_df["diag1_closest"] >= LightRingRadius) * 1 - (
+        merged_df["diag1_closest"] < LightRingRadius
     ) * 1
-    EquatorialEmission_df["diag2"] = EquatorialEmission_df["diag2"] * ClosestRadius_mask
+    merged_df["diag2"] = merged_df["diag2"] * ClosestRadius_mask
+    EquatorialEmission_df = merged_df[["x", "y", "diag1", "diag2"]]
 
     return EquatorialEmission_df, FirstLineInfo
 
