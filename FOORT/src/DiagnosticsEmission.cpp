@@ -352,19 +352,15 @@ OneIndex GeneralCircularRadialFluid::GetRadialVelocityd(const Point &p) const
  */
 void GeneralCircularRadialFluid::FindISCO()
 {
+	// m_ISCOlowerbound/m_ISCOupperbound are always true (non-log) radii; for a metric with a horizon
+	// they default to the horizon radius and 10 times the horizon radius (set in Config.cpp), but can
+	// be overridden by the user via the ISCOLowerBound/ISCOUpperBound config settings
 	real lowerbound{m_ISCOlowerbound};
 	real upperbound{m_ISCOupperbound};
-	const SphericalHorizonMetric *sphermetric = dynamic_cast<const SphericalHorizonMetric *>(m_theMetric);
-	if (sphermetric)
+	if (m_theMetric->getrLogScale())
 	{
-		lowerbound = sphermetric->getrLogScale() ? log(sphermetric->getHorizonRadius()) : sphermetric->getHorizonRadius();
-		upperbound = sphermetric->getrLogScale() ? log(10.0 * sphermetric->getHorizonRadius()) : 10.0 * sphermetric->getHorizonRadius();
-	}
-	else if (m_theMetric->getrLogScale())
-	{
-		// If not a spherical horizon metric, but we are using log(r) coordinates, then set the lower bound to 0.0
-		lowerbound = log(m_ISCOlowerbound); // ln(0.05) = -3.912023005428146
-		upperbound = log(m_ISCOupperbound); // ln(1000.0) = 6.907755278982137
+		lowerbound = log(m_ISCOlowerbound);
+		upperbound = log(m_ISCOupperbound);
 	}
 
 	// Perform binary search for ISCO

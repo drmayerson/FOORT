@@ -605,6 +605,11 @@ void Config::InitializeDiagnostics(const ConfigCollection &theCfg, DiagBitflag &
 			real defaultmu{sphermetric ? sphermetric->getHorizonRadius() : 1.0};
 			real defaultgamma{0.0};
 			real defaultsigma{1.0};
+
+			// Default ISCO search bounds (true radii): for metrics with a horizon, search from the
+			// horizon radius out to 10 times the horizon radius; otherwise fall back to generic bounds
+			real defaultiscolowerbound{sphermetric ? sphermetric->getHorizonRadius() : 0.05};
+			real defaultiscoupperbound{sphermetric ? 10.0 * sphermetric->getHorizonRadius() : 1000.0};
 			std::unique_ptr<EmissionModel> theEmission{new GLMJohnsonSUEmission(defaultmu, defaultgamma, defaultsigma)};
 
 			// Read in emission model
@@ -628,8 +633,8 @@ void Config::InitializeDiagnostics(const ConfigCollection &theCfg, DiagBitflag &
 			real subKeplerianparam{1.0};
 			real betaR{1.0};
 			real betaPhi{1.0};
-			real iscolowerbound{0.05};
-			real iscoupperbound{1000.0};
+			real iscolowerbound{defaultiscolowerbound};
+			real iscoupperbound{defaultiscoupperbound};
 
 			// Read in fluid velocity model
 			std::string fluidmodelstring{"GeneralCircularRadial"};
