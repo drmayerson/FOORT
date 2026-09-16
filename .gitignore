@@ -38,6 +38,7 @@ PostProc/*
 !PostProc/*.py
 !PostProc/Doxyfile
 !PostProc/ExampleNotebook.ipynb
+!PostProc/environment.yml
 build/*
 FOORT/bin/*
 FOORT.zip
