@@ -648,9 +648,11 @@ void Config::InitializeDiagnostics(const ConfigCollection &theCfg, DiagBitflag &
 							 Output_Other_Default);
 			}
 
+			// GeneralCircularRadial is currently the only implemented FluidVelocityModel, so it is
+			// constructed unconditionally here; an unrecognized FluidVelocityModel string is caught
+			// and warned about above. Add an else-if branch here once a second model is implemented.
 			std::unique_ptr<FluidVelocityModel> theFluidModel{
 				new GeneralCircularRadialFluid(subKeplerianparam, betaR, betaPhi, theMetric, iscolowerbound, iscoupperbound)};
-			// Other fluid velocity models can be checked for here...
 
 			// Set EquatorialEmissionDiagnostic options struct
 			EquatorialEmissionDiagnostic::DiagOptions =
