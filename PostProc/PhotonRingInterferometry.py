@@ -188,7 +188,7 @@ def FOORTToVisAmp(
     RadonPaddingFactor: float = 25,
     FileOutput: str = None,
     LightRingRadius: float = None,
-    angular_size: float = 50.0
+    AngularSize: float = 50.0
     * 1e-6
     * np.pi
     / (180 * 60 * 60),  # in radians (default = 50 microarcseconds)
@@ -208,7 +208,7 @@ def FOORTToVisAmp(
     @param RadonPaddingFactor: The factor to pad the radon transform by (default = 25).
     @param FileOutput: The name of the file to save the visibility amplitudes to (default = None).
     @param LightRingRadius: The radius of the light ring, if one is present (default = None). When used, this separets "inner" and "outer" photon rings.
-    @param angular_size: The angular size of the image in radians (default = 50 microarcseconds).
+    @param AngularSize: The angular size of the image in radians (default = 50 microarcseconds).
     @return visamps: The visibility amplitudes.
     @return baselines: The baselines of the visibility amplitudes corresponding to the visamps.
     @return FirstLineInfo: The first line of the file, if applicable.
@@ -249,7 +249,7 @@ def FOORTToVisAmp(
         rad,
         PaddingFactor=RadonPaddingFactor,
         Verbose=Verbose,
-        sample_spacing=angular_size / FOORTGrid.shape[0],
+        sample_spacing=AngularSize / FOORTGrid.shape[0],
     )
     baselines = freqs / 1.0e9  # in Giga lambda
     # normalized visamp
