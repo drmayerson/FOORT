@@ -180,7 +180,7 @@ std::string GeneralCircularRadialFluid::getFullDescriptionStr() const
 	if (m_ISCOexists && m_theMetric->getrLogScale())
 		trueISCOradius = exp(m_ISCOr);
 
-	return "Circular/radial flow (sub-Keplerian parameter xi = " + std::to_string(m_subKeplerParam) + ", beta_r = " + std::to_string(m_betaR) + ", beta_phi = " + std::to_string(m_betaPhi) + "; " + (m_ISCOexists ? "ISCO = " + std::to_string(trueISCOradius) : "no ISCO found") + ")";
+	return "Circular/radial flow (sub-Keplerian parameter xi = " + std::to_string(m_subKeplerParam) + ", beta_r = " + std::to_string(m_betaR) + ", beta_phi = " + std::to_string(m_betaPhi) + "; " + (m_ISCOexists ? "ISCO = " + std::to_string(trueISCOradius) : "no ISCO found") + "; " + "ISCO lower bound = " + std::to_string(m_ISCOlowerbound) + ", ISCO upper bound = " + std::to_string(m_ISCOupperbound) + ")";
 }
 
 /**
@@ -352,13 +352,15 @@ OneIndex GeneralCircularRadialFluid::GetRadialVelocityd(const Point &p) const
  */
 void GeneralCircularRadialFluid::FindISCO()
 {
-	real lowerbound{0.0};
-	real upperbound{1000.0};
-	const SphericalHorizonMetric *sphermetric = dynamic_cast<const SphericalHorizonMetric *>(m_theMetric);
-	if (sphermetric)
+	// m_ISCOlowerbound/m_ISCOupperbound are always true (non-log) radii; for a metric with a horizon
+	// they default to the horizon radius and 10 times the horizon radius (set in Config.cpp), but can
+	// be overridden by the user via the ISCOLowerBound/ISCOUpperBound config settings
+	real lowerbound{m_ISCOlowerbound};
+	real upperbound{m_ISCOupperbound};
+	if (m_theMetric->getrLogScale())
 	{
-		lowerbound = sphermetric->getrLogScale() ? log(sphermetric->getHorizonRadius()) : sphermetric->getHorizonRadius();
-		upperbound = sphermetric->getrLogScale() ? log(10.0 * sphermetric->getHorizonRadius()) : 10.0 * sphermetric->getHorizonRadius();
+		lowerbound = log(m_ISCOlowerbound);
+		upperbound = log(m_ISCOupperbound);
 	}
 
 	// Perform binary search for ISCO

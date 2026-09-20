@@ -1,16 +1,11 @@
 var searchData=
 [
-  ['term_5fboundarysphere_0',['Term_BoundarySphere',['../_terminations_8h.html#a7f429bfe7fd68870c236cd02c27b89f8',1,'Terminations.h']]],
-  ['term_5fgeneralsingularity_1',['Term_GeneralSingularity',['../_terminations_8h.html#aee34f3f06b162294102b3758096407ee',1,'Terminations.h']]],
-  ['term_5fhorizon_2',['Term_Horizon',['../_terminations_8h.html#addd5a245adb57044b3310ae414e9b8f2',1,'Terminations.h']]],
-  ['term_5fnan_3',['Term_NaN',['../_terminations_8h.html#a764a44176be0507944bccec061ea8d23',1,'Terminations.h']]],
-  ['term_5fnone_4',['Term_None',['../_terminations_8h.html#a61723cec7938556326d6bf1beb223e35',1,'Terminations.h']]],
-  ['term_5fthetasingularity_5',['Term_ThetaSingularity',['../_terminations_8h.html#a52761bdb659193379978574601d3da37',1,'Terminations.h']]],
-  ['term_5ftimeout_6',['Term_TimeOut',['../_terminations_8h.html#a387cdb7b511f998404acb98ecd9f51e5',1,'Terminations.h']]],
-  ['termoptions_7',['TermOptions',['../class_horizon_termination.html#a0d0e3d0bacd633033c0880d06f6a2135',1,'HorizonTermination::TermOptions'],['../class_boundary_sphere_termination.html#a20ce9cdcaa0a076c75d237881d661dcc',1,'BoundarySphereTermination::TermOptions'],['../class_time_out_termination.html#a693d928f63e9eaa5c59edf78f1ee0edd',1,'TimeOutTermination::TermOptions'],['../class_theta_singularity_termination.html#af0284094ef73d54bc1717e791e6b0d00',1,'ThetaSingularityTermination::TermOptions'],['../class_na_n_termination.html#a3439511136e5b829fb85ce2a403986d8',1,'NaNTermination::TermOptions'],['../class_general_singularity_termination.html#ae0b993ebf719bff73e47c42d92e117f3',1,'GeneralSingularityTermination::TermOptions']]],
-  ['theemissionmodel_8',['TheEmissionModel',['../struct_equatorial_emission_options.html#a96723ab54944564adc872e0ce9f4cab9',1,'EquatorialEmissionOptions']]],
-  ['thefluidvelocitymodel_9',['TheFluidVelocityModel',['../struct_equatorial_emission_options.html#aa8b9f8552fce3ea3dad32f7b43493d48',1,'EquatorialEmissionOptions']]],
-  ['thetasingepsilon_10',['ThetaSingEpsilon',['../struct_theta_singularity_term_options.html#a6145e83643ba8a14e9db250de1046a2b',1,'ThetaSingularityTermOptions']]],
-  ['theupdatefrequency_11',['theUpdateFrequency',['../struct_diagnostic_options.html#ab7b1ee34168b0189f213ed5ecd1db1c6',1,'DiagnosticOptions']]],
-  ['threshold_12',['Threshold',['../struct_equatorial_passes_options.html#ab3dc00779ee87713577c234e9244ddb7',1,'EquatorialPassesOptions']]]
+  ['sediagnbr_0',['SEdiagNbr',['../struct_square_subdivision_mesh_v2_1_1_pixel_info.html#acdb93d1e89d4ce42e25727eb7673ba76',1,'SquareSubdivisionMeshV2::PixelInfo']]],
+  ['settingname_1',['SettingName',['../struct_config_reader_1_1_config_collection_1_1_config_setting.html#a6d1bf95d360642bdc70a55758de8c385',1,'ConfigReader::ConfigCollection::ConfigSetting']]],
+  ['settingvalue_2',['SettingValue',['../struct_config_reader_1_1_config_collection_1_1_config_setting.html#a13fc75feb80491168f7393290fbf4258',1,'ConfigReader::ConfigCollection::ConfigSetting']]],
+  ['singularities_3',['Singularities',['../struct_general_singularity_term_options.html#a9e93bbf380eadb81db21dade7971fd22',1,'GeneralSingularityTermOptions']]],
+  ['size_4',['size',['../class_grid.html#a001848b23a2ded13a658a405752d388e',1,'Grid']]],
+  ['smallestpossiblestepsize_5',['SmallestPossibleStepsize',['../namespace_integrators.html#a4d34e11f26f31881b0f45fc457675dba',1,'Integrators']]],
+  ['sphereradius_6',['SphereRadius',['../struct_boundary_sphere_term_options.html#aa58a0153071285785c547a6607d55ad9',1,'BoundarySphereTermOptions']]],
+  ['subdividelevel_7',['SubdivideLevel',['../struct_square_subdivision_mesh_1_1_pixel_info.html#a0d551d13e7915d93e3398726d3b6282c',1,'SquareSubdivisionMesh::PixelInfo::SubdivideLevel'],['../struct_square_subdivision_mesh_v2_1_1_pixel_info.html#abf9f4bf8b6ad8000d0e99ba8e1dd0722',1,'SquareSubdivisionMeshV2::PixelInfo::SubdivideLevel']]]
 ];

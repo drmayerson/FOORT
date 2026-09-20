@@ -6,6 +6,9 @@ var searchData=
   ['equatorialemissionoptions_3',['EquatorialEmissionOptions',['../struct_equatorial_emission_options.html#a920ccc1bc40cac3d930069a2a3eb6af7',1,'EquatorialEmissionOptions']]],
   ['equatorialpassesdiagnostic_4',['EquatorialPassesDiagnostic',['../class_equatorial_passes_diagnostic.html#afd54848cba4bc5a31fcb2f6afc4031ec',1,'EquatorialPassesDiagnostic']]],
   ['equatorialpassesoptions_5',['EquatorialPassesOptions',['../struct_equatorial_passes_options.html#a2fce8e6acee979caf33eeb6700893542',1,'EquatorialPassesOptions']]],
-  ['exists_6',['Exists',['../class_config_reader_1_1_config_collection.html#a5102a04f7e52d343fad77b06c38b8b5a',1,'ConfigReader::ConfigCollection']]],
-  ['expint_7',['ExpInt',['../class_square_subdivision_mesh.html#a3a434bbca0d50cdd54fefb30b14aac97',1,'SquareSubdivisionMesh::ExpInt()'],['../class_square_subdivision_mesh_v2.html#a60d686450c0a7433e44117320aa9d098',1,'SquareSubdivisionMeshV2::ExpInt()']]]
+  ['estimate_5fdx_6',['estimate_dx',['../class_bicubic_spline_interpolator.html#a4d9d8e40876d6ed185885fd21112f014',1,'BicubicSplineInterpolator']]],
+  ['estimate_5fdxdy_7',['estimate_dxdy',['../class_bicubic_spline_interpolator.html#ac410fc77774ac8ebadf61be033c759a1',1,'BicubicSplineInterpolator']]],
+  ['estimate_5fdy_8',['estimate_dy',['../class_bicubic_spline_interpolator.html#ad77e58160c53579c4af1fad9ebc701d9',1,'BicubicSplineInterpolator']]],
+  ['exists_9',['Exists',['../class_config_reader_1_1_config_collection.html#a5102a04f7e52d343fad77b06c38b8b5a',1,'ConfigReader::ConfigCollection']]],
+  ['expint_10',['ExpInt',['../class_square_subdivision_mesh.html#a3a434bbca0d50cdd54fefb30b14aac97',1,'SquareSubdivisionMesh::ExpInt()'],['../class_square_subdivision_mesh_v2.html#a60d686450c0a7433e44117320aa9d098',1,'SquareSubdivisionMeshV2::ExpInt()']]]
 ];

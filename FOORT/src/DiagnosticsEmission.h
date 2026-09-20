@@ -5,8 +5,9 @@
 #include "Metric.h"		 // for Metric functions
 #include "InputOutput.h" // for ScreenOutput
 
-#include <string> // for strings
-#include <cmath>  // for fmax, fmin
+#include <string>	 // for strings
+#include <cmath>	 // for fmax, fmin
+#include <stdexcept> // for std::runtime_error
 
 /**
  * @file DiagnosticsEmission.h
@@ -95,8 +96,10 @@ protected:
 struct GeneralCircularRadialFluid final : public FluidVelocityModel
 {
 	// Constructor with three parameters and Metric pointer (which is passed to base class constructor)
-	GeneralCircularRadialFluid(real subKeplerParam, real betar, real betaphi, const Metric *const theMetric) : m_subKeplerParam{fmin(fmax(subKeplerParam, 0.0), 1.0)}, m_betaR{fmin(fmax(betar, 0.0), 1.0)},
-																											   m_betaPhi{fmin(fmax(betaphi, 0.0), 1.0)}, FluidVelocityModel(theMetric)
+	GeneralCircularRadialFluid(real subKeplerParam, real betar, real betaphi, const Metric *const theMetric,
+							   real ISCO_lowerbound, real ISCO_upperbound) : m_subKeplerParam{fmin(fmax(subKeplerParam, 0.0), 1.0)}, m_betaR{fmin(fmax(betar, 0.0), 1.0)},
+																			 m_betaPhi{fmin(fmax(betaphi, 0.0), 1.0)}, FluidVelocityModel(theMetric),
+																			 m_ISCOlowerbound{ISCO_lowerbound}, m_ISCOupperbound{ISCO_upperbound}
 	{
 		// Do some checks on three params, which must lie between 0.0 and 1.0 (note that they are adjusted as such in
 		// initializer above)
@@ -114,6 +117,13 @@ struct GeneralCircularRadialFluid final : public FluidVelocityModel
 			ScreenOutput("beta_phi parameter must be between 0 and 1; adjusting to 0", OutputLevel::Level_0_WARNING);
 		if (betaphi > 1.0)
 			ScreenOutput("beta_phi parameter must be between 0 and 1; adjusting to 1", OutputLevel::Level_0_WARNING);
+
+		// ISCO search bounds must be positive and correctly ordered, or the binary search in
+		// FindISCO() silently produces a wrong or unconverged ISCO (NaN bounds under log(r)
+		// coordinates, or an empty search range)
+		if (ISCO_lowerbound <= 0.0 || ISCO_upperbound <= 0.0 || ISCO_lowerbound >= ISCO_upperbound)
+			throw std::runtime_error("ISCOLowerBound and ISCOUpperBound must be positive with ISCOLowerBound < ISCOUpperBound (got lower=" +
+									 std::to_string(ISCO_lowerbound) + ", upper=" + std::to_string(ISCO_upperbound) + ")");
 
 		// Find the (equatorial) ISCO for this Metric
 		FindISCO();
@@ -150,6 +160,10 @@ private:
 	bool m_ISCOexists{false};
 	//! ISCO radius
 	real m_ISCOr{-1.0};
+	//! Lower bound for ISCO radius search
+	real m_ISCOlowerbound;
+	//! Upper bound for ISCO radius search
+	real m_ISCOupperbound;
 	//! ISCO t momentum
 	real m_ISCOpt{};
 	//! ISCO phi momentum

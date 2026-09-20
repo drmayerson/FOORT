@@ -1,10 +1,8 @@
 var searchData=
 [
-  ['sediagnbr_0',['SEdiagNbr',['../struct_square_subdivision_mesh_v2_1_1_pixel_info.html#acdb93d1e89d4ce42e25727eb7673ba76',1,'SquareSubdivisionMeshV2::PixelInfo']]],
-  ['settingname_1',['SettingName',['../struct_config_reader_1_1_config_collection_1_1_config_setting.html#a6d1bf95d360642bdc70a55758de8c385',1,'ConfigReader::ConfigCollection::ConfigSetting']]],
-  ['settingvalue_2',['SettingValue',['../struct_config_reader_1_1_config_collection_1_1_config_setting.html#a13fc75feb80491168f7393290fbf4258',1,'ConfigReader::ConfigCollection::ConfigSetting']]],
-  ['singularities_3',['Singularities',['../struct_general_singularity_term_options.html#a9e93bbf380eadb81db21dade7971fd22',1,'GeneralSingularityTermOptions']]],
-  ['smallestpossiblestepsize_4',['SmallestPossibleStepsize',['../namespace_integrators.html#a4d34e11f26f31881b0f45fc457675dba',1,'Integrators']]],
-  ['sphereradius_5',['SphereRadius',['../struct_boundary_sphere_term_options.html#aa58a0153071285785c547a6607d55ad9',1,'BoundarySphereTermOptions']]],
-  ['subdividelevel_6',['SubdivideLevel',['../struct_square_subdivision_mesh_1_1_pixel_info.html#a0d551d13e7915d93e3398726d3b6282c',1,'SquareSubdivisionMesh::PixelInfo::SubdivideLevel'],['../struct_square_subdivision_mesh_v2_1_1_pixel_info.html#abf9f4bf8b6ad8000d0e99ba8e1dd0722',1,'SquareSubdivisionMeshV2::PixelInfo::SubdivideLevel']]]
+  ['redshiftpower_0',['RedShiftPower',['../struct_equatorial_emission_options.html#af24bb4ade878ae9fad114e4c0f6b2e45',1,'EquatorialEmissionOptions']]],
+  ['rightnbr_1',['RightNbr',['../struct_square_subdivision_mesh_v2_1_1_pixel_info.html#aafe2aa626af8803277016e046be0c7f1',1,'SquareSubdivisionMeshV2::PixelInfo']]],
+  ['rightnbrindex_2',['RightNbrIndex',['../struct_square_subdivision_mesh_1_1_pixel_info.html#a33db548b5dd59e50babb6952cc082637',1,'SquareSubdivisionMesh::PixelInfo']]],
+  ['rlogscale_3',['RLogScale',['../struct_closest_radius_options.html#a9b2463389ed67e1c7f843565010be49e',1,'ClosestRadiusOptions::RLogScale'],['../struct_equatorial_emission_options.html#a331ac1504e7c33f13533c4749666d70a',1,'EquatorialEmissionOptions::RLogScale']]],
+  ['rlogscale_4',['rLogScale',['../struct_horizon_term_options.html#a921c7dcc2122a23f6e3a6b3fabaffe57',1,'HorizonTermOptions::rLogScale'],['../struct_boundary_sphere_term_options.html#a3edc3b42ed65d014f0e39b6f6ebe1670',1,'BoundarySphereTermOptions::rLogScale'],['../struct_general_singularity_term_options.html#a67a81c87201fc3adcfa39b700b094eec',1,'GeneralSingularityTermOptions::rLogScale']]]
 ];

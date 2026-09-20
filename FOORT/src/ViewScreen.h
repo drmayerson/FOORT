@@ -67,6 +67,11 @@ public:
 						 OutputLevel::Level_0_WARNING);
 		}
 
+		ScreenOutput("ViewScreen initialized with position " + toString(m_Pos) + ", looking direction " + toString(m_Direction) +
+						 ", screen size " + toString(m_ScreenSize) + ", screen center " + toString(m_ScreenCenter) +
+						 ", geodesic type " + (m_GeodType == GeodesicType::Null ? "Null" : (m_GeodType == GeodesicType::Timelike ? "Timelike" : "Spacelike")) +
+						 ", and metric: " + m_theMetric->getFullDescriptionStr(),
+					 OutputLevel::Level_4_DEBUG);
 		// Construct the vielbein now
 		ConstructVielbein();
 	}
