@@ -129,7 +129,7 @@ OneIndex GeneralCircularRadialFluid::GetFourVelocityd(const Point &p) const
 			for (int j = 0; j < dimension; ++j)
 			{
 				u_up_circ[i] += g_uu[i][j] * p_down_circ[j];
-				u_up_rad[j] += g_uu[i][j] * p_down_rad[j];
+				u_up_rad[i] += g_uu[i][j] * p_down_rad[j];
 			}
 		}
 
