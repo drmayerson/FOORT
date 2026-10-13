@@ -35,7 +35,7 @@ namespace Integrators
 	inline real Derivative_hval{1e-7};
 
 	//! The name of the integrator selected
-	inline std::string IntegratorDescription{"RK4"};
+	inline std::string IntegratorDescription{"Verlet"};
 
 	// Full descriptive string of integrator and all integrator options
 	std::string GetFullIntegratorDescription();
