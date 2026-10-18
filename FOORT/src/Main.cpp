@@ -34,8 +34,6 @@ int main(int argc, char *argv[])
     // but until then use the maximum level of output
     SetOutputLevel(OutputLevel::Level_4_DEBUG);
 
-    ScreenOutput("FOORT compiled in configuration mode.", OutputLevel::Level_1_PROC);
-
     // We start by reading in the specified configuration file
     Config::ConfigCollection cfgObject;
     if (argc < 2) // no configuration file given
