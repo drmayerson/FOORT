@@ -49,7 +49,7 @@ void ViewScreen::ConstructVielbein()
 	m_Vielbein[3] = OneIndex{0, 0, 0, 1} - signs[0] * innerprod(OneIndex{0, 0, 0, 1}, m_Vielbein[0]) * m_Vielbein[0];
 	thenorm = innerprod(m_Vielbein[3], m_Vielbein[3]);
 	signs[3] = (thenorm < 0) ? -1 : 1;
-	m_Vielbein[3] = m_Pos[1] * sin(m_Pos[2]) * m_Vielbein[3] / sqrt(signs[3] * thenorm);
+	m_Vielbein[3] = m_Vielbein[3] / sqrt(signs[3] * thenorm);
 
 	// Then r
 	m_Vielbein[1] = guu[1] - signs[0] * innerprod(guu[1], m_Vielbein[0]) * m_Vielbein[0] - signs[3] * innerprod(guu[1], m_Vielbein[3]) * m_Vielbein[3];
@@ -58,11 +58,14 @@ void ViewScreen::ConstructVielbein()
 	m_Vielbein[1] = m_Vielbein[1] / sqrt(signs[1] * thenorm);
 
 	// Then theta
-	m_Vielbein[2] = guu[2] - signs[0] * innerprod(guu[2], m_Vielbein[0]) * m_Vielbein[0] - signs[3] * innerprod(guu[2], m_Vielbein[3]) * m_Vielbein[2];
-	-signs[1] * innerprod(guu[2], m_Vielbein[1]) * m_Vielbein[1];
+	m_Vielbein[2] = guu[2] - signs[0] * innerprod(guu[2], m_Vielbein[0]) * m_Vielbein[0]
+			- signs[3] * innerprod(guu[2], m_Vielbein[3]) * m_Vielbein[3]
+			- signs[1] * innerprod(guu[2], m_Vielbein[1]) * m_Vielbein[1];
 	thenorm = innerprod(m_Vielbein[2], m_Vielbein[2]);
 	signs[2] = (thenorm < 0) ? -1 : 1;
 	m_Vielbein[2] = m_Pos[1] * m_Vielbein[2] / sqrt(signs[2] * thenorm);
+	m_Vielbein[3] = m_Pos[1] * sin(m_Pos[2]) * m_Vielbein[3];
+
 
 	// Vielbein has been constructed
 	// Do some checks

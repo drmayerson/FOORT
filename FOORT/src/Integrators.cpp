@@ -52,7 +52,7 @@ real Integrators::GetAdaptiveStep(Point curpos, OneIndex curvel)
 {
 	real dlambda_x1 = epsilon / (std::fabs(curvel[1]) + delta_nodiv0);
 	real dlambda_x2 = epsilon * std::min(curpos[2], pi - curpos[2]) / (std::fabs(curvel[2]) + delta_nodiv0);
-	real dlambda_x3 = epsilon / (std::fabs(curvel[3] + delta_nodiv0));
+	real dlambda_x3 = epsilon / (std::fabs(curvel[3]) + delta_nodiv0);
 
 	real h = 1. / (1. / std::fabs(dlambda_x1) + 1. / std::fabs(dlambda_x2) + 1. / std::fabs(dlambda_x3));
 	// Make sure we take at least the smallest allowed step size
