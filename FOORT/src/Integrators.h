@@ -55,7 +55,8 @@ namespace Integrators
 								   Point &nextpos, OneIndex &nextvel, real &stepsize, const Metric *theMetric, const Source *theSource);
 
 	//! Tolerance on the change in velocity in the iteration loop of the Verlet integration algorithm
-	inline real VerletVelocityTolerance{0.001};
+	//! (default -1.0: no iteration; any positive value enables the (uncapped) fixed-point iteration)
+	inline real VerletVelocityTolerance{-1.0};
 
 	// This is a GeodesicIntegratorFunc
 	// Using the velocity Verlet algorithm to integrate the geodesic equation

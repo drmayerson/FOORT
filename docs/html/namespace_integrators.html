@@ -109,14 +109,13 @@ Variables</h2></td></tr>
 <tr class="memdesc:a5aaa6b3cb00c6921341418047bbbc51e"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is used to avoid dividing by zero.  <br /></td></tr>
 <tr class="memitem:a73eaa8355d6a02c405253d3fc199eb48" id="r_a73eaa8355d6a02c405253d3fc199eb48"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a73eaa8355d6a02c405253d3fc199eb48">Derivative_hval</a> {1e-7}</td></tr>
 <tr class="memdesc:a73eaa8355d6a02c405253d3fc199eb48"><td class="mdescLeft">&#160;</td><td class="mdescRight">The spacing used in stencils for the calculation of numerical derivatives (e.g. in Christoffel symbols)  <br /></td></tr>
-<tr class="memitem:aa6b5ea945683804f550f64435d6ff5eb" id="r_aa6b5ea945683804f550f64435d6ff5eb"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa6b5ea945683804f550f64435d6ff5eb">IntegratorDescription</a> {&quot;RK4&quot;}</td></tr>
+<tr class="memitem:aa6b5ea945683804f550f64435d6ff5eb" id="r_aa6b5ea945683804f550f64435d6ff5eb"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa6b5ea945683804f550f64435d6ff5eb">IntegratorDescription</a> {&quot;Verlet&quot;}</td></tr>
 <tr class="memdesc:aa6b5ea945683804f550f64435d6ff5eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">The name of the integrator selected.  <br /></td></tr>
 <tr class="memitem:a8d58ff26a8f7798d074861368cb8ab40" id="r_a8d58ff26a8f7798d074861368cb8ab40"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8d58ff26a8f7798d074861368cb8ab40">epsilon</a> {0.03}</td></tr>
 <tr class="memdesc:a8d58ff26a8f7798d074861368cb8ab40"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is the base step size to be taken (the integrator will adapt this if necessary)  <br /></td></tr>
 <tr class="memitem:a4d34e11f26f31881b0f45fc457675dba" id="r_a4d34e11f26f31881b0f45fc457675dba"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4d34e11f26f31881b0f45fc457675dba">SmallestPossibleStepsize</a> {1e-12}</td></tr>
 <tr class="memdesc:a4d34e11f26f31881b0f45fc457675dba"><td class="mdescLeft">&#160;</td><td class="mdescRight">The affine parameter must always go forward by at least this amount.  <br /></td></tr>
-<tr class="memitem:aa9fed7b461859ee476e51f4f328f6af3" id="r_aa9fed7b461859ee476e51f4f328f6af3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa9fed7b461859ee476e51f4f328f6af3">VerletVelocityTolerance</a> {0.001}</td></tr>
-<tr class="memdesc:aa9fed7b461859ee476e51f4f328f6af3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tolerance on the change in velocity in the iteration loop of the Verlet integration algorithm.  <br /></td></tr>
+<tr class="memitem:aa9fed7b461859ee476e51f4f328f6af3" id="r_aa9fed7b461859ee476e51f4f328f6af3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa9fed7b461859ee476e51f4f328f6af3">VerletVelocityTolerance</a> {-1.0}</td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
 <a id="a386c259f9eeef96c555c1b4e24abbd9b" name="a386c259f9eeef96c555c1b4e24abbd9b"></a>
@@ -373,7 +372,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::string Integrators::IntegratorDescription {&quot;RK4&quot;}</td>
+          <td class="memname">std::string Integrators::IntegratorDescription {&quot;Verlet&quot;}</td>
         </tr>
       </table>
   </td>
@@ -421,7 +420,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> Integrators::VerletVelocityTolerance {0.001}</td>
+          <td class="memname"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> Integrators::VerletVelocityTolerance {-1.0}</td>
         </tr>
       </table>
   </td>
@@ -430,8 +429,7 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>Tolerance on the change in velocity in the iteration loop of the Verlet integration algorithm. </p>
+<p>Tolerance on the change in velocity in the iteration loop of the Verlet integration algorithm (default -1.0: no iteration; any positive value enables the (uncapped) fixed-point iteration) </p>
 
 </div>
 </div>

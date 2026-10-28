@@ -4,12 +4,12 @@ The code files are all in the `FOORT/src` subfolder.
 
 ## QUICK INSTALL GUIDE
 
-### LINUX / MAC:
+### LINUX
 
 #### Requirements
 
 - CMake >= 3.21
-- A C++17 compiler whose standard library provides `<filesystem>`, e.g. GCC >= 8 (Apple Clang works for compiling, but lacks OpenMP; see MacOS Troubleshooting below)
+- A C++17 compiler whose standard library provides `<filesystem>`, e.g. GCC >= 8
 - OpenMP
 - Network access at configure time to fetch GoogleTest, or configure with `-DFOORT_BUILD_TESTS=OFF`
 
@@ -45,6 +45,22 @@ cmake -S . -B build -DCMAKE_CXX_COMPILER=/opt/cray/pe/gcc-native/14/bin/g++
 cmake --build build
 ```
 
+As a last resort, if no compiler with `<filesystem>` support is available (e.g. only GCC 7), the code can still be built by replacing `#include <filesystem>` with `#include <experimental/filesystem>` (and `std::filesystem` with `std::experimental::filesystem`) in `FOORT/src/InputOutput.cpp`, linking against `stdc++fs`, and configuring with `-DFOORT_SKIP_FILESYSTEM_CHECK=ON`. This is not supported and may need further manual adjustments.
+
+#### Old MakeFiles
+
+Alternatively, old Makefiles can be found in `alternative_builds/old_makefiles`. These can be system dependent, however, but should be adaptable to your needs. If the user wants to use these, the relevant makefile should be copied into the `src` folder, in which
+
+```
+make -f <makefile>
+```
+
+should be run, where `<makefile>` should be replaced with the name of the relevant file.
+
+### MAC
+
+The same requirements and CMake commands as for Linux apply. However, Apple Clang (the default compiler on macOS) does not support OpenMP, so a GCC from Homebrew is needed. If CMake is run with Apple Clang, configuration stops with an error about `<filesystem>`; the actual cause is the missing OpenMP support, and the workaround below resolves it.
+
 #### MacOS Troubleshooting
 
 Recent versions of MacOS may encounter issues with CMake. The following seems to resolve current issues.
@@ -57,17 +73,7 @@ export FC=/opt/homebrew/bin/gfortran-14
 export SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk/
 ```
 
-For convenience, this is stored in `alternative_builds/MacOS_workaround.sh`, which should be executed with `source \the\path\` in the terminal in case issues are encountered. You may need to `rm -rf build` in order to start clean. In case this doesn't work (which is not unlikely - some of it is black magic), one can also revert to the `makefile_mac` as described below.
-
-#### Old MakeFiles
-
-Alternatively, old Makefiles can be found in `alternative_builds/old_makefiles`. These can be system dependent, however, but should be adaptable to your needs. If the user wants to use these, the relevant makefile should be copied into the `src` folder, in which
-
-```
-make -f <makefile>
-```
-
-should be run, where `<makefile>` should be replaced with the name of the relevant file.
+For convenience, this is stored in `alternative_builds/MacOS_workaround.sh`, which should be executed with `source \the\path\` in the terminal in case issues are encountered. You may need to `rm -rf build` in order to start clean. In case this doesn't work (which is not unlikely - some of it is black magic), one can also revert to the `makefile_mac` in `alternative_builds/old_makefiles` (see Old MakeFiles above).
 
 ### WINDOWS VISUAL STUDIO
 

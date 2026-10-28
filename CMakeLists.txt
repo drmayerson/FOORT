@@ -23,6 +23,7 @@ set(CMAKE_EXE_LINKER_FLAGS "-lm")
 
 option(FOORT_BUILD_TESTS "Build the FOORT test suite (fetches GoogleTest)" ON)
 
+include(Filesystem)
 include(Doxygen)
 if(FOORT_BUILD_TESTS)
     include(Testing)
