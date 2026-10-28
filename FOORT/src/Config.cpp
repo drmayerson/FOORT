@@ -1165,7 +1165,6 @@ GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigCollection &the
 	real stepsize{Integrators::epsilon};
 	real hval{Integrators::Derivative_hval};
 	real smalleststep{Integrators::SmallestPossibleStepsize};
-	real verlettolerance{Integrators::VerletVelocityTolerance};
 	std::string DefaultString{"Verlet integrator"};
 
 	try
@@ -1222,6 +1221,7 @@ GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigCollection &the
 			Integrators::IntegratorDescription = "Verlet";
 
 			// Get the velocity tolerance (fractional difference in intermediate and final velocities for a step)
+			real verlettolerance{Integrators::VerletVelocityTolerance};
 			IntegratorSettings.LookupValue("VerletVelocityTolerance", verlettolerance);
 			Integrators::VerletVelocityTolerance = verlettolerance;
 		}
@@ -1235,6 +1235,7 @@ GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigCollection &the
 	{
 		// Something happened so that we were unable to determine even which integrator to use.
 		// Use the default settings (set above at begin of this function)
+		Integrators::IntegratorDescription = "Verlet";
 		ScreenOutput(std::string(e.what()) + " Using default integrator (" + DefaultString + ").",
 					 Output_Important_Default);
 	}
