@@ -42,8 +42,8 @@ using pixelcoord = largecounter;
 // CONSTANTS
 
 //! The value of pi
-inline constexpr real pi{3.1415926535};
-
+inline constexpr real pi{3.141592653589793};
+	
 //! The spacetime dimension
 inline constexpr int dimension{4};
 
