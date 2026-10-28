@@ -1235,6 +1235,7 @@ GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigCollection &the
 	{
 		// Something happened so that we were unable to determine even which integrator to use.
 		// Use the default settings (set above at begin of this function)
+		Integrators::IntegratorDescription = "Verlet";
 		ScreenOutput(std::string(e.what()) + " Using default integrator (" + DefaultString + ").",
 					 Output_Important_Default);
 	}

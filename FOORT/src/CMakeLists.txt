@@ -19,8 +19,9 @@ add_library(utilities_lib STATIC Utilities.cpp Utilities.h)
 add_library(viewscreen_lib STATIC ViewScreen.cpp ViewScreen.h Geometry.h)
 
 # Expose the result of the std::filesystem check (cmake/Filesystem.cmake) as a small INTERFACE
-# library and link it directly (and last) onto every final executable below, rather than relying on it propagating transitively through the rest
-# of this file's cyclic static-library dependency graph. With GNU ld's single-pass archive
+# library and link it directly (and last) onto every final executable below, rather than relying
+# on it propagating transitively through the rest of this file's cyclic static-library dependency
+# graph. With GNU ld's single-pass archive
 # resolution (older binutils, e.g. on HPC clusters with GCC < 9), a library attached only via
 # an intermediate static lib's PUBLIC requirement can fail to reach the right place on the
 # final link line; a direct, explicitly-last dependency of the executable itself cannot.
