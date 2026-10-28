@@ -47,6 +47,27 @@ endif()
 unset(CMAKE_REQUIRED_FLAGS)
 unset(CMAKE_REQUIRED_QUIET)
 
+# Neither check passing almost always means a standard library without <filesystem> (e.g. GCC < 8),
+# which would otherwise only surface as a "No such file or directory" error midway through the build.
+# Fail early with a clear message; the override exists in case this check misfires on a toolchain
+# that can in fact build the code.
+option(FOORT_SKIP_FILESYSTEM_CHECK "Downgrade the configure-time std::filesystem check to a warning" OFF)
+if(NOT FILESYSTEM_LINKS_WITHOUT_EXTRA_LIB AND NOT FILESYSTEM_LINKS_WITH_STDCXXFS)
+    string(CONCAT FILESYSTEM_CHECK_MESSAGE
+        "Could not compile and link a C++17 std::filesystem test program with "
+        "${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION} (${CMAKE_CXX_COMPILER}). "
+        "FOORT needs a compiler whose standard library provides <filesystem>, e.g. GCC >= 8. "
+        "Load a newer compiler (e.g. `module load gcc/<version>` on a cluster) and reconfigure in a "
+        "fresh build directory (rm -rf build). If you believe this check is wrong, see the configure "
+        "log under the build directory's CMakeFiles/ for details, and pass "
+        "-DFOORT_SKIP_FILESYSTEM_CHECK=ON to proceed anyway.")
+    if(FOORT_SKIP_FILESYSTEM_CHECK)
+        message(WARNING "${FILESYSTEM_CHECK_MESSAGE}")
+    else()
+        message(FATAL_ERROR "${FILESYSTEM_CHECK_MESSAGE}")
+    endif()
+endif()
+
 # Expose the result as a small INTERFACE library and link it directly (and last) onto every
 # final executable below, rather than relying on it propagating transitively through the rest
 # of this file's cyclic static-library dependency graph. With GNU ld's single-pass archive

@@ -6,6 +6,13 @@ The code files are all in the `FOORT/src` subfolder.
 
 ### LINUX / MAC:
 
+#### Requirements
+
+- CMake >= 3.21
+- A C++17 compiler whose standard library provides `<filesystem>`, e.g. GCC >= 8 (Apple Clang works for compiling, but lacks OpenMP; see MacOS Troubleshooting below)
+- OpenMP
+- Network access at configure time to fetch GoogleTest, or configure with `-DFOORT_BUILD_TESTS=OFF`
+
 #### CMake
 
 The executable can be built with CMake, which should be installed first (for regular Makefiles, see further). The advantage of this method it that, in principle, CMake
@@ -28,7 +35,15 @@ rm -rf build
 
 Typically, compiling with CMake on an HPC-cluster requires loading the relevant CMake module. This code has been succesfully compiled on CSD3 (Cambridge) and Cosma7 (Durham) using the latest CMake modules.
 
-One could get an error if the version of CMake is not recent enough. Alternatively, `gcc` version 7.5 (and presumably lower) raised an issue of not finding the `filesystem` header. If this problem is encountered, one should change this header to `<experimental/filesystem>`. With this one change, the code also compiled on Fawcett, a smaller cluster (DAMTP, Cambridge).
+One could get an error if the version of CMake is not recent enough. Likewise, the default compiler on a cluster is often too old (e.g. `gcc` 7.5 lacks the `<filesystem>` header); CMake will then stop at configure time with an explanatory error. In that case, load a newer compiler module (GCC >= 8) and reconfigure in a fresh build directory (`rm -rf build`), since CMake caches the compiler it first detected.
+
+On LUMI, for example, the following works (loading `gcc-native` alone is not enough, as CMake still picks up the system compiler unless pointed to the newer one explicitly):
+
+```
+ml LUMI/25.03 buildtools gcc-native
+cmake -S . -B build -DCMAKE_CXX_COMPILER=/opt/cray/pe/gcc-native/14/bin/g++
+cmake --build build
+```
 
 #### MacOS Troubleshooting
 
