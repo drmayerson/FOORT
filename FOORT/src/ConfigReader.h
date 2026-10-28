@@ -19,6 +19,7 @@
 #include <stdexcept>   // needed for exceptions
 #include <limits>	   // for std::numeric_limits
 #include <memory>	   // for std::unique_ptr
+#include <type_traits> // for std::is_floating_point_v
 
 /**
  * \brief Namespace to put all ConfigReader objects
@@ -174,12 +175,22 @@ template <class OutputType>
 bool ConfigReader::ConfigCollection::LookupValue(int SettingIndex, OutputType &theOutput) const
 {
 	// Get the setting value, if it is indeed of this type
-	const OutputType *OutputPointer{std::get_if<OutputType>(&m_Settings[SettingIndex].SettingValue)};
+	const ConfigSettingValue &theValue{m_Settings[SettingIndex].SettingValue};
+	const OutputType *OutputPointer{std::get_if<OutputType>(&theValue)};
 	if (OutputPointer)
 	{
 		// Success, the setting is indeed of this type; set the output accordingly
 		theOutput = *OutputPointer;
 		return true;
+	}
+
+	// A real-valued setting may have been written without a decimal point (e.g. "a = 0;"),
+	// in which case it was stored as an integral type: accept it and convert
+	if constexpr (std::is_floating_point_v<OutputType>)
+	{
+		if (const int *p{std::get_if<int>(&theValue)})             { theOutput = static_cast<OutputType>(*p); return true; }
+		if (const long *p{std::get_if<long>(&theValue)})           { theOutput = static_cast<OutputType>(*p); return true; }
+		if (const long long *p{std::get_if<long long>(&theValue)}) { theOutput = static_cast<OutputType>(*p); return true; }
 	}
 	return false;
 }

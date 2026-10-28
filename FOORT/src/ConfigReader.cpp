@@ -691,7 +691,7 @@ void ConfigCollection::ReadSettingValue(std::ifstream &InputFile, ConfigSettingV
 		// String has been completely read in (including closing '"'), put it in theValue
 		theValue = std::move(theValueString);
 	}
-	else if (std::isdigit(NextChar) || NextChar == '.' || NextChar == '-' || NextChar == 'e')
+	else if (std::isdigit(NextChar) || NextChar == '.' || NextChar == '+' || NextChar == '-' || NextChar == 'e' || NextChar == 'E')
 	{
 		// Value type is some kind of number
 
@@ -700,7 +700,7 @@ void ConfigCollection::ReadSettingValue(std::ifstream &InputFile, ConfigSettingV
 
 		// Read in number, character by character; we use peek as we do NOT want to move the stream
 		// beyond the last character in the number
-		while (InputFile && (std::isdigit(NextChar) || NextChar == '.' || NextChar == '-' || NextChar == 'e'))
+		while (InputFile && (std::isdigit(NextChar) || NextChar == '.' || NextChar == '+' || NextChar == '-' || NextChar == 'e' || NextChar == 'E'))
 		{
 			// Add character to number string
 			theValueString += static_cast<char>(NextChar);
@@ -716,7 +716,7 @@ void ConfigCollection::ReadSettingValue(std::ifstream &InputFile, ConfigSettingV
 		// We have now read in the number as a string.
 		// Is it of integral type (int, long, long long) or a double?
 		// To determine this, we see if the number string contains a decimal or 'e', which signifies a double
-		if (theValueString.find('.') == std::string::npos && theValueString.find('e') == std::string::npos)
+		if (theValueString.find_first_of(".eE") == std::string::npos)
 		{
 			// We have NOT found a decimal or 'e' so the number is of integral type
 

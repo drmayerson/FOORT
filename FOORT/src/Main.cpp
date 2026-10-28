@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     // but until then use the maximum level of output
     SetOutputLevel(OutputLevel::Level_4_DEBUG);
 
-    ScreenOutput("FOORT compiled in configuration mode.", OutputLevel::Level_1_PROC);
+    ScreenOutput("FOORT v1.0.", OutputLevel::Level_1_PROC);
 
     // We start by reading in the specified configuration file
     Config::ConfigCollection cfgObject;
@@ -198,7 +198,12 @@ int main(int argc, char *argv[])
                     ++masterIndexCounter;
 
                     int numthreads{omp_get_num_threads()};
-                    if (masterIndexCounter > 0 && masterIndexCounter % (GetLoopMessageFrequency() / numthreads) == 0)
+                    // Output a message roughly every LoopMessageFrequency geodesics (summed over all threads);
+                    // LoopMessageFrequency = 0 turns the messages off. The max(1, ...) avoids a modulo by zero
+                    // when LoopMessageFrequency is smaller than the number of threads.
+                    largecounter msgfreq{GetLoopMessageFrequency()};
+                    largecounter threadmsgfreq{std::max<largecounter>(1, msgfreq / numthreads)};
+                    if (msgfreq > 0 && masterIndexCounter % threadmsgfreq == 0)
                     {
                         double speed = masterIndexCounter * numthreads / IterationTimer.elapsed();
                         ScreenOutput("Approx. at geodesic " + std::to_string(masterIndexCounter * numthreads) + " (" + std::to_string(IterationTimer.elapsed()) + "s elapsed; speed: " + std::to_string(static_cast<long>(speed)) + " geod/s; est. loop time remaining: " + std::to_string((CurNrGeod - masterIndexCounter * numthreads) / speed) + "s)...", OutputLevel::Level_2_SUBPROC);

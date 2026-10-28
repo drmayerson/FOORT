@@ -968,7 +968,7 @@ TwoIndex ST3CrMetric::getMetric_dd(const Point &p) const
 	real r2 = sqrt(r * r + l * l / 4. + r * l * cost);
 	real r3 = sqrt(r * r + R * R + 2. * r * R * sint);
 
-	// comp_ellint_1 is the complete elliptic integral of the second kind. This is provided in the standard library from C++17 onwards.
+	// comp_ellint_1 is the complete elliptic integral of the first kind. This is provided in the standard library from C++17 onwards.
 	// Older versions of C++ may find this in the std::tr1 library.
 	real cei = std::comp_ellint_1(sqrt(4. * r * R * sint / (r3 * r3)));
 	real MD0 = -2. * m_q0 / (pi * r3) * cei;
