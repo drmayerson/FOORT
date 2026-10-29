@@ -339,7 +339,7 @@ OneIndex GeneralCircularRadialFluid::GetRadialVelocityd(const Point &p) const
 	real g_rr{g_uu[1][1]};
 
 	// Radial component entirely fixed by velocity components at infinity and metric at this point
-	real p_r{1.0 / g_rr * (E * g_tr + sqrt(fmax(-g_rr + E * E * (g_tr * g_tr - g_tt * g_rr), 0.0)))};
+	real p_r{1.0 / g_rr * (E * g_tr - sqrt(fmax(-g_rr + E * E * (g_tr * g_tr - g_tt * g_rr), 0.0)))};
 
 	OneIndex p_down{p_t, p_r, p_theta, p_phi};
 
