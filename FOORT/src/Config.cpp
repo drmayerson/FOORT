@@ -619,6 +619,11 @@ void Config::InitializeDiagnostics(const ConfigCollection &theCfg, DiagBitflag &
 				theEmission = std::unique_ptr<EmissionModel>{new GLMJohnsonSUEmission(mu, gamma, sigma)};
 			}
 			// Other emission models can be checked for here...
+			else
+			{
+				ScreenOutput("Unknown EmissionModel \"" + emitmodelstring + "\". Using default GLMJohnsonSUEmission model.",
+							 Output_Other_Default);
+			}
 
 			//// Fluid four-velocity model selection and initialization ////
 
