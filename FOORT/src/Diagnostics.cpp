@@ -414,7 +414,9 @@ real GeodesicPositionDiagnostic::FinalDataValDistance(const std::vector<real> &v
 	}
 
 	// Return the arc length between these two points
-	return acos(cos(val1[0]) * cos(val2[0]) + sin(val1[0]) * sin(val2[0]) * cos(val1[1] - val2[1]));
+	real thecos = cos(val1[0]) * cos(val2[0]) + sin(val1[0]) * sin(val2[0]) * cos(val1[1] - val2[1]);
+	// clamp value between -1 and 1 for acos
+	return acos(std::max<real>(-1.0, std::min<real>(1.0, thecos)));
 }
 
 /**
