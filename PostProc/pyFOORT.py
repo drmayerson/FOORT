@@ -66,64 +66,34 @@ def LoadFOORTRawData(
             + finalpart
         )
 
-    # Read in (first) file
-    data = pd.read_csv(
-        FilePrefix + "_" + DiagType + Extension,
-        skiprows=skiprows,
-        header=None,
-        sep="\s+",
-    )
-    if len(data.columns) == 3:
-        data.columns = ["x", "y", "diag1"]
-    elif len(data.columns) == 4:  # equatorial emission
-        data.columns = ["x", "y", "diag1", "diag2"]
-    elif len(data.columns) == 8:  # geodesic position
-        data.columns = ["x", "y", "nrpts=1", "separator=;;", "t", "r", "theta", "phi"]
-    else:
-        raise ValueError(
-            "Wrong diagnostic output detected in file "
-            + FilePrefix
-            + "_"
-            + DiagType
-            + Extension
-        )
+    # Column names for each kind of diagnostic output, by number of columns
+    ColumnNames = {
+        3: ["x", "y", "diag1"],
+        4: ["x", "y", "diag1", "diag2"],  # equatorial emission
+        8: ["x", "y", "nrpts=1", "separator=;;", "t", "r", "theta", "phi"],  # geodesic position
+    }
 
-    # If there are more than 1 files to input, repeat
-    if NrFiles > 1:
-        df_list = [data]
-        for i in range(2, NrFiles + 1):
-            new_data = pd.read_csv(
-                FilePrefix + "_" + DiagType + f"_{i}" + Extension,
-                skiprows=skiprows,
-                header=None,
-                sep="\s+",
+    def ReadOneFile(FileName):
+        df = pd.read_csv(FileName, skiprows=skiprows, header=None, sep=r"\s+")
+        if len(df.columns) not in ColumnNames:
+            raise ValueError(
+                f"Wrong diagnostic output detected in file {FileName} "
+                f"(found {len(df.columns)} columns, expected one of {sorted(ColumnNames)})"
             )
-            if len(new_data.columns) == 3:
-                new_data.columns = ["x", "y", "diag1"]
-            elif len(new_data.columns) == 4:  # equatorial emission
-                new_data.columns = ["x", "y", "diag1", "diag2"]
-            elif len(new_data.columns) == 8:  # geodesic position
-                new_data.columns = [
-                    "x",
-                    "y",
-                    "nrpts=1",
-                    "separator=;;",
-                    "t",
-                    "r",
-                    "theta",
-                    "phi",
-                ]
-            else:
-                raise ValueError(
-                    "Wrong diagnostic output detected in file "
-                    + FilePrefix
-                    + "_"
-                    + DiagType
-                    + f"_{i}"
-                    + Extension
-                )
-            df_list.append(new_data)
-        data = pd.concat(df_list)
+        df.columns = ColumnNames[len(df.columns)]
+        return df
+
+    FileNames = [FilePrefix + "_" + DiagType + Extension] + [
+        FilePrefix + "_" + DiagType + f"_{i}" + Extension for i in range(2, NrFiles + 1)
+    ]
+    frames = [ReadOneFile(f) for f in FileNames]
+
+    # All files must come from the same diagnostic, or concat would misalign columns
+    if len({len(df.columns) for df in frames}) > 1:
+        raise ValueError(
+            "Files " + FilePrefix + "_" + DiagType + "* have differing numbers of columns"
+        )
+    data = pd.concat(frames, ignore_index=True)
 
     if data.isna().any().any():
         print(
