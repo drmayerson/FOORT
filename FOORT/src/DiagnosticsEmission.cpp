@@ -3,6 +3,7 @@
 #include "Integrators.h" // for Integrators::Derivative_hval, Integrators::delta_nodiv0
 
 #include <cmath> // for asinh, exp, sqrt, fabs
+#include <algorithm> // for std::max
 
 /**
  * @file DiagnosticsEmission.cpp
@@ -235,17 +236,15 @@ OneIndex GeneralCircularRadialFluid::GetCircularVelocityd(const Point &p, bool s
 	if (!solfailed)
 	{
 		real eta{};
-		if (fabs(b) > Integrators::delta_nodiv0)
-			eta = 1 / (2.0 * b) * (c - sqrt(discr)); // choose root to maximize eta; note b < 0 far away
+		real q{0.5 * (c + std::copysign(sqrt(discr), c))};
+		if (fabs(b) > Integrators::delta_nodiv0 && fabs(q) > Integrators::delta_nodiv0)
+    		eta = std::max(q / b, a / q); // largest eta: prograde for J > 0, retrograde for J < 0
+		else if (fabs(b) > Integrators::delta_nodiv0)
+    		eta = q / b;  // q ~ 0 (so c ~ 0, J ~ 0): double root near 0
+		else if (fabs(q) > Integrators::delta_nodiv0)
+    		eta = a / q;  // b ~ 0: only the finite root survives (q -> c)
 		else
-		{
-			if (fabs(c) > Integrators::delta_nodiv0)
-				eta = a / c;
-			else
-			{
-				solfailed = true; // both b==0 and c==0, impossible to find a solution
-			}
-		}
+    		solfailed = true; // b ~ 0 and c ~ 0: no solution
 
 		// Now that we have eta, use the velocity normalization equation to solve for the energy E
 		real denom{ap + bp * eta * eta - cp * eta};

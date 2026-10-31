@@ -102,8 +102,8 @@ def LoadFOORTRawData(
                 new_data.columns = ["x", "y", "diag1"]
             elif len(new_data.columns) == 4:  # equatorial emission
                 new_data.columns = ["x", "y", "diag1", "diag2"]
-            elif len(data.columns) == 8:  # geodesic position
-                data.columns = [
+            elif len(new_data.columns) == 8:  # geodesic position
+                new_data.columns = [
                     "x",
                     "y",
                     "nrpts=1",
@@ -122,7 +122,7 @@ def LoadFOORTRawData(
                     + f"_{i}"
                     + Extension
                 )
-        df_list.append(new_data)
+            df_list.append(new_data)
         data = pd.concat(df_list)
 
     if data.isna().any().any():
