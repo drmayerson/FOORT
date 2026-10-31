@@ -1297,11 +1297,13 @@ std::unique_ptr<GeodesicOutputHandler> Config::GetOutputHandler(const ConfigColl
 		// Max number of geodesics to cache
 		largecounter nrToCache{LARGECOUNTER_MAX - 1}; // default is essentially infinite
 		OutputSettings.LookupValueInteger("GeodesicsToCache", nrToCache);
+		if (nrToCache == 0) // 0 means cache all, same as the default
+    		nrToCache = LARGECOUNTER_MAX - 1;
 
 		// Max number of geodesics to write to file
 		largecounter GeodesicsPerFile{LARGECOUNTER_MAX}; // default is essentially infinite
 		OutputSettings.LookupValueInteger("GeodesicsPerFile", GeodesicsPerFile);
-		if (GeodesicsPerFile == 0)
+		if (GeodesicsPerFile == 0) // 0 means write all, same as the default
 			GeodesicsPerFile = LARGECOUNTER_MAX;
 
 		// Write a description line as the first line in every file or not
