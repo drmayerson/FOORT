@@ -57,6 +57,54 @@ make -f <makefile>
 
 should be run, where `<makefile>` should be replaced with the name of the relevant file.
 
+### WINDOWS
+
+FOORT builds natively on Windows with the MinGW-w64 GCC compiler from MSYS2
+(no Visual Studio or WSL needed). The steps below use VS Code, but any
+terminal works as well.
+
+1. Install Git for Windows (https://git-scm.com), accepting the defaults.
+
+2. Install MSYS2 (https://www.msys2.org) in the default location C:\msys64.
+Open "MSYS2 UCRT64" from the Start menu and run:
+pacman -S --needed mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-cmake mingww64-
+ucrt-x86_64-ninja mingw-w64-ucrt-x86_64-gdb
+Press Enter to confirm. If downloads fail with error 429 (rate limiting),
+wait a few minutes and run the command again; if it persists, run
+sed -i ’s/^#\?ParallelDownloads.*/ParallelDownloads = 1/’ /etc/pacman.conf
+and retry.
+
+3. Add C:\msys64\ucrt64\bin to your PATH. This is needed both to find the
+compiler and for FOORT.exe to find its runtime DLLs (libgomp-1.dll,
+libstdc++-6.dll). In PowerShell:
+[Environment]::SetEnvironmentVariable(’Path’, [Environment]::
+GetEnvironmentVariable(’Path’,’User’) + ’;C:\msys64\ucrt64\bin’, ’User’)
+Open a new PowerShell window and check that ‘g++ --version‘ and
+‘cmake --version‘ work.
+
+4. Install VS Code with the "C/C++" and "CMake Tools" extensions.
+
+5. Clone the repository (Source Control -> Clone Repository) and open its
+top-level folder (the one containing this README).
+
+6. When CMake Tools asks for a kit, choose
+"GCC ... x86_64-w64-mingw32 (ucrt64)". Then build with F7, or with
+"CMake: Build" from the Command Palette (Ctrl+Shift+P). The executable is
+written to FOORT\bin\FOORT.exe.
+
+7. Run from the FOORT subfolder, e.g.
+cd FOORT
+.\bin\FOORT.exe cfgs\KerrExample.cfg
+and run the tests with 'ctest --test-dir build'.
+
+Troubleshooting:
+- "libgomp-1.dll was not found": C:\msys64\ucrt64\bin is not on PATH, or the
+terminal/VS Code was opened before PATH was changed. Restart it.
+- CMake errors mentioning "NMake" or "Visual Studio" generators: select the
+ucrt64 GCC kit, make sure Ninja is installed, and run
+"CMake: Delete Cache and Reconfigure".
+
+
 ### MAC
 
 The same requirements and CMake commands as for Linux apply. However, Apple Clang (the default compiler on macOS) does not support OpenMP, so a GCC from Homebrew is needed. If CMake is run with Apple Clang, configuration stops with an error about `<filesystem>`; the actual cause is the missing OpenMP support, and the workaround below resolves it.
@@ -74,10 +122,6 @@ export SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk/
 ```
 
 For convenience, this is stored in `alternative_builds/MacOS_workaround.sh`, which should be executed with `source \the\path\` in the terminal in case issues are encountered. You may need to `rm -rf build` in order to start clean. In case this doesn't work (which is not unlikely - some of it is black magic), one can also revert to the `makefile_mac` in `alternative_builds/old_makefiles` (see Old MakeFiles above).
-
-### WINDOWS VISUAL STUDIO
-
-Use the `alternative_builds/Foort.sln` Visual Studio solution file and compile the FOORT project therein.
 
 ## OUTPUT
 
