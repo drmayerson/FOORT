@@ -250,7 +250,9 @@ private:
 	//! The current queue of pixels to be integrated
 	std::vector<PixelInfo> m_CurrentPixelQueue{};
 	//! A bool for every pixel in the current queue: gets set to true when the pixel is done integrating and gets its values returned
-	std::vector<bool> m_CurrentPixelQueueDone{};
+	// using char instead of bool to avoid race conditions when multiple threads are writing to the same bool
+	// (std::vector<bool> is the only std::vector that is not thread-safe)
+	std::vector<char> m_CurrentPixelQueueDone{};
 	//! All pixels that have been integrated already (so does not include the pixels in the current queue)
 	std::vector<PixelInfo> m_AllPixels{};
 
@@ -391,7 +393,8 @@ private:
 	//! List of current queue of pixels to be sent to be integrated
 	std::vector<PixelInfo *> m_CurrentPixelQueue{};
 	//! A bool for every pixel in the current queue: gets set to true when the pixel is done integrating and gets its values returned
-	std::vector<bool> m_CurrentPixelQueueDone{};
+	// (char instead of bool to avoid race conditions when multiple threads are writing to the same bool; std::vector<bool> is the only std::vector that is not thread-safe)
+	std::vector<char> m_CurrentPixelQueueDone{};
 	//! List of pixels that are already integrated but need updating weights after current queue is all integrated
 	std::vector<PixelInfo *> m_CurrentPixelUpdating{};
 

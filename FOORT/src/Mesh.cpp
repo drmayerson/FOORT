@@ -376,7 +376,7 @@ void SquareSubdivisionMesh::InitializeFirstGrid()
 		m_PixelsLeft -= static_cast<largecounter>(m_CurrentPixelQueue.size());
 
 	// All pixels have not been integrated yet
-	m_CurrentPixelQueueDone = std::vector<bool>(m_CurrentPixelQueue.size(), false);
+	m_CurrentPixelQueueDone = std::vector<char>(m_CurrentPixelQueue.size(), false);
 }
 
 /**
@@ -653,7 +653,7 @@ void SquareSubdivisionMesh::EndCurrentLoop()
 	}
 	// pixel queue is now empty
 	m_CurrentPixelQueue = std::vector<PixelInfo>{};
-	m_CurrentPixelQueueDone = std::vector<bool>{};
+	m_CurrentPixelQueueDone = std::vector<char>{};
 
 	ScreenOutput("Total integrated geodesic so far: " + std::to_string(m_AllPixels.size()) + ".", OutputLevel::Level_2_SUBPROC);
 
@@ -736,7 +736,7 @@ void SquareSubdivisionMesh::EndCurrentLoop()
 						 OutputLevel::Level_2_SUBPROC);
 		}
 		// Initialize m_CurrentPixelQueueDone
-		m_CurrentPixelQueueDone = std::vector<bool>(m_CurrentPixelQueue.size(), false);
+		m_CurrentPixelQueueDone = std::vector<char>(m_CurrentPixelQueue.size(), false);
 	}
 
 	ScreenOutput("Done calculating next iteration of pixels.", OutputLevel::Level_2_SUBPROC);
@@ -912,7 +912,7 @@ void SquareSubdivisionMeshV2::InitializeFirstGrid()
 		m_PixelsLeft -= static_cast<largecounter>(m_CurrentPixelQueue.size());
 
 	// All pixels have not been integrated yet
-	m_CurrentPixelQueueDone = std::vector<bool>(m_CurrentPixelQueue.size(), false);
+	m_CurrentPixelQueueDone = std::vector<char>(m_CurrentPixelQueue.size(), false);
 }
 
 /**
@@ -1310,7 +1310,7 @@ void SquareSubdivisionMeshV2::EndCurrentLoop()
 						 OutputLevel::Level_2_SUBPROC);
 		}
 		// Initialize m_CurrentPixelQueueDone
-		m_CurrentPixelQueueDone = std::vector<bool>(m_CurrentPixelQueue.size(), false);
+		m_CurrentPixelQueueDone = std::vector<char>(m_CurrentPixelQueue.size(), false);
 	}
 
 	ScreenOutput("Done calculating next iteration of pixels (time taken: " + std::to_string(meshTimer.elapsed()) + "s).",
