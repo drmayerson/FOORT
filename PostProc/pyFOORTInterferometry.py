@@ -1,5 +1,5 @@
 """!
-@file PhotonRingInterferometry.py
+@file pyFOORTInterferometry.py
 @date 2025-03-5
 @brief Package for converting FOORT output data into visibility amplitudes and analyzing them.
 @author Daniel Mayerson
@@ -208,7 +208,7 @@ def FOORTToVisAmp(
     @param RadonPaddingFactor: The factor to pad the radon transform by (default = 25).
     @param FileOutput: The name of the file to save the visibility amplitudes to (default = None).
     @param LightRingRadius: The radius of the light ring, if one is present (default = None). When used, this separets "inner" and "outer" photon rings.
-    @param AngularSize: The angular size of the image in radians (default = 50 microarcseconds).
+    @param AngularSize: Full angular width of the screen in radians, i.e. the angle between the first and last pixel columns, which sit exactly on the screen edges (default = 50 microarcseconds, converted to radians).
     @return visamps: The visibility amplitudes.
     @return baselines: The baselines of the visibility amplitudes corresponding to the visamps.
     @return FirstLineInfo: The first line of the file, if applicable.
@@ -249,7 +249,7 @@ def FOORTToVisAmp(
         rad,
         PaddingFactor=RadonPaddingFactor,
         Verbose=Verbose,
-        sample_spacing=AngularSize / FOORTGrid.shape[0],
+        sample_spacing=AngularSize / (FOORTGrid.shape[0]-1),
     )
     baselines = freqs / 1.0e9  # in Giga lambda
     # normalized visamp
