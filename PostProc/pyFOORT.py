@@ -80,7 +80,7 @@ def LoadFOORTRawData(
     elif len(data.columns) == 8:  # geodesic position
         data.columns = ["x", "y", "nrpts=1", "separator=;;", "t", "r", "theta", "phi"]
     else:
-        raise (
+        raise ValueError(
             "Wrong diagnostic output detected in file "
             + FilePrefix
             + "_"
@@ -114,7 +114,7 @@ def LoadFOORTRawData(
                     "phi",
                 ]
             else:
-                raise (
+                raise ValueError(
                     "Wrong diagnostic output detected in file "
                     + FilePrefix
                     + "_"
