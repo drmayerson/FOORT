@@ -6,7 +6,6 @@
 
 #include "Integrators.h" // using delta_nodiv0
 
-#include <algorithm> // needed for std::rotate()
 #include <cmath>	 // needed for cos, sin, acos, asinh, pow
 
 /**

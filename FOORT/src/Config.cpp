@@ -646,7 +646,7 @@ void Config::InitializeDiagnostics(const ConfigCollection &theCfg, DiagBitflag &
 			std::string fluidmodelstring{"GeneralCircularRadial"};
 			AllDiagSettings["EquatorialEmission"].LookupValue("FluidVelocityModel", fluidmodelstring);
 			// check against lower case to avoid case-specific errors,
-			// but leave emitmodelstring unchanged for error messages
+			// but leave fluidmodelstring unchanged for error messages
 			if (ToLowerCase(fluidmodelstring) == "generalcircularradial")
 			{
 				AllDiagSettings["EquatorialEmission"].LookupValue("xi", subKeplerianparam);
