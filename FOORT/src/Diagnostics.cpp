@@ -39,88 +39,36 @@ DiagnosticUniqueVector CreateDiagnosticVector(DiagBitflag diagflags, DiagBitflag
 
 	DiagnosticUniqueVector theDiagVector{};
 
-	// We will now determine for each Diagnostic individually whether it is turned on in diagflags,
-	// and if so add an instance of it to theDiagVector. If it is additionally also the valdiag,
-	// then we move it to the front of the vector.
+	// Helper: add a new Diagnostic to theDiagVector. The value Diagnostic (valdiag) always goes
+	// to the front of the vector (the Mesh uses the first Diagnostic for its values);
+	// all other Diagnostics are appended at the back.
+	auto AddDiagnostic = [&theDiagVector, valdiag](DiagBitflag flag, std::unique_ptr<Diagnostic> newDiag)
+	{
+		if (valdiag & flag)
+			theDiagVector.insert(theDiagVector.begin(), std::move(newDiag));
+		else
+			theDiagVector.push_back(std::move(newDiag));
+	};
 
-	// Is FourColorScreen turned on?
+	// For each Diagnostic, check whether it is turned on in diagflags; if so, add an instance of it.
 	if (diagflags & Diag_FourColorScreen)
-	{
-		theDiagVector.emplace_back(new FourColorScreenDiagnostic{theGeodesic});
-		// If this is the value Diagnostic, we want it to be the first Diagnostic.
-		// Since at the moment it is the last element of the array, we perform a simple rotate right
-		// on the current array to place the Diagnostic in the front.
-		if (valdiag & Diag_FourColorScreen)
-		{
-			std::rotate(theDiagVector.begin(), theDiagVector.begin() + 1, theDiagVector.end());
-		}
-	}
-	// Is GeodesicPosition turned on?
+		AddDiagnostic(Diag_FourColorScreen, std::make_unique<FourColorScreenDiagnostic>(theGeodesic));
 	if (diagflags & Diag_GeodesicPosition)
-	{
-		theDiagVector.emplace_back(new GeodesicPositionDiagnostic{theGeodesic});
-		// If this is the value Diagnostic, we want it to be the first Diagnostic.
-		// Since at the moment it is the last element of the array, we perform a simple rotate right
-		// on the current array to place the Diagnostic in the front.
-		if (valdiag & Diag_GeodesicPosition)
-		{
-			std::rotate(theDiagVector.begin(), theDiagVector.begin() + 1, theDiagVector.end());
-		}
-	}
-	// Is EquatorialPasses turned on?
+		AddDiagnostic(Diag_GeodesicPosition, std::make_unique<GeodesicPositionDiagnostic>(theGeodesic));
 	if (diagflags & Diag_EquatorialPasses)
-	{
-		theDiagVector.emplace_back(new EquatorialPassesDiagnostic{theGeodesic});
-		// If this is the value Diagnostic, we want it to be the first Diagnostic.
-		// Since at the moment it is the last element of the array, we perform a simple rotate right
-		// on the current array to place the Diagnostic in the front.
-		if (valdiag & Diag_EquatorialPasses)
-		{
-			std::rotate(theDiagVector.begin(), theDiagVector.begin() + 1, theDiagVector.end());
-		}
-	}
-	// Is ClosestRadius turned on?
+		AddDiagnostic(Diag_EquatorialPasses, std::make_unique<EquatorialPassesDiagnostic>(theGeodesic));
 	if (diagflags & Diag_ClosestRadius)
-	{
-		theDiagVector.emplace_back(new ClosestRadiusDiagnostic{theGeodesic});
-		// If this is the value Diagnostic, we want it to be the first Diagnostic.
-		// Since at the moment it is the last element of the array, we perform a simple rotate right
-		// on the current array to place the Diagnostic in the front.
-		if (valdiag & Diag_ClosestRadius)
-		{
-			std::rotate(theDiagVector.begin(), theDiagVector.begin() + 1, theDiagVector.end());
-		}
-	}
-	// Is EquatorialEmission turned on?
+		AddDiagnostic(Diag_ClosestRadius, std::make_unique<ClosestRadiusDiagnostic>(theGeodesic));
 	if (diagflags & Diag_EquatorialEmission)
-	{
-		theDiagVector.emplace_back(new EquatorialEmissionDiagnostic{theGeodesic});
-		// If this is the value Diagnostic, we want it to be the first Diagnostic.
-		// Since at the moment it is the last element of the array, we perform a simple rotate right
-		// on the current array to place the Diagnostic in the front.
-		if (valdiag & Diag_EquatorialEmission)
-		{
-			std::rotate(theDiagVector.begin(), theDiagVector.begin() + 1, theDiagVector.end());
-		}
-	}
+		AddDiagnostic(Diag_EquatorialEmission, std::make_unique<EquatorialEmissionDiagnostic>(theGeodesic));
 
 	//// DIAGNOSTIC ADD POINT C ////
-	// Add an if statement that checks if your Diagnostic's DiagBitflag is turned on, if so add a new instance of it
-	// to theDiagVector. Then check if valdiag is your Diagnostic and rotate theDiagVector accordingly if it is.
+	// Add an if statement that checks if your Diagnostic's DiagBitflag is turned on; if so, add a new instance of it
+	// using AddDiagnostic (which automatically puts it at the front of the vector if it is the value Diagnostic).
 	// Sample code:
 	/*
-	// Is MyDiagnostic turned on?
 	if (diagflags & Diag_MyDiag)
-	{
-		theDiagVector.emplace_back(new MyDiagnostic{ theGeodesic });
-		// If this is the value Diagnostic, we want it to be the first Diagnostic.
-		// Since at the moment it is the last element of the array, we perform a simple rotate right
-		// on the current array to place the Diagnostic in the front.
-		if (valdiag & Diag_MyDiag)
-		{
-			std::rotate(theDiagVector.begin(), theDiagVector.begin() + 1, theDiagVector.end());
-		}
-	}
+		AddDiagnostic(Diag_MyDiag, std::make_unique<MyDiagnostic>(theGeodesic));
 	*/
 	//// END DIAGNOSTIC ADD POINT C ////
 
