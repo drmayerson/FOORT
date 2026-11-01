@@ -1093,7 +1093,7 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigCollection &theCfg, DiagBitfla
 
 			theMesh = std::unique_ptr<Mesh>(new InputCertainPixelsMesh(totalpixels, valdiag));
 		}
-		else if (meshname == "SquareSubdivisionMesh")
+		else if (meshname == "SquareSubdivisionMesh" || meshname == "SquareSubdivisionMeshV2")
 		{
 			largecounter initialpixels{100};
 			largecounter maxpixels{100};
@@ -1104,7 +1104,7 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigCollection &theCfg, DiagBitfla
 			MeshSettings.LookupValueInteger("MaxPixels", maxpixels);
 			MeshSettings.LookupValueInteger("IterationPixels", iterationpixels);
 			MeshSettings.LookupValue("MaxSubdivide", maxsubdivide);
-			if (maxpixels < initialpixels)
+			if (maxpixels !=0 && maxpixels < initialpixels) // maxpixels == 0 means "no maximum" (i.e. subdivide until the mesh is fully refined)
 				maxpixels = initialpixels;
 			if (maxsubdivide < 1) // 1 is the minimum level (initial grid is level 1)
 			{
@@ -1116,30 +1116,6 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigCollection &theCfg, DiagBitfla
 			theMesh = std::unique_ptr<Mesh>(new SquareSubdivisionMesh(maxpixels,
 																	  initialpixels, maxsubdivide,
 																	  iterationpixels, initialsubtofinal, valdiag));
-		}
-		else if (meshname == "SquareSubdivisionMeshV2")
-		{
-			largecounter initialpixels{100};
-			largecounter maxpixels{100};
-			largecounter iterationpixels{100};
-			int maxsubdivide{1};
-			bool initialsubtofinal{false};
-			MeshSettings.LookupValueInteger("InitialPixels", initialpixels);
-			MeshSettings.LookupValueInteger("MaxPixels", maxpixels);
-			MeshSettings.LookupValueInteger("IterationPixels", iterationpixels);
-			MeshSettings.LookupValue("MaxSubdivide", maxsubdivide);
-			if (maxpixels < initialpixels)
-				maxpixels = initialpixels;
-			if (maxsubdivide < 1) // 1 is the minimum level (initial grid is level 1)
-			{
-				ScreenOutput("Invalid MaxSubdivide level given. Using MaxSubdivide = 1.", Output_Other_Default);
-				maxsubdivide = 1;
-			}
-			MeshSettings.LookupValue("InitialSubdivisionToFinal", initialsubtofinal);
-
-			theMesh = std::unique_ptr<Mesh>(new SquareSubdivisionMeshV2(maxpixels,
-																		initialpixels, maxsubdivide,
-																		iterationpixels, initialsubtofinal, valdiag));
 		}
 		// else if ... (test for other Meshs here)
 		else

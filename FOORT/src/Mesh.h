@@ -149,10 +149,13 @@ private:
 
 /**
  * @brief Adaptive subdivision Mesh
- * @details starts with evenly spaced, square Mesh, then decides to subdivide certain squares of pixels into smaller squares,
+ * @details starts with evenly spaced, square Mesh,
+ * then decides to subdivide certain squares of pixels into smaller squares,
  * based on which pixels have a bigger "weight", which is defined as the maximum
- * ""distance" (using the Diagnostic value distance) between the upper-left
+ * "distance" (using the Diagnostic value distance) between the upper-left
  * vertex of the square with the other three vertices of the square.
+ * (Note: this is V2 of the Mesh, with a new way of dealing with neighbors and looping over pixels
+ * compared to V1 which is no longer implemented in FOORT.)
  */
 class SquareSubdivisionMesh : public Mesh
 {
@@ -171,137 +174,6 @@ public:
 	// until we reach maxSubdivision?
 	// - valdiag: the "value" and "distance" Diagnostic to use
 	SquareSubdivisionMesh(largecounter maxPixels, largecounter initialPixels, int maxSubdivide, largecounter iterationPixels, bool initialSubToFinal,
-						  DiagBitflag valdiag)
-		: m_InitialPixels{static_cast<pixelcoord>(sqrt(initialPixels)) * static_cast<pixelcoord>(sqrt(initialPixels))},
-		  m_MaxSubdivide{maxSubdivide},
-		  m_RowColumnSize{static_cast<pixelcoord>((sqrt(initialPixels) - 1) * ExpInt(2, maxSubdivide - 1) + 1)},
-		  m_PixelsLeft{maxPixels}, m_MaxPixels{maxPixels}, m_InfinitePixels{maxPixels == 0}, m_IterationPixels{iterationPixels},
-		  m_InitialSubDividideToFinal{initialSubToFinal}, Mesh(valdiag)
-	{
-		if constexpr (dimension != 4)
-			ScreenOutput("SquareSubdivisionMesh only defined in 4D!", OutputLevel::Level_0_WARNING);
-
-		// DEBUG message for constructor (can delete)
-		ScreenOutput("SquareSubdivisionMesh constructed: maxPixels: " + (m_InfinitePixels ? "infinite" : std::to_string(maxPixels)) + "; m_InitialPixels: " + std::to_string(m_InitialPixels) + "; m_RowColumnSize: " + std::to_string(m_RowColumnSize), OutputLevel::Level_4_DEBUG);
-
-		// Initialize the initial square, equally spaced grid
-		InitializeFirstGrid();
-	}
-
-	// Declarations of overriding virtual functions
-
-	largecounter getCurNrGeodesics() const final;
-
-	void getNewInitConds(largecounter index, ScreenPoint &newunitpoint, ScreenIndex &newscreenindex) const final;
-
-	void GeodesicFinished(largecounter index, std::vector<real> finalValues) final;
-
-	void EndCurrentLoop() final;
-
-	bool IsFinished() const final;
-
-	// Description string getter
-	std::string getFullDescriptionStr() const final;
-
-private:
-	//! How many initial pixels (spread uniformly over the grid) do we integrate?
-	const largecounter m_InitialPixels;
-	//! How many times are we allowed  to subdivide a square? Note: the initial grid is already at 1
-	const int m_MaxSubdivide;
-	//! The total size in pixels of a row or column (square grid)
-	const pixelcoord m_RowColumnSize;
-	//! How many pixels per iteration can we subdivide?
-	const largecounter m_IterationPixels;
-	//! How many pixels can we integrate in total over all iterations?
-	const largecounter m_MaxPixels;
-	//! If we decide to subdivide a square, do we automatically subdivide it further to the max level?
-	const bool m_InitialSubDividideToFinal;
-	//! Are we allowed to integrate as many pixels as we want? (m_MaxPixels == 0)
-	const bool m_InfinitePixels;
-
-	//! How many pixels are we still allowed to integrate (if !m_InfinitePixels)?
-	largecounter m_PixelsLeft;
-
-	/**
-	 * @brief A struct the Mesh uses to keep all information about a given pixel
-	 */
-	struct PixelInfo
-	{
-		// Constructor with its ScreenIndex and current subdivision level
-		PixelInfo(ScreenIndex ind, int subdiv) : Index{ind}, SubdivideLevel{subdiv} {}
-
-		//! The pixel's screenindex
-		ScreenIndex Index{};
-
-		//! The level at which the pixel has been subdivided. Note: initial grid pixels are at 1; pixels at 0 are pixels that cannot be subdivided (for example, at the right or lower edges)
-		int SubdivideLevel{};
-
-		//! Weight of the pixel: if negative, this signifies that it needs to be updated/calculated! The weight is determined as the max of the distance (as calculated by the value Diagnostic) between its values and those of its right, lower, and right-lower neighbors.
-		real Weight{-1};
-
-		//! The values associated to this pixel (as calculated by the value Diagnostic)
-		std::vector<real> DiagValue{};
-
-		//! Where its lower neighbor is located in m_AllPixels. Note: the pixel with index 0 is (0,0) and can never be the lower or right neighbor of any other pixel!
-		largecounter LowerNbrIndex{0};
-		//! Where its right neighbor is located in m_AllPixels. Note: the pixel with index 0 is (0,0) and can never be the lower or right neighbor of any other pixel!
-		largecounter RightNbrIndex{0};
-	};
-	//! The current queue of pixels to be integrated
-	std::vector<PixelInfo> m_CurrentPixelQueue{};
-	//! A bool for every pixel in the current queue: gets set to true when the pixel is done integrating and gets its values returned
-	// using char instead of bool to avoid race conditions when multiple threads are writing to the same bool
-	// (std::vector<bool> is the only std::vector that is not thread-safe)
-	std::vector<char> m_CurrentPixelQueueDone{};
-	//! All pixels that have been integrated already (so does not include the pixels in the current queue)
-	std::vector<PixelInfo> m_AllPixels{};
-
-	// Initializes the first nxn screen in m_CurrentPixelQueue
-	void InitializeFirstGrid();
-
-	// Updates the neighbors of all pixels (that should have neighbors and don't yet) in m_AllPixels
-	void UpdateAllNeighbors();
-
-	// Updates all weights of the pixels in m_AllPixels with weight < 0 and subdiv > 0 and subdiv < m_MaxSubdivide
-	// Assumes all squares have neighbors assigned correctly
-	void UpdateAllWeights();
-
-	// This will take the pixel m_AllPixels[ind] and subdivide it,
-	// adding up to <=5 pixels to the CurrentPixelQueue
-	void SubdivideAndQueue(largecounter ind);
-
-	// Helper function to exponentiate an int to an int
-	// Note: the result can be larger than fits in an int, but the base is always 2 and the exp is always
-	// a number <=m_MaxSubdivide (which is an int)
-	pixelcoord ExpInt(int base, int exp);
-};
-
-/**
- * @brief Adaptive subdivision Mesh
- * @details starts with evenly spaced, square Mesh,
- * then decides to subdivide certain squares of pixels into smaller squares,
- * based on which pixels have a bigger "weight", which is defined as the maximum
- * "distance" (using the Diagnostic value distance) between the upper-left
- * vertex of the square with the other three vertices of the square.
- * V2: new way of dealing with neighbors and looping over pixels
- */
-class SquareSubdivisionMeshV2 : public Mesh
-{
-public:
-	// default constructor not possible
-	SquareSubdivisionMeshV2() = delete;
-	// Constructor must be called with arguments:
-	// - maxPixels: max. nr of pixels that can be integrated in TOTAL, over all iterations (if 0, then this is infinite,
-	// i.e. we keep integrating until all squares are maximally subdivided or have weight 0)
-	// - initialPixels: initial number of pixels to integrate (spaced equally over the screen)
-	// - maxSubdivide: maximum number of times that we can subdivide squares (note: 1 denotes the
-	// initial grid, so 2 would be subdividing the squares once)
-	// - iterationPixels: maximum number of pixels to subdivide in each integration iteration
-	// (max number of pixels that will be integrates is then 5*iterationPixels)
-	// - initialSubToFinal: once we decide to subdivide a square, do we automatically keep subdividing it
-	// until we reach maxSubdivision?
-	// - valdiag: the "value" and "distance" Diagnostic to use
-	SquareSubdivisionMeshV2(largecounter maxPixels, largecounter initialPixels, int maxSubdivide, largecounter iterationPixels, bool initialSubToFinal,
 							DiagBitflag valdiag)
 		: m_InitialPixels{static_cast<pixelcoord>(sqrt(initialPixels)) * static_cast<pixelcoord>(sqrt(initialPixels))},
 		  m_MaxSubdivide{maxSubdivide},
@@ -310,7 +182,7 @@ public:
 		  m_InitialSubDividideToFinal{initialSubToFinal}, Mesh(valdiag)
 	{
 		if constexpr (dimension != 4)
-			ScreenOutput("SquareSubdivisionMeshV2 only defined in 4D!", OutputLevel::Level_0_WARNING);
+			ScreenOutput("SquareSubdivisionMesh only defined in 4D!", OutputLevel::Level_0_WARNING);
 
 		// Initialize the initial square, equally spaced grid
 		InitializeFirstGrid();
