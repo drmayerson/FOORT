@@ -402,12 +402,13 @@ public:
 struct GeodesicPositionOptions : public DiagnosticOptions
 {
 public:
-	GeodesicPositionOptions(largecounter outputsteps, UpdateFrequency thefrequency) : OutputNrSteps{outputsteps},
+	GeodesicPositionOptions(largecounter outputsteps, bool rlog, UpdateFrequency thefrequency) : RLogScale{rlog}, OutputNrSteps{outputsteps},
 																					  DiagnosticOptions(thefrequency)
 	{
 	}
 
 	const largecounter OutputNrSteps;
+	const bool RLogScale;
 };
 
 /**

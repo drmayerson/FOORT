@@ -300,6 +300,7 @@ def GridToFourColorScreenImage(
     DisplayImage(
         FOORTGrid,
         FourColorScreenColorMap,
+        ColorMinMax=(0.5, 4.5) if NoHorizon else (-0.5, 4.5),
         ImageTitle=ImageTitle,
         FileOutput=FileOutput,
         Verbose=Verbose,
@@ -769,7 +770,7 @@ def FOORTToEquatorialEmissionLineout(
     Ax: plt.axes = None,
     angle: float = 20.0,
     ipl_points: int = 1000,
-    x_scale = 100,  # fiducial scale in micro as,
+    x_scale = 50,  # fiducial scale in micro as,
     return_lineout: bool = False,
     **plot_kwargs,
 ) -> None | tuple[np.ndarray, np.ndarray]:
@@ -836,7 +837,7 @@ def FOORTToEquatorialEmissionLineout(
         x = np.linspace(0, x_dim, ipl_points)
         y = np.tan(angle * np.pi / 180) * (x - x_dim // 2) + y_dim // 2
 
-    I = np.diag(intpl(x, y))
+    I = intpl.ev(y, x)
 
     if Ax is None:
         fig, ax = plt.subplots(figsize=(8, 8))
@@ -845,7 +846,7 @@ def FOORTToEquatorialEmissionLineout(
 
     slice_length = x_scale / np.cos(angle * np.pi / 180)
 
-    distance = x * slice_length/ x_dim
+    distance = x * slice_length/ (x_dim-1)
     ax.plot(distance, I, linewidth=1.0, **plot_kwargs)
 
     # Save the picture to file if applicable

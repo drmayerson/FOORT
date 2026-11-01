@@ -26,14 +26,14 @@ def RadonTransform(
     """!
     @brief Calculates the radon transform of a given FOORT emission grid.
     @param FOORTEmissionGrid: The FOORT emission grid to calculate the radon transform of.
-    @param Angles: The angles to calculate the radon transform at.
+    @param Angles: The angles to calculate the radon transform at. Angles are given as counter-clockwise from the +x axis.
     @param Verbose: Whether to print out progress information (default = True).
     @return radontransf: The radon transform of the FOORT emission grid.
     """
     # returns radon transform
     if Verbose:
         print("Calculating radon transform for " + f"{len(Angles)}" + " angles...")
-    radontransf = radon(FOORTEmissionGrid, theta=Angles).transpose()
+        radontransf = radon(FOORTEmissionGrid, theta = 90.0 - np.asarray(Angles, dtype=float)).transpose()
     if Verbose:
         print("Done calculating radon transform.")
     return radontransf
@@ -196,7 +196,7 @@ def FOORTToVisAmp(
     """!
     @brief Converts FOORT output data to visibility amplitudes.
     @param FilePrefix: The prefix of the FOORT output files.
-    @param Angles: The angles to calculate the radon transform at.
+    @param Angles: The angles to calculate the radon transform at; angles are given as counter-clockwise from the +x axis
     @param NrFiles: The number of files to load (default = 1).
     @param FirstLineDescription: Whether the first line of the file is a description (default = True).
     @param Verbose: Whether to print out progress information (default = True).

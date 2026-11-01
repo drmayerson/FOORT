@@ -276,7 +276,10 @@ void GeodesicPositionDiagnostic::UpdateData()
 	if (DecideUpdate(DiagOptions->theUpdateFrequency))
 	{
 		// Put the current position in the saved position vector
-		m_AllSavedPoints.push_back(m_OwnerGeodesic->getCurrentPos());
+		Point curpos{m_OwnerGeodesic->getCurrentPos()};
+		curpos[1] = (DiagOptions->RLogScale) ? exp(curpos[1]) : curpos[1];
+
+		m_AllSavedPoints.push_back(curpos);
 	}
 
 	// We also want extra behaviour at the end, when the geodesic is done integrating:

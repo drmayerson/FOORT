@@ -478,11 +478,15 @@ void Config::InitializeDiagnostics(const ConfigCollection &theCfg, DiagBitflag &
 				AllDiagSettings["GeodesicPosition"].LookupValue("UpdateFinish", updatefinish);
 			}
 
+			// Check if metric has integration set to a logarithmic r coordinate,
+			// if so, pass this along to the options struct
+			bool rlogradius{theMetric->getrLogScale()};
+
 			largecounter outputsteps = 0; // keep all steps
 			AllDiagSettings["GeodesicPosition"].LookupValueInteger("OutputSteps", outputsteps);
 
 			GeodesicPositionDiagnostic::DiagOptions =
-				std::unique_ptr<GeodesicPositionOptions>(new GeodesicPositionOptions{outputsteps,
+				std::unique_ptr<GeodesicPositionOptions>(new GeodesicPositionOptions{rlogradius, outputsteps,
 																					 UpdateFrequency{updatensteps, updatestart, updatefinish}});
 
 			bool isVal{false};
@@ -492,7 +496,7 @@ void Config::InitializeDiagnostics(const ConfigCollection &theCfg, DiagBitflag &
 				valdiag = Diag_GeodesicPosition;
 			}
 		}
-		// GeodesicPosition
+		// EquatorialPasses
 		if (CheckIfDiagOn("EquatorialPasses"))
 		{
 			alldiags |= Diag_EquatorialPasses;
@@ -536,7 +540,7 @@ void Config::InitializeDiagnostics(const ConfigCollection &theCfg, DiagBitflag &
 				AllDiagSettings["ClosestRadius"].LookupValue("UpdateFinish", updatefinish);
 			}
 
-			// Check if metric is a spherical horizon metric with integration set to a logarithmic r coordinate,
+			// Check if metric has integration set to a logarithmic r coordinate,
 			// if so, pass this along to the options struct
 			bool rlogradius{theMetric->getrLogScale()};
 
