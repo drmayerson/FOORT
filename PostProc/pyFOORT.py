@@ -29,7 +29,7 @@ def LoadFOORTRawData(
     """!
     @brief Load FOORT raw data from file(s) into pandas dataframe
     @param FilePrefix: Prefix of the FOORT output files
-    @param DiagType: Type of diagnostic to load, e.g. "FourColorScreen", "EquatorialPasses", "EquatorialEmission", "GeodesicPosition"
+    @param DiagType: Type of diagnostic to load, e.g. "FourColorScreen", "EquatPasses", "EquatorialEmission", "GeodesicPosition"
     @param NrFiles: Number of files to load (default 1)
     @param FirstLineDescription: Whether the first line of the file contains information (default True)
     @param Verbose: Whether to print progress information (default True)
@@ -163,14 +163,15 @@ def DataToGrid(
         RawData[RawData < TruncateRange[0]] = 0
     # Limit the allowed range (e.g. for emission, if there is a minimum/maximum emission we want to allow)
     if LimitRange:
-        print("Limiting data to range " + str(LimitRange) + ".")
+        if Verbose:
+            print("Limiting data to range " + str(LimitRange) + ".")
         RawData[RawData > LimitRange[1]] = LimitRange[1]
         RawData[RawData < LimitRange[0]] = LimitRange[0]
-        print("Max value after limiting: " + str(RawData.max()))
+        if Verbose:
+            print("Max value after limiting: " + str(RawData.max()))
 
     # Only keep values of the first diagnostic (should be equatorial emission)
     # for pixels where the second diagnostic (=equatorial passes) is in a given range
-    # note the abs(.) to take absolute value of the equatorial passes!
     if Diag2AdvancedSelect and Diag2RangeSelect:
         print(
             "Both a range and advanced selection are given for diagnostic 2. Continuing with the advanced selection, ignoring the range."
@@ -386,7 +387,7 @@ def GridToEquatorialPassesImage(
 
 def FOORTToEquatorialPassesImage(
     FilePrefix: str,
-    DiagType: str = "EquatorialPasses",
+    DiagType: str = "EquatPasses",
     NrFiles: int = 1,
     FirstLineDescription: bool = True,
     DisplayImageTitle: bool = False,
@@ -401,7 +402,7 @@ def FOORTToEquatorialPassesImage(
     """!
     @brief Convert FOORT output to equatorial passes image
     @param FilePrefix: Prefix of the FOORT output files
-    @param DiagType: Type of diagnostic to load, e.g. "EquatorialPasses", "EquatorialEmission"
+    @param DiagType: Type of diagnostic to load, e.g. "EquatPasses", "EquatorialEmission"
     @param NrFiles: Number of files to load (default 1)
     @param FirstLineDescription: Whether the first line of the file contains information (default True)
     @param DisplayImageTitle: Whether to display the image title (default False)
@@ -425,7 +426,7 @@ def FOORTToEquatorialPassesImage(
         FirstLineInfo = None
 
     # Original data was equatorial passes or equatorial emission (which contains passes as second diagnostic)
-    if DiagType == "EquatorialPasses":
+    if DiagType == "EquatPasses":
         DiagToUse = 1
     else:  # DiagType == "EquatorialEmission":
         DiagToUse = 2
@@ -834,8 +835,8 @@ def FOORTToEquatorialEmissionLineout(
     y_dim = FOORTGrid.shape[1]
     intpl = RectBivariateSpline(range(x_dim), range(y_dim), FOORTGrid)
     if min(abs(angle), abs(angle - 180)) <= 45:
-        x = np.linspace(0, x_dim, ipl_points)
-        y = np.tan(angle * np.pi / 180) * (x - x_dim // 2) + y_dim // 2
+        x = np.linspace(0, x_dim-1, ipl_points)
+        y = np.tan(angle * np.pi / 180) * (x - (x_dim-1) / 2) + (y_dim-1) / 2
 
     I = intpl.ev(y, x)
 

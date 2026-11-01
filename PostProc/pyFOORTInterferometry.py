@@ -33,7 +33,7 @@ def RadonTransform(
     # returns radon transform
     if Verbose:
         print("Calculating radon transform for " + f"{len(Angles)}" + " angles...")
-        radontransf = radon(FOORTEmissionGrid, theta = 90.0 - np.asarray(Angles, dtype=float)).transpose()
+    radontransf = radon(FOORTEmissionGrid, theta = 90.0 - np.asarray(Angles, dtype=float)).transpose()
     if Verbose:
         print("Done calculating radon transform.")
     return radontransf
