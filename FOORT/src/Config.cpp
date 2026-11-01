@@ -44,6 +44,18 @@ std::unique_ptr<MyTermOptions> MyTermination::TermOptions;
 */
 //// END TERMINATION ADD POINT D.1 ////
 
+namespace // anonymous namespace for helper functions
+{
+	// Returns a lower-case copy of str; used to make names in the configuration file case-insensitive
+	std::string ToLowerCase(std::string str)
+	{
+		std::transform(str.begin(), str.end(), str.begin(),
+					   [](unsigned char c)
+					   { return static_cast<char>(std::tolower(c)); });
+		return str;
+	}
+} // end anonymous namespace
+
 //! \brief Initialize screen output options
 //! \param theCfg Pointer to the configuration object
 void Config::InitializeScreenOutput(const ConfigCollection &theCfg)
@@ -102,11 +114,7 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 			throw SettingError("No metric settings found.");
 		}
 
-		// Metric name exists; now we can look up the correct metric
-		// Make MetricName all lower case to avoid case-specific errors
-		std::transform(MetricName.begin(), MetricName.end(), MetricName.begin(),
-					   [](unsigned char c)
-					   { return static_cast<char>(std::tolower(c)); });
+		MetricName = ToLowerCase(MetricName); // make MetricName all lower case to avoid case-specific errors
 
 		// COMPARISON WITH ALL LOWER CASE LETTERS!
 		if (MetricName == "kerr")
@@ -376,11 +384,7 @@ std::unique_ptr<Source> Config::GetSource(const ConfigCollection &theCfg, const 
 			throw SettingError("No source settings found.");
 		}
 
-		// Source name exists; now we can look up the correct source
-		// Make SourceName all lower case to avoid case-specific errors
-		std::transform(SourceName.begin(), SourceName.end(), SourceName.begin(),
-					   [](unsigned char c)
-					   { return static_cast<char>(std::tolower(c)); });
+		SourceName = ToLowerCase(SourceName); // make SourceName all lower case to avoid case-specific errors
 
 		// COMPARISON WITH ALL LOWER CASE LETTERS!
 		if (SourceName == "nosource")
@@ -608,7 +612,9 @@ void Config::InitializeDiagnostics(const ConfigCollection &theCfg, DiagBitflag &
 			// Read in emission model
 			std::string emitmodelstring{""};
 			AllDiagSettings["EquatorialEmission"].LookupValue("EmissionModel", emitmodelstring);
-			if (emitmodelstring == "GLMJohnsonSU")
+			// check against lower case to avoid case-specific errors,
+			// but leave emitmodelstring unchanged for error messages
+			if (ToLowerCase(emitmodelstring) == "glmjohnsonsu")
 			{
 				real mu{defaultmu};
 				real gamma{defaultgamma};
@@ -639,7 +645,9 @@ void Config::InitializeDiagnostics(const ConfigCollection &theCfg, DiagBitflag &
 			// Read in fluid velocity model
 			std::string fluidmodelstring{"GeneralCircularRadial"};
 			AllDiagSettings["EquatorialEmission"].LookupValue("FluidVelocityModel", fluidmodelstring);
-			if (fluidmodelstring == "GeneralCircularRadial")
+			// check against lower case to avoid case-specific errors,
+			// but leave emitmodelstring unchanged for error messages
+			if (ToLowerCase(fluidmodelstring) == "generalcircularradial")
 			{
 				AllDiagSettings["EquatorialEmission"].LookupValue("xi", subKeplerianparam);
 				AllDiagSettings["EquatorialEmission"].LookupValue("betar", betaR);
@@ -1075,8 +1083,11 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigCollection &theCfg, DiagBitfla
 			throw SettingError("No Mesh Type specified.");
 		}
 
+		meshname = ToLowerCase(meshname); // make meshname all lower case to avoid case-specific errors
+
 		// We have read in the Mesh type. Now we select and create a Mesh accordingly
-		if (meshname == "SimpleSquareMesh")
+		// COMPARISON WITH ALL LOWER CASE LETTERS!
+		if (meshname == "simplesquaremesh")
 		{
 			// Simple Square Mesh!
 			largecounter totalpixels{100 * 100};
@@ -1084,7 +1095,7 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigCollection &theCfg, DiagBitfla
 
 			theMesh = std::unique_ptr<Mesh>(new SimpleSquareMesh(totalpixels, valdiag));
 		}
-		else if (meshname == "InputCertainPixelsMesh")
+		else if (meshname == "inputcertainpixelsmesh")
 		{
 			// This Mesh will ask the user to input pixels on the grid specified in the configuration file.
 			// (the Mesh will ask for input in its constructor, so here!)
@@ -1093,7 +1104,7 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigCollection &theCfg, DiagBitfla
 
 			theMesh = std::unique_ptr<Mesh>(new InputCertainPixelsMesh(totalpixels, valdiag));
 		}
-		else if (meshname == "SquareSubdivisionMesh" || meshname == "SquareSubdivisionMeshV2")
+		else if (meshname == "squaresubdivisionmesh" || meshname == "squaresubdivisionmeshv2")
 		{
 			largecounter initialpixels{100};
 			largecounter maxpixels{100};
@@ -1182,12 +1193,10 @@ GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigCollection &the
 		{
 			throw SettingError("No integrator settings found.");
 		}
-		// Integrator type exists; now we can look up the correct integrator
-		// Make IntegratorType all lower case to avoid case-specific errors
-		std::transform(IntegratorType.begin(), IntegratorType.end(), IntegratorType.begin(),
-					   [](unsigned char c)
-					   { return static_cast<char>(std::tolower(c)); });
 
+		// Make IntegratorType all lower case to avoid case-specific errors
+		IntegratorType = ToLowerCase(IntegratorType);
+		
 		// COMPARISON WITH ALL LOWER CASE LETTERS!
 		if (IntegratorType == "rk4")
 		{
