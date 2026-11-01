@@ -40,7 +40,7 @@ std::unique_ptr<GeneralSingularityTermOptions> GeneralSingularityTermination::Te
 // Declare your Termination's static TerminationOptions struct here!
 // Sample code:
 /*
-std::unique_ptr<MyTermOptions> MyTermination::DiagOptions;
+std::unique_ptr<MyTermOptions> MyTermination::TermOptions;
 */
 //// END TERMINATION ADD POINT D.1 ////
 

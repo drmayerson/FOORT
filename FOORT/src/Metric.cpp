@@ -277,8 +277,15 @@ FlatSpaceMetric::FlatSpaceMetric(bool rlogscale) : Metric(rlogscale)
  */
 TwoIndex FlatSpaceMetric::getMetric_dd(const Point &p) const
 {
+	real r{m_rLogScale ? exp(p[1]) : p[1]};
+	// If the log scale is set on, the true coordinate we are calculating the metric in is u = log(r), so dr = r du
+	real g11 = 1.0;
+	if (m_rLogScale)
+	{
+		g11 *= (r * r);
+	}
 	// Flat metric in spherical coordinates
-	return TwoIndex{{{-1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, p[1] * p[1], 0}, {0, 0, 0, p[1] * p[1] * sin(p[2]) * sin(p[2])}}};
+	return TwoIndex{{{-1, 0, 0, 0}, {0, g11, 0, 0}, {0, 0, r * r, 0}, {0, 0, 0, r * r * sin(p[2]) * sin(p[2])}}};
 }
 
 /**
@@ -288,8 +295,15 @@ TwoIndex FlatSpaceMetric::getMetric_dd(const Point &p) const
  */
 TwoIndex FlatSpaceMetric::getMetric_uu(const Point &p) const
 {
+	real r{m_rLogScale ? exp(p[1]) : p[1]};
+	// If the log scale is set on, the true coordinate we are calculating the metric in is u = log(r), so , so dr = r du
+	real g11 = 1.0;
+	if (m_rLogScale)
+	{
+		g11 *= 1.0 / (r * r);
+	}
 	// Flat metric in spherical coordinates
-	return TwoIndex{{{-1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1 / (p[1] * p[1]), 0}, {0, 0, 0, 1 / (p[1] * p[1] * sin(p[2]) * sin(p[2]))}}};
+	return TwoIndex{{{-1, 0, 0, 0}, {0, g11, 0, 0}, {0, 0, 1 / (r * r), 0}, {0, 0, 0, 1 / (r * r * sin(p[2]) * sin(p[2]))}}};
 }
 
 /**

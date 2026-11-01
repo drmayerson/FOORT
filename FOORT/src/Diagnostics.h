@@ -52,7 +52,7 @@ constexpr DiagBitflag Diag_EquatorialEmission{0b0000'0000'0001'0000};
 // Add a DiagBitflag for your new diagnostic. Make sure you use a bitflag that has not been used before!
 // Sample code:
 /*
-constexpr DiagBitflag Diag_MyDiag				{ 0b0000'0000'0000'1000 };
+constexpr DiagBitflag Diag_MyDiag				{ 0b0000'0000'0010'0000 };
 */
 //// END DIAGNOSTIC ADD POINT B ////
 

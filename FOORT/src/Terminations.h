@@ -45,7 +45,7 @@ constexpr TermBitflag Term_GeneralSingularity{0b0000'0000'0010'0000};
 // Add a TermBitflag for your new Termination. Make sure you use a bitflag that has not been used before!
 // Sample code:
 /*
-constexpr TermBitflag Term_MyTerm				{ 0b0000'0000'0000'1000 };
+constexpr TermBitflag Term_MyTerm				{ 0b0000'0000'0100'0000 };
 */
 //// END TERMINATION ADD POINT B1 ////
 
