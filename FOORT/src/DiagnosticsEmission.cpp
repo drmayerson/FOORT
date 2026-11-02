@@ -144,7 +144,14 @@ OneIndex GeneralCircularRadialFluid::GetFourVelocityd(const Point &p) const
 
 		// Find final u^t from final u^r and final Omega's and four-velocity normalization condition
 		real denom{g_dd[0][0] + 2.0 * g_dd[0][3] * Omega_tot + g_dd[3][3] * Omega_tot * Omega_tot};
-		real ut{sqrt(fmax((-1.0 - g_dd[1][1] * ur_tot * ur_tot) / denom, 0.0))};
+		real ut_sq{(-1.0 - g_dd[1][1] * ur_tot * ur_tot) / denom};
+		if (ut_sq < 0.0)
+		{
+			ScreenOutput("Fluid model: Final (circular) four-velocity normalization condition failed; using radially infalling orbit instead", OutputLevel::Level_0_WARNING);
+			p_down_fin = p_down_rad;
+			return p_down_fin;
+		}
+		real ut{sqrt(ut_sq)};
 
 		// This is the final four-velocity with index up, lower this index again now
 		OneIndex u_up_tot{ut, ur_tot, 0.0, ut * Omega_tot};
@@ -163,7 +170,11 @@ OneIndex GeneralCircularRadialFluid::GetFourVelocityd(const Point &p) const
 	}
 
 	if (std::isnan(p_down_fin[0]) || std::isnan(p_down_fin[1]) || std::isnan(p_down_fin[3]) || p_down_fin[0] >= 0.0)
+	{
+		ScreenOutput("Fluid model: Finding circular four-velocity failed; using radially infalling orbit instead", OutputLevel::Level_0_WARNING);
 		p_down_fin = p_down_rad;
+	}
+	
 
 	return p_down_fin;
 }
@@ -181,7 +192,7 @@ std::string GeneralCircularRadialFluid::getFullDescriptionStr() const
 	if (m_ISCOexists && m_theMetric->getrLogScale())
 		trueISCOradius = exp(m_ISCOr);
 
-	return "Circular/radial flow (sub-Keplerian parameter xi = " + std::to_string(m_subKeplerParam) + ", beta_r = " + std::to_string(m_betaR) + ", beta_phi = " + std::to_string(m_betaPhi) + "; " + (m_ISCOexists ? "ISCO = " + std::to_string(trueISCOradius) : "no ISCO found") + "; " + "ISCO lower bound = " + std::to_string(m_ISCOlowerbound) + ", ISCO upper bound = " + std::to_string(m_ISCOupperbound) + ")";
+	return "Circular/radial flow assuming a stationary, axisymmetric, equatorially reflection symmetric, and circular metric (sub-Keplerian parameter xi = " + std::to_string(m_subKeplerParam) + ", beta_r = " + std::to_string(m_betaR) + ", beta_phi = " + std::to_string(m_betaPhi) + "; " + (m_ISCOexists ? "ISCO = " + std::to_string(trueISCOradius) : "no ISCO found") + "; " + "ISCO lower bound = " + std::to_string(m_ISCOlowerbound) + ", ISCO upper bound = " + std::to_string(m_ISCOupperbound) + ")";
 }
 
 /**
@@ -416,7 +427,7 @@ void GeneralCircularRadialFluid::FindISCO()
 	OneIndex pdownISCO{GetCircularVelocityd(Point{0.0, exactfound ? m_ISCOr : upperbound, pi / 2.0, 0.0})};
 	if (pdownISCO[0] >= 0.0)
 	{
-		ScreenOutput("Finding ISCO and ISCO momentum failed!", OutputLevel::Level_4_DEBUG);
+		ScreenOutput("Finding ISCO and ISCO momentum failed!", OutputLevel::Level_0_WARNING);
 		m_ISCOexists = false;
 	}
 	else
