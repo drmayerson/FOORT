@@ -288,10 +288,10 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 			MetricSettings.LookupValue("RLogScale", rLogScale);
 
 			// Look for model specific settings
-			double Phi_infinity{1.376427};
+			double Phi_infinity{1.3890394812};
 			MetricSettings.LookupValue("PhiInfinity", Phi_infinity);
 
-			int num_lines{10896};
+			int num_lines{11087};
 			MetricSettings.LookupValue("NumLines", num_lines);
 
 			std::string Phi_filename{"Phi.dat"};
