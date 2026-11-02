@@ -6,6 +6,7 @@
 #include <cmath>	 // needed for sqrt() and sin() etc (only on Linux)
 #include <algorithm> // needed for std::find
 #include <iomanip>	 // needed for std::setprecision, for error messages
+#include <stdexcept> // needed for std::runtime_error
 
 #include "Spline.h"		  // needed for spline interpolation
 #include "Grid.h"		  // needed for the grid class, for the Rotating Boson star metric
@@ -83,28 +84,24 @@ ThreeIndex Metric::getChristoffel_udd(const Point &p) const
 /**
  * @brief Riemann tensor of the metric (indices up, down, down, down)
  * @param p Point at which to evaluate the Riemann tensor
- * @note This needs to be implemented still.
+ * @warning Not implemented yet: always throws std::runtime_error.
  * @return FourIndex
  */
 FourIndex Metric::getRiemann_uddd(const Point &p) const
 {
-	ScreenOutput("Called Riemann at" + toString(p));
-
-	return {};
+	throw std::runtime_error("Metric::getRiemann_uddd is not implemented yet (called at " + toString(p) + ").");
 }
 
 /**
  * @brief Get the Kretschmann scalar at a point
  * @details The Kretschmann scalar is defined as R_{abcd} R^{abcd}
- * @note This needs to be implemented still.
+ * @warning Not implemented yet: always throws std::runtime_error.
  * @param p Point at which to evaluate the Kretschmann scalar
  * @return real
  */
 real Metric::getKretschmann(const Point &p) const
 {
-	ScreenOutput("Called Kretschmann at" + toString(p));
-
-	return 0;
+	throw std::runtime_error("Metric::getKretschmann is not implemented yet (called at " + toString(p) + ").");
 }
 
 /**
