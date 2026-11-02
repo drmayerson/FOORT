@@ -1,8 +1,10 @@
 #include "Integrators.h" // We are defining functions declared here
 
 #include "Geodesic.h" // Needed for Source member functions
+#include "InputOutput.h" // for ScreenOutput()
 
 #include <algorithm> // for std::min, std::max
+#include <atomic>	 // std::atomic (warn only once in the Verlet loop)
 #include <cmath>	 // for std::abs
 
 #include <sstream>	// std::stringstream
@@ -36,7 +38,8 @@ std::string Integrators::GetFullIntegratorDescription()
 	fullintegratorstring += Integrators::IntegratorDescription;
 	if (Integrators::IntegratorDescription == "Verlet")
 	{
-		fullintegratorstring += " (velocity tolerance: " + to_string_scientific(Integrators::VerletVelocityTolerance) + ")";
+		fullintegratorstring += " (velocity tolerance: " + to_string_scientific(Integrators::VerletVelocityTolerance) +
+								", max. iterations: " + std::to_string(Integrators::VerletMaxIterations) + ")";
 	}
 	return fullintegratorstring + ", basic step size: " + to_string_scientific(Integrators::epsilon) + ", min. step size: " + to_string_scientific(Integrators::SmallestPossibleStepsize) + ", derivative h: " + to_string_scientific(Integrators::Derivative_hval);
 }
@@ -172,12 +175,30 @@ void Integrators::IntegrateGeodesicStep_Verlet(Point curpos, OneIndex curvel,
 
 	nextvel = curvel + h / 2.0 * (accelcur + accelstep);
 
-	// Check fractional error, if above tolerance than iterate velocity again
+	// Check fractional error, if above tolerance than iterate velocity again (at most VerletMaxIterations times)
+	largecounter iterations{0};
 	while (VerletVelocityTolerance > 0.0 && cartvecsq(nextvel - velintermed) / cartvecsq(nextvel) > VerletVelocityTolerance * VerletVelocityTolerance)
 	{
+		if (iterations == VerletMaxIterations)
+		{
+			// Not converged (e.g. near a horizon): keep the last iterate. Only warn once per run, as this can happen for
+			// many steps (and on many threads at once)
+			static std::atomic<bool> warned{false};
+			if (!warned.exchange(true))
+			{
+				std::stringstream message;
+				message << "Verlet velocity iteration did not converge to tolerance " << std::scientific << VerletVelocityTolerance
+						<< std::defaultfloat << " within " << VerletMaxIterations << " iterations (at r = "
+						<< (theMetric->getrLogScale() ? std::exp(nextpos[1]) : nextpos[1])
+						<< "); continuing with the last iterate. Further occurrences will not be reported.";
+				ScreenOutput(message.str(), OutputLevel::Level_0_WARNING);
+			}
+			break;
+		}
 		velintermed = nextvel;
 		accelstep = geoRHS(nextpos, velintermed, christ);
 		nextvel = curvel + h / 2.0 * (accelcur + accelstep);
+		++iterations;
 	}
 
 	// nextpos & nexvel are set; only need to still set stepsize and the new step is finished
