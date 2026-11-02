@@ -23,7 +23,7 @@ TEST(Integrators, rk4_bound_geodesic)
     DiagBitflag ValDiag = Diag_FourColorScreen;
 
     GeodesicPositionDiagnostic::DiagOptions =
-        std::unique_ptr<GeodesicPositionOptions>(new GeodesicPositionOptions{5000, UpdateFrequency{1, false, false}});
+        std::unique_ptr<GeodesicPositionOptions>(new GeodesicPositionOptions{false, 5000, UpdateFrequency{1, false, false}});
 
     TermBitflag AllTerms = Term_BoundarySphere | Term_Horizon | Term_TimeOut;
 
@@ -81,7 +81,7 @@ TEST(Integrators, verlet_bound_geodesic)
     DiagBitflag ValDiag = Diag_FourColorScreen;
 
     GeodesicPositionDiagnostic::DiagOptions =
-        std::unique_ptr<GeodesicPositionOptions>(new GeodesicPositionOptions{5000, UpdateFrequency{1, false, false}});
+        std::unique_ptr<GeodesicPositionOptions>(new GeodesicPositionOptions{false, 5000, UpdateFrequency{1, false, false}});
 
     TermBitflag AllTerms = Term_BoundarySphere | Term_Horizon | Term_TimeOut;
 

@@ -113,7 +113,7 @@ namespace
 
         GeodesicPositionDiagnostic::DiagOptions =
             std::unique_ptr<GeodesicPositionOptions>(
-                new GeodesicPositionOptions{0, UpdateFrequency{1, false, false}});
+                new GeodesicPositionOptions{false, 0, UpdateFrequency{1, false, false}});
 
         ClosestRadiusDiagnostic::DiagOptions =
             std::unique_ptr<ClosestRadiusOptions>(
