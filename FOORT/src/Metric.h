@@ -46,9 +46,9 @@ public:
 	//
 	// Get the Christoffel symbol, indices up-down-down
 	virtual ThreeIndex getChristoffel_udd(const Point &p) const;
-	// Get the Riemann tensor, indices up-down-down-down
+	// Get the Riemann tensor, indices up-down-down-down (NOT IMPLEMENTED YET: throws)
 	virtual FourIndex getRiemann_uddd(const Point &p) const;
-	// Get the Kretschmann scalar
+	// Get the Kretschmann scalar (NOT IMPLEMENTED YET: throws)
 	virtual real getKretschmann(const Point &p) const;
 
 	// Function to get the description of the metric

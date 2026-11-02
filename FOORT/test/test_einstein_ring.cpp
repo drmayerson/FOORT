@@ -39,7 +39,7 @@ TEST(Integrators, rk4_einstein_ring)
 
     // Set up initial conditions for the bound geodesic
     Point initpos = {0.0, 20.0, pi / 2.0, 0.0};
-    double xi = 0.24904964;
+    double xi = 0.2490496437949734;
 
     TwoIndex gdd = theM->getMetric_dd(initpos);
 
@@ -101,7 +101,7 @@ TEST(Integrators, verlet_einstein_ring)
 
     // Set up initial conditions for the bound geodesic
     Point initpos = {0.0, 20.0, pi / 2.0, 0.0};
-    double xi = 0.24904964;
+    double xi = 0.2490496437949734;
 
     TwoIndex gdd = theM->getMetric_dd(initpos);
 

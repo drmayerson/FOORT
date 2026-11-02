@@ -12,6 +12,7 @@
 
 #include <algorithm> // for std::transform, std::max, std::min
 #include <cctype>	 // for std::to_lower
+#include <stdexcept> // std::runtime_error
 #include <utility>	 // std::move
 
 // DECLARATION OF ALL static DiagnosticOptions (for all types of Diagnostics) needed here!
@@ -288,10 +289,10 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 			MetricSettings.LookupValue("RLogScale", rLogScale);
 
 			// Look for model specific settings
-			double Phi_infinity{1.376427};
+			double Phi_infinity{1.3890394812};
 			MetricSettings.LookupValue("PhiInfinity", Phi_infinity);
 
-			int num_lines{10896};
+			int num_lines{11087};
 			MetricSettings.LookupValue("NumLines", num_lines);
 
 			std::string Phi_filename{"Phi.dat"};
@@ -1218,6 +1219,23 @@ GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigCollection &the
 			real verlettolerance{Integrators::VerletVelocityTolerance};
 			IntegratorSettings.LookupValue("VerletVelocityTolerance", verlettolerance);
 			Integrators::VerletVelocityTolerance = verlettolerance;
+
+			// Get the maximum number of velocity iterations per step (only relevant if the tolerance is positive)
+			largecounter verletmaxiter{Integrators::VerletMaxIterations};
+			if (!IntegratorSettings.LookupValueInteger("VerletMaxIterations", verletmaxiter))
+			{
+				if (verlettolerance > 0.0)
+				{
+					ScreenOutput("Using default maximum number of Verlet velocity iterations: " +
+									 std::to_string(Integrators::VerletMaxIterations) + ".",
+								 Output_Other_Default);
+				}
+			}
+			else if (verletmaxiter == 0)
+			{
+				throw std::runtime_error("VerletMaxIterations must be at least 1.");
+			}
+			Integrators::VerletMaxIterations = verletmaxiter;
 		}
 		// else if ... (other integrators here)
 		else // no match found: must be incorrect integrator type specified in configuration file
