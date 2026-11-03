@@ -125,6 +125,22 @@ struct GeneralCircularRadialFluid final : public FluidVelocityModel
 			throw std::runtime_error("ISCOLowerBound and ISCOUpperBound must be positive with ISCOLowerBound < ISCOUpperBound (got lower=" +
 									 std::to_string(ISCO_lowerbound) + ", upper=" + std::to_string(ISCO_upperbound) + ")");
 
+		
+		TwoIndex guu_ISCOlow{theMetric->getMetric_uu({m_ISCOlowerbound, 0.0, M_PI / 2.0, 0.0})};
+		TwoIndex guu_ISCOhigh{theMetric->getMetric_uu({m_ISCOupperbound, 0.0, M_PI / 2.0, 0.0})};
+		// Check that the off-diagonal r, theta components of the metric are zero at the ISCO bounds, as they should be for equatorial circular orbits
+		auto hasNonzeroOffDiagonalrtheta = [](const TwoIndex &guu)
+		{
+			for (int i = 1; i <= 2; ++i) // check r and theta components (i=1,2) for nonzero off-diagonal components
+				for (int j = 0; j < 4; ++j)
+					if (i != j && std::abs(guu[i][j]) > Integrators::delta_nodiv0)
+						return true;
+			return false;
+		};
+		if (hasNonzeroOffDiagonalrtheta(guu_ISCOlow) || hasNonzeroOffDiagonalrtheta(guu_ISCOhigh))
+			ScreenOutput("Metric has nonzero off-diagonal components at the ISCO search bounds; fluid model assumptions are violated and emission output is not reliable.", OutputLevel::Level_0_WARNING);	
+			// throw std::runtime_error("Metric has nonzero off-diagonal components at the ISCO search bounds");
+
 		// Find the (equatorial) ISCO for this Metric
 		FindISCO();
 	}
