@@ -12,7 +12,6 @@
 
 #include <algorithm> // for std::transform, std::max, std::min
 #include <cctype>	 // for std::to_lower
-#include <stdexcept> // std::runtime_error
 #include <utility>	 // std::move
 
 // DECLARATION OF ALL static DiagnosticOptions (for all types of Diagnostics) needed here!
@@ -1231,9 +1230,12 @@ GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigCollection &the
 								 Output_Other_Default);
 				}
 			}
-			else if (verletmaxiter == 0)
+			else if (verletmaxiter <= 0)
 			{
-				throw std::runtime_error("VerletMaxIterations must be at least 1.");
+				ScreenOutput("Invalid VerletMaxIterations given; must be at least 1. Using default maximum number of Verlet velocity iterations: " +
+									 std::to_string(Integrators::VerletMaxIterations) + ".",
+								 Output_Other_Default);
+				verletmaxiter = Integrators::VerletMaxIterations;
 			}
 			Integrators::VerletMaxIterations = verletmaxiter;
 		}
