@@ -247,15 +247,28 @@ OneIndex GeneralCircularRadialFluid::GetCircularVelocityd(const Point &p, bool s
 	if (!solfailed)
 	{
 		real eta{};
+		// The two roots of b*eta^2 - c*eta + a = 0, in numerically stable form
 		real q{0.5 * (c + std::copysign(sqrt(discr), c))};
-		if (fabs(b) > Integrators::delta_nodiv0 && fabs(q) > Integrators::delta_nodiv0)
-    		eta = std::max(q / b, a / q); // largest eta: prograde for J > 0, retrograde for J < 0
-		else if (fabs(b) > Integrators::delta_nodiv0)
-    		eta = q / b;  // q ~ 0 (so c ~ 0, J ~ 0): double root near 0
-		else if (fabs(q) > Integrators::delta_nodiv0)
-    		eta = a / q;  // b ~ 0: only the finite root survives (q -> c)
-		else
-    		solfailed = true; // b ~ 0 and c ~ 0: no solution
+		real roots[2]{};
+		int nroots{0};
+		if (fabs(b) > Integrators::delta_nodiv0)
+		{
+			roots[nroots] = q / b;
+			nroots++;
+		}
+		if (fabs(q) > Integrators::delta_nodiv0)
+		{
+			roots[nroots] = a / q;
+			nroots++;
+		} 
+		// Keep only roots that give a timelike orbit; among those, take the largest eta
+		bool found{false};
+		for (int i = 0; i < nroots; ++i)
+		{
+			real den{ap + bp * roots[i] * roots[i] - cp * roots[i]};
+			if (den < 0.0 && (!found || roots[i] > eta)) { eta = roots[i]; found = true; }
+		}
+		if (!found) solfailed = true;
 
 		// Now that we have eta, use the velocity normalization equation to solve for the energy E
 		real denom{ap + bp * eta * eta - cp * eta};
