@@ -147,7 +147,7 @@ OneIndex GeneralCircularRadialFluid::GetFourVelocityd(const Point &p) const
 		real ut_sq{(-1.0 - g_dd[1][1] * ur_tot * ur_tot) / denom};
 		if (ut_sq < 0.0)
 		{
-			ScreenOutput("Fluid model: Final (circular) four-velocity normalization condition failed; using radially infalling orbit instead", OutputLevel::Level_0_WARNING);
+			WarnOnce(m_WarnedNormalization, "Final (circular) four-velocity normalization condition failed, using radial infall orbit instead", EquatPoint);
 			p_down_fin = p_down_rad;
 			return p_down_fin;
 		}
@@ -166,12 +166,16 @@ OneIndex GeneralCircularRadialFluid::GetFourVelocityd(const Point &p) const
 	else
 	{
 		// No circular (or circular-infalling) orbit was found, so we simply use a radially infalling orbit instead
+		WarnOnce(m_WarnedNoCircular,
+				 "no circular (or circular-infalling) orbit found at some radii; using radially infalling orbit there "
+				 "(can sometimes be expected, e.g. between light rings)",
+				 EquatPoint);
 		p_down_fin = p_down_rad;
 	}
 
 	if (std::isnan(p_down_fin[0]) || std::isnan(p_down_fin[1]) || std::isnan(p_down_fin[3]) || p_down_fin[0] >= 0.0)
 	{
-		ScreenOutput("Fluid model: Finding circular four-velocity failed; using radially infalling orbit instead", OutputLevel::Level_0_WARNING);
+		WarnOnce(m_WarnedNaN, "Fluid model: Finding circular four-velocity failed (NaN found); using radially infalling orbit instead", EquatPoint);
 		p_down_fin = p_down_rad;
 	}
 	
@@ -334,6 +338,8 @@ OneIndex GeneralCircularRadialFluid::GetInsideISCOCircularVelocityd(const Point 
 	// Radial component of velocity entirely determined by other (ISCO) velocity components and metric at this point
 	real temp_sq{-1.0 - g_uu[0][0] * m_ISCOpt * m_ISCOpt - 2.0 * g_uu[0][3] * m_ISCOpt * m_ISCOpphi - g_uu[3][3] * m_ISCOpphi * m_ISCOpphi};
 
+	if (temp_sq < 0.0)
+    	WarnOnce(m_WarnedInsideISCO, "inside-ISCO radial momentum squared negative, setting to zero", p);
 	real pr{-1.0 / sqrt(g_uu[1][1]) * sqrt(fmax(temp_sq, 0.0))};
 
 	if (!std::isnan(pr))
@@ -495,4 +501,14 @@ TwoIndex GeneralCircularRadialFluid::GetChristrRaisedDer(real r) const
 	}
 
 	return (-1.0 * FullObjPlusPlus + 8.0 * FullObjPlus - 8.0 * FullObjMin + FullObjMinMin) / (12.0 * sqrt(Integrators::Derivative_hval));
+}
+
+void GeneralCircularRadialFluid::WarnOnce(std::atomic<bool> &flag, const std::string &msg, const Point &p) const
+{
+	if (!flag.exchange(true)) // true only for the first thread that gets here
+	{
+		ScreenOutput("Fluid model: " + msg + " (first occurrence at " + toString(p) +
+						 "); further occurrences will not be reported.",
+					 OutputLevel::Level_0_WARNING);
+	}
 }
