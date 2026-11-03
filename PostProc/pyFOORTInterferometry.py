@@ -32,8 +32,10 @@ def RadonTransform(
     """
     # returns radon transform
     if Verbose:
-        print("Calculating radon transform for " + f"{len(Angles)}" + " angles...")
-    radontransf = radon(FOORTEmissionGrid, theta = 90.0 - np.asarray(Angles, dtype=float)).transpose()
+        print("Calculating radon transform for " + f"{len(Angles)}" + " angles...")    
+    # skimage projects onto (cos t, -sin t) in (column, row) coordinates; FOORT grids have the row index pointing up,
+    # so theta = -Angle gives the projection onto the baseline direction at Angle anticlockwise from +x
+    radontransf = radon(FOORTEmissionGrid, theta = -np.asarray(Angles, dtype=float)).transpose()
     if Verbose:
         print("Done calculating radon transform.")
     return radontransf
@@ -62,7 +64,7 @@ def RadonToComplexVis(
     radonff = fft(
         FOORTRadon, PaddingFactor * FOORTRadon[0].shape[0]
     )  # 1D FFT of the projection
-    radonshift = fftshift(radonff)  # recenter FFT
+    radonshift = fftshift(radonff,axes=-1)  # recenter FFT, only the last axis (the one corresponding to the projection), not across angles
     xfourier1 = fftshift(
         fftfreq(PaddingFactor * FOORTRadon[0].shape[0], d=sample_spacing)
     )  # re centered frequencies
