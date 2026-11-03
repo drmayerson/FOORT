@@ -4,6 +4,7 @@
 #include "Geometry.h"	 // Tensor objects
 #include "Metric.h"		 // for Metric functions
 #include "InputOutput.h" // for ScreenOutput
+#include "Integrators.h" // for delta_nodiv0
 
 #include <string>	 // for strings
 #include <cmath>	 // for fmax, fmin
