@@ -65,44 +65,58 @@ terminal works as well.
 
 1. Install Git for Windows (https://git-scm.com), accepting the defaults.
 
-2. Install MSYS2 (https://www.msys2.org) in the default location C:\msys64.
-Open "MSYS2 UCRT64" from the Start menu and run:
-pacman -S --needed mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-cmake mingww64-
-ucrt-x86_64-ninja mingw-w64-ucrt-x86_64-gdb
-Press Enter to confirm. If downloads fail with error 429 (rate limiting),
-wait a few minutes and run the command again; if it persists, run
-sed -i ’s/^#\?ParallelDownloads.*/ParallelDownloads = 1/’ /etc/pacman.conf
-and retry.
+2. Install MSYS2 (https://www.msys2.org) in the default location `C:\msys64`.
+   Open "MSYS2 UCRT64" from the Start menu and run:
 
-3. Add C:\msys64\ucrt64\bin to your PATH. This is needed both to find the
-compiler and for FOORT.exe to find its runtime DLLs (libgomp-1.dll,
-libstdc++-6.dll). In PowerShell:
-[Environment]::SetEnvironmentVariable(’Path’, [Environment]::
-GetEnvironmentVariable(’Path’,’User’) + ’;C:\msys64\ucrt64\bin’, ’User’)
-Open a new PowerShell window and check that ‘g++ --version‘ and
-‘cmake --version‘ work.
+   ```bash
+   pacman -S --needed mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-cmake mingw-w64-ucrt-x86_64-ninja mingw-w64-ucrt-x86_64-gdb
+   ```
+
+   Press Enter to confirm. If downloads fail with error 429 (rate limiting),
+   wait a few minutes and run the command again. If it persists, run the
+   following and retry:
+
+   ```bash
+   sed -i 's/^#\?ParallelDownloads.*/ParallelDownloads = 1/' /etc/pacman.conf
+   ```
+
+3. Add `C:\msys64\ucrt64\bin` to your PATH. This is needed both to find the
+   compiler and for `FOORT.exe` to find its runtime DLLs (`libgomp-1.dll`,
+   `libstdc++-6.dll`). In PowerShell:
+
+   ```powershell
+   [Environment]::SetEnvironmentVariable('Path', [Environment]::GetEnvironmentVariable('Path','User') + ';C:\msys64\ucrt64\bin', 'User')
+   ```
+
+   Open a new PowerShell window and check that `g++ --version` and
+   `cmake --version` work.
 
 4. Install VS Code with the "C/C++" and "CMake Tools" extensions.
 
-5. Clone the repository (Source Control -> Clone Repository) and open its
-top-level folder (the one containing this README).
+5. Clone the repository (Source Control → Clone Repository) and open its
+   top-level folder (the one containing this README).
 
 6. When CMake Tools asks for a kit, choose
-"GCC ... x86_64-w64-mingw32 (ucrt64)". Then build with F7, or with
-"CMake: Build" from the Command Palette (Ctrl+Shift+P). The executable is
-written to FOORT\bin\FOORT.exe.
+   "GCC ... x86_64-w64-mingw32 (ucrt64)". Then build with F7, or with
+   "CMake: Build" from the Command Palette (Ctrl+Shift+P). The executable is
+   written to `FOORT\bin\FOORT.exe`.
 
-7. Run from the FOORT subfolder, e.g.
-cd FOORT
-.\bin\FOORT.exe cfgs\KerrExample.cfg
-and run the tests with 'ctest --test-dir build'.
+7. Run from the `FOORT` subfolder, for example:
 
-Troubleshooting:
-- "libgomp-1.dll was not found": C:\msys64\ucrt64\bin is not on PATH, or the
-terminal/VS Code was opened before PATH was changed. Restart it.
+   ```powershell
+   cd FOORT
+   .\bin\FOORT.exe cfgs\KerrExample.cfg
+   ```
+
+   Run the tests with `ctest --test-dir build` (from the top-level folder).
+
+**Troubleshooting**
+
+- "libgomp-1.dll was not found": `C:\msys64\ucrt64\bin` is not on PATH, or the
+  terminal/VS Code was opened before PATH was changed. Restart it.
 - CMake errors mentioning "NMake" or "Visual Studio" generators: select the
-ucrt64 GCC kit, make sure Ninja is installed, and run
-"CMake: Delete Cache and Reconfigure".
+  ucrt64 GCC kit, make sure Ninja is installed, and run
+  "CMake: Delete Cache and Reconfigure".
 
 
 ### MAC
