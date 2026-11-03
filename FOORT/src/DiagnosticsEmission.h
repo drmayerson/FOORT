@@ -171,11 +171,12 @@ private:
 	// tells us if the circular orbit considered is stable or not
 	TwoIndex GetChristrRaisedDer(real r) const;
 
-	// Flags and helper functions for model to warn once (per integration loop) if something goes wrong with the fluid velocity calculation
+	// Flags and helper functions for model to warn (only) once per run if something goes wrong with the fluid velocity calculation
 	mutable std::atomic<bool> m_WarnedNoCircular{false};
     mutable std::atomic<bool> m_WarnedNormalization{false};
     mutable std::atomic<bool> m_WarnedNaN{false};
     mutable std::atomic<bool> m_WarnedInsideISCO{false};
+	mutable std::atomic<bool> m_WarnedSubkeplerianRescaling{false};
     void WarnOnce(std::atomic<bool> &flag, const std::string &msg, const Point &p) const;
 };
 

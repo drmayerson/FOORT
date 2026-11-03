@@ -75,110 +75,117 @@ OneIndex GeneralCircularRadialFluid::GetFourVelocityd(const Point &p) const
 	// Put point exactly on equator
 	Point EquatPoint{p[0], p[1], pi / 2.0, p[3]};
 
-	// First, find the "circular" velocity
+	// This is where we will store the final velocity with index down
+	OneIndex p_down_fin{};
+
+	// First, find purely radially infalling velocity
+	OneIndex p_down_rad{GetRadialVelocityd(EquatPoint)};
+
+	// Second, find the "circular" velocity
 	// This already includes subKeplerian rescaling of angular momentum, and
 	// partially infalling if orbit is inside ISCO
 	OneIndex p_down_circ{};
 
-	if (m_ISCOexists)
+	if (m_betaR > 0.0 || m_betaPhi > 0.0)
 	{
-		// ISCO was found; either get a purely circular velocity outside the ISCO
-		// or a circular and infalling orbit inside the ISCO
-		if (EquatPoint[1] >= m_ISCOr)
-			p_down_circ = GetCircularVelocityd(EquatPoint);
-		else
-			p_down_circ = GetInsideISCOCircularVelocityd(EquatPoint);
-
-		if (p_down_circ[0] >= 0.0)
+		if (m_ISCOexists)
 		{
-			// Finding circular (or circular-infalling) orbit failed
+			// ISCO was found; either get a purely circular velocity outside the ISCO
+			// or a circular and infalling orbit inside the ISCO
 			if (EquatPoint[1] >= m_ISCOr)
-			{
-				// Try circular+infalling orbit if only circular was tried
+				p_down_circ = GetCircularVelocityd(EquatPoint);
+			else
 				p_down_circ = GetInsideISCOCircularVelocityd(EquatPoint);
-			}
-		}
-	}
-	else // no ISCO exists
-	{
-		// Try a purely circular orbit
-		p_down_circ = GetCircularVelocityd(EquatPoint);
-	}
-	// p_down_circ will now contain a circular (or circular-infalling) velocity
-	// if the above was successful, or otherwise (still) all zeroes
 
-	// Second, find purely radially infalling velocity
-	OneIndex p_down_rad{GetRadialVelocityd(EquatPoint)};
-
-	// This is where we will store the final velocity with index down
-	OneIndex p_down_fin{};
-
-	if (p_down_circ[0] < 0.0)
-	{
-		// We found a circular (or circular-infalling) velocity above, so the final velocity will be a mix
-		// of this orbit and the purely radially infalling one
-
-		// Metric at this point
-		TwoIndex g_uu{m_theMetric->getMetric_uu(EquatPoint)};
-		TwoIndex g_dd{m_theMetric->getMetric_dd(EquatPoint)};
-
-		// Calculate velocities with index up
-		OneIndex u_up_circ{};
-		OneIndex u_up_rad{};
-		for (int i = 0; i < dimension; ++i)
-		{
-			for (int j = 0; j < dimension; ++j)
+			if (p_down_circ[0] >= 0.0)
 			{
-				u_up_circ[i] += g_uu[i][j] * p_down_circ[j];
-				u_up_rad[i] += g_uu[i][j] * p_down_rad[j];
+				// Finding circular (or circular-infalling) orbit failed
+				if (EquatPoint[1] >= m_ISCOr)
+				{
+					// Try circular+infalling orbit if only circular was tried
+					p_down_circ = GetInsideISCOCircularVelocityd(EquatPoint);
+				}
 			}
 		}
-
-		// Prescription for final u^r velocity component using parameter beta_R
-		real ur_tot{u_up_circ[1] + (1.0 - m_betaR) * (u_up_rad[1] - u_up_circ[1])};
-
-		// Prescription for final Omega = u^\phi/u^t using parameter beta_Phi
-		real OmegaCirc{u_up_circ[3] / u_up_circ[0]};
-		real OmegaRad{u_up_rad[3] / u_up_rad[0]};
-		real Omega_tot{OmegaCirc + (1.0 - m_betaPhi) * (OmegaRad - OmegaCirc)};
-
-		// Find final u^t from final u^r and final Omega's and four-velocity normalization condition
-		real denom{g_dd[0][0] + 2.0 * g_dd[0][3] * Omega_tot + g_dd[3][3] * Omega_tot * Omega_tot};
-		real ut_sq{(-1.0 - g_dd[1][1] * ur_tot * ur_tot) / denom};
-		if (ut_sq < 0.0)
+		else // no ISCO exists
 		{
-			WarnOnce(m_WarnedNormalization, "Final (circular) four-velocity normalization condition failed, using radial infall orbit instead", EquatPoint);
+			// Try a purely circular orbit
+			p_down_circ = GetCircularVelocityd(EquatPoint);
+		}
+		// p_down_circ will now contain a circular (or circular-infalling) velocity
+		// if the above was successful, or otherwise (still) all zeroes
+
+		if (p_down_circ[0] < 0.0)
+		{
+			// We found a circular (or circular-infalling) velocity above, so the final velocity will be a mix
+			// of this orbit and the purely radially infalling one
+
+			// Metric at this point
+			TwoIndex g_uu{m_theMetric->getMetric_uu(EquatPoint)};
+			TwoIndex g_dd{m_theMetric->getMetric_dd(EquatPoint)};
+
+			// Calculate velocities with index up
+			OneIndex u_up_circ{};
+			OneIndex u_up_rad{};
+			for (int i = 0; i < dimension; ++i)
+			{
+				for (int j = 0; j < dimension; ++j)
+				{
+					u_up_circ[i] += g_uu[i][j] * p_down_circ[j];
+					u_up_rad[i] += g_uu[i][j] * p_down_rad[j];
+				}
+			}
+
+			// Prescription for final u^r velocity component using parameter beta_R
+			real ur_tot{u_up_circ[1] + (1.0 - m_betaR) * (u_up_rad[1] - u_up_circ[1])};
+
+			// Prescription for final Omega = u^\phi/u^t using parameter beta_Phi
+			real OmegaCirc{u_up_circ[3] / u_up_circ[0]};
+			real OmegaRad{u_up_rad[3] / u_up_rad[0]};
+			real Omega_tot{OmegaCirc + (1.0 - m_betaPhi) * (OmegaRad - OmegaCirc)};
+
+			// Find final u^t from final u^r and final Omega's and four-velocity normalization condition
+			real denom{g_dd[0][0] + 2.0 * g_dd[0][3] * Omega_tot + g_dd[3][3] * Omega_tot * Omega_tot};
+			real ut_sq{(-1.0 - g_dd[1][1] * ur_tot * ur_tot) / denom};
+			if (ut_sq < 0.0)
+			{
+				WarnOnce(m_WarnedNormalization, "Final (circular) four-velocity normalization condition failed, using radial infall orbit instead", EquatPoint);
+				p_down_fin = p_down_rad;
+				return p_down_fin;
+			}
+			real ut{sqrt(ut_sq)};
+
+			// This is the final four-velocity with index up, lower this index again now
+			OneIndex u_up_tot{ut, ur_tot, 0.0, ut * Omega_tot};
+			for (int i = 0; i < dimension; ++i)
+			{
+				for (int j = 0; j < dimension; ++j)
+				{
+					p_down_fin[i] += g_dd[i][j] * u_up_tot[j];
+				}
+			}
+		}
+		else
+		{
+			// No circular (or circular-infalling) orbit was found, so we simply use a radially infalling orbit instead
+			WarnOnce(m_WarnedNoCircular,
+					"no circular (or circular-infalling) orbit found at some radii; using radially infalling orbit there "
+					"(can sometimes be expected, e.g. between light rings)",
+					EquatPoint);
 			p_down_fin = p_down_rad;
-			return p_down_fin;
 		}
-		real ut{sqrt(ut_sq)};
 
-		// This is the final four-velocity with index up, lower this index again now
-		OneIndex u_up_tot{ut, ur_tot, 0.0, ut * Omega_tot};
-		for (int i = 0; i < dimension; ++i)
+		if (std::isnan(p_down_fin[0]) || std::isnan(p_down_fin[1]) || std::isnan(p_down_fin[3]) || p_down_fin[0] >= 0.0)
 		{
-			for (int j = 0; j < dimension; ++j)
-			{
-				p_down_fin[i] += g_dd[i][j] * u_up_tot[j];
-			}
+			WarnOnce(m_WarnedNaN, "Invalid (NaN or non-future-directed) fluid-velocity found; using radially infalling orbit instead", EquatPoint);
+			p_down_fin = p_down_rad;
 		}
 	}
-	else
+	else // m_betaR == 0.0 && m_betaPhi == 0.0
 	{
-		// No circular (or circular-infalling) orbit was found, so we simply use a radially infalling orbit instead
-		WarnOnce(m_WarnedNoCircular,
-				 "no circular (or circular-infalling) orbit found at some radii; using radially infalling orbit there "
-				 "(can sometimes be expected, e.g. between light rings)",
-				 EquatPoint);
+		// No circular motion, just use purely radially infalling orbit
 		p_down_fin = p_down_rad;
 	}
-
-	if (std::isnan(p_down_fin[0]) || std::isnan(p_down_fin[1]) || std::isnan(p_down_fin[3]) || p_down_fin[0] >= 0.0)
-	{
-		WarnOnce(m_WarnedNaN, "Fluid model: Finding circular four-velocity failed (NaN found); using radially infalling orbit instead", EquatPoint);
-		p_down_fin = p_down_rad;
-	}
-	
 
 	return p_down_fin;
 }
@@ -292,6 +299,7 @@ OneIndex GeneralCircularRadialFluid::GetCircularVelocityd(const Point &p, bool s
 			if (subKeplerianOn)
 			{
 				// rescale angular momentum
+				real pd3old{p_down[3]};
 				p_down[3] *= m_subKeplerParam;
 
 				if (fabs(ap) > Integrators::delta_nodiv0)
@@ -313,9 +321,8 @@ OneIndex GeneralCircularRadialFluid::GetCircularVelocityd(const Point &p, bool s
 				}
 				if (solfailed)
 				{
-					ScreenOutput("Circular orbit found but subKeplerian rescaling failed; using un-rescaled circular orbit.",
-								 OutputLevel::Level_0_WARNING);
-					p_down[3] /= m_subKeplerParam;
+					WarnOnce(m_WarnedSubkeplerianRescaling, "Circular orbit found but subKeplerian rescaling failed; using un-rescaled circular orbit.", p);
+					p_down[3] = pd3old;
 				}
 			}
 		}
@@ -507,7 +514,9 @@ void GeneralCircularRadialFluid::WarnOnce(std::atomic<bool> &flag, const std::st
 {
 	if (!flag.exchange(true)) // true only for the first thread that gets here
 	{
-		ScreenOutput("Fluid model: " + msg + " (first occurrence at " + toString(p) +
+		Point myp{p};
+		myp[1] = m_theMetric->getrLogScale() ? exp(p[1]) : p[1]; // convert to true radius if necessary
+		ScreenOutput("Fluid model: " + msg + " (first occurrence at " + toString(myp) +
 						 "); further occurrences will not be reported.",
 					 OutputLevel::Level_0_WARNING);
 	}
