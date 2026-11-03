@@ -643,8 +643,10 @@ void Config::InitializeDiagnostics(const ConfigCollection &theCfg, DiagBitflag &
 			real betaPhi{1.0};
 			// Default ISCO search bounds (true radii): for metrics with a horizon, search from the
 			// horizon radius out to 10 times the horizon radius; otherwise fall back to generic bounds
-			real iscolowerbound{sphermetric ? sphermetric->getHorizonRadius() : 0.05};
-			real iscoupperbound{sphermetric ? 10.0 * sphermetric->getHorizonRadius() : 1000.0};
+			real iscolowerbound_default{sphermetric ? sphermetric->getHorizonRadius() : 0.05};
+			real iscoupperbound_default{sphermetric ? 10.0 * sphermetric->getHorizonRadius() : 1000.0};
+			real iscolowerbound{iscolowerbound_default};
+			real iscoupperbound{iscoupperbound_default};
 
 			// Read in fluid velocity model
 			std::string fluidmodelstring{"GeneralCircularRadial"};
@@ -658,6 +660,32 @@ void Config::InitializeDiagnostics(const ConfigCollection &theCfg, DiagBitflag &
 				AllDiagSettings["EquatorialEmission"].LookupValue("betaphi", betaPhi);
 				AllDiagSettings["EquatorialEmission"].LookupValue("ISCOLowerBound", iscolowerbound);
 				AllDiagSettings["EquatorialEmission"].LookupValue("ISCOUpperBound", iscoupperbound);
+
+				// Do some checks on three params xi, betar, betaphi, which must lie between 0.0 and 1.0
+				if (subKeplerianparam < 0.0)
+					ScreenOutput("Sub-Keplerian parameter must be between 0 and 1; adjusting to 0", Output_Important_Default);
+				if (subKeplerianparam > 1.0)
+					ScreenOutput("Sub-Keplerian parameter must be between 0 and 1; adjusting to 1", Output_Important_Default);
+				if (betaR < 0.0)
+					ScreenOutput("beta_r parameter must be between 0 and 1; adjusting to 0", Output_Important_Default);
+				if (betaR > 1.0)
+					ScreenOutput("beta_r parameter must be between 0 and 1; adjusting to 1", Output_Important_Default);
+				if (betaPhi < 0.0)
+					ScreenOutput("beta_phi parameter must be between 0 and 1; adjusting to 0", Output_Important_Default);
+				if (betaPhi > 1.0)
+					ScreenOutput("beta_phi parameter must be between 0 and 1; adjusting to 1", Output_Important_Default);
+
+				// ISCO search bounds must be positive and correctly ordered, or the binary search in
+				// FindISCO() silently produces a wrong or unconverged ISCO (NaN bounds under log(r)
+				// coordinates, or an empty search range)
+				if (iscolowerbound <= 0.0 || iscoupperbound <= 0.0 || iscolowerbound >= iscoupperbound)
+				{
+					ScreenOutput("ISCOLowerBound and ISCOUpperBound must be positive with ISCOLowerBound < ISCOUpperBound (got lower=" +
+								 std::to_string(iscolowerbound) + ", upper=" + std::to_string(iscoupperbound) + "). Using default values.",
+								 Output_Important_Default);
+					iscolowerbound = iscolowerbound_default;
+					iscoupperbound = iscoupperbound_default;
+				}
 			}
 			else
 			{

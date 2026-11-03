@@ -102,33 +102,12 @@ struct GeneralCircularRadialFluid final : public FluidVelocityModel
 																			 m_betaPhi{fmin(fmax(betaphi, 0.0), 1.0)}, FluidVelocityModel(theMetric),
 																			 m_ISCOlowerbound{ISCO_lowerbound}, m_ISCOupperbound{ISCO_upperbound}
 	{
-		// Do some checks on three params, which must lie between 0.0 and 1.0 (note that they are adjusted as such in
-		// initializer above)
-		if (subKeplerParam < 0.0)
-			ScreenOutput("Sub-Keplerian parameter must be between 0 and 1; adjusting to 0", OutputLevel::Level_0_WARNING);
-		if (subKeplerParam > 1.0)
-			ScreenOutput("Sub-Keplerian parameter must be between 0 and 1; adjusting to 1", OutputLevel::Level_0_WARNING);
-
-		if (betar < 0.0)
-			ScreenOutput("beta_r parameter must be between 0 and 1; adjusting to 0", OutputLevel::Level_0_WARNING);
-		if (betar > 1.0)
-			ScreenOutput("beta_r parameter must be between 0 and 1; adjusting to 1", OutputLevel::Level_0_WARNING);
-
-		if (betaphi < 0.0)
-			ScreenOutput("beta_phi parameter must be between 0 and 1; adjusting to 0", OutputLevel::Level_0_WARNING);
-		if (betaphi > 1.0)
-			ScreenOutput("beta_phi parameter must be between 0 and 1; adjusting to 1", OutputLevel::Level_0_WARNING);
-
-		// ISCO search bounds must be positive and correctly ordered, or the binary search in
-		// FindISCO() silently produces a wrong or unconverged ISCO (NaN bounds under log(r)
-		// coordinates, or an empty search range)
-		if (ISCO_lowerbound <= 0.0 || ISCO_upperbound <= 0.0 || ISCO_lowerbound >= ISCO_upperbound)
-			throw std::runtime_error("ISCOLowerBound and ISCOUpperBound must be positive with ISCOLowerBound < ISCOUpperBound (got lower=" +
-									 std::to_string(ISCO_lowerbound) + ", upper=" + std::to_string(ISCO_upperbound) + ")");
-
+		// Note: all parameters have been checked in the Config.cpp file before this constructor is called, so they should be valid here.
 		
-		TwoIndex guu_ISCOlow{theMetric->getMetric_uu({m_ISCOlowerbound, 0.0, M_PI / 2.0, 0.0})};
-		TwoIndex guu_ISCOhigh{theMetric->getMetric_uu({m_ISCOupperbound, 0.0, M_PI / 2.0, 0.0})};
+		// Checking the metric off-diagonal components at the ISCO search bounds to ensure that the assumptions of the fluid model are valid
+		bool rlogscale{theMetric->getrLogScale()};
+		TwoIndex guu_ISCOlow{theMetric->getMetric_uu({0.0, rlogscale ? log(m_ISCOlowerbound) : m_ISCOlowerbound, M_PI / 2.0, 0.0})};
+		TwoIndex guu_ISCOhigh{theMetric->getMetric_uu({0.0, rlogscale ? log(m_ISCOupperbound) : m_ISCOupperbound, M_PI / 2.0, 0.0})};
 		// Check that the off-diagonal r, theta components of the metric are zero at the ISCO bounds, as they should be for equatorial circular orbits
 		auto hasNonzeroOffDiagonalrtheta = [](const TwoIndex &guu)
 		{
