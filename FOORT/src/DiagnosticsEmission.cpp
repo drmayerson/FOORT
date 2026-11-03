@@ -113,7 +113,7 @@ OneIndex GeneralCircularRadialFluid::GetFourVelocityd(const Point &p) const
 	// This is where we will store the final velocity with index down
 	OneIndex p_down_fin{};
 
-	if (p_down_circ[0] <= 0.0)
+	if (p_down_circ[0] < 0.0)
 	{
 		// We found a circular (or circular-infalling) velocity above, so the final velocity will be a mix
 		// of this orbit and the purely radially infalling one
