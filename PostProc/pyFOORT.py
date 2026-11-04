@@ -746,10 +746,8 @@ def ModifiedEquatorialEmission(
         how="inner",
         suffixes=("", "_closest"),
     )
-    ClosestRadius_mask = (merged_df["diag1_closest"] >= LightRingRadius) * 1 - (
-        merged_df["diag1_closest"] < LightRingRadius
-    ) * 1
-    merged_df["diag2"] = merged_df["diag2"] * ClosestRadius_mask
+    flip = (merged_df["diag1_closest"] < LightRingRadius) & (merged_df["diag2"] > 0)
+    merged_df["diag2"] = np.where(flip, -merged_df["diag2"], merged_df["diag2"])
     EquatorialEmission_df = merged_df[["x", "y", "diag1", "diag2"]]
 
     return EquatorialEmission_df, FirstLineInfo

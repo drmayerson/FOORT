@@ -132,6 +132,7 @@ def LoadVisAmpsFromFile(
 def DisplayVisAmp(
     VisAmp: np.ndarray,
     URange: tuple[int] = None,
+    Baselines: np.ndarray = None,
     ImageTitle: str = None,
     FileOutput: str = None,
     Verbose: bool = True,
@@ -140,6 +141,7 @@ def DisplayVisAmp(
     @brief Displays the visibility amplitude.
     @param VisAmp: The visibility amplitude to display.
     @param URange: The range to display (default = None).
+    @param Baselines: The baselines corresponding to the visibility amplitude (default = None).
     @param ImageTitle: The title of the image (default = None).
     @param FileOutput: The name of the file to save the image to (default = None).
     @param Verbose: Whether to print out progress information (default = True).
@@ -157,9 +159,17 @@ def DisplayVisAmp(
     ax = plt.axes()
 
     if URange:
-        plt.semilogy(VisAmp[URange[0] : URange[1]])
+        if Baselines is not None:
+            plt.semilogy(Baselines[URange[0] : URange[1]], VisAmp[URange[0] : URange[1]])
+            plt.xlabel("Baseline (G$\lambda$)")
+        else:
+            plt.semilogy(VisAmp[URange[0] : URange[1]])
     else:
-        plt.semilogy(VisAmp)
+        if Baselines is not None:
+            plt.semilogy(Baselines, VisAmp)
+            plt.xlabel("Baseline (G$\lambda$)")
+        else:
+            plt.semilogy(VisAmp)
 
     if ImageTitle:
         plt.suptitle(ImageTitle, fontsize=10, wrap=True)
