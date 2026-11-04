@@ -302,26 +302,6 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 			// All settings complete; create Metric object!
 			TheMetric = std::unique_ptr<Metric>(new BosonStarMetric(Phi_infinity, num_lines, rLogScale, Phi_filename, m_filename));
 		}
-		else if (MetricName == "rotatingbosonstar")
-		{
-			// The rotating boson star with solitonic potential
-
-			// First setting to look up: using a logarithmic r coordinate or not.
-			// Don't need to output message if setting not found
-			bool rLogScale{false};
-			bool flipAngularMomentum{false};
-			std::string MetricFolder{"RotatingBosonStar/data_Will/"};
-			int NumX{500};
-			int NumTh{399};
-			MetricSettings.LookupValue("RLogScale", rLogScale);
-			MetricSettings.LookupValue("FlipAngularMomentum", flipAngularMomentum);
-			MetricSettings.LookupValue("MetricFolder", MetricFolder);
-			MetricSettings.LookupValue("NumX", NumX);
-			MetricSettings.LookupValue("NumTh", NumTh);
-
-			// All settings complete; create Metric object!
-			TheMetric = std::unique_ptr<Metric>(new RotatingBosonStarMetric(rLogScale, MetricFolder, NumX, NumTh, flipAngularMomentum));
-		}
 		//// METRIC ADD POINT B ////
 		// Add an else if clause to check for your new Metric object!
 		// To look for additional options in the metric configuration, use

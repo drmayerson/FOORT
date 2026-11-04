@@ -1,7 +1,6 @@
 var hierarchy =
 [
     [ "tk::internal::band_matrix", "classtk_1_1internal_1_1band__matrix.html", null ],
-    [ "BicubicSplineInterpolator", "class_bicubic_spline_interpolator.html", null ],
     [ "ConfigReader::ConfigCollection", "class_config_reader_1_1_config_collection.html", null ],
     [ "ConfigReader::ConfigCollection::ConfigSetting", "struct_config_reader_1_1_config_collection_1_1_config_setting.html", null ],
     [ "Diagnostic", "class_diagnostic.html", [
@@ -27,7 +26,6 @@ var hierarchy =
     ] ],
     [ "Geodesic", "class_geodesic.html", null ],
     [ "GeodesicOutputHandler", "class_geodesic_output_handler.html", null ],
-    [ "Grid", "class_grid.html", null ],
     [ "Mesh", "class_mesh.html", [
       [ "InputCertainPixelsMesh", "class_input_certain_pixels_mesh.html", null ],
       [ "SimpleSquareMesh", "class_simple_square_mesh.html", null ],
@@ -36,7 +34,6 @@ var hierarchy =
     [ "Metric", "class_metric.html", [
       [ "BosonStarMetric", "class_boson_star_metric.html", null ],
       [ "FlatSpaceMetric", "class_flat_space_metric.html", null ],
-      [ "RotatingBosonStarMetric", "class_rotating_boson_star_metric.html", null ],
       [ "SingularityMetric", "class_singularity_metric.html", [
         [ "ST3CrMetric", "class_s_t3_cr_metric.html", null ]
       ] ],

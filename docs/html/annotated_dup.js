@@ -13,7 +13,6 @@ var annotated_dup =
     [ "Utilities", "namespace_utilities.html", [
       [ "Timer", "class_utilities_1_1_timer.html", "class_utilities_1_1_timer" ]
     ] ],
-    [ "BicubicSplineInterpolator", "class_bicubic_spline_interpolator.html", "class_bicubic_spline_interpolator" ],
     [ "BosonStarMetric", "class_boson_star_metric.html", "class_boson_star_metric" ],
     [ "BoundarySphereTermination", "class_boundary_sphere_termination.html", "class_boundary_sphere_termination" ],
     [ "BoundarySphereTermOptions", "struct_boundary_sphere_term_options.html", "struct_boundary_sphere_term_options" ],
@@ -37,7 +36,6 @@ var annotated_dup =
     [ "GeodesicPositionDiagnostic", "class_geodesic_position_diagnostic.html", "class_geodesic_position_diagnostic" ],
     [ "GeodesicPositionOptions", "struct_geodesic_position_options.html", "struct_geodesic_position_options" ],
     [ "GLMJohnsonSUEmission", "struct_g_l_m_johnson_s_u_emission.html", "struct_g_l_m_johnson_s_u_emission" ],
-    [ "Grid", "class_grid.html", "class_grid" ],
     [ "HorizonTermination", "class_horizon_termination.html", "class_horizon_termination" ],
     [ "HorizonTermOptions", "struct_horizon_term_options.html", "struct_horizon_term_options" ],
     [ "InputCertainPixelsMesh", "class_input_certain_pixels_mesh.html", "class_input_certain_pixels_mesh" ],
@@ -51,7 +49,6 @@ var annotated_dup =
     [ "NaNTermOptions", "struct_na_n_term_options.html", "struct_na_n_term_options" ],
     [ "NoSource", "class_no_source.html", "class_no_source" ],
     [ "RasheedLarsenMetric", "class_rasheed_larsen_metric.html", "class_rasheed_larsen_metric" ],
-    [ "RotatingBosonStarMetric", "class_rotating_boson_star_metric.html", "class_rotating_boson_star_metric" ],
     [ "SimpleSquareMesh", "class_simple_square_mesh.html", "class_simple_square_mesh" ],
     [ "SingularityMetric", "class_singularity_metric.html", "class_singularity_metric" ],
     [ "Source", "class_source.html", "class_source" ],

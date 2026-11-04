@@ -13,8 +13,7 @@ FOORT/test/           GoogleTest unit tests
 FOORT/cfgs/           Example/sample .cfg run configs (most are personal/untracked; some allow-listed)
 FOORT/Output/         Sample + generated output (.dat files, images); mostly untracked, some allow-listed
 FOORT/bin/            Build output (gitignored)
-FOORT/BosonStar/      Numerical (non-rotating) boson star metric data (not committed)
-FOORT/RotatingBosonStar/  Numerical rotating boson star metric data (not committed, often large)
+FOORT/BosonStar/      Numerical boson star metric data (not committed)
 PostProc/             Python post-processing: pyFOORT.py, PhotonRingInterferometry.py,
                        ExampleNotebook.ipynb, environment.yml, Doxyfile
 docs/                 Committed Doxygen output: docs/html (C++), docs/postproc/html (Python),
@@ -48,14 +47,14 @@ Single executable, entirely config-driven: `FOORT/bin/FOORT <path/to/config.cfg>
 
 | File(s) | Role |
 |---|---|
-| `Metric.h/.cpp` | Abstract `Metric` base + subclasses: analytic (Kerr-like, Johannsen) and numerical grid-based (`BosonStarMetric`, `RotatingBosonStarMetric`, via `Grid` + `BicubicSplineInterpolator`) |
+| `Metric.h/.cpp` | Abstract `Metric` base + subclasses: analytic (Kerr-like, Johannsen) and numerical (`BosonStarMetric`, via 1D cubic splines from `Spline.h`) |
 | `Geodesic.h/.cpp` | Geodesic equation right-hand side |
 | `Integrators.h/.cpp` | RK4 / Verlet integration schemes |
 | `Diagnostics.h/.cpp`, `DiagnosticsEmission.h/.cpp` | What gets measured per geodesic (four-color screen, equatorial passes/emission, geodesic position, closest radius, ...); fluid-velocity and emission models for disc-style diagnostics |
 | `Terminations.h/.cpp` | Stopping conditions (horizon, boundary sphere, timeout, NaN, theta singularity, ...) |
 | `ViewScreen.h/.cpp`, `Mesh.h/.cpp` | Maps screen pixels to initial geodesic conditions; `Mesh` handles (adaptive) pixel scheduling/subdivision |
 | `InputOutput.h/.cpp` | `ScreenOutput()` (console, level-filtered) and `GeodesicOutputHandler` (writes `.dat` output, splitting across files at `GeodesicsPerFile`) |
-| `Grid.h/.cpp`, `Interpolator.h/.cpp` | 2D grid + bicubic spline interpolation, backing the numerical metrics |
+| `Spline.h/.cpp` | 1D cubic spline interpolation, backing the numerical boson star metric |
 | `Config.h/.cpp`, `ConfigReader.h/.cpp` | Config-file parsing (libconfig wrapper) and object construction |
 | `Utilities.h/.cpp` | Misc (timer, etc.) |
 
@@ -72,11 +71,10 @@ Adding a new `Metric` / `Diagnostic` / `Termination` follows an in-source, multi
 
 - **Console output**: prefer `ScreenOutput(message, OutputLevel::Level_X)` over raw `std::cout`/`std::cerr` for
   new code — it's filtered by the config's `ScreenOutputLevel`. Some pre-existing raw `std::cout`/`std::cerr`
-  calls remain (e.g. `Grid.cpp`, `Metric.cpp`, `Interpolator.h`); match `ScreenOutput` for anything new rather
+  calls remain (e.g. `Metric.cpp`); match `ScreenOutput` for anything new rather
   than following those.
 - **Invalid/missing input** (bad config values, missing data files): `throw std::runtime_error(...)`, don't
-  fail silently. This is the established convention for `Grid`/`Interpolator` file loading and physics
-  parameter validation.
+  fail silently. This is the established convention for physics parameter validation.
 - **Ownership**: dynamically-allocated members use `std::unique_ptr`, not raw `new`/`delete`.
 - **Naming**: PascalCase for C++ identifiers and for Python function parameters in `PostProc/*.py`
   (e.g. `FilePrefix`, `Verbose`) — don't introduce snake_case parameter names there.
@@ -84,9 +82,8 @@ Adding a new `Metric` / `Diagnostic` / `Termination` follows an in-source, multi
   explicit `!`-exceptions carved out for specific tracked sample files. Before assuming a new file under
   one of these paths will be tracked, check for (or add) a matching `!`-exception — otherwise `git add`
   silently refuses it as ignored.
-- **Numerical metric data** (`FOORT/RotatingBosonStar/<dataset>/`, `FOORT/BosonStar/*.dat`) is not committed
-  (too large / not always publicly shareable). `RotatingBosonStarMetric`/`BosonStarMetric` will throw at
-  construction if this data isn't present locally.
+- **Numerical metric data** (`FOORT/BosonStar/*.dat`) is not committed. `BosonStarMetric` needs this data
+  present locally.
 
 ## Python post-processing (`PostProc/`)
 
@@ -98,5 +95,4 @@ Adding a new `Metric` / `Diagnostic` / `Termination` follows an in-source, multi
 
 ## Tests
 
-GoogleTest-based, in `FOORT/test/`. Run with `ctest --test-dir build`. Tests requiring non-public
-`RotatingBosonStar` data are intentionally excluded from the suite.
+GoogleTest-based, in `FOORT/test/`. Run with `ctest --test-dir build`.

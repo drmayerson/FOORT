@@ -10,6 +10,5 @@ var _metric_8h =
     [ "KerrSchildMetric", "class_kerr_schild_metric.html", "class_kerr_schild_metric" ],
     [ "SingularityMetric", "class_singularity_metric.html", "class_singularity_metric" ],
     [ "ST3CrMetric", "class_s_t3_cr_metric.html", "class_s_t3_cr_metric" ],
-    [ "BosonStarMetric", "class_boson_star_metric.html", "class_boson_star_metric" ],
-    [ "RotatingBosonStarMetric", "class_rotating_boson_star_metric.html", "class_rotating_boson_star_metric" ]
+    [ "BosonStarMetric", "class_boson_star_metric.html", "class_boson_star_metric" ]
 ];

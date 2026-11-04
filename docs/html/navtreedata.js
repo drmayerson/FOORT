@@ -64,9 +64,9 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_config_8cpp.html",
-"class_equatorial_passes_diagnostic.html#a4dc415cabca31c77d6603ce44707cbfb",
-"class_square_subdivision_mesh.html#a319e774529e0c7c66b6b303223a85fc2",
-"namespace_config.html#a7494f2f98a6d892baadb56927ee078cc"
+"class_four_color_screen_diagnostic.html#a6107ead6faab2e4f313d60cbf4c66f08",
+"class_time_out_termination.html#a89377a233bf812d37b6610189a57eddc",
+"struct_config_reader_1_1_config_collection_1_1_config_setting.html#a6d1bf95d360642bdc70a55758de8c385"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';
