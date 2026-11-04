@@ -10,7 +10,7 @@ var searchData=
   ['diag_5fgeodesicposition_7',['Diag_GeodesicPosition',['../_diagnostics_8h.html#a2c3a5bb5a040196e45323f2df08fbc9e',1,'Diagnostics.h']]],
   ['diag_5fnone_8',['Diag_None',['../_diagnostics_8h.html#a72b9bad4f1fd74fe116ea4546f0203e3',1,'Diagnostics.h']]],
   ['diagoptions_9',['DiagOptions',['../class_geodesic_position_diagnostic.html#a940ee0709afb792fd9d7aa7953c918d9',1,'GeodesicPositionDiagnostic::DiagOptions'],['../class_equatorial_passes_diagnostic.html#aa5ba83fcefb2df3f43c8aac05d04c07e',1,'EquatorialPassesDiagnostic::DiagOptions'],['../class_closest_radius_diagnostic.html#a69e3916be77e50fc5978944fce1cf8df',1,'ClosestRadiusDiagnostic::DiagOptions'],['../class_equatorial_emission_diagnostic.html#a94ecdb73ae3aa12b0535afeee47cd2de',1,'EquatorialEmissionDiagnostic::DiagOptions']]],
-  ['diagvalue_10',['DiagValue',['../struct_square_subdivision_mesh_1_1_pixel_info.html#a1e6a79efe32adf3c29161a1332f84ea7',1,'SquareSubdivisionMesh::PixelInfo::DiagValue'],['../struct_square_subdivision_mesh_v2_1_1_pixel_info.html#a1cf94cc08773adbe58b6607c4af2377d',1,'SquareSubdivisionMeshV2::PixelInfo::DiagValue']]],
+  ['diagvalue_10',['DiagValue',['../struct_square_subdivision_mesh_1_1_pixel_info.html#a1e6a79efe32adf3c29161a1332f84ea7',1,'SquareSubdivisionMesh::PixelInfo']]],
   ['dimension_11',['dimension',['../_geometry_8h.html#ae611171a484067e6df0d837b40416e3c',1,'Geometry.h']]],
-  ['downnbr_12',['DownNbr',['../struct_square_subdivision_mesh_v2_1_1_pixel_info.html#abc527232cbdcd38d02bf8956015f3fee',1,'SquareSubdivisionMeshV2::PixelInfo']]]
+  ['downnbr_12',['DownNbr',['../struct_square_subdivision_mesh_1_1_pixel_info.html#a28a957fd72c0523d187f9990d55cabd4',1,'SquareSubdivisionMesh::PixelInfo']]]
 ];

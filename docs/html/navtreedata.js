@@ -41,7 +41,7 @@ var NAVTREE =
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", "functions_dup" ],
         [ "Functions", "functions_func.html", "functions_func" ],
-        [ "Variables", "functions_vars.html", "functions_vars" ],
+        [ "Variables", "functions_vars.html", null ],
         [ "Typedefs", "functions_type.html", null ],
         [ "Enumerations", "functions_enum.html", null ],
         [ "Enumerator", "functions_eval.html", null ]
@@ -65,8 +65,8 @@ var NAVTREEINDEX =
 [
 "_config_8cpp.html",
 "class_equatorial_passes_diagnostic.html#a4dc415cabca31c77d6603ce44707cbfb",
-"class_square_subdivision_mesh.html#a3bcecdfbc78b370cb19debe214eadf1c",
-"functions_r.html"
+"class_square_subdivision_mesh.html#a319e774529e0c7c66b6b303223a85fc2",
+"namespace_config.html#a7494f2f98a6d892baadb56927ee078cc"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

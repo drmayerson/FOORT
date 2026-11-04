@@ -101,18 +101,24 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a221971aec2544f2439cada00ba3f74fc" id="r_a221971aec2544f2439cada00ba3f74fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a513af160c943af6de42baec642491b89">ScreenIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a221971aec2544f2439cada00ba3f74fc">Index</a> {}</td></tr>
-<tr class="memdesc:a221971aec2544f2439cada00ba3f74fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">The pixel's screenindex.  <br /></td></tr>
+<tr class="memitem:a0e8ca63a21fce14f0242b146ee7c6d61" id="r_a0e8ca63a21fce14f0242b146ee7c6d61"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="_geometry_8h.html#a513af160c943af6de42baec642491b89">ScreenIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0e8ca63a21fce14f0242b146ee7c6d61">Index</a> {}</td></tr>
+<tr class="memdesc:a0e8ca63a21fce14f0242b146ee7c6d61"><td class="mdescLeft">&#160;</td><td class="mdescRight">The pixel's screenindex: this gets set by the constructor and cannot change anymore.  <br /></td></tr>
 <tr class="memitem:a0d551d13e7915d93e3398726d3b6282c" id="r_a0d551d13e7915d93e3398726d3b6282c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0d551d13e7915d93e3398726d3b6282c">SubdivideLevel</a> {}</td></tr>
 <tr class="memdesc:a0d551d13e7915d93e3398726d3b6282c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The level at which the pixel has been subdivided. Note: initial grid pixels are at 1; pixels at 0 are pixels that cannot be subdivided (for example, at the right or lower edges)  <br /></td></tr>
 <tr class="memitem:a49578b4c7b1d8d5ae2d5554e070d0239" id="r_a49578b4c7b1d8d5ae2d5554e070d0239"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a49578b4c7b1d8d5ae2d5554e070d0239">Weight</a> {-1}</td></tr>
 <tr class="memdesc:a49578b4c7b1d8d5ae2d5554e070d0239"><td class="mdescLeft">&#160;</td><td class="mdescRight">Weight of the pixel: if negative, this signifies that it needs to be updated/calculated! The weight is determined as the max of the distance (as calculated by the value <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a>) between its values and those of its right, lower, and right-lower neighbors.  <br /></td></tr>
 <tr class="memitem:a1e6a79efe32adf3c29161a1332f84ea7" id="r_a1e6a79efe32adf3c29161a1332f84ea7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1e6a79efe32adf3c29161a1332f84ea7">DiagValue</a> {}</td></tr>
 <tr class="memdesc:a1e6a79efe32adf3c29161a1332f84ea7"><td class="mdescLeft">&#160;</td><td class="mdescRight">The values associated to this pixel (as calculated by the value <a class="el" href="class_diagnostic.html" title="Abstract base class for all diagnostics.">Diagnostic</a>)  <br /></td></tr>
-<tr class="memitem:a67224a770452d5cb59beb2940a86f204" id="r_a67224a770452d5cb59beb2940a86f204"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a67224a770452d5cb59beb2940a86f204">LowerNbrIndex</a> {0}</td></tr>
-<tr class="memdesc:a67224a770452d5cb59beb2940a86f204"><td class="mdescLeft">&#160;</td><td class="mdescRight">Where its lower neighbor is located in m_AllPixels. Note: the pixel with index 0 is (0,0) and can never be the lower or right neighbor of any other pixel!  <br /></td></tr>
-<tr class="memitem:a33db548b5dd59e50babb6952cc082637" id="r_a33db548b5dd59e50babb6952cc082637"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a33db548b5dd59e50babb6952cc082637">RightNbrIndex</a> {0}</td></tr>
-<tr class="memdesc:a33db548b5dd59e50babb6952cc082637"><td class="mdescLeft">&#160;</td><td class="mdescRight">Where its right neighbor is located in m_AllPixels. Note: the pixel with index 0 is (0,0) and can never be the lower or right neighbor of any other pixel!  <br /></td></tr>
+<tr class="memitem:ab877846c4658db05009d7281c3bd2c8c" id="r_ab877846c4658db05009d7281c3bd2c8c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_square_subdivision_mesh_1_1_pixel_info.html">PixelInfo</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab877846c4658db05009d7281c3bd2c8c">LeftNbr</a> {nullptr}</td></tr>
+<tr class="memdesc:ab877846c4658db05009d7281c3bd2c8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to its left neighbor.  <br /></td></tr>
+<tr class="memitem:a32fc3d76536381ccee972fa65d25bd0e" id="r_a32fc3d76536381ccee972fa65d25bd0e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_square_subdivision_mesh_1_1_pixel_info.html">PixelInfo</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a32fc3d76536381ccee972fa65d25bd0e">RightNbr</a> {nullptr}</td></tr>
+<tr class="memdesc:a32fc3d76536381ccee972fa65d25bd0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to its right neighbor.  <br /></td></tr>
+<tr class="memitem:acd4d23df0907dabd0906f0e048230139" id="r_acd4d23df0907dabd0906f0e048230139"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_square_subdivision_mesh_1_1_pixel_info.html">PixelInfo</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acd4d23df0907dabd0906f0e048230139">UpNbr</a> {nullptr}</td></tr>
+<tr class="memdesc:acd4d23df0907dabd0906f0e048230139"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to its upper neighbor.  <br /></td></tr>
+<tr class="memitem:a28a957fd72c0523d187f9990d55cabd4" id="r_a28a957fd72c0523d187f9990d55cabd4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_square_subdivision_mesh_1_1_pixel_info.html">PixelInfo</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a28a957fd72c0523d187f9990d55cabd4">DownNbr</a> {nullptr}</td></tr>
+<tr class="memdesc:a28a957fd72c0523d187f9990d55cabd4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to its lower neighbor.  <br /></td></tr>
+<tr class="memitem:a8414feda2689f2e86541fc799fc072b8" id="r_a8414feda2689f2e86541fc799fc072b8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_square_subdivision_mesh_1_1_pixel_info.html">PixelInfo</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8414feda2689f2e86541fc799fc072b8">SEdiagNbr</a> {nullptr}</td></tr>
+<tr class="memdesc:a8414feda2689f2e86541fc799fc072b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to its lower-rightt neighbor.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A struct the <a class="el" href="class_mesh.html" title="Abstract base Mesh class.">Mesh</a> uses to keep all information about a given pixel. </p>
@@ -163,51 +169,83 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a221971aec2544f2439cada00ba3f74fc" name="a221971aec2544f2439cada00ba3f74fc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a221971aec2544f2439cada00ba3f74fc">&#9670;&#160;</a></span>Index</h2>
+<a id="a28a957fd72c0523d187f9990d55cabd4" name="a28a957fd72c0523d187f9990d55cabd4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a28a957fd72c0523d187f9990d55cabd4">&#9670;&#160;</a></span>DownNbr</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="_geometry_8h.html#a513af160c943af6de42baec642491b89">ScreenIndex</a> SquareSubdivisionMesh::PixelInfo::Index {}</td>
+          <td class="memname"><a class="el" href="struct_square_subdivision_mesh_1_1_pixel_info.html">PixelInfo</a>* SquareSubdivisionMesh::PixelInfo::DownNbr {nullptr}</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>The pixel's screenindex. </p>
+<p>Pointer to its lower neighbor. </p>
 
 </div>
 </div>
-<a id="a67224a770452d5cb59beb2940a86f204" name="a67224a770452d5cb59beb2940a86f204"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a67224a770452d5cb59beb2940a86f204">&#9670;&#160;</a></span>LowerNbrIndex</h2>
+<a id="a0e8ca63a21fce14f0242b146ee7c6d61" name="a0e8ca63a21fce14f0242b146ee7c6d61"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e8ca63a21fce14f0242b146ee7c6d61">&#9670;&#160;</a></span>Index</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a> SquareSubdivisionMesh::PixelInfo::LowerNbrIndex {0}</td>
+          <td class="memname">const <a class="el" href="_geometry_8h.html#a513af160c943af6de42baec642491b89">ScreenIndex</a> SquareSubdivisionMesh::PixelInfo::Index {}</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Where its lower neighbor is located in m_AllPixels. Note: the pixel with index 0 is (0,0) and can never be the lower or right neighbor of any other pixel! </p>
+<p>The pixel's screenindex: this gets set by the constructor and cannot change anymore. </p>
 
 </div>
 </div>
-<a id="a33db548b5dd59e50babb6952cc082637" name="a33db548b5dd59e50babb6952cc082637"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a33db548b5dd59e50babb6952cc082637">&#9670;&#160;</a></span>RightNbrIndex</h2>
+<a id="ab877846c4658db05009d7281c3bd2c8c" name="ab877846c4658db05009d7281c3bd2c8c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab877846c4658db05009d7281c3bd2c8c">&#9670;&#160;</a></span>LeftNbr</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="_geometry_8h.html#a5bd2398e6953eaf6bfde5f98461c3bca">largecounter</a> SquareSubdivisionMesh::PixelInfo::RightNbrIndex {0}</td>
+          <td class="memname"><a class="el" href="struct_square_subdivision_mesh_1_1_pixel_info.html">PixelInfo</a>* SquareSubdivisionMesh::PixelInfo::LeftNbr {nullptr}</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Where its right neighbor is located in m_AllPixels. Note: the pixel with index 0 is (0,0) and can never be the lower or right neighbor of any other pixel! </p>
+<p>Pointer to its left neighbor. </p>
+
+</div>
+</div>
+<a id="a32fc3d76536381ccee972fa65d25bd0e" name="a32fc3d76536381ccee972fa65d25bd0e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32fc3d76536381ccee972fa65d25bd0e">&#9670;&#160;</a></span>RightNbr</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_square_subdivision_mesh_1_1_pixel_info.html">PixelInfo</a>* SquareSubdivisionMesh::PixelInfo::RightNbr {nullptr}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Pointer to its right neighbor. </p>
+
+</div>
+</div>
+<a id="a8414feda2689f2e86541fc799fc072b8" name="a8414feda2689f2e86541fc799fc072b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8414feda2689f2e86541fc799fc072b8">&#9670;&#160;</a></span>SEdiagNbr</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_square_subdivision_mesh_1_1_pixel_info.html">PixelInfo</a>* SquareSubdivisionMesh::PixelInfo::SEdiagNbr {nullptr}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Pointer to its lower-rightt neighbor. </p>
 
 </div>
 </div>
@@ -224,6 +262,22 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The level at which the pixel has been subdivided. Note: initial grid pixels are at 1; pixels at 0 are pixels that cannot be subdivided (for example, at the right or lower edges) </p>
+
+</div>
+</div>
+<a id="acd4d23df0907dabd0906f0e048230139" name="acd4d23df0907dabd0906f0e048230139"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd4d23df0907dabd0906f0e048230139">&#9670;&#160;</a></span>UpNbr</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_square_subdivision_mesh_1_1_pixel_info.html">PixelInfo</a>* SquareSubdivisionMesh::PixelInfo::UpNbr {nullptr}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Pointer to its upper neighbor. </p>
 
 </div>
 </div>

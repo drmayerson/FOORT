@@ -129,6 +129,7 @@ Private Member Functions</h2></td></tr>
 <tr class="memdesc:afd28dfa5f2f4e0e7531aa211fbd7d751"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function to find the ISCO of the spacetime, if it exists.  <br /></td></tr>
 <tr class="memitem:aedea10416bc52df742bcb539b17f9e3d" id="r_aedea10416bc52df742bcb539b17f9e3d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#a9cd1cb43637d1e6e730925d90d0b068d">TwoIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aedea10416bc52df742bcb539b17f9e3d">GetChristrRaisedDer</a> (<a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a> r) const</td></tr>
 <tr class="memdesc:aedea10416bc52df742bcb539b17f9e3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function to get \partial_r(g^{ab}\Gamma^r_{bc}g^{cd})  <br /></td></tr>
+<tr class="memitem:ab6f7e85ecd61e201c676ef949c40c55b" id="r_ab6f7e85ecd61e201c676ef949c40c55b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab6f7e85ecd61e201c676ef949c40c55b">WarnOnce</a> (std::atomic&lt; bool &gt; &amp;flag, const std::string &amp;msg, const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;p) const</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -150,6 +151,11 @@ Private Attributes</h2></td></tr>
 <tr class="memdesc:a7a1484c77f62a056b309e61b69c8301d"><td class="mdescLeft">&#160;</td><td class="mdescRight">ISCO t momentum.  <br /></td></tr>
 <tr class="memitem:a48cd45b10b9e952130773ed0eb6e447b" id="r_a48cd45b10b9e952130773ed0eb6e447b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_geometry_8h.html#aedc0ad84d1e764530814f57ad931d02a">real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a48cd45b10b9e952130773ed0eb6e447b">m_ISCOpphi</a> {}</td></tr>
 <tr class="memdesc:a48cd45b10b9e952130773ed0eb6e447b"><td class="mdescLeft">&#160;</td><td class="mdescRight">ISCO phi momentum.  <br /></td></tr>
+<tr class="memitem:a9e7d2f33473627c909683faaa69503f5" id="r_a9e7d2f33473627c909683faaa69503f5"><td class="memItemLeft" align="right" valign="top">std::atomic&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9e7d2f33473627c909683faaa69503f5">m_WarnedNoCircular</a> {false}</td></tr>
+<tr class="memitem:a1a55832971bb8e3dbfca1c40b32ab03f" id="r_a1a55832971bb8e3dbfca1c40b32ab03f"><td class="memItemLeft" align="right" valign="top">std::atomic&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1a55832971bb8e3dbfca1c40b32ab03f">m_WarnedNormalization</a> {false}</td></tr>
+<tr class="memitem:adfdbfd738fa5090a4e65dfcf24bc1b28" id="r_adfdbfd738fa5090a4e65dfcf24bc1b28"><td class="memItemLeft" align="right" valign="top">std::atomic&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adfdbfd738fa5090a4e65dfcf24bc1b28">m_WarnedNaN</a> {false}</td></tr>
+<tr class="memitem:a5b4e159957555c6b1fd67ede38d1acb5" id="r_a5b4e159957555c6b1fd67ede38d1acb5"><td class="memItemLeft" align="right" valign="top">std::atomic&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5b4e159957555c6b1fd67ede38d1acb5">m_WarnedInsideISCO</a> {false}</td></tr>
+<tr class="memitem:ada4f82f99ad75a4c01a6fdc1b7d85e56" id="r_ada4f82f99ad75a4c01a6fdc1b7d85e56"><td class="memItemLeft" align="right" valign="top">std::atomic&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ada4f82f99ad75a4c01a6fdc1b7d85e56">m_WarnedSubkeplerianRescaling</a> {false}</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-inherited" class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -447,6 +453,40 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="ab6f7e85ecd61e201c676ef949c40c55b" name="ab6f7e85ecd61e201c676ef949c40c55b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6f7e85ecd61e201c676ef949c40c55b">&#9670;&#160;</a></span>WarnOnce()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeneralCircularRadialFluid::WarnOnce </td>
+          <td>(</td>
+          <td class="paramtype">std::atomic&lt; bool &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>flag</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>msg</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="_geometry_8h.html#a52cebe5e2b56d58fea04e7424762e9da">Point</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>p</em></span>&#160;) const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
 <a id="a9756faebcfc8d1cab6de4d48b2a722ae" name="a9756faebcfc8d1cab6de4d48b2a722ae"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9756faebcfc8d1cab6de4d48b2a722ae">&#9670;&#160;</a></span>m_betaPhi</h2>
@@ -661,6 +701,116 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Sub-Keplerian parameter (0 = Keplerian, 1 = sub-Keplerian) </p>
+
+</div>
+</div>
+<a id="a5b4e159957555c6b1fd67ede38d1acb5" name="a5b4e159957555c6b1fd67ede38d1acb5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b4e159957555c6b1fd67ede38d1acb5">&#9670;&#160;</a></span>m_WarnedInsideISCO</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::atomic&lt;bool&gt; GeneralCircularRadialFluid::m_WarnedInsideISCO {false}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel mutable">mutable</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adfdbfd738fa5090a4e65dfcf24bc1b28" name="adfdbfd738fa5090a4e65dfcf24bc1b28"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adfdbfd738fa5090a4e65dfcf24bc1b28">&#9670;&#160;</a></span>m_WarnedNaN</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::atomic&lt;bool&gt; GeneralCircularRadialFluid::m_WarnedNaN {false}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel mutable">mutable</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9e7d2f33473627c909683faaa69503f5" name="a9e7d2f33473627c909683faaa69503f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e7d2f33473627c909683faaa69503f5">&#9670;&#160;</a></span>m_WarnedNoCircular</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::atomic&lt;bool&gt; GeneralCircularRadialFluid::m_WarnedNoCircular {false}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel mutable">mutable</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1a55832971bb8e3dbfca1c40b32ab03f" name="a1a55832971bb8e3dbfca1c40b32ab03f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a55832971bb8e3dbfca1c40b32ab03f">&#9670;&#160;</a></span>m_WarnedNormalization</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::atomic&lt;bool&gt; GeneralCircularRadialFluid::m_WarnedNormalization {false}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel mutable">mutable</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ada4f82f99ad75a4c01a6fdc1b7d85e56" name="ada4f82f99ad75a4c01a6fdc1b7d85e56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada4f82f99ad75a4c01a6fdc1b7d85e56">&#9670;&#160;</a></span>m_WarnedSubkeplerianRescaling</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::atomic&lt;bool&gt; GeneralCircularRadialFluid::m_WarnedSubkeplerianRescaling {false}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel mutable">mutable</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

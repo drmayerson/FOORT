@@ -20,11 +20,11 @@ var searchData=
   ['diagnosticsemission_2eh_17',['DiagnosticsEmission.h',['../_diagnostics_emission_8h.html',1,'']]],
   ['diagnosticuniquevector_18',['DiagnosticUniqueVector',['../_diagnostics_8h.html#a91f488bca4b09a093306b7ecac94505c',1,'Diagnostics.h']]],
   ['diagoptions_19',['DiagOptions',['../class_geodesic_position_diagnostic.html#a940ee0709afb792fd9d7aa7953c918d9',1,'GeodesicPositionDiagnostic::DiagOptions'],['../class_equatorial_passes_diagnostic.html#aa5ba83fcefb2df3f43c8aac05d04c07e',1,'EquatorialPassesDiagnostic::DiagOptions'],['../class_closest_radius_diagnostic.html#a69e3916be77e50fc5978944fce1cf8df',1,'ClosestRadiusDiagnostic::DiagOptions'],['../class_equatorial_emission_diagnostic.html#a94ecdb73ae3aa12b0535afeee47cd2de',1,'EquatorialEmissionDiagnostic::DiagOptions']]],
-  ['diagvalue_20',['DiagValue',['../struct_square_subdivision_mesh_1_1_pixel_info.html#a1e6a79efe32adf3c29161a1332f84ea7',1,'SquareSubdivisionMesh::PixelInfo::DiagValue'],['../struct_square_subdivision_mesh_v2_1_1_pixel_info.html#a1cf94cc08773adbe58b6607c4af2377d',1,'SquareSubdivisionMeshV2::PixelInfo::DiagValue']]],
+  ['diagvalue_20',['DiagValue',['../struct_square_subdivision_mesh_1_1_pixel_info.html#a1e6a79efe32adf3c29161a1332f84ea7',1,'SquareSubdivisionMesh::PixelInfo']]],
   ['dim_21',['dim',['../classtk_1_1internal_1_1band__matrix.html#a8b2a3cc08878d161b8f28dd2963e4b7c',1,'tk::internal::band_matrix']]],
   ['dimension_22',['dimension',['../_geometry_8h.html#ae611171a484067e6df0d837b40416e3c',1,'Geometry.h']]],
   ['displaycollection_23',['DisplayCollection',['../class_config_reader_1_1_config_collection.html#a43fe5c3c92a51adbb4d4fb42553e5571',1,'ConfigReader::ConfigCollection']]],
   ['displaysetting_24',['DisplaySetting',['../class_config_reader_1_1_config_collection.html#ae3cf58447aef649050bb922b99b9f651',1,'ConfigReader::ConfigCollection']]],
   ['displaytabs_25',['DisplayTabs',['../class_config_reader_1_1_config_collection.html#a0bc166541b61cc19ed8a1e515e51358a',1,'ConfigReader::ConfigCollection']]],
-  ['downnbr_26',['DownNbr',['../struct_square_subdivision_mesh_v2_1_1_pixel_info.html#abc527232cbdcd38d02bf8956015f3fee',1,'SquareSubdivisionMeshV2::PixelInfo']]]
+  ['downnbr_26',['DownNbr',['../struct_square_subdivision_mesh_1_1_pixel_info.html#a28a957fd72c0523d187f9990d55cabd4',1,'SquareSubdivisionMesh::PixelInfo']]]
 ];

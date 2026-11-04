@@ -8,6 +8,7 @@ var struct_general_circular_radial_fluid =
     [ "getFullDescriptionStr", "struct_general_circular_radial_fluid.html#a34ee29c22747acea6efd40b090f82875", null ],
     [ "GetInsideISCOCircularVelocityd", "struct_general_circular_radial_fluid.html#a36b81021d92aa384dd616ef438552957", null ],
     [ "GetRadialVelocityd", "struct_general_circular_radial_fluid.html#a8d80de78de530b83baa1d55dd1630b88", null ],
+    [ "WarnOnce", "struct_general_circular_radial_fluid.html#ab6f7e85ecd61e201c676ef949c40c55b", null ],
     [ "m_betaPhi", "struct_general_circular_radial_fluid.html#a9756faebcfc8d1cab6de4d48b2a722ae", null ],
     [ "m_betaR", "struct_general_circular_radial_fluid.html#a9de69543daef6ba93fb76fc9fad18c4a", null ],
     [ "m_ISCOexists", "struct_general_circular_radial_fluid.html#a169f78016833fb2fe5e6ff6b1d178a14", null ],
@@ -16,5 +17,10 @@ var struct_general_circular_radial_fluid =
     [ "m_ISCOpt", "struct_general_circular_radial_fluid.html#a7a1484c77f62a056b309e61b69c8301d", null ],
     [ "m_ISCOr", "struct_general_circular_radial_fluid.html#a45079b77e6ba99b406ed622372ed0c25", null ],
     [ "m_ISCOupperbound", "struct_general_circular_radial_fluid.html#a67535b82b25a4a4e73ef910a01d17021", null ],
-    [ "m_subKeplerParam", "struct_general_circular_radial_fluid.html#a00c1f2e8905a45628344cbd47c1ecb36", null ]
+    [ "m_subKeplerParam", "struct_general_circular_radial_fluid.html#a00c1f2e8905a45628344cbd47c1ecb36", null ],
+    [ "m_WarnedInsideISCO", "struct_general_circular_radial_fluid.html#a5b4e159957555c6b1fd67ede38d1acb5", null ],
+    [ "m_WarnedNaN", "struct_general_circular_radial_fluid.html#adfdbfd738fa5090a4e65dfcf24bc1b28", null ],
+    [ "m_WarnedNoCircular", "struct_general_circular_radial_fluid.html#a9e7d2f33473627c909683faaa69503f5", null ],
+    [ "m_WarnedNormalization", "struct_general_circular_radial_fluid.html#a1a55832971bb8e3dbfca1c40b32ab03f", null ],
+    [ "m_WarnedSubkeplerianRescaling", "struct_general_circular_radial_fluid.html#ada4f82f99ad75a4c01a6fdc1b7d85e56", null ]
 ];

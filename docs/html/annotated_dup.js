@@ -57,7 +57,6 @@ var annotated_dup =
     [ "Source", "class_source.html", "class_source" ],
     [ "SphericalHorizonMetric", "class_spherical_horizon_metric.html", "class_spherical_horizon_metric" ],
     [ "SquareSubdivisionMesh", "class_square_subdivision_mesh.html", "class_square_subdivision_mesh" ],
-    [ "SquareSubdivisionMeshV2", "class_square_subdivision_mesh_v2.html", "class_square_subdivision_mesh_v2" ],
     [ "ST3CrMetric", "class_s_t3_cr_metric.html", "class_s_t3_cr_metric" ],
     [ "Termination", "class_termination.html", "class_termination" ],
     [ "TerminationOptions", "struct_termination_options.html", "struct_termination_options" ],

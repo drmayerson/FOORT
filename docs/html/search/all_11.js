@@ -6,7 +6,7 @@ var searchData=
   ['screenpoint_3',['ScreenPoint',['../_geometry_8h.html#adddc4cdb0ade8f206fa6bccc778f6d19',1,'Geometry.h']]],
   ['second_4',['Second',['../class_utilities_1_1_timer.html#a453da922d61a2addc42d5f36026cf02e',1,'Utilities::Timer']]],
   ['second_5fderiv_5',['second_deriv',['../classtk_1_1spline.html#a592e5cbe6ad482196774443b1e84f7dca07e740eca94f82f921e105c3a123008c',1,'tk::spline']]],
-  ['sediagnbr_6',['SEdiagNbr',['../struct_square_subdivision_mesh_v2_1_1_pixel_info.html#acdb93d1e89d4ce42e25727eb7673ba76',1,'SquareSubdivisionMeshV2::PixelInfo']]],
+  ['sediagnbr_6',['SEdiagNbr',['../struct_square_subdivision_mesh_1_1_pixel_info.html#a8414feda2689f2e86541fc799fc072b8',1,'SquareSubdivisionMesh::PixelInfo']]],
   ['set_5fboundary_7',['set_boundary',['../classtk_1_1spline.html#a8a90c19a3eaaaa5a97a2eeb01d0e301a',1,'tk::spline']]],
   ['set_5fcoeffs_5ffrom_5fb_8',['set_coeffs_from_b',['../classtk_1_1spline.html#a0977a4792f7857139163b3ea7bf972a6',1,'tk::spline']]],
   ['set_5fgrid_9',['set_grid',['../class_bicubic_spline_interpolator.html#a66d53ad2d16febd23ee94319de231795',1,'BicubicSplineInterpolator']]],
@@ -34,8 +34,7 @@ var searchData=
   ['spline_2eh_31',['Spline.h',['../_spline_8h.html',1,'']]],
   ['spline_5ftype_32',['spline_type',['../classtk_1_1spline.html#a9ad005614bda0c94f6cfee7fc599c6d1',1,'tk::spline']]],
   ['squaresubdivisionmesh_33',['SquareSubdivisionMesh',['../class_square_subdivision_mesh.html',1,'SquareSubdivisionMesh'],['../class_square_subdivision_mesh.html#a6c048b32c587604485ba5e71a0d57cba',1,'SquareSubdivisionMesh::SquareSubdivisionMesh()=delete'],['../class_square_subdivision_mesh.html#a79fe990c5c74e3abb7c52555db67b905',1,'SquareSubdivisionMesh::SquareSubdivisionMesh(largecounter maxPixels, largecounter initialPixels, int maxSubdivide, largecounter iterationPixels, bool initialSubToFinal, DiagBitflag valdiag)']]],
-  ['squaresubdivisionmeshv2_34',['SquareSubdivisionMeshV2',['../class_square_subdivision_mesh_v2.html',1,'SquareSubdivisionMeshV2'],['../class_square_subdivision_mesh_v2.html#a8a53f61994a22886331b2354b115c25d',1,'SquareSubdivisionMeshV2::SquareSubdivisionMeshV2()=delete'],['../class_square_subdivision_mesh_v2.html#af3997efc9633d1e77f8b84efbe9ed5d0',1,'SquareSubdivisionMeshV2::SquareSubdivisionMeshV2(largecounter maxPixels, largecounter initialPixels, int maxSubdivide, largecounter iterationPixels, bool initialSubToFinal, DiagBitflag valdiag)']]],
-  ['st3crmetric_35',['ST3CrMetric',['../class_s_t3_cr_metric.html',1,'ST3CrMetric'],['../class_s_t3_cr_metric.html#a97b342fcf9a778deb1390b6e838d4456',1,'ST3CrMetric::ST3CrMetric()']]],
-  ['subdivideandqueue_36',['SubdivideAndQueue',['../class_square_subdivision_mesh.html#a3bcecdfbc78b370cb19debe214eadf1c',1,'SquareSubdivisionMesh::SubdivideAndQueue()'],['../class_square_subdivision_mesh_v2.html#a20dfff2d2eaef396f00202f01b11e4c1',1,'SquareSubdivisionMeshV2::SubdivideAndQueue()']]],
-  ['subdividelevel_37',['SubdivideLevel',['../struct_square_subdivision_mesh_1_1_pixel_info.html#a0d551d13e7915d93e3398726d3b6282c',1,'SquareSubdivisionMesh::PixelInfo::SubdivideLevel'],['../struct_square_subdivision_mesh_v2_1_1_pixel_info.html#abf9f4bf8b6ad8000d0e99ba8e1dd0722',1,'SquareSubdivisionMeshV2::PixelInfo::SubdivideLevel']]]
+  ['st3crmetric_34',['ST3CrMetric',['../class_s_t3_cr_metric.html',1,'ST3CrMetric'],['../class_s_t3_cr_metric.html#a97b342fcf9a778deb1390b6e838d4456',1,'ST3CrMetric::ST3CrMetric()']]],
+  ['subdivideandqueue_35',['SubdivideAndQueue',['../class_square_subdivision_mesh.html#a3bcecdfbc78b370cb19debe214eadf1c',1,'SquareSubdivisionMesh']]],
+  ['subdividelevel_36',['SubdivideLevel',['../struct_square_subdivision_mesh_1_1_pixel_info.html#a0d551d13e7915d93e3398726d3b6282c',1,'SquareSubdivisionMesh::PixelInfo']]]
 ];

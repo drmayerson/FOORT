@@ -31,8 +31,7 @@ var hierarchy =
     [ "Mesh", "class_mesh.html", [
       [ "InputCertainPixelsMesh", "class_input_certain_pixels_mesh.html", null ],
       [ "SimpleSquareMesh", "class_simple_square_mesh.html", null ],
-      [ "SquareSubdivisionMesh", "class_square_subdivision_mesh.html", null ],
-      [ "SquareSubdivisionMeshV2", "class_square_subdivision_mesh_v2.html", null ]
+      [ "SquareSubdivisionMesh", "class_square_subdivision_mesh.html", null ]
     ] ],
     [ "Metric", "class_metric.html", [
       [ "BosonStarMetric", "class_boson_star_metric.html", null ],
@@ -50,7 +49,6 @@ var hierarchy =
       ] ]
     ] ],
     [ "SquareSubdivisionMesh::PixelInfo", "struct_square_subdivision_mesh_1_1_pixel_info.html", null ],
-    [ "SquareSubdivisionMeshV2::PixelInfo", "struct_square_subdivision_mesh_v2_1_1_pixel_info.html", null ],
     [ "std::runtime_error", null, [
       [ "ConfigReader::ConfigReaderException", "class_config_reader_1_1_config_reader_exception.html", null ]
     ] ],

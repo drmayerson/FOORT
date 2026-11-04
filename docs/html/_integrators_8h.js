@@ -10,5 +10,6 @@ var _integrators_8h =
     [ "Integrators::epsilon", "namespace_integrators.html#a8d58ff26a8f7798d074861368cb8ab40", null ],
     [ "Integrators::IntegratorDescription", "namespace_integrators.html#aa6b5ea945683804f550f64435d6ff5eb", null ],
     [ "Integrators::SmallestPossibleStepsize", "namespace_integrators.html#a4d34e11f26f31881b0f45fc457675dba", null ],
+    [ "Integrators::VerletMaxIterations", "namespace_integrators.html#a8f71081c536c245b3f42d4704b568660", null ],
     [ "Integrators::VerletVelocityTolerance", "namespace_integrators.html#aa9fed7b461859ee476e51f4f328f6af3", null ]
 ];
