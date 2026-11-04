@@ -40,6 +40,7 @@ TEST(Integrators, rk4_einstein_ring)
     // Set up initial conditions for the bound geodesic
     Point initpos = {0.0, 20.0, pi / 2.0, 0.0};
     double xi = 0.2490496437949734;
+    double expected_final_t = 100.792044145;
 
     TwoIndex gdd = theM->getMetric_dd(initpos);
 
@@ -67,13 +68,13 @@ TEST(Integrators, rk4_einstein_ring)
     double final_r = current_pos[1];
     double final_theta = current_pos[2];
     double final_phi = current_pos[3];
-    EXPECT_NEAR(final_t, 100.792, 0.01) << "Final coordinate time differs too much from analytic value 100.792: " << final_t << std::endl;
+    EXPECT_NEAR(final_t, expected_final_t, 0.01) << "Final coordinate time differs too much from analytic value " << expected_final_t << ": " << final_t << std::endl;
     EXPECT_NEAR(final_phi, 4. * pi, 0.01) << "Final phi angle differs too much from 4 pi: " << final_phi << std::endl;
     EXPECT_NEAR(final_theta, pi / 2.0, 0.000000001) << "Final theta position not close enough to pi/2 after 5 half-orbits: " << final_theta << std::endl;
 
-    double distance = sqrt((final_t - 100.792) * (final_t - 100.792) + final_r * final_r + 400. - 40. * final_r * cos(final_phi));
+    double distance = sqrt((final_t - expected_final_t) * (final_t - expected_final_t) + final_r * final_r + 400. - 40. * final_r * cos(final_phi));
     std::cout << "Distance metric: " << distance << std::endl;
-    EXPECT_NEAR(distance, 0., 0.1) << "Distance metric too large: " << distance << std::endl;
+    EXPECT_NEAR(distance, 0., 0.01) << "Distance metric too large: " << distance << std::endl;
 }
 
 TEST(Integrators, verlet_einstein_ring)
@@ -94,7 +95,7 @@ TEST(Integrators, verlet_einstein_ring)
 
     GeodesicIntegratorFunc theIntegrator = Integrators::IntegrateGeodesicStep_Verlet;
     Integrators::IntegratorDescription = "Verlet";
-    Integrators::epsilon = 0.02;
+    Integrators::epsilon = 0.001;
 
     Geodesic theGeod(theM.get(), theS.get(), AllDiags, ValDiag, AllTerms,
                      theIntegrator);
@@ -102,6 +103,7 @@ TEST(Integrators, verlet_einstein_ring)
     // Set up initial conditions for the bound geodesic
     Point initpos = {0.0, 20.0, pi / 2.0, 0.0};
     double xi = 0.2490496437949734;
+    double expected_final_t = 100.792044145;
 
     TwoIndex gdd = theM->getMetric_dd(initpos);
 
@@ -129,11 +131,11 @@ TEST(Integrators, verlet_einstein_ring)
     double final_r = current_pos[1];
     double final_theta = current_pos[2];
     double final_phi = current_pos[3];
-    EXPECT_NEAR(final_t, 100.792, 2.) << "Final coordinate time differs too much from analytic value 100.792: " << final_t << std::endl;
+    EXPECT_NEAR(final_t, expected_final_t, 0.1) << "Final coordinate time differs too much from analytic value " << expected_final_t << ": " << final_t << std::endl;
     EXPECT_NEAR(final_phi, 4. * pi, 0.5) << "Final phi angle differs too much from 4 pi: " << final_phi << std::endl;
     EXPECT_NEAR(final_theta, pi / 2.0, 0.000000001) << "Final theta position not close enough to pi/2 after 5 half-orbits: " << final_theta << std::endl;
 
-    double distance = sqrt((final_t - 100.792) * (final_t - 100.792) + final_r * final_r + 400. - 40. * final_r * cos(final_phi));
+    double distance = sqrt((final_t - expected_final_t) * (final_t - expected_final_t) + final_r * final_r + 400. - 40. * final_r * cos(final_phi));
     std::cout << "Distance metric: " << distance << std::endl;
-    EXPECT_NEAR(distance, 0., 10.) << "Distance metric too large: " << distance << std::endl;
+    EXPECT_NEAR(distance, 0., 0.1) << "Distance metric too large: " << distance << std::endl;
 }
