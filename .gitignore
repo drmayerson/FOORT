@@ -7,6 +7,7 @@
 FOORT/cfgs/*
 !FOORT/cfgs/BosonStar.cfg
 !FOORT/cfgs/KerrExample.cfg
+!FOORT/cfgs/KerrExample-lowres.cfg
 !FOORT/cfgs/JohannsenExample.cfg
 !FOORT/cfgs/KerrCriticalCurve.cfg
 
