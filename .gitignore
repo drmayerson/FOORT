@@ -6,13 +6,9 @@
 # Additional
 FOORT/cfgs/*
 !FOORT/cfgs/BosonStar.cfg
-!FOORT/cfgs/Test.cfg
-!FOORT/cfgs/Test_FBdetail.cfg
-!FOORT/cfgs/Test_MNrun.cfg
-!FOORT/cfgs/Test_Pedro.cfg
-!FOORT/cfgs/Test_temp.cfg
 !FOORT/cfgs/KerrExample.cfg
 !FOORT/cfgs/JohannsenExample.cfg
+!FOORT/cfgs/KerrCriticalCurve.cfg
 
 FOORT/Output/*
 !FOORT/Output/adaptivemesh_bare.png
