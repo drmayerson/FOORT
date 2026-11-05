@@ -384,7 +384,10 @@ OneIndex GeneralCircularRadialFluid::GetRadialVelocityd(const Point &p) const
 
 /**
  * @brief Helper function to find the ISCO of the spacetime, if it exists.
- * @details This helper function finds the ISCO. We use a binary search to converge on the ISCO value; the initial outer bounds for a metric with horizon are the horizon radius and 10*(horizon radius) (in true radii, not log(r) coordinates)
+ * @details This helper function finds the ISCO. We use a binary search to converge on the ISCO value between the search bounds
+ * m_ISCOlowerbound and m_ISCOupperbound (true radii, not log(r) coordinates; set via ISCOLowerBound/ISCOUpperBound, see Config.cpp
+ * for the defaults). A warning is issued if the resulting ISCO lies within 1% of the search interval of either bound, since the
+ * search then likely converged onto the bound rather than onto the true ISCO.
  */
 void GeneralCircularRadialFluid::FindISCO()
 {
@@ -450,7 +453,7 @@ void GeneralCircularRadialFluid::FindISCO()
 	}
 
 	// Store the ISCO momentum components
-	OneIndex pdownISCO{GetCircularVelocityd(Point{0.0, exactfound ? m_ISCOr : upperbound, pi / 2.0, 0.0})};
+	OneIndex pdownISCO{GetCircularVelocityd(Point{0.0, exactfound ? currentr : upperbound, pi / 2.0, 0.0})};
 	if (pdownISCO[0] >= 0.0)
 	{
 		ScreenOutput("Finding ISCO and ISCO momentum failed!", OutputLevel::Level_0_WARNING);
@@ -462,6 +465,24 @@ void GeneralCircularRadialFluid::FindISCO()
 		m_ISCOr = exactfound ? currentr : upperbound; // use upper bound to ensure a circular geodesic momentum was/can be found
 		m_ISCOpt = pdownISCO[0];
 		m_ISCOpphi = pdownISCO[3];
+
+		// The binary search converges onto a search bound whenever the stability transition lies outside
+		// [lower bound, upper bound] (or the stability structure there is not a single transition), so an
+		// ISCO within a small fraction of the search interval of either bound is likely not the true ISCO.
+		// Distances are compared in the search coordinate (log(r) if the metric uses a logarithmic scale).
+		const real searchlow{m_theMetric->getrLogScale() ? log(m_ISCOlowerbound) : m_ISCOlowerbound};
+		const real searchhigh{m_theMetric->getrLogScale() ? log(m_ISCOupperbound) : m_ISCOupperbound};
+		const real tolerance{0.01 * (searchhigh - searchlow)};
+		const bool nearlower{m_ISCOr - searchlow < tolerance};
+		const bool nearupper{searchhigh - m_ISCOr < tolerance};
+		if (nearlower || nearupper)
+		{
+			const real trueISCOr{m_theMetric->getrLogScale() ? exp(m_ISCOr) : m_ISCOr};
+			ScreenOutput("ISCO found at r = " + std::to_string(trueISCOr) + ", which is (within 1% of the search interval) at the " +
+							 (nearlower ? "lower bound r = " + std::to_string(m_ISCOlowerbound) : "upper bound r = " + std::to_string(m_ISCOupperbound)) +
+							 " of the ISCO search. The true ISCO may lie outside the search interval; consider adjusting ISCOLowerBound/ISCOUpperBound.",
+						 OutputLevel::Level_0_WARNING);
+		}
 	}
 }
 
