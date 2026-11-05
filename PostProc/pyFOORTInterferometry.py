@@ -7,7 +7,7 @@
 
 import pyFOORT  # Used to read in FOORT data and convert it to a grid
 import numpy as np  # Used for basic math operations
-from skimage.transform import (
+from skimage.transform import (  # skimage is installed as package scikit-image
     radon,
     radon_transform,
 )  # Used to calculate radon transform of image
