@@ -135,7 +135,7 @@ struct GeneralCircularRadialFluid final : public FluidVelocityModel
 
 private:
 	// Three parameters determining the flow
-	//! Sub-Keplerian parameter (0 = Keplerian, 1 = sub-Keplerian)
+	//! Sub-Keplerian parameter (1 = Keplerian)
 	const real m_subKeplerParam;
 	//! Radial velocity parameter
 	const real m_betaR;
