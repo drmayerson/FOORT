@@ -86,7 +86,7 @@ def ComplexVisToNormVisAmp(ComplexVis: np.ndarray, Verbose: bool = True) -> np.n
     if Verbose:
         print("Normalizing complex visibility to get visibility amplitude...")
 
-        visamp = np.abs(ComplexVis)
+    visamp = np.abs(ComplexVis)
     V0 = visamp[:, :1]                                # zero-baseline amplitude (total flux) per angle
     if np.any(V0 <= 0):
         raise ValueError("Zero total flux for at least one angle; cannot normalize the visibility amplitudes.")
