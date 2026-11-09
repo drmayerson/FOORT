@@ -164,6 +164,18 @@ void FourColorScreenDiagnostic::UpdateData()
 	{
 		// Position of the terminated geodesic
 		Point pos{m_OwnerGeodesic->getCurrentPos()};
+		// Fold theta back into [0, pi] if the geodesic crossed a pole (theta -> 2pi - theta, phi -> phi + pi)
+		if (fabs(pos[2]) < 2 * pi * 1e5)
+		{
+			pos[2] = fmod(pos[2], 2 * pi);
+			if (pos[2] < 0)
+				pos[2] += 2 * pi;
+			if (pos[2] > pi)
+			{
+				pos[2] = 2 * pi - pos[2];
+				pos[3] += pi;
+			}
+		}
 		// Rework phi coordinate to be between 0 and 2pi;
 		// check if phi coordinate is meaningful first, so that this while loop does not take forever
 		// (otherwise a "random" quadrant will be returned)

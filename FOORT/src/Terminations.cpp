@@ -205,15 +205,10 @@ Term TimeOutTermination::CheckTermination()
 
 	if (DecideUpdate(TermOptions->UpdateEveryNSteps))
 	{
-		// Check to see if we have done enough steps to time out the integration already
+		// Count this step, then check whether we have reached the maximum
+		++m_CurNrSteps;
 		if (m_CurNrSteps >= TermOptions->MaxSteps)
-		{
 			ret = Term::TimeOut;
-		}
-		else
-		{
-			++m_CurNrSteps;
-		}
 	}
 
 	return ret;
