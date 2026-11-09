@@ -188,7 +188,7 @@ std::vector<std::string> Geodesic::getAllOutputStr() const
 
 	// First string is the screen index of the Geodesic
 	std::string strScreenIndex{""};
-	for (int i = 0; i < m_ScreenIndex.size(); ++i)
+	for (int i = 0; i < static_cast<int>(m_ScreenIndex.size()); ++i)
 	{
 		// We don't use the toString() function to avoid extraneous parentheses and commas therein
 		strScreenIndex += std::to_string(m_ScreenIndex[i]) + " ";

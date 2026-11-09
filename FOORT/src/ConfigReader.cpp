@@ -30,7 +30,7 @@ int ConfigCollection::GetSettingIndex(std::string_view SettingName) const
 	// Iterate through Settings vector until found
 	int i{0};
 	bool found{false};
-	while (i < m_Settings.size() && !found)
+	while (i < static_cast<int>(m_Settings.size()) && !found)
 	{
 		if (m_Settings[i].SettingName == SettingName)
 		{
@@ -67,7 +67,7 @@ bool ConfigCollection::Exists(std::string_view SettingName) const
 bool ConfigCollection::IsCollection(int SettingIndex) const
 {
 	// Makes sure index is within range of number of settings, and then checks to see if this setting is a collection
-	return SettingIndex >= 0 && SettingIndex < m_Settings.size() && std::holds_alternative<std::unique_ptr<ConfigCollection>>(m_Settings[SettingIndex].SettingValue);
+	return SettingIndex >= 0 && SettingIndex < static_cast<int>(m_Settings.size()) && std::holds_alternative<std::unique_ptr<ConfigCollection>>(m_Settings[SettingIndex].SettingValue);
 }
 
 /**
@@ -249,7 +249,7 @@ bool ConfigCollection::LookupValueInteger(std::string_view SettingName, unsigned
 
 	// If the value is an integral type other than an long, we can put it in an unsigned long if it fits
 	long long lltry{};
-	if (LookupValueInteger(SettingName, lltry) && lltry >= 0 && lltry <= std::numeric_limits<unsigned long>::max())
+	if (LookupValueInteger(SettingName, lltry) && lltry >= 0 && static_cast<unsigned long long>(lltry) <= std::numeric_limits<unsigned long>::max())
 	{
 		theOutput = static_cast<unsigned long>(lltry);
 		return true;
@@ -292,7 +292,7 @@ void ConfigCollection::DisplayCollection(std::ostream &OutputStream, int Indent)
 {
 	// Simply loop through all settings and output them
 	// (The indentation is necessary to indent subcollections correctly)
-	for (int i = 0; i < m_Settings.size(); ++i)
+	for (int i = 0; i < static_cast<int>(m_Settings.size()); ++i)
 		DisplaySetting(OutputStream, i, Indent);
 }
 

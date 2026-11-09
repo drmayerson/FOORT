@@ -281,11 +281,7 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 		else if (MetricName == "bosonstar")
 		{
 			// The boson star with solitonic potential
-
-			// First setting to look up: using a logarithmic r coordinate or not.
-			// Don't need to output message if setting not found
-			bool rLogScale{false};
-			MetricSettings.LookupValue("RLogScale", rLogScale);
+			// (rLogScale has already been looked up above, for all metrics)
 
 			// Look for model specific settings
 			double Phi_infinity{1.3890394812};
@@ -1282,7 +1278,7 @@ std::unique_ptr<GeodesicOutputHandler> Config::GetOutputHandler(const ConfigColl
 																DiagBitflag alldiags, DiagBitflag valdiag, std::string FirstLineInfo)
 {
 	// First populate a helper vector of strings of the names of all diagnostics
-	std::vector<std::string> diagstrings{std::move(Utilities::GetDiagNameStrings(alldiags, valdiag))};
+	std::vector<std::string> diagstrings{Utilities::GetDiagNameStrings(alldiags, valdiag)};
 
 	// DEFAULTS
 	std::unique_ptr<GeodesicOutputHandler> TheHandler{new GeodesicOutputHandler("", "", "", diagstrings)};

@@ -88,7 +88,7 @@ template <size_t TensorDim>
 std::string toString(const std::array<largecounter, TensorDim> &theTensor)
 {
 	std::string theStr{"("}; // no spaces for the innermost brackets
-	for (int i = 0; i < TensorDim - 1; ++i)
+	for (int i = 0; i < static_cast<int>(TensorDim) - 1; ++i)
 	{
 		// Here we use the std::to_string to convert the real to string
 		theStr += std::to_string(theTensor[i]);
@@ -112,7 +112,7 @@ std::string toString(const std::array<real, TensorDim> &theTensor)
 {
 	std::string theStr{"("}; // no spaces for the innermost brackets
 
-	for (int i = 0; i < TensorDim - 1; ++i)
+	for (int i = 0; i < static_cast<int>(TensorDim) - 1; ++i)
 	{
 		// Here we use the std::to_string to convert the real to string
 		theStr += std::to_string(theTensor[i]);
@@ -164,7 +164,7 @@ template <typename t, size_t TensorDim>
 std::array<t, TensorDim> operator+(const std::array<t, TensorDim> &a1, const std::array<t, TensorDim> &a2)
 {
 	std::array<t, TensorDim> temp{a1};
-	for (int i = 0; i < TensorDim; ++i)
+	for (int i = 0; i < static_cast<int>(TensorDim); ++i)
 		temp[i] = temp[i] + a2[i];
 
 	return temp;
@@ -183,7 +183,7 @@ template <typename t, size_t TensorDim>
 std::array<t, TensorDim> operator-(const std::array<t, TensorDim> &a1, const std::array<t, TensorDim> &a2)
 {
 	std::array<t, TensorDim> temp{a1};
-	for (int i = 0; i < TensorDim; ++i)
+	for (int i = 0; i < static_cast<int>(TensorDim); ++i)
 		temp[i] = temp[i] - a2[i];
 
 	return temp;
@@ -202,7 +202,7 @@ template <typename t, size_t TensorDim>
 std::array<t, TensorDim> operator*(const std::array<t, TensorDim> &t1, real lambda)
 {
 	std::array<t, TensorDim> temp{t1};
-	for (int i = 0; i < TensorDim; ++i)
+	for (int i = 0; i < static_cast<int>(TensorDim); ++i)
 		temp[i] = static_cast<t>(temp[i] * lambda); // static_cast necessary if t is integral type!
 	return temp;
 }

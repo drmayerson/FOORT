@@ -129,7 +129,7 @@ bool Metric::getrLogScale() const
  * @param rLogScale Whether we are using a logarithmic radial scale
  */
 SphericalHorizonMetric::SphericalHorizonMetric(real HorizonRadius, bool rLogScale)
-	: m_HorizonRadius{HorizonRadius}, Metric(rLogScale)
+	: Metric(rLogScale), m_HorizonRadius{HorizonRadius}
 {
 }
 
@@ -151,8 +151,8 @@ real SphericalHorizonMetric::getHorizonRadius() const
  * @param mParam mass parameter for the Kerr metric
  */
 KerrMetric::KerrMetric(real aParam, bool rLogScale, real mParam)
-	: m_aParam{aParam}, m_mParam{mParam},
-	  SphericalHorizonMetric(mParam + mParam * sqrt(1 - aParam * aParam), rLogScale) // initialize base class with horizon radius and rLogScale
+	: SphericalHorizonMetric(mParam + mParam * sqrt(1 - aParam * aParam), rLogScale), // initialize base class with horizon radius and rLogScale
+	  m_aParam{aParam}, m_mParam{mParam}
 {
 	// Make sure we are in four spacetime dimensions
 	if constexpr (dimension != 4)
@@ -321,12 +321,12 @@ std::string FlatSpaceMetric::getFullDescriptionStr() const
  * @param rLogScale whether we are using a logarithmic radial scale
  */
 RasheedLarsenMetric::RasheedLarsenMetric(real mParam, real aParam, real pParam, real qParam, bool rLogScale)
-	: m_aParam{aParam / ((pParam + qParam) / 4.0)},
+	: // initialize base class with horizon radius and rLogScale
+	  SphericalHorizonMetric((mParam + sqrt(mParam * mParam - aParam * aParam)) / ((pParam + qParam) / 4.0), rLogScale),
+	  m_aParam{aParam / ((pParam + qParam) / 4.0)},
 	  m_mParam{mParam / ((pParam + qParam) / 4.0)},
 	  m_pParam{pParam / ((pParam + qParam) / 4.0)},
-	  m_qParam{qParam / ((pParam + qParam) / 4.0)},
-	  // initialize base class with horizon radius and rLogScale
-	  SphericalHorizonMetric((mParam + sqrt(mParam * mParam - aParam * aParam)) / ((pParam + qParam) / 4.0), rLogScale)
+	  m_qParam{qParam / ((pParam + qParam) / 4.0)}
 {
 	// Make sure we are in four spacetime dimensions
 	if constexpr (dimension != 4)
@@ -453,13 +453,13 @@ std::string RasheedLarsenMetric::getFullDescriptionStr() const
  * @note Implementation by Seppe Staelens
  */
 JohannsenMetric::JohannsenMetric(real aParam, real alpha13Param, real alpha22Param, real alpha52Param, real eps3Param, bool rLogScale)
-	: m_aParam{aParam},
+	: // initialize base class with Kerr horizon radius and rLogScale
+	  SphericalHorizonMetric(1 + sqrt(1 - aParam * aParam), rLogScale),
+	  m_aParam{aParam},
 	  m_alpha13Param{alpha13Param},
 	  m_alpha22Param{alpha22Param},
 	  m_alpha52Param{alpha52Param},
-	  m_eps3Param{eps3Param},
-	  // initialize base class with Kerr horizon radius and rLogScale
-	  SphericalHorizonMetric(1 + sqrt(1 - aParam * aParam), rLogScale) // initialize base class with horizon radius and rLogScale
+	  m_eps3Param{eps3Param}
 {
 	// Make sure we are in four spacetime dimensions
 	if constexpr (dimension != 4)
@@ -574,12 +574,12 @@ std::string JohannsenMetric::getFullDescriptionStr() const
  * @param rLogScale whether we are using a logarithmic radial scale
  */
 MankoNovikovMetric::MankoNovikovMetric(real aParam, real alpha3Param, bool rLogScale)
-	: m_aParam{aParam},
+	: // initialize base class with Kerr horizon radius and rLogScale
+	  SphericalHorizonMetric(1 + sqrt(1. - aParam * aParam), rLogScale),
+	  m_aParam{aParam},
 	  m_alpha3Param{alpha3Param},
 	  m_alphaParam{(aParam == 0.0) ? 0.0 : (-1. + sqrt(1. - aParam * aParam)) / aParam},
-	  m_kParam{sqrt(1. - aParam * aParam)},
-	  // initialize base class with Kerr horizon radius and rLogScale
-	  SphericalHorizonMetric(1 + sqrt(1. - aParam * aParam), rLogScale) // initialize base class with horizon radius and rLogScale
+	  m_kParam{sqrt(1. - aParam * aParam)}
 {
 	// Make sure we are in four spacetime dimensions
 	if constexpr (dimension != 4)
@@ -736,8 +736,8 @@ std::string MankoNovikovMetric::getFullDescriptionStr() const
  * @param rLogScale whether we are using a logarithmic radial scale
  */
 KerrSchildMetric::KerrSchildMetric(real aParam, bool rLogScale)
-	: m_aParam{aParam},
-	  SphericalHorizonMetric(1 + sqrt(1 - aParam * aParam), rLogScale) // initialize base class with horizon radius and rLogScale
+	: SphericalHorizonMetric(1 + sqrt(1 - aParam * aParam), rLogScale), // initialize base class with horizon radius and rLogScale
+	  m_aParam{aParam}
 {
 	// Make sure we are in four spacetime dimensions
 	if constexpr (dimension != 4)
@@ -841,7 +841,7 @@ std::string KerrSchildMetric::getFullDescriptionStr() const
  * @param rLogScale whether we are using a logarithmic radial scale
  */
 SingularityMetric::SingularityMetric(std::vector<Singularity> thesings, bool rLogScale)
-	: m_AllSingularities{thesings}, Metric(rLogScale)
+	: Metric(rLogScale), m_AllSingularities{thesings}
 {
 }
 
@@ -864,16 +864,16 @@ std::vector<Singularity> SingularityMetric::getSingularities() const
  * @param rlogscale whether we are using a logarithmic radial scale
  */
 ST3CrMetric::ST3CrMetric(real P, real q0, real lambda, bool rlogscale)
-	: m_P{P},
-	  m_q0{q0},
-	  m_lambda{lambda},
-	  SingularityMetric({// z = l/2 center
+	: SingularityMetric({// z = l/2 center
 						 Singularity({SingularityCoord(1, (8. * P * P * P * lambda) / 2.0), SingularityCoord(2, 0.0)}),
 						 // z = -l/2 center
 						 Singularity({SingularityCoord(1, (8. * P * P * P * lambda) / 2.0), SingularityCoord(2, pi)}),
 						 // x^2+y^2 = R^2 at z = 0 ring
 						 Singularity({SingularityCoord(1, 2. * lambda * sqrt(q0 * q0 / pow(1. - (1. - 3. * P * P) * lambda, 2) - 4. * pow(P, 6))), SingularityCoord(2, pi / 2.0)})},
-						rlogscale)
+						rlogscale),
+	  m_P{P},
+	  m_q0{q0},
+	  m_lambda{lambda}
 {
 	// Make sure we are in four spacetime dimensions
 	if constexpr (dimension != 4)

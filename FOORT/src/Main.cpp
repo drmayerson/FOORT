@@ -236,8 +236,8 @@ int main(int argc, char *argv[])
                 // However, they have been set up to be thread-safe, i.e. these calls will modify values in existing
                 // vectors but never reshape the underlying objects!
                 // Since they are thread-safe, no omp critical directive is necessary here.
-                theView->GeodesicFinished(static_cast<largecounter>(index), std::move(theGeod.getDiagnosticFinalValue()));
-                theOutputHandler->NewGeodesicOutput(static_cast<largecounter>(index), std::move(theGeod.getAllOutputStr()));
+                theView->GeodesicFinished(static_cast<largecounter>(index), theGeod.getDiagnosticFinalValue());
+                theOutputHandler->NewGeodesicOutput(static_cast<largecounter>(index), theGeod.getAllOutputStr());
 
             } // end parallel distributed for loop over all geodesics to integrate
 

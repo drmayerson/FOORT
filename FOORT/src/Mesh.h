@@ -75,9 +75,9 @@ public:
 	// Constructor initializes total number of pixels and passes valdiag to base constructor
 	// Note that we static_cast the sqrt() to round off the row/column size to an integer number
 	SimpleSquareMesh(largecounter totalPixels, DiagBitflag valdiag)
-		: m_TotalPixels{static_cast<pixelcoord>(sqrt(totalPixels)) * static_cast<pixelcoord>(sqrt(totalPixels))},
-		  m_RowColumnSize{static_cast<pixelcoord>(sqrt(totalPixels))},
-		  Mesh(valdiag)
+		: Mesh(valdiag),
+		  m_TotalPixels{static_cast<pixelcoord>(sqrt(totalPixels)) * static_cast<pixelcoord>(sqrt(totalPixels))},
+		  m_RowColumnSize{static_cast<pixelcoord>(sqrt(totalPixels))}
 	{
 		if constexpr (dimension != 4)
 			ScreenOutput("SimpleSquareMesh only defined in 4D!", OutputLevel::Level_0_WARNING);
@@ -175,11 +175,12 @@ public:
 	// - valdiag: the "value" and "distance" Diagnostic to use
 	SquareSubdivisionMesh(largecounter maxPixels, largecounter initialPixels, int maxSubdivide, largecounter iterationPixels, bool initialSubToFinal,
 							DiagBitflag valdiag)
-		: m_InitialPixels{static_cast<pixelcoord>(sqrt(initialPixels)) * static_cast<pixelcoord>(sqrt(initialPixels))},
+		: Mesh(valdiag),
+		  m_InitialPixels{static_cast<pixelcoord>(sqrt(initialPixels)) * static_cast<pixelcoord>(sqrt(initialPixels))},
 		  m_MaxSubdivide{maxSubdivide},
 		  m_RowColumnSize{static_cast<pixelcoord>((sqrt(initialPixels) - 1) * ExpInt(2, maxSubdivide - 1) + 1)},
-		  m_PixelsLeft{maxPixels}, m_MaxPixels{maxPixels}, m_InfinitePixels{maxPixels == 0}, m_IterationPixels{iterationPixels},
-		  m_InitialSubDividideToFinal{initialSubToFinal}, Mesh(valdiag)
+		  m_IterationPixels{iterationPixels}, m_MaxPixels{maxPixels}, m_InitialSubDividideToFinal{initialSubToFinal},
+		  m_InfinitePixels{maxPixels == 0}, m_PixelsLeft{maxPixels}
 	{
 		if constexpr (dimension != 4)
 			ScreenOutput("SquareSubdivisionMesh only defined in 4D!", OutputLevel::Level_0_WARNING);

@@ -50,9 +50,9 @@ public:
 	ViewScreen(Point pos, OneIndex dir, ScreenPoint screensize, ScreenPoint screencenter,
 			   std::unique_ptr<Mesh> theMesh, const Metric *const theMetric, GeodesicType thegeodtype = GeodesicType::Null)
 		: m_Pos{pos}, m_Direction{dir}, m_ScreenSize{screensize}, m_ScreenCenter{screencenter},
-		  m_theMesh{std::move(theMesh)},
+		  m_rLogScale{theMetric->getrLogScale()},
 		  m_theMetric{theMetric}, m_GeodType{thegeodtype},
-		  m_rLogScale{theMetric->getrLogScale()}
+		  m_theMesh{std::move(theMesh)}
 	{
 		// At the moment, we don't even use the direction; we are always pointed towards the origin
 		if (m_Direction != Point{0, -1, 0, 0})

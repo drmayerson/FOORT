@@ -419,8 +419,7 @@ public:
 struct EquatorialPassesOptions : public DiagnosticOptions
 {
 public:
-	EquatorialPassesOptions(real thethreshold, UpdateFrequency thefrequency) : Threshold{thethreshold},
-																			   DiagnosticOptions(thefrequency)
+	EquatorialPassesOptions(real thethreshold, UpdateFrequency thefrequency) : DiagnosticOptions(thefrequency), Threshold{thethreshold}
 	{
 	}
 
@@ -435,8 +434,7 @@ public:
 struct ClosestRadiusOptions : public DiagnosticOptions
 {
 public:
-	ClosestRadiusOptions(bool rlog, UpdateFrequency thefrequency) : RLogScale{rlog},
-																	DiagnosticOptions(thefrequency)
+	ClosestRadiusOptions(bool rlog, UpdateFrequency thefrequency) : DiagnosticOptions(thefrequency), RLogScale{rlog}
 	{
 	}
 
@@ -457,10 +455,9 @@ struct EquatorialEmissionOptions : public EquatorialPassesOptions
 public:
 	EquatorialEmissionOptions(real thefudgefactor, int equatupper,
 							  std::unique_ptr<EmissionModel> theemission, std::unique_ptr<FluidVelocityModel> thefluidmodel,
-							  bool rlog, int theredshiftpower, real thethreshold, UpdateFrequency thefrequency) : RedShiftPower{theredshiftpower}, RLogScale{rlog}, GeometricFudgeFactor{thefudgefactor},
-																												  EquatPassUpperBound{equatupper},
-																												  TheEmissionModel{std::move(theemission)}, TheFluidVelocityModel{std::move(thefluidmodel)},
-																												  EquatorialPassesOptions(thethreshold, thefrequency) // constructor for parent class
+							  bool rlog, int theredshiftpower, real thethreshold, UpdateFrequency thefrequency) : EquatorialPassesOptions(thethreshold, thefrequency), // constructor for parent class
+		  GeometricFudgeFactor{thefudgefactor}, EquatPassUpperBound{equatupper}, RLogScale{rlog}, RedShiftPower{theredshiftpower},
+		  TheEmissionModel{std::move(theemission)}, TheFluidVelocityModel{std::move(thefluidmodel)}
 	{
 	}
 

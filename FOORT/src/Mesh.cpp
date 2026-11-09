@@ -117,8 +117,7 @@ std::string SimpleSquareMesh::getFullDescriptionStr() const
  * @param totalPixels total number of pixels in the grid
  * @param valdiag value diagnostic bitflag
  */
-InputCertainPixelsMesh::InputCertainPixelsMesh(largecounter totalPixels, DiagBitflag valdiag) : m_RowColumnSize{static_cast<pixelcoord>(sqrt(totalPixels))},
-																								Mesh(valdiag)
+InputCertainPixelsMesh::InputCertainPixelsMesh(largecounter totalPixels, DiagBitflag valdiag) : Mesh(valdiag), m_RowColumnSize{static_cast<pixelcoord>(sqrt(totalPixels))}
 {
 	if constexpr (dimension != 4)
 		ScreenOutput("InputCertainPixelsMesh only defined in 4D!", OutputLevel::Level_0_WARNING);
@@ -154,7 +153,7 @@ InputCertainPixelsMesh::InputCertainPixelsMesh(largecounter totalPixels, DiagBit
 			break;
 		}
 		// Check to make sure coordinates are valid. (Note: already checked that they are >=0 above!)
-		if (newx > m_RowColumnSize - 1 || newy > m_RowColumnSize - 1)
+		if (newx > static_cast<long long>(m_RowColumnSize) - 1 || newy > static_cast<long long>(m_RowColumnSize) - 1)
 		{
 			ScreenOutput(prefix + "Invalid coordinates. Please try again.", outputlvl);
 		}

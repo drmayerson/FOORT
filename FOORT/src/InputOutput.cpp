@@ -91,13 +91,14 @@ void ScreenOutput(std::string_view theOutput, OutputLevel lvl, bool newLine)
  */
 GeodesicOutputHandler::GeodesicOutputHandler(std::string FilePrefix, std::string TimeStamp, std::string FileExtension,
 											 std::vector<std::string> DiagNames, largecounter nroutputstocache, largecounter geodperfile, std::string firstlineinfo) : m_FilePrefix{FilePrefix}, m_TimeStamp{TimeStamp}, m_FileExtension{FileExtension}, m_DiagNames{DiagNames},
-																																									   // Make sure that we only cache up to the max amount that fits in largecounter
-																																									   // OR, if smaller, the max amount of elements that can be reserved in the cache vector
-																																									   m_nrOutputsToCache{static_cast<largecounter>(std::min({static_cast<size_t>(nroutputstocache),
-																																																							  m_AllCachedData.max_size() - 1,
-																																																							  static_cast<size_t>(LARGECOUNTER_MAX - 1)}))},
-																																									   m_nrGeodesicsPerFile{geodperfile}, m_PrintFirstLineInfo{firstlineinfo != ""},
-																																									   m_FirstLineInfoString{firstlineinfo}
+																																									   m_PrintFirstLineInfo{firstlineinfo != ""}, m_FirstLineInfoString{firstlineinfo},
+	  // Make sure that we only cache up to the max amount that fits in largecounter
+	  // OR, if smaller, the max amount of elements that can be reserved in the cache vector
+	  // (taken from a temporary of the same type: m_AllCachedData is declared later, so is not yet constructed here)
+	  m_nrOutputsToCache{static_cast<largecounter>(std::min({static_cast<size_t>(nroutputstocache),
+															 decltype(m_AllCachedData){}.max_size() - 1,
+															 static_cast<size_t>(LARGECOUNTER_MAX - 1)}))},
+	  m_nrGeodesicsPerFile{geodperfile}
 {
 	// If no prefix has been set, or we are allowed zero geodesics per file, then we necessarily output to the console
 	if (m_FilePrefix == "" || m_nrGeodesicsPerFile == 0)
@@ -303,10 +304,10 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 	if (m_WriteToConsole) // write everything to console; note this is not an else from the previous if since in the previous if,
 						  // we may encounter file I/O problems that sets this to true in the if block above
 	{
-		for (int i = 0; i < m_AllCachedData.size(); ++i)
+		for (int i = 0; i < static_cast<int>(m_AllCachedData.size()); ++i)
 		{
 			// write output line to console
-			for (int j = 0; j < m_AllCachedData[i].size(); ++j)
+			for (int j = 0; j < static_cast<int>(m_AllCachedData[i].size()); ++j)
 				ScreenOutput(m_AllCachedData[i][j], OutputLevel::Level_1_PROC);
 		}
 	}

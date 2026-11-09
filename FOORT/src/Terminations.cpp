@@ -316,7 +316,7 @@ Term GeneralSingularityTermination::CheckTermination()
 		for (unsigned int i = 0; i < TermOptions->Singularities.size() && ret == Term::Continue; ++i)
 		{
 			real distsq{};
-			for (int j = 0; j < TermOptions->Singularities[i].size(); ++j)
+			for (int j = 0; j < static_cast<int>(TermOptions->Singularities[i].size()); ++j)
 			{
 				distsq += pow(pos[TermOptions->Singularities[i][j].first] - TermOptions->Singularities[i][j].second, 2);
 			}
@@ -343,7 +343,7 @@ Term GeneralSingularityTermination::CheckTermination()
 std::string GeneralSingularityTermination::SingularityToString(int singnr) const
 {
 	std::string singstring{"("};
-	for (int j = 0; j < TermOptions->Singularities[singnr].size(); ++j)
+	for (int j = 0; j < static_cast<int>(TermOptions->Singularities[singnr].size()); ++j)
 	{
 		switch (TermOptions->Singularities[singnr][j].first)
 		{
@@ -361,7 +361,7 @@ std::string GeneralSingularityTermination::SingularityToString(int singnr) const
 			break;
 		}
 		singstring += " = " + std::to_string(TermOptions->Singularities[singnr][j].second);
-		if (j < TermOptions->Singularities[singnr].size() - 1)
+		if (j + 1 < static_cast<int>(TermOptions->Singularities[singnr].size()))
 			singstring += ", ";
 	}
 	singstring += ")";

@@ -99,9 +99,8 @@ struct GeneralCircularRadialFluid final : public FluidVelocityModel
 {
 	// Constructor with three parameters and Metric pointer (which is passed to base class constructor)
 	GeneralCircularRadialFluid(real subKeplerParam, real betar, real betaphi, const Metric *const theMetric,
-							   real ISCO_lowerbound, real ISCO_upperbound) : m_subKeplerParam{fmin(fmax(subKeplerParam, 0.0), 1.0)}, m_betaR{fmin(fmax(betar, 0.0), 1.0)},
-																			 m_betaPhi{fmin(fmax(betaphi, 0.0), 1.0)}, FluidVelocityModel(theMetric),
-																			 m_ISCOlowerbound{ISCO_lowerbound}, m_ISCOupperbound{ISCO_upperbound}
+							   real ISCO_lowerbound, real ISCO_upperbound) : FluidVelocityModel(theMetric), m_subKeplerParam{fmin(fmax(subKeplerParam, 0.0), 1.0)}, m_betaR{fmin(fmax(betar, 0.0), 1.0)},
+		  m_betaPhi{fmin(fmax(betaphi, 0.0), 1.0)}, m_ISCOlowerbound{ISCO_lowerbound}, m_ISCOupperbound{ISCO_upperbound}
 	{
 		// Note: all parameters have been checked in the Config.cpp file before this constructor is called, so they should be valid here.
 		

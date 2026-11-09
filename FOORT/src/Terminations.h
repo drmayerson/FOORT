@@ -338,7 +338,7 @@ public:
 struct HorizonTermOptions : public TerminationOptions
 {
 public:
-	HorizonTermOptions(real theHorizonRadius, bool therLogScale, real theAtHorizonEps, largecounter Nsteps) : HorizonRadius{theHorizonRadius}, AtHorizonEps{theAtHorizonEps}, rLogScale{therLogScale}, TerminationOptions(Nsteps)
+	HorizonTermOptions(real theHorizonRadius, bool therLogScale, real theAtHorizonEps, largecounter Nsteps) : TerminationOptions(Nsteps), HorizonRadius{theHorizonRadius}, AtHorizonEps{theAtHorizonEps}, rLogScale{therLogScale}
 	{
 	}
 
@@ -357,8 +357,7 @@ public:
 struct BoundarySphereTermOptions : public TerminationOptions
 {
 public:
-	BoundarySphereTermOptions(real theRadius, bool therLogScale, largecounter Nsteps) : SphereRadius{theRadius}, rLogScale{therLogScale},
-																						TerminationOptions(Nsteps)
+	BoundarySphereTermOptions(real theRadius, bool therLogScale, largecounter Nsteps) : TerminationOptions(Nsteps), SphereRadius{theRadius}, rLogScale{therLogScale}
 	{
 	}
 
@@ -375,7 +374,7 @@ public:
 struct TimeOutTermOptions : public TerminationOptions
 {
 public:
-	TimeOutTermOptions(largecounter MaxStepsAllowed, largecounter Nsteps) : MaxSteps{MaxStepsAllowed}, TerminationOptions(Nsteps)
+	TimeOutTermOptions(largecounter MaxStepsAllowed, largecounter Nsteps) : TerminationOptions(Nsteps), MaxSteps{MaxStepsAllowed}
 	{
 	}
 
@@ -391,7 +390,7 @@ public:
 struct ThetaSingularityTermOptions : public TerminationOptions
 {
 public:
-	ThetaSingularityTermOptions(real epsilon, largecounter Nsteps) : ThetaSingEpsilon{epsilon}, TerminationOptions(Nsteps)
+	ThetaSingularityTermOptions(real epsilon, largecounter Nsteps) : TerminationOptions(Nsteps), ThetaSingEpsilon{epsilon}
 	{
 	}
 
@@ -405,7 +404,7 @@ public:
 struct NaNTermOptions : public TerminationOptions
 {
 public:
-	NaNTermOptions(bool consoleoutputon, largecounter Nsteps) : OutputToConsole{consoleoutputon}, TerminationOptions(Nsteps)
+	NaNTermOptions(bool consoleoutputon, largecounter Nsteps) : TerminationOptions(Nsteps), OutputToConsole{consoleoutputon}
 	{
 	}
 
@@ -422,9 +421,8 @@ struct GeneralSingularityTermOptions : public TerminationOptions
 public:
 	GeneralSingularityTermOptions(std::vector<Singularity> sings,
 								  real eps, bool consoleoutputon, bool therlogscale, largecounter Nsteps)
-		: Singularities{std::move(sings)}, Epsilon{eps}, OutputToConsole{consoleoutputon},
-		  rLogScale{therlogscale},
-		  TerminationOptions(Nsteps) {}
+		: TerminationOptions(Nsteps), Singularities{std::move(sings)}, Epsilon{eps}, OutputToConsole{consoleoutputon},
+		  rLogScale{therlogscale} {}
 
 	//! Vector of singularities
 	const std::vector<Singularity> Singularities;
