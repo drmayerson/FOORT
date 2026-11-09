@@ -158,13 +158,13 @@ def DisplayVisAmp(
     if URange:
         if Baselines is not None:
             plt.semilogy(Baselines[URange[0] : URange[1]], VisAmp[URange[0] : URange[1]])
-            plt.xlabel("Baseline (G$\lambda$)")
+            plt.xlabel(r"Baseline (G$\lambda$)")
         else:
             plt.semilogy(VisAmp[URange[0] : URange[1]])
     else:
         if Baselines is not None:
             plt.semilogy(Baselines, VisAmp)
-            plt.xlabel("Baseline (G$\lambda$)")
+            plt.xlabel(r"Baseline (G$\lambda$)")
         else:
             plt.semilogy(VisAmp)
 
