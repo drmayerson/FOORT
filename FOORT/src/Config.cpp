@@ -456,6 +456,13 @@ void Config::InitializeDiagnostics(const ConfigCollection &theCfg, DiagBitflag &
 			{
 				AllDiagSettings["GeodesicPosition"].LookupValue("UpdateStart", updatestart);
 				AllDiagSettings["GeodesicPosition"].LookupValue("UpdateFinish", updatefinish);
+				if (!updatestart && !updatefinish)
+				{
+					ScreenOutput("GeodesicPosition: UpdateFrequency = 0 with UpdateStart and UpdateFinish both false "
+								 "would never record a position; setting UpdateFinish = true.",
+								 OutputLevel::Level_0_WARNING);
+					updatefinish = true;
+				}
 			}
 
 			// Check if metric has integration set to a logarithmic r coordinate,

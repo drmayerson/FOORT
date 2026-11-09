@@ -342,7 +342,8 @@ std::string GeodesicPositionDiagnostic::getFullDataStr() const
  */
 std::vector<real> GeodesicPositionDiagnostic::getFinalDataVal() const
 {
-	Point lastpt{m_AllSavedPoints.back()};
+	// Guard against an empty history (e.g. no update was ever triggered): fall back to the current position
+	Point lastpt{m_AllSavedPoints.empty() ? m_OwnerGeodesic->getCurrentPos() : m_AllSavedPoints.back()};
 	return std::vector<real>{lastpt[2], lastpt[3]};
 }
 
