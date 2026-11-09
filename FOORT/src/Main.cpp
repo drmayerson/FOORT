@@ -76,6 +76,9 @@ int main(int argc, char *argv[])
     // Initialize screen output first since it sets OutputLevel for the rest
     Config::InitializeScreenOutput(cfgObject);
 
+    // Initialize Integrator
+    GeodesicIntegratorFunc theIntegrator = Config::GetGeodesicIntegrator(cfgObject);
+
     // Initialize Metric
     std::unique_ptr<Metric> theM = Config::GetMetric(cfgObject);
 
@@ -94,9 +97,6 @@ int main(int argc, char *argv[])
 
     // Initialize ViewScreen (this also initializes the Mesh as part of the ViewScreen)
     std::unique_ptr<ViewScreen> theView = Config::GetViewScreen(cfgObject, ValDiag, theM.get());
-
-    // Initialize Integrator
-    GeodesicIntegratorFunc theIntegrator = Config::GetGeodesicIntegrator(cfgObject);
 
     // Initialize Output Handler
     // First we get the info string to place at the first line of every output file
