@@ -154,7 +154,7 @@ bin/FOORT cfgs/JohannsenExample.cfg
 This populates the necessary output files in the Output subfolder. A Python environment for the post-processing scripts and notebook is provided in `PostProc/environment.yml`. Create and activate it, e.g., using conda
 
 ```
-cd PostProc
+cd ../PostProc
 conda env create -f environment.yml
 conda activate foort-postproc
 ```
