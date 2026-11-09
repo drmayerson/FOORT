@@ -14,20 +14,19 @@ FOORT/cfgs/           Example/sample .cfg run configs (most are personal/untrack
 FOORT/Output/         Sample + generated output (.dat files, images); mostly untracked, some allow-listed
 FOORT/bin/            Build output (gitignored)
 FOORT/BosonStar/      Numerical boson star metric data (not committed)
-PostProc/             Python post-processing: pyFOORT.py, PhotonRingInterferometry.py,
+PostProc/             Python post-processing: pyFOORT.py, pyFOORTInterferometry.py,
                        ExampleNotebook.ipynb, environment.yml, Doxyfile
 docs/                 Committed Doxygen output: docs/html (C++), docs/postproc/html (Python),
                        docs/Documentation.pdf (user docs), docs/latex/refman.pdf
-cmake/                Custom CMake modules (Doxygen.cmake, Testing.cmake)
-alternative_builds/   Windows .sln, old Makefiles, macOS OpenMP workaround script
-Benchmarking/          Scratch analysis notebooks
+cmake/                Custom CMake modules (Doxygen.cmake, Testing.cmake, Filesystem.cmake)
+alternative_builds/   Old Makefiles, macOS OpenMP workaround script (MacOS_workaround.sh)
 ```
 
 ## Build system
 
 - CMake-driven: `cmake -S . -B build && cmake --build build`. Executable lands in `FOORT/bin/`.
 - **macOS**: Apple Clang has no OpenMP. If `find_package(OpenMP)` fails, `source alternative_builds/MacOS_workaround.sh`
-  (switches `CC`/`CXX` to Homebrew `gcc-14`) and reconfigure.
+  (switches `CC`/`CXX` to the newest Homebrew GCC and sets `SDKROOT` via `xcrun --show-sdk-path`) and reconfigure.
 - `FOORT_BUILD_TESTS` option (default `ON`) gates the GoogleTest `FetchContent` + `FOORT/test` subdirectory —
   turn `OFF` to configure without network access.
 - `FOORT/src/CMakeLists.txt` declares ~15 small static libraries with some intentionally circular
@@ -88,9 +87,10 @@ Adding a new `Metric` / `Diagnostic` / `Termination` follows an in-source, multi
 ## Python post-processing (`PostProc/`)
 
 - `pyFOORT.py` — load raw FOORT `.dat` output into pandas, convert to image grids, plotting helpers.
-- `PhotonRingInterferometry.py` — radon transform → complex visibility → visibility amplitudes.
-- `ExampleNotebook.ipynb` — worked Kerr-vs-Johannsen example; requires `FOORT/cfgs/KerrExample.cfg` and
-  `JohannsenExample.cfg` to have been run first (see README) to populate `FOORT/Output/`.
+- `pyFOORTInterferometry.py` — radon transform → complex visibility → visibility amplitudes.
+- `ExampleNotebook.ipynb` — worked Kerr-vs-Johannsen example plus a Kerr shadow vs. analytic critical-curve
+  comparison; requires `FOORT/cfgs/KerrExample.cfg`, `JohannsenExample.cfg` and `KerrCriticalCurve.cfg` to have
+  been run first (see README) to populate `FOORT/Output/` (`KerrExample-lowres.cfg` is a quick alternative).
 - `environment.yml` — conda env (`foort-postproc`): `conda env create -f PostProc/environment.yml`.
 
 ## Tests

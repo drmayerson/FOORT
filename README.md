@@ -125,31 +125,41 @@ The same requirements and CMake commands as for Linux apply. However, Apple Clan
 
 #### MacOS Troubleshooting
 
-Recent versions of MacOS may encounter issues with CMake. The following seems to resolve current issues.
-(Found in [this issue](https://gist.github.com/scivision/d69faebbc56da9714798087b56de925a))
+Install GCC with Homebrew (`brew install gcc`), then point CMake to it and to the active macOS SDK
+(see also [this note](https://gist.github.com/scivision/d69faebbc56da9714798087b56de925a)):
 
 ```
-export CC=/opt/homebrew/bin/gcc-14
-export CXX=/opt/homebrew/bin/g++-14
-export FC=/opt/homebrew/bin/gfortran-14
-export SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk/
+export CC=$(brew --prefix)/bin/gcc-15      # use the version you installed, e.g. gcc-14
+export CXX=$(brew --prefix)/bin/g++-15
+export SDKROOT=$(xcrun --show-sdk-path)
 ```
 
-For convenience, this is stored in `alternative_builds/MacOS_workaround.sh`, which should be executed with `source \the\path\` in the terminal in case issues are encountered. You may need to `rm -rf build` in order to start clean. In case this doesn't work (which is not unlikely - some of it is black magic), one can also revert to the `makefile_mac` in `alternative_builds/old_makefiles` (see Old MakeFiles above).
+For convenience, `alternative_builds/MacOS_workaround.sh` does this automatically, picking the newest Homebrew GCC. From the top-level folder, run
+
+```
+source alternative_builds/MacOS_workaround.sh
+rm -rf build
+cmake -S . -B build && cmake --build build
+```
+
+The `rm -rf build` is needed if CMake was previously configured with Apple Clang. If this does not work, one can also revert to the `makefile_mac` in `alternative_builds/old_makefiles` (see Old MakeFiles above).
 
 ## OUTPUT
 
-See in the [output](FOORT/Output) file for sample output files and Mathematica notebooks that process (and plot) this output. (The documentation will also have more information in the future.)
+FOORT writes one plain-text file per diagnostic (e.g. `Output/KerrExample_FourColorScreen.dat`), split over several numbered files (`..._2.dat`, ...) if there are more than `GeodesicsPerFile` geodesics. If `FirstLineInfo` is on, the first line describes the run (metric, diagnostics, terminations, screen); every following line is one geodesic, `x y` (its pixel on the screen) followed by that diagnostic's output values. The Python package in `PostProc` (`pyFOORT.py` and `pyFOORTInterferometry.py`) loads these files, turns them into images, and computes visibility amplitudes; the example notebook below shows how to use it.
 
 ### Example Notebook
 
-A small example notebook is provided to visualize specific examples of the Kerr and Johannsen metric. These examples first need to be run: first, compile the FOORT binary as per the instructions above. Then, from the root directory, do
+A small example notebook, `PostProc/ExampleNotebook.ipynb`, visualizes the Kerr and Johannsen examples and compares the Kerr shadow with the analytic critical curve. These examples first need to be run: first, compile the FOORT binary as per the instructions above. Then, from the root directory, do
 
 ```
 cd FOORT
 bin/FOORT cfgs/KerrExample.cfg
 bin/FOORT cfgs/JohannsenExample.cfg
+bin/FOORT cfgs/KerrCriticalCurve.cfg
 ```
+
+`KerrExample.cfg` and `JohannsenExample.cfg` each integrate about 550,000 geodesics, which takes about a minute on an 8-core laptop (about 5 CPU-minutes, so longer on fewer cores); `KerrCriticalCurve.cfg` takes a few seconds. For a quick check, `cfgs/KerrExample-lowres.cfg` runs the Kerr example on a 100 x 100 grid in about a second (see the notebook for how to use its output).
 
 This populates the necessary output files in the Output subfolder. A Python environment for the post-processing scripts and notebook is provided in `PostProc/environment.yml`. Create and activate it, e.g., using conda
 

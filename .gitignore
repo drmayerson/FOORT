@@ -11,6 +11,9 @@ FOORT/cfgs/*
 !FOORT/cfgs/JohannsenExample.cfg
 !FOORT/cfgs/KerrCriticalCurve.cfg
 
+FOORT/test/*.png
+FOORT/test/*.eps
+
 FOORT/Output/*
 !FOORT/Output/adaptivemesh_bare.png
 !FOORT/Output/adaptivemesh_interpol.png
