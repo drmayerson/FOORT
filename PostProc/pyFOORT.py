@@ -135,7 +135,7 @@ def DataToGrid(
     if Verbose:
         print("Reshaping and interpolating grid...")
     # reshape the data, decimated according to GridFraction
-    RawGridSize = int(max(FOORTData["x"])) + 1
+    RawGridSize = int(max(FOORTData["x"].max(), FOORTData["y"].max())) + 1
     NewGridRuler = np.linspace(0, RawGridSize - 1, int(GridFraction * RawGridSize))
 
     grid_x, grid_y = np.meshgrid(NewGridRuler, NewGridRuler)
@@ -186,12 +186,9 @@ def DataToGrid(
         RawData = np.multiply(RawData, mask)
     elif Diag2RangeSelect and DiagToUse == 1:
         RawDataDiag2 = np.array(FOORTData["diag2"])
-        # Zero out all values outside the range, and all set values inside the range to 1
-        RawDataDiag2[RawDataDiag2 < Diag2RangeSelect[0]] = 0
-        RawDataDiag2[RawDataDiag2 > Diag2RangeSelect[1]] = 0
-        RawDataDiag2[RawDataDiag2 != 0] = 1
-        # Now we can simply multiply these two arrays to select the wanted pixels of the first diagnostic
-        RawData = np.multiply(RawData, RawDataDiag2)
+        # Keep only pixels whose second diagnostic lies in the (inclusive) range
+        inrange = (RawDataDiag2 >= Diag2RangeSelect[0]) & (RawDataDiag2 <= Diag2RangeSelect[1])
+        RawData = np.where(inrange, RawData, 0.0)
 
     # Create and return (interpolated) grid of specified size
     reshaped_data = griddata(points, RawData, (grid_x, grid_y), method="nearest")
@@ -586,21 +583,20 @@ def GridToDistortedImage(
     BackgroundData = np.fliplr(np.flipud(plt.imread(BackgroundImageFileName)))
     h, w, p = BackgroundData.shape
 
-    GridPlotData = FOORTGrid[:, :, 1:]  # theta and phi
-    GridPlotData[:, :, 0] = np.mod(
-        GridPlotData[:, :, 0], np.pi
-    )  # theta between 0 and pi
-    GridPlotData[:, :, 1] = np.mod(
-        GridPlotData[:, :, 1], 2.0 * np.pi
-    )  # phi between 0 and 2pi
+    GridPlotData = FOORTGrid[:, :, 1:].copy()  # theta and phi (copy, so the caller's grid is not modified)
+    # Fold theta into [0, pi]: a geodesic that went over a pole has theta -> 2pi - theta and phi -> phi + pi
+    theta = np.mod(GridPlotData[:, :, 0], 2.0 * np.pi)
+    overpole = theta > np.pi
+    GridPlotData[:, :, 0] = np.where(overpole, 2.0 * np.pi - theta, theta)
+    GridPlotData[:, :, 1] = np.mod(GridPlotData[:, :, 1] + np.where(overpole, np.pi, 0.0), 2.0 * np.pi)  # phi in [0, 2pi)
 
     # make theta, phi values negative for black pixels (map_coordinates makes these black)
-    BlackPixels = FOORTGrid[:, :, 0] > BlackConditionRadius
+    EscapedPixels = FOORTGrid[:, :, 0] > BlackConditionRadius
     GridPlotData[:, :, 0] = np.where(
-        BlackPixels, GridPlotData[:, :, 0], GridPlotData[:, :, 1] - 2 * np.pi
+        EscapedPixels, GridPlotData[:, :, 0], GridPlotData[:, :, 1] - 2 * np.pi
     )
     GridPlotData[:, :, 1] = np.where(
-        BlackPixels, GridPlotData[:, :, 1], GridPlotData[:, :, 1] - 2 * np.pi
+        EscapedPixels, GridPlotData[:, :, 1], GridPlotData[:, :, 1] - 2 * np.pi
     )
 
     GridPlotData = np.array(

@@ -49,29 +49,26 @@ def RadonToComplexVis(
 ) -> tuple[np.ndarray, np.ndarray]:
     """!
     @brief Calculates the complex visibility from a given radon transform.
-    @param FOORTRadon: The radon transform to calculate the complex visibility from.
-    @param PaddingFactor: The factor to pad the radon transform by (default = 25).
+    @param FOORTRadon: The radon transform to calculate the complex visibility from (one row per angle).
+    @param PaddingFactor: The factor to pad the radon transform by (default = 25); must be >= 1.
     @param Verbose: Whether to print out progress information (default = True).
     @param sample_spacing: The spacing between samples in the radon transform (default = 1.0).
     @return complvis: The complex visibility of the radon transform.
     @return freqs: The frequencies of the FFT of the radon transform.
     @details The complex visibility is calculated by taking the FFT of the radon transform, shifting it to center the zero frequency, and selecting only the positive frequencies.
-    @note The padding factor is used to increase the resolution of the FFT.
+    @note The padding factor is used to increase the resolution of the FFT; the padded length is rounded to the nearest integer.
     @note The sample spacing is used to calculate the frequencies of the FFT. It corresponds to the pixel width in the original image.
     """
     if Verbose:
         print("Calculating FFT...")
-    radonff = fft(
-        FOORTRadon, PaddingFactor * FOORTRadon[0].shape[0]
-    )  # 1D FFT of the projection
-    radonshift = fftshift(radonff,axes=-1)  # recenter FFT, only the last axis (the one corresponding to the projection), not across angles
-    xfourier1 = fftshift(
-        fftfreq(PaddingFactor * FOORTRadon[0].shape[0], d=sample_spacing)
-    )  # re centered frequencies
-
-    indice1 = np.where((xfourier1 >= 0.0))[
-        0
-    ]  # select only the positive freqs the FFT is symmetrical anyway
+    nproj = FOORTRadon.shape[-1]  # length of each projection
+    npad = int(round(PaddingFactor * nproj))  # padded FFT length (must be an integer)
+    if npad < nproj:
+        raise ValueError("PaddingFactor must be >= 1.")
+    radonff = fft(FOORTRadon, npad)  # 1D FFT of each projection (along the last axis)
+    radonshift = fftshift(radonff, axes=-1)  # recenter FFT, only along the projection axis, not across angles
+    xfourier1 = fftshift(fftfreq(npad, d=sample_spacing))  # re-centered frequencies
+    indice1 = np.where(xfourier1 >= 0.0)[0]  # select only the positive freqs; the FFT is symmetric anyway
     complvis = radonshift[:, indice1[0] : (indice1[-1] + 1)]
     freqs = xfourier1[indice1[0] : (indice1[-1] + 1)]  # frequencies of the visibilities
     if Verbose:
@@ -89,25 +86,25 @@ def ComplexVisToNormVisAmp(ComplexVis: np.ndarray, Verbose: bool = True) -> np.n
     if Verbose:
         print("Normalizing complex visibility to get visibility amplitude...")
 
-    visamp = np.abs(ComplexVis)
-
-    for i in range(len(visamp)):
-        visamp[i] /= visamp[i, 0]
-
-    return visamp
+        visamp = np.abs(ComplexVis)
+    V0 = visamp[:, :1]                                # zero-baseline amplitude (total flux) per angle
+    if np.any(V0 <= 0):
+        raise ValueError("Zero total flux for at least one angle; cannot normalize the visibility amplitudes.")
+    
+    return visamp / V0
 
 
 def WriteVisAmpsToFile(
-    VisAmps: np.ndarray, FileName: str, FirstLineInfo: str = None
+    VisAmps: np.ndarray, FileName: str, FirstLineInfo: str = ""
 ) -> None:
     """!
     @brief Writes the visibility amplitudes to a file.
     @param VisAmps: The visibility amplitudes to write to file.
     @param FileName: The name of the file to write to.
-    @param FirstLineInfo: The first line of the file, if applicable (default = None).
+    @param FirstLineInfo: The first line of the file, if applicable (default = "").
     """
 
-    np.savetxt(FileName, VisAmps, header=FirstLineInfo)
+    np.savetxt(FileName, VisAmps, header=FirstLineInfo if FirstLineInfo else "")
 
 
 def LoadVisAmpsFromFile(
