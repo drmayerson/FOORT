@@ -45,15 +45,6 @@ if(NOT FILESYSTEM_LINKS_WITHOUT_EXTRA_LIB AND NOT FILESYSTEM_LINKS_WITH_STDCXXFS
         "fresh build directory (rm -rf build). If you believe this check is wrong, see the configure "
         "log under the build directory's CMakeFiles/ for details, and pass "
         "-DFOORT_SKIP_FILESYSTEM_CHECK=ON to proceed anyway.")
-    # Apple Clang fails this check because it rejects the global -fopenmp flag, not because
-    # <filesystem> is missing; point macOS users at the Homebrew GCC workaround instead.
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
-        string(CONCAT FILESYSTEM_CHECK_MESSAGE
-            "${FILESYSTEM_CHECK_MESSAGE} "
-            "NOTE: you are using Apple Clang, which does not support -fopenmp; this is most likely "
-            "the actual cause. Run `source alternative_builds/MacOS_workaround.sh` (Homebrew GCC), "
-            "rm -rf build, and reconfigure (see 'MacOS Troubleshooting' in README.md).")
-    endif()
     if(FOORT_SKIP_FILESYSTEM_CHECK)
         message(WARNING "${FILESYSTEM_CHECK_MESSAGE}")
     else()

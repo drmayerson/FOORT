@@ -17,13 +17,25 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-set(CMAKE_CXX_FLAGS "-fopenmp -Wno-unused-result")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3")
-set(CMAKE_EXE_LINKER_FLAGS "-lm")
+# Append to (rather than overwrite) user-supplied flags; OpenMP comes from the OpenMP::OpenMP_CXX target
+# (FOORT/src/CMakeLists.txt), and Release uses CMake's default optimisation flags (-O3 -DNDEBUG)
+add_compile_options(-Wno-unused-result)
 
 option(FOORT_BUILD_TESTS "Build the FOORT test suite (fetches GoogleTest)" ON)
 
 include(Filesystem)
+
+# Checked here (rather than only in FOORT/src) so a missing OpenMP is reported before GoogleTest is fetched
+find_package(OpenMP)
+if(NOT OpenMP_CXX_FOUND)
+    set(OPENMP_MESSAGE "OpenMP was not found for ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION} (${CMAKE_CXX_COMPILER}).")
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+        string(APPEND OPENMP_MESSAGE " Apple Clang does not support OpenMP: run `source alternative_builds/MacOS_workaround.sh` "
+            "(Homebrew GCC), rm -rf build, and reconfigure (see 'MacOS Troubleshooting' in README.md).")
+    endif()
+    message(FATAL_ERROR "${OPENMP_MESSAGE}")
+endif()
+
 include(Doxygen)
 if(FOORT_BUILD_TESTS)
     include(Testing)

@@ -121,7 +121,7 @@ terminal works as well.
 
 ### MAC
 
-The same requirements and CMake commands as for Linux apply. However, Apple Clang (the default compiler on macOS) does not support OpenMP, so a GCC from Homebrew is needed. If CMake is run with Apple Clang, configuration stops with an error about `<filesystem>`; the actual cause is the missing OpenMP support, and the workaround below resolves it.
+The same requirements and CMake commands as for Linux apply. However, Apple Clang (the default compiler on macOS) does not support OpenMP, so a GCC from Homebrew is needed. If CMake is run with Apple Clang, configuration stops with an error that OpenMP was not found; the workaround below resolves it.
 
 #### MacOS Troubleshooting
 
