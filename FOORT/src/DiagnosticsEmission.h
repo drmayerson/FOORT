@@ -107,8 +107,8 @@ struct GeneralCircularRadialFluid final : public FluidVelocityModel
 		
 		// Checking the metric off-diagonal components at the ISCO search bounds to ensure that the assumptions of the fluid model are valid
 		bool rlogscale{theMetric->getrLogScale()};
-		TwoIndex guu_ISCOlow{theMetric->getMetric_uu({0.0, rlogscale ? log(m_ISCOlowerbound) : m_ISCOlowerbound, M_PI / 2.0, 0.0})};
-		TwoIndex guu_ISCOhigh{theMetric->getMetric_uu({0.0, rlogscale ? log(m_ISCOupperbound) : m_ISCOupperbound, M_PI / 2.0, 0.0})};
+		TwoIndex guu_ISCOlow{theMetric->getMetric_uu({0.0, rlogscale ? log(m_ISCOlowerbound) : m_ISCOlowerbound, pi / 2.0, 0.0})};
+		TwoIndex guu_ISCOhigh{theMetric->getMetric_uu({0.0, rlogscale ? log(m_ISCOupperbound) : m_ISCOupperbound, pi / 2.0, 0.0})};
 		// Check that the off-diagonal r, theta components of the metric are zero at the ISCO bounds, as they should be for equatorial circular orbits
 		auto hasNonzeroOffDiagonalrtheta = [](const TwoIndex &guu)
 		{
