@@ -785,7 +785,7 @@ def FOORTToEquatorialEmissionLineout(
     @param Ax: Matplotlib axes to plot on (default None)
     @param angle: Angle to plot the emission at (default 20.)
     @param ipl_points: Number of points to interpolate (default 1000)
-    @param x_scale: Scale of the x-axis in microarcseconds (default 100)
+    @param x_scale: Scale of the x-axis in microarcseconds (default 50)
     @param return_lineout: Whether to return the lineout data as arrays (default False)
     """
 
