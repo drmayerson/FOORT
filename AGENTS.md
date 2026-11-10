@@ -11,7 +11,7 @@ user-facing documentation.
 FOORT/src/            C++ source (see "Core architecture" below)
 FOORT/test/           GoogleTest unit tests
 FOORT/cfgs/           Example/sample .cfg run configs (most are personal/untracked; some allow-listed)
-FOORT/Output/         Sample + generated output (.dat files, images); mostly untracked, some allow-listed
+FOORT/Output/         Output generated is put here (.dat files, images)
 FOORT/bin/            Build output (gitignored)
 FOORT/BosonStar/      Numerical boson star metric data (not committed)
 PostProc/             Python post-processing: pyFOORT.py, pyFOORTInterferometry.py,

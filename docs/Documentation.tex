@@ -1,0 +1,790 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{a4wide}
+\topmargin=-.75in 
+% \oddsidemargin=-.1in \evensidemargin=-7in
+\textheight=10.1in 
+% \textwidth=6.8in  
+
+
+\synctex=1 
+\setcounter{topnumber}{3} 
+\usepackage{subcaption}
+\usepackage[english]{babel}
+\usepackage{amsmath}   
+\usepackage{graphicx}  % needed for figures
+\usepackage{dcolumn}   % needed for some tables
+\usepackage{bm}        % for math
+\usepackage{amssymb}   % for math
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{mdframed}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc}
+% avoids incorrect hyphenation
+\hyphenation{ALPGEN}
+\hyphenation{EVTGEN}
+\hyphenation{PYTHIA}
+\usepackage{wasysym}
+% \usepackage[bookmarks=false]{hyperref} 
+% \hypersetup{pdfstartview=FitH,pdfhighlight=/O,colorlinks=true}
+%\usepackage{tabu}
+\usepackage[toc]{appendix}
+\usepackage{color,soul} 
+\usepackage{datetime}
+\usepackage{physics}
+\usepackage{enumerate}
+\usepackage{tablefootnote}
+\usepackage{multirow}
+\usepackage{empheq}
+\usepackage{hhline}
+\usepackage{esint}
+% \usepackage[noadjust]{cite}
+\usepackage[normalem]{ulem}
+\usepackage{footmisc}
+\usepackage[backend=biber, style=phys, maxbibnames=2, minbibnames=1, doi=true, url=false, eprint=true, isbn=false, biblabel=brackets]{biblatex}
+\addbibresource{ref.bib}
+
+\usepackage{tensor}
+\usepackage{hyperref}
+\usepackage{csquotes}
+
+\newcommand{\drmdeb}[1]{\textbf{\textit{\textcolor{red}{(DRM: #1)}}}}
+\newcommand{\fb}[1]{\textbf{\textit{\textcolor{magenta}{(FB: #1)}}}}
+\newcommand{\seppe}[1]{\textbf{\textit{\textcolor{blue}{(SS: #1)}}}}
+
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\eea}{\end{eqnarray}}
+\newcommand{\bean}{\begin{eqnarray*}}
+\newcommand{\eean}{\end{eqnarray*}}
+\newcommand{\nn}{\nonumber}
+\newcommand{\eps}{\epsilon}
+
+\newcommand{\FOORT}{\texttt{FOORT }}
+\newcommand{\code}[1]{{\tt #1}}
+
+\newcommand{\calR}{\mathcal{R}}
+\newcommand{\nin}{n_\mathrm{init}}
+\newcommand{\nmax}{n_\mathrm{max}}
+\newcommand{\smax}{s_\mathrm{max}}
+\newcommand{\rmd}{\mathrm{d}}
+
+\newcommand{\tc}{t_{\rm c}}
+\newcommand{\rc}{r_{\rm c}}
+\newcommand{\thc}{\theta_{\rm c}}
+\newcommand{\phc}{\phi_{\rm c}}
+\newcommand{\hatt}{\hat t}
+\newcommand{\hatr}{\hat r}
+\newcommand{\hatth}{\hat\theta}
+\newcommand{\hatph}{\hat\phi}
+
+
+\begin{document}
+
+\begin{titlepage}
+
+\numberwithin{equation}{section}
+\begin{flushright}
+\small
+\normalsize
+\end{flushright}
+%\vspace{0.4 cm}
+
+\begin{center}
+
+
+{\LARGE \textbf{FOORT: Flexible Object-Oriented Ray Tracing\\ \vspace{1em} DOCUMENTATION}}
+
+
+\vspace{0.5 cm} {\large Daniel R. Mayerson$^{1,2}$, Seppe J. Staelens$^{3,2}$, Fabio Bacchini$^{4,5,2}$}\\
+
+\medskip\medskip
+
+ 
+ {$^1$ Institute for Theoretical Physics, KU Leuven, Celestijnenlaan 200D, B-3001 Leuven, Belgium}
+
+  {$^2$Leuven Gravity Institute, KU Leuven,
+ Celestijnenlaan 200D box 2415, 3001 Leuven, Belgium}
+
+ {$^3$ DAMTP, Centre for Mathematical Sciences, University of Cambridge, Wilberforce Road, Cambridge CB3 0WA, United Kingdom}
+
+ {$^4$ Centre for mathematical Plasma Astrophysics, KU Leuven, Celestijnenlaan 200B, B-3001 Leuven, Belgium}
+ 
+ {$^5$ Royal Belgian Institute for Space Aeronomy, Solar-Terrestrial Centre of Excellence, Ringlaan 3, 1180 Uccle, Belgium}
+ 
+ 
+\medskip\medskip
+
+ daniel.mayerson@kuleuven.be, ss3033@cam.ac.uk,  fabio.bacchini@kuleuven.be
+
+
+\end{center}
+\noindent 
+Welcome to the documentation for \code{FOORT}, which will make using \code{FOORT} but a small efFOORT!
+
+This documentation should be considered complementary to the \code{FOORT} paper, where the ray-tracer and its underlying physics is presented. This file serves to give an overview of all possible options currently implemented in \code{FOORT} (and which can be set in a \code{FOORT} configuration file), as well as an explanation of the necessary procedures to add new objects (\code{Metric}, \code{Diagnostic}, and \code{Termination}) to the \code{FOORT} code itself.\\
+
+\emph{FOORT version: 1.0.0. Documentation compiled: \today}
+
+
+
+%\vspace{2em}
+
+
+%\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Table of contents
+\setcounter{tocdepth}{2}
+\tableofcontents
+
+\end{titlepage}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\code{Metric}
+
+%\codebg{Metric}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Installation and Compilation}
+
+Please see the README.md file in the root of the repository for the most up-to-date installation and compilation (with CMake) information. This includes information on fixes necessary for older \code{gcc} compilers (such as \code{gcc} 7.5).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Configuration Options}\label{sec:config}
+
+\code{FOORT} is set up that all possible parameters that can be changed, can be changed from the configuration file only --- meaning recompiling is unnecessary unless you are adding new objects (e.g. a new \code{Metric}) to the code.
+
+Always be mindful of options that take numbers: if they take an \code{int}, then the number passed must be a integer number --- e.g. $1000.0$ will not be recognized. (However, if a floating-point number (\code{real}) is expected, \code{FOORT} will recognize and automatically convert an \code{int}.) If the incorrect format of number is passed, then this option will not be recognized (and the default value(s) will be used).
+
+All Setting names (including the \code{Diagnostic} and \code{Termination} headings) are case-sensitive. The quoted names that select an object (the \code{Metric} and \code{Source Name}, \code{Mesh} and \code{Integrator Type}, \code{EmissionModel} and \code{FluidVelocityModel}) are case-insensitive. File names and paths are used exactly as given (i.e. case-sensitive).
+
+\subsection{\code{Metric}}
+This heading is where the metric is selected and all its options set. All metrics can carry the option:
+\begin{itemize}
+ \item \code{RLogScale = bool;}\newline
+ where \code{bool} is \code{true} or \code{false}. If \code{true}, then the metric will be evaluated in the logarithmic radial coordinate $u = \log r$; this usually leads to better and faster integration. (Default: \code{true}.)
+\end{itemize}
+The type of metric is set with the following option:
+\begin{itemize}
+ \item \code{Name = "MetricName";}\newline
+ where MetricName is one of the following:
+ \begin{itemize}
+ \item \code{Kerr}: Kerr in normal Boyer-Lindquist coordinates.
+ \item \code{FlatSpace}: flat space in spherical coordinates.
+ \item \code{Rasheed-Larsen}: Rasheed-Larsen black hole with electric and magnetic charges; parameters rescaled such that $M=1$.
+ \item \code{Johannsen}: The Johannsen black hole with $M=1$ and the four leading order deviation parameters turned on.
+ \item \code{Manko-Novikov}: The Manko-Novikov black hole with $M=1$ and an octopole bump turned on.
+ \item \code{Kerr-Schild}: The Kerr metric with $M=1$ in Kerr-Schild (spherical) coordinates.
+ \item \code{ST3Cr}: The horizonless ring fuzzball metric with charge parameters $P$, $q_0$, and scaling parameter $\lambda$. Note: mass is \emph{not} rescaled for this metric!
+ \item \code{BosonStar}: A static, spherically symmetric (ultracompact) solitonic boson star, interpolated from numerical data files; \code{FOORT} includes one example model (see the \code{FOORT} paper for details). Note: mass is \emph{not} rescaled for this metric!
+ \end{itemize}
+ By default (if this setting is not specified in the configuration), the Kerr metric will be selected.
+\end{itemize}
+Depending on which metric has been selected, there can be additional options to be specified:
+\begin{itemize}
+ \item \code{Kerr} or \code{Kerr-Schild}: 
+ \begin{itemize}
+ \item \code{a = real;}\newline where \code{real} is the dimensionless spin ($a/M$) of the black hole, so must be a number between -1 and 1; FOORT will give a warning if this is not satisfied. (Default: 0.5.)
+ \item \code{m = real;} (\code{Kerr} only)\newline Mass of the Kerr black hole. (Default: 1.0.)
+ \end{itemize}
+ \item \code{FlatSpace}: No further options to specify.
+ \item \code{Rasheed-Larsen}: 
+ \begin{itemize}
+ \item \code{m = real; a = real; p = real; q = real;}\newline
+ These specify the parameters for the Rasheed-Larsen black hole metric. Note that the parameters must satisfy $p,q\geq 2m$, $a^2<m^2$ and $m>0$; FOORT will give a warning if this is not satisfied. The parameters (which all have dimensions of length) will always be rescaled so that the mass of the black hole is $M = 1$ (i.e. they are measured in units of the black hole mass); note that $M = (p+q)/4$.
+ The horizon is at $r_+ =m + \sqrt{m^2-a^2}$. (Defaults: $m=1, a= 0.5, p=q=2$.)
+ \end{itemize}
+\item \code{Johannsen}: 
+\begin{itemize}
+\item \code{a = real;}\newline
+This sets the rotation parameter; just like for Kerr, $|a|<1$ since $M=1$. (Default: 0.7.)
+\item \code{alpha13 = real; alpha22 = real; alpha52 = real; epsilon3 = real;}\newline
+This sets the four leading order parameters that control deviations from Kerr. (When all of these are zero, the metric is exactly Kerr.) The allowed region of these variables is a complicated non-linear relation; for each parameter, FOORT only checks the relation that must hold when the other parameters vanish. (Defaults: all zero except $\alpha_{13}=2.0$.)
+\end{itemize}
+\item \code{Manko-Novikov}:
+\begin{itemize}
+\item \code{a = real;}\newline
+This sets the rotation parameter; just like for Kerr, $|a|<1$ since $M=1$. (Default: 0.)
+\item \code{alpha3 = real;}\newline
+This sets the octupolar deviation $M_3/M^4\sim\alpha_3$ from Kerr (so $\alpha_3=0$ corresponds to Kerr). (Default: 5.0.)
+\end{itemize}
+\item \code{ST3Cr}:
+\begin{itemize}
+\item \code{P = real; q0 = real;}\newline Charge parameters for the ring fuzzball. Note: the mass of this object (which does not get rescaled) is $M=(3P+q_0-P^3)/2$. (Defaults: $P=2.0, q_0=50.0$.)
+\item \code{lambda = real;} \newline The scaling parameter for the ring fuzzball. (Default: 0.19.)
+\end{itemize}
+\code{FOORT} will check if the given values of $P,q_0,\lambda$ are in the allowed range.
+\item \code{BosonStar}: 
+\begin{itemize}
+\item \code{PhiFilename = "filename"; MFilename = "filename";}\newline
+The two data files containing $\Phi(r) = \log\alpha_{\rm BS}(r)$ and the mass function
+$m(r)$, respectively, where the metric is $\rmd s^2 = -e^{2(\Phi(r)-\Phi_\infty)
+}\rmd t^2 + \left(1-2m(r)/r\right)^{-1}\rmd r^2 + r^2\rmd\Omega^2$. Each file has
+two columns ($r$ and the function value), and both files must use the same $r$
+grid. The files are always read from the folder \code{BosonStar/}, relative to the
+directory from which \code{FOORT} is run. (Defaults: \code{"Phi.dat"} and \code{"
+m.dat"}, the example model included with \code{FOORT}.)
+\item \code{PhiInfinity = real;}\newline
+The asymptotic value $\Phi_\infty$ of $\Phi(r)$, subtracted so that the lapse tends to
+1 at infinity. (Default: 1.3890394812, the value for the included model.)
+\item \code{NumLines = int;}\newline
+The number of lines read from the top of each data file; must not exceed the file
+length. (Default: 11087, all lines of the included files.)
+\end{itemize}
+For the included example model, radii are measured in units of $1/\mu_{\rm BS}$, and
+the boson star has mass $M\approx 10.42$ in these units; choose the camera
+position, screen size and \code{SphereRadius} accordingly. The metric has no
+horizon, so the \code{Horizon} Termination will be turned off automatically. When using \code{EquatorialEmission} with the \code{GeneralCircularRadial} fluid model, the ISCO search returns the outermost transition from stable to unstable circular orbits, i.e.\ the outer marginally stable orbit ($r\approx62.5$ for the included model); the inner region of stable orbits ($r\lesssim28$) is ignored. The default \code{ISCOLowerBound} and \code{ISCOUpperBound} suffice.
+\end{itemize}
+
+
+\subsection{\code{Source}}
+This heading is where you determine a source for the geodesic equation (i.e. a force on the right-hand side for the geodesic equation, making the geodesic fail to be an actual geodesic). Currently, only \code{NoSource} is implemented (i.e. no rhs to the geodesic equation):
+\begin{itemize}
+ \item \code{Name =  "SourceName";}\newline
+ where currently SourceName can only be \code{NoSource} (and there are no further options to specify).
+\end{itemize}
+
+
+\subsection{\code{Diagnostics}}
+Inside the heading \code{Diagnostics}, each \code{Diagnostic} has its own subheading. Under their own subheading, the most important options to specify is:
+\begin{itemize}
+ \item \code{On = bool;}\newline where \code{bool} is \code{true} is you want the Diagnostic to be turned on and \code{false} otherwise. Only if the Diagnostic is turned on will the other options in the Diagnostic's subheading be considered.
+ \item \code{UseForMesh = bool;}\newline where \code{bool} is \code{true} if this is the Diagnostic that should be used in the Mesh to determine ``values'' to assign to geodesics and ``distances'' between neigboring geodesics, which the Mesh will use to determine where to refine. Note: only one Diagnostic can have this setting set to \code{true}!
+\end{itemize}
+By default, if no diagnostic sets \code{UseForMesh} to \code{true}, \code{FourColorScreen} will be used if it is turned on. If \code{FourColorScreen} is not turned on, then all Diagnostic settings revert to the default of only turning on \code{FourColorScreen}. If more than one Diagnostic has \code{UseForMesh} set to \code{true}, the first one to set it will be used (in the order of Diagnostics given below).
+
+The different possible Diagnostic subheadings and further options therein are:
+\begin{itemize}
+ \item \code{FourColorScreen}: This is the four-color screen, assigning an integer 1-4 to the geodesic according to which quadrant of the boundary sphere it has escaped to. Geodesics that do not terminate due to exiting the boundary sphere (due to e.g. timing out or falling into a horizon) will be assigned 0. There are no other settings that \code{FourColorScreen} takes.
+ \item \code{GeodesicPosition}: This keeps track of the position of the geodesic along its integration and outputs all those positions; this can be used for e.g. plotting individual geodesic trajectories. The options to specify are:
+ \begin{itemize}
+ \item \code{UpdateFrequency = int;}\newline with \code{int} a number larger or equal to zero. The Diagnostic will only store a position every number of steps as indicated here. If this is 0, the Diagnostic does not update the position during integration, but may update at start and finish according to the following two options. (Default is 1.)
+ \item \code{UpdateStart = bool;} \newline (Only relevant if \code{UpdateFrequency = 0}.) Decides whether the Diagnostic stores the position of the geodesic at the very start of integration. (Default: \code{false}.)
+ \item \code{UpdateFinish = bool;} \newline (Only relevant if \code{UpdateFrequency = 0}.) Decides whether the Diagnostic stores the position of the geodesic at the very end of integration. (Default: \code{true}.)
+ \item \code{OutputSteps = int;} \newline Here, \code{int} is the (approximate!) number of positions per geodesic that will be outputted to file. If the Diagnostic has stored more than this many positions during the integration of the geodesic, the Diagnostic will select only (approximately) this many steps to output to file, evenly selected among the stored positions. If this is set to 0, it outputs all steps. (Default is 0.)
+\end{itemize}
+\item \code{EquatorialPasses}: This keeps track of the number of passes through the equator $\theta=\pi/2$ that the geodesic makes. It returns a positive number for geodesics that have escapes out the boundary sphere, and a negative number for geodesics that eventually fall in the horizon. This Diagnostic also takes the options \code{UpdateFrequency}, \code{UpdateStart}, \code{UpdateFinish} just as \code{GeodesicPosition} does above (but with defaults \code{UpdateStart = true}, \code{UpdateFinish = true}). In addition, it takes the option:
+\begin{itemize}
+\item \code{Threshold = real;} \newline Only consider a geodesic ``above'' or ``below'' the equatorial plane if its $\theta$ coordinate is \code{Threshold}$\times\pi/2$ above or below $\pi/2$. This threshold is mainly useful for (near-)equatorial camera positions, since in that case without a threshold there is often a discontinuity in equatorial passes between the top and bottom half of the screen. (Default is 0.01.)
+\end{itemize}
+\item \code{ClosestRadius}: This keeps track of the smallest radius $r$ that the geodesic reaches. The true $r$ value is always reported, even if a logarithmic $r$ scale is used in integration. Note that if a geodesic enters a horizon, it will reported to reach $r=0$. This Diagnostic only takes the options \code{UpdateFrequency} (Default: 1), \code{UpdateStart}, \code{UpdateFinish} (see \code{GeodesicPosition} above, but defaults are \code{UpdateStart = true}, \code{UpdateFinish = true}).
+\item \code{EquatorialEmission}: This keeps track of the brightness intensity of the geodesic assuming a particular model for emission from an equatorial disc. It will output both the brightness intensity and the number of equatorial passes (just as \code{EquatorialPasses} does). Note that \code{EquatorialEmission}, if turned on, automatically turns off \code{EquatorialPasses} if it is turned on, and additionally assumes the role of value mesh diagnostic if \code{EquatorialPasses} had this role.
+The total brightness intensity $I_\text{tot}$ for the geodesic is calculated as:
+\be I_\text{tot} = \sum_{n=1}^{N_{max}} \zeta_n I_0(p^{(n)}) g(p^{(n)})^f,\ee
+where the sum is over the $n$ passes through the equatorial plane that the geodesic makes, 
+%
+$\zeta_1=1, \zeta_{n>1}=\zeta$ is the ``geometric fudge factor'' (used to mimic the effects of a geometrically thick disc),
+%
+$N_{max}$ is either the total number of passes that the geodesic makes or a pre-specified maximum allowed passes (this can be set to a finite number to avoid partially unresolved higher order rings), 
+%
+$I_0(p^{(n)}$ is the local emitted intensity,
+%
+$g(p^{(n)})$ is the redshift factor (determined by the dot product of the velocity of the emitting fluid and the velocity of the geodesic at that point),
+%
+and $f$ is the power of the redshift factor (3 or 4). To specify all of these degrees of freedom, 
+\code{EquatorialEmission} takes the same options as \code{EquatorialPasses} listed above, and additionally:
+\begin{itemize}
+\item \code{GeometricFudgeFactor = real;}\newline This specifies the geometric fudge factor ($\zeta$). (Default is 1.0.)
+\item \code{EquatPassUpperBound = int;}\newline The maximum number of equatorial passes allowed to contribute to the intensity ($N_{max}$). Setting this to 0 means unlimited passes allowed. (Default is 0.)
+\item \code{RedshiftPower = int;}\newline The power of the redshift used in calculating the observed intensity ($f$); should be 3 or 4. (Default is 3.)
+\item \code{EmissionModel = "EmissionModelName";}\newline Model for local emitted intensity $I_0(p)$. Depending on which model used, could have additional options to set as well. Currently, there is only one option for \code{EmissionModelName}:
+\begin{itemize}
+\item \code{GLMJohnsonSU}: Johnson's SU model with three parameters as used by GLM: 
+\be I_0(t,r,\theta,\phi) = \left( (r-\mu)^2+\sigma^2\right)^{-1/2}\exp\left( -\frac12 \left[ \gamma + \text{arcsinh}\left(\frac{r-\mu}{\sigma}\right)\right]^2\right).\ee
+This profile only depends on the radius.
+Additional options to specify are:
+\begin{itemize}
+\item \code{mu = real;}
+\item \code{gamma = real;}
+\item \code{sigma = real;}
+\end{itemize}
+These specify the three parameters used in the model. (Default for $\mu$ is the horizon radius (if a black hole metric) or 1.0 otherwise; other defaults are $\gamma = 0.0$ and $\sigma = 1.0$.)
+\end{itemize}
+\item \code{FluidVelocityModel = "FluidVelocityModelName";}\newline Model used to determine the local fluid four-velocity (which is used to determine the redshift factor). Depending on which model used, could have additional options to set as well. Currently, there is only one option for \code{FluidVelocityModelName}:
+\begin{itemize}
+\item \code{GeneralCircularRadial}: A ``mix'' of (sub)Keplerian circular orbits and infalling (geodetic) orbits. Additional options to specify are:
+\begin{itemize}
+\item \code{xi = real;}
+\item \code{betar = real;}
+\item \code{betaphi = real;}
+\item \code{ISCOLowerBound = real;}
+\item \code{ISCOUpperBound = real;}
+\end{itemize}
+The three  fluid parameters $\xi$, $\beta_r$, $\beta_\phi$ must lie between 0.0 and 1.0. (\code{FOORT} will check and rescale the inputted values if necessary.) $\xi$ is the sub-Keplerian parameter; for $\xi=1.0$ the pure (geodesic) Keplerian circular orbits are used. $\beta_r$ and $\beta_\phi$ determine the ``mix'' between the circular orbits and the radial infall orbits; for $\beta_r=\beta_\phi = 1.0$ purely the circular orbits are used, and for $\beta_r=\beta_\phi=0.0$ the pure radial infall is used. (Defaults are $\xi=\beta_r=\beta_\phi=1.0$.)\newline
+The parameters \code{ISCOLowerBound} and \code{ISCOUpperBound} set the search range for the ISCO search, in true radii. (Defaults: for a metric with horizon, this is the horizon radius and $10\times$ the horizon radius; otherwise, $0.05$ and $1000$.)\newline
+Note: The \code{GeneralCircularRadial} assumes the metric is stationary and axisymmetric (as it assumes $p_t,p_\phi$ are conserved); equatorially reflection symmetric (or at least, that timelike geodesics confined to the equatorial plane exist); and that the metric is diagonal in $r$ and $\theta$ and block-diagonal in $(t,\phi)$ (so-called circular metrics can always be written in such a form). Use caution when using this fluid model on metrics that violate these assumptions, as unphysical behaviour can occur; for example, using this fluid model with \code{Kerr-Schild} (with e.g. $g_{rt}\neq 0$) will display (incorrectly) different emission than with the \code{Kerr} metric.
+\end{itemize}
+\end{itemize}
+\end{itemize}
+
+
+\subsection{\code{Terminations}}
+Terminations are set very similar to Diagnostics as discussed above. Each Termination has its own subheading, with most important option to specify:
+\begin{itemize}
+ \item \code{On = bool;}\newline which determines if the Termination is used or not.
+\end{itemize}
+By default (e.g. if no Terminations are turned on, or there is no \code{Terminations} subheading), \code{TimeOut} and \code{BoundarySphere} will be turned on with the default options set as indicated below.
+
+The different possible Termination subheadings and further options therein are:
+\begin{itemize}
+ \item \code{Horizon}: If the metric has a horizon at a constant $r$ radius, then we want to stop integration before we get to the horizon, since usually the horizon is a coordinate singularity where geodesics spend an infinite amount of coordinate time approaching. (FOORT will check whether the \code{Metric} is a descendant class of \code{SphericalHorizonMetric}; if not, this Termination will be turned off.) Options to set are:
+ \begin{itemize}
+ \item \code{Epsilon\_Horizon = real;}\newline Here, \code{real} is the fraction of the horizon radius at which to terminate the geodesic above the horizon radius. For example, if $r=r_h$ is the horizon and \code{real =}$\epsilon$, then integration will be terminated at $r=r_h(1+\epsilon)$. By default, this is set to 0.01.
+ \item \code{UpdateFrequency = int;}\newline Check this condition every \code{int} steps of the geodesic integration. By default, this is set to 1.
+ \end{itemize}
+ 
+  \item \code{GeneralSingularity}: If the metric has an arbitrary number of arbitrary codimension singularities, then this termination can be used to terminate integration at a distance from the singularity or singularities. (FOORT will check whether the \code{Metric} is a descendant class of \code{SingularityMetric}; if not, this Termination will be turned off.) Options to set are:
+ \begin{itemize}
+ \item \code{Epsilon = real;}\newline This is the minimum (flat, coordinate) distance from the singularity that the geodesic is allowed to reach before terminating. Note: this is calculated as a completely flat distance, not taking into account spherical coordinates; e.g. the distance $d$ is calculated as $d^2=(r-r_0)^2+(\theta-\theta_0)^2$ for a singularity at $r=r_0,\theta=\theta_0$. (Default: 0.001.)
+ \item \code{ConsoleOutput = bool;} \newline If \code{true}, then a console message is outputted every time a geodesic hits a singularity. (Default: \code{false}.)
+ \item \code{UpdateFrequency = int;}\newline Check this condition every \code{int} steps of the geodesic integration. By default, this is set to 1.
+ \end{itemize}
+ 
+ \item \code{BoundarySphere}: A (fictitious) boundary sphere at a constant radius far away from the object; if the geodesic escapes \emph{outside} this sphere, we stop integration. Options to set:
+ \begin{itemize}
+ \item \code{SphereRadius = real;}\newline This radius \code{real} is the large radius at which to terminate integration. By default, set to 1000.
+ \item \code{UpdateFrequency = int;} \newline This is analogous to the same setting under \code{Horizon} above. (Default is 1.)
+ \end{itemize}
+ 
+ \item \code{TimeOut}: Terminate the geodesic integration if it has taken too many integration steps. This sometimes happens if a geodesic travels too close to a coordinate singularity. Options to set are:
+ \begin{itemize}
+ \item \code{MaxSteps = int;} \newline The maximum number of integration steps allowed before the geodesic terminates. Default is 10000. Note: make sure to set this higher (e.g. 100000 or more) when not using \code{RLogScale = false} in the metric, as otherwise most geodesics will time-out prematurely!
+ \item \code{UpdateFrequency = int;} \newline Analogous to the same setting under \code{Horizon} above. Default is 1.\newline \textbf{Warning:} if this is not set to 1, then the effective maximum number of integration steps that the geodesic is allowed before being terminated is \code{MaxSteps}$*$\code{UpdateFrequency}!
+\end{itemize}
+
+\item \code{ThetaSingularity}: Terminate the geodesic integration if it comes too close to a polar coordinate singularity ($\theta=0,\pi$). This can sometimes be useful to check in cases where geodesics are pushed towards the poles in extreme metrics (e.g. Manko-Novikov). Options to set:
+ \begin{itemize}
+ \item \code{Epsilon = real;}\newline How close $\theta$ is allowed near the poles. (Default is $10^{-5}$.)
+ \item \code{UpdateFrequency = int;} \newline This is analogous to the same setting under \code{Horizon} above. (Default is 1.)
+ \end{itemize}
+ 
+ \item \code{NaN}: Terminate the geodesic integration if there is a \code{NaN} (``not a number'') encountered in at least one of the components of the current geodesic position or velocity. This is useful to turn on if \code{NaN}'s are suspected to turn up in the metric evaluation (for example, when debugging a new \code{Metric}): without this \code{Termination} turned on, \code{NaN}'s in the geodesic position or velocity will typically ensure the geodesic keeps integrating pointlessly until it times out with the \code{TimeOut} \code{Termination}. Options to set are:
+ \begin{itemize}
+ \item \code{ConsoleOutput = bool;} \newline If \code{true}, then there will also be a console message whenever a \code{NaN} is encountered; this can be useful for debug purposes. (Default is \code{true}.)
+  \item \code{UpdateFrequency = int;} \newline Analogous to the same setting under \code{Horizon} above. (Default is 1.)
+ \end{itemize}
+ 
+\end{itemize}
+
+
+\subsection{\code{ViewScreen}}
+Under this subheading, all options are set that determine the location, size, orientation, etc. of the viewing screen. The camera is assumed to be a spherical point-sized camera with a certain aperture; the ``screen size'' is then determined by this aperture --- the ``screen'' is taken to be an square in the plane going through $r=0$ and perpendicular to the viewing direction.
+
+The options that can be specified are:
+\begin{itemize}
+ \item \code{Position = \{ t = real; r = real; theta = real; phi = real; \} }\newline
+ This specifies the position of the camera. (Default is $(0,1000,\pi/2,0)$.)
+ \newline \textbf{Warning:} If the initial radius of the camera is \emph{outside} of the boundary sphere radius set in the \code{BoundarySphere} Termination, then all geodesics will terminate immediately after zero steps!
+ \item \code{Direction = \{ t = real; r = real; theta = real; phi = real; \} }\newline
+ This specifies the direction that the camera is pointing in.
+ \newline \textbf{Warning:} Currently, this option is \textbf{ignored}; the camera is \emph{always} pointing straight towards $r=0$ (i.e. the direction vector is $(0,-1,0,0)$).
+ \item \code{ScreenSize = \{ x = real; y = real; \} }\newline
+ This sets the screen size. The screen is centered around $r=0$. For example, when the Kerr metric is selected, units are such that $M=1$; when $a=0$, the shadow of the Schwarzschild black hole is a circle with radius $\sqrt{27}$\footnote{Up to rescalings of $\mathcal{O}(1/r_{\rm cam})$, see the \code{FOORT} paper for further details.} on the viewing screen. (Default: $(10,10)$.)
+ \item \code{ScreenCenter = \{ x = real; y = real; \} }\newline
+ This sets the center of the screen. If this is the origin $(0, 0)$, then the center of the screen is determined by following the camera direction given in \code{Direction} as taken from the camera position given in \code{Position}; any non-zero \code{ScreenCenter} simply offsets the center of the screen from this point. (Default: $(0,0)$.)
+\end{itemize}
+
+Finally, there is a subheading \code{Mesh}, under which the Mesh settings should be set. The Mesh is what determines which pixels on the viewing screen are integrated. The options under the \code{Mesh} subheading are:
+\begin{itemize}
+ \item \code{Type = "MeshName";}\newline This indicates the type of Mesh to be used. The possibilities for MeshName are:
+ \begin{itemize}
+ \item \code{SimpleSquareMesh}: This is a square mesh with equal number of pixels in length and width, and pixels evenly distributed over the viewing screen.
+ \item \code{InputCertainPixelsMesh}: On a square mesh (such as defined in \code{SimpleSquareMesh}), have the user input some pixels to be integrated. This can be useful for e.g. integrating only a few geodesics with the Diagnostic \code{GeodesicPosition} turned on, to be able to follow and plot these few geodesics along their trajectories.
+ \item \code{SquareSubdivisionMesh}: This Mesh starts in a first integration iteration with a simple square mesh (such as in \code{SimpleSquareMesh}), and then further subdivides certain squares into smaller squares in following iterations. It uses the Diagnostic that has \code{UseForMesh} turned on (see above) to determine ``values'' and ``distances'' between geodesics/pixels, which is used to determine which pixel squares to subdivide.
+\end{itemize}
+\end{itemize}
+When no Mesh is set with the \code{Type} option, the default is a \code{SimpleSquareMesh} (with additional default options as listed below).
+
+Depending on which Mesh is selected with the \code{Type} option, there are different additional options to set:
+\begin{itemize}
+ \item \code{SimpleSquareMesh}:
+ \begin{itemize}
+ \item \code{TotalPixels = int;}\newline
+ This specifies the total number of pixels in the entire grid. If this is not a perfect square, it will be rounded downwards to the nearest perfect square (because each row and column must have an integer number of pixels). (Default: 10000.)
+\end{itemize}
+\item \code{InputCertainPixelsMesh}:
+\begin{itemize}
+ \item \code{TotalPixels = int;}\newline
+ This is the same option as for \code{SimpleSquareMesh}, since the user will be inputting pixels to integrate which live on such a square grid. (Default: 10000.)
+\end{itemize}
+\item \code{SquareSubdivisionMesh}:\footnote{The mesh implemented is a second version; the name \code{SquareSubdivisionMeshV2} is also accepted in config files to give the same mesh; this is to ensure correct functioning of some older config files.}
+\begin{itemize}
+ \item \code{InitialPixels = int;}\newline
+ This is similar to the option \code{TotalPixels} for \code{SimpleSquareMesh}: the option \code{InitialPixels} determines the initial square (equally spaced) pixels to be integrated in the first integration loop. (Again, if it is not a perfect square, it will be rounded down to the nearest perfect square.) (Default: 100.)
+ \item \code{MaxPixels = int;} \newline
+ This is the maximum number of pixels that can be integrated \emph{in total}, i.e. over \emph{all} integration loops combined. If this is set to 0, then there is no maximum number (integration will continue until the maximum subdivision has been reached or every pixel's weight is zero). (Default: 100.)
+ \item \code{MaxSubdivide = int;} \newline
+ This sets the maximum number of times a square of pixels can be subdivided. Note that the initial grid has subdivision level 1. (Default: 1, which is also what will be used if an invalid number smaller than 1 is given.)
+ 
+ Note that, when \code{InitialPixels = $n^2$} and \code{MaxSubdivide = $d$}, the total square grid size of pixels will then be given by $((n-1)\cdot 2^{d-1}+1)^2$.
+
+ \item \code{IterationPixels = int;}\newline
+ At each new integration loop, the Mesh is allowed to select \code{IterationPixels} squares that it wishes to subdivide; this means that at most $5\times$\code{IterationPixels} new geodesics will be integrated in each integration loop (except the first iteration); there could be less geodesics integrated if some of the pixels necessary to subdivide a square already existed previously. (Default: 100.)
+ \item \code{InitialSubdivisionToFinal = bool;} \newline
+ Normally, the Mesh selects only squares to subdivide with non-zero ``weight'', that is, squares where the ``distance'' (as determined by the value Diagnostic) is non-zero. However, if this option is set to \code{true}, then the Mesh will want to continue subdividing \emph{any} square once it has been subdivided at least once (after the initial grid). (Default: \code{false}.)
+\end{itemize}
+\end{itemize}
+
+
+
+
+
+
+
+\subsection{\code{Integrator}}
+Under this subheading, the integration scheme is chosen that is used to integrate the geodesic equation, and other options set. The integration scheme is set by the option:
+\begin{itemize}
+ \item \code{Type = "IntegratorName";}\newline Options for \code{IntegratorName} are:
+ \begin{itemize}
+ \item \code{RK4} (fourth-order Runge-Kutta integration scheme)
+ \item \code{Verlet} (velocity Verlet integration scheme)
+ \end{itemize}
+ RK4 is fourth-order while Verlet is second order, so RK4 is generally about twice as slow (since it needs to calculate twice as many Christoffel symbols). (Default: \code{Verlet}.)
+ \end{itemize}
+There are other options to set here:
+\begin{itemize}
+\item \code{VerletVelocityTolerance = real;} \newline (Only relevant if \code{IntegratorName} is specified to \code{Verlet}.) In the velocity Verlet algorithm, the velocity is updated in two steps --- this setting sets how much the intermediate step velocity can differ from the final step velocity, fractionally (calculated using the Euclidean flat norm of the four-vector). If the intermediate step differs more than this tolerance level, then the last integration step to update the velocity is repeated until the tolerance is met. (Typically, this is only necessary one or two times, maximum.) See Dolence et al. (2009) eq. (14) and the discussion thereafter. If this is set to zero or negative, then there will never be any further iteration. (Default: $-1$.)
+ \item \code{StepSize = real;} \newline This sets the \emph{basic} step size (i.e. change in affine parameter) for a single integration step. This is adjusted dynamically according to the current position and velocity of the geodesic. (Default: 0.03.)
+  \item \code{SmallestPossibleStepsize = real;} \newline The smallest possible step size that can be taken in one single step (after adapting \code{StepSize}). (Default: $10^{-12}$.)
+ \item \code{DerivativeH = real;} \newline This is the value to use in numerical derivatives, i.e. the value $h$ for which $f'(x)$ is approximated by $f'(x) = (f(x+h)-f(x-h))/(2h)$. (Default: $10^{-7}$.)
+\end{itemize}
+
+
+\subsection{\code{Output}}
+Under this heading, you can configure how the geodesics' will be written to file. You can also set the level of detail outputted to the screen (console) during the running of the program:
+\begin{itemize}
+ \item \code{ScreenOutputLevel = int;}\newline Here, \code{int} must be an integer between 0 and 4 (inclusive). 0 means no output to the screen at all except important warnings; 4 is all possible messages including any debug messages. (Default is 4.)
+ \item \code{LoopMessageFrequency = int;}\newline
+ During every integration loop, every (approx.) \code{int} geodesics there will be a message outputted to the console to indicate the (approx.) current number of geodesics integrated, the (approx.) speed of integration (in geodesics per second), and the estimated time left in this integration loop. Note that all the numbers outputted are approximate, as they are extrapolations from the progress of one thread of the parallel integration loop to all of the threads.
+ (Default is essentially infinite, so no intermediate output will be shown.)
+\end{itemize}
+
+The options that are available to set that determine the format of the file name(s) to which the output is written are:
+\begin{itemize}
+ \item \code{FilePrefix = "prefix";}\newline All output files will start with ``prefix''. If this is not specified, FOORT will do all output to the console.
+ \item \code{FileExtension = "extension";} \newline All output files will end with ``.extension''. If this is not specified or given as an empty string, the output files will have no extension.
+ \item \code{TimeStamp = bool;}\newline \code{bool} is true if every output file contains a time stamp (with the local system time and date of when FOORT starts). (Default: \code{true}.)
+\end{itemize}
+The files created will then have names such as ``prefix\_TIME\_DiagName.extension'' or ``prefix\_TIME\_DiagName\_n.extension'' for $n>1$, where ``DiagName'' is a short (space-less) name of the Diagnostic whose data is outputted in this file. There will be a different file for each Diagnostic turned on. $n$ is the number of file written, which is only part of the file name for $n>1$. The ``TIME'' timestamp is of the form ``yymmdd-hhmmss'' (year - month - day, hour - minute - second). Note that FOORT will create any directory structures necessary to create the file.
+
+The options that further specify details of the actual output written to files are:
+\begin{itemize}
+ \item \code{GeodesicsToCache = int;} \newline Indicates how many geodesics should be cached (stored in memory) before writing everything in memory to file. By default or if 0 is specified, this is essentially infinite. (It is actually the maximum number storeable in a \code{unsigned long}, which is $\sim 10^{9}-10^{19}$, depending on OS).
+ \item \code{GeodesicsPerFile = int;} \newline Indicates how many geodesics should be written per file. If more than this number of geodesics are integrated, additional files with filenames ending in \code{\_n} (before the specified file extension) will be created. By default or if 0 is specified, is essentially infinite (just as \code{GeodesicsToCache} above).
+ \item \code{FirstLineInfo = bool;} \newline If set to \code{true}, will output on the first line of every output file a string that gives descriptive data of all the objects used in integration (Metric, Source, ViewScreen, etc.) (Default: \code{true}.)
+\end{itemize}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Processing Output}
+
+This section describes the output files that \code{FOORT} produces, and the two Python modules included in the \code{PostProc} folder of the repository to process them: \code{pyFOORT}, which turns the raw output into images, and \code{pyFOORTInterferometry}, which computes visibility amplitudes from \code{EquatorialEmission} output. Section \ref{sec:output example} gives a complete worked example.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Output files}\label{sec:output files}
+
+\paragraph{File names.} \code{FOORT} writes a separate file for every \code{Diagnostic} that is turned on, named (see also the \code{Output} options in Section \ref{sec:config}):
+\begin{center}
+\code{prefix\_TIME\_DiagName.extension}\quad or\quad \code{prefix\_TIME\_DiagName\_n.extension}\ (for $n>1$),
+\end{center}
+where \code{\_TIME} is only present if \code{TimeStamp = true}, and \code{.extension} only if \code{FileExtension} is given. The \code{DiagName} for each \code{Diagnostic} is:
+\begin{center}
+\begin{tabular}{ll}
+\code{Diagnostic} & \code{DiagName} in file name \\ \hline
+\code{FourColorScreen} & \code{FourColorScreen} \\
+\code{GeodesicPosition} & \code{GeodesicPosition} \\
+\code{EquatorialPasses} & \code{EquatPasses} \\
+\code{ClosestRadius} & \code{ClosestRadius} \\
+\code{EquatorialEmission} & \code{EquatorialEmission}
+\end{tabular}
+\end{center}
+A new file number $n$ is started each time \code{GeodesicsPerFile} geodesics have been written. Each run of \code{FOORT} overwrites existing files with the same name.
+
+\paragraph{First line.} If \code{FirstLineInfo = true} (the default), \emph{every} output file, including the numbered files with $n>1$, starts with a single line describing the run: the \code{Metric} (with its parameters), the \code{Source}, all \code{Diagnostics} and \code{Terminations} (with their options), the camera position and screen size, the \code{Mesh}, and the integrator settings. This line is not otherwise used by \code{FOORT}, but is a convenient record of how the data was produced.
+
+\paragraph{Data lines.} After the first line, each file contains one line per integrated geodesic, of the form
+\begin{center}
+\code{i j <diagnostic data>}
+\end{center}
+where \code{i} and \code{j} are the integer pixel coordinates of the geodesic on the screen. The lines are \emph{not} sorted: they appear in the order in which the geodesics were integrated. However, the files of the different \code{Diagnostics} (with the same file number $n$) list the geodesics in the same order, so line $k$ refers to the same geodesic in each of them.
+
+The pixel coordinate \code{i} runs along the horizontal screen direction and \code{j} along the vertical direction. If the screen has $N_\text{side}$ pixels per side, both run from $0$ to $N_\text{side}-1$, and the pixels at $0$ and $N_\text{side}-1$ lie \emph{exactly on} the screen edges. Pixel $(i,j)$ thus corresponds to the screen position
+\be \alpha = \alpha_c + w_x\left(\frac{i}{N_\text{side}-1}-\frac12\right),\qquad \beta = \beta_c + w_y\left(\frac{j}{N_\text{side}-1}-\frac12\right), \ee
+where $(\alpha_c,\beta_c)$ is \code{ScreenCenter} and $(w_x,w_y)$ is \code{ScreenSize}. Note that the pixel spacing is $w_x/(N_\text{side}-1)$. $N_\text{side}$ depends on the \code{Mesh}:
+\begin{itemize}
+ \item \code{SimpleSquareMesh} and \code{InputCertainPixelsMesh}: $N_\text{side} = \sqrt{\code{TotalPixels}}$.
+ \item \code{SquareSubdivisionMesh}: the pixel coordinates are those of the \emph{finest} possible grid, with $N_\text{side} = (\sqrt{\code{InitialPixels}}-1)\cdot 2^{\code{MaxSubdivide}-1}+1$. Only the pixels that were actually integrated appear in the file. Regions that were never refined to the finest level only contain the coarser pixels, so the output does \emph{not} fill a regular grid. (This is why \code{pyFOORT} interpolates the data onto a grid; see Section \ref{sec:pyFOORT}.)
+\end{itemize}
+
+\paragraph{Diagnostic data.} The data after the pixel coordinates is:
+\begin{itemize}
+ \item \code{FourColorScreen}: a single integer: 1--4 for the quadrant of the celestial sphere in which the geodesic ended up, and 0 if it did not reach the boundary sphere.
+ \item \code{EquatorialPasses}: a single integer: the number of equatorial passes, negative if the geodesic fell into the horizon.
+ \item \code{ClosestRadius}: a single number: the smallest (true) $r$ reached, which is 0 for geodesics that fell into the horizon.
+ \item \code{EquatorialEmission}: two numbers: the total intensity $I_\text{tot}$, followed by the (signed) number of equatorial passes, as for \code{EquatorialPasses}.
+ \item \code{GeodesicPosition}: \code{N ;; t1 r1 theta1 phi1 t2 r2 theta2 phi2 ...}, where \code{N} is the number of stored positions, followed by the separator \code{;;} and then the \code{N} stored positions. (Note that the $r$ coordinates are the true radii, so $r$ is outputted even if integration proceeded with $\log r$.)
+\end{itemize}
+ All non-integer values are written with six digits after the decimal point. Values smaller than $5\times 10^{-7}$ are therefore written as zero, so choose emission parameters such that the relevant intensities are not this small.
+
+If no \code{FilePrefix} is given, all of this output is written to the console instead (without the first line).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Setting up the Python modules}\label{sec:python setup}
+
+The Python modules \code{pyFOORT.py} and \code{pyFOORTInterferometry.py} are in the \code{PostProc} folder of the repository. They require Python $\geq 3.10$ with \code{numpy}, \code{scipy}, \code{pandas}, \code{matplotlib} and \code{scikit-image}. The included \code{environment.yml} sets up a suitable \code{conda} environment:
+\begin{center}
+\code{conda env create -f environment.yml}\qquad \code{conda activate foort-postproc}
+\end{center}
+To use the modules from another folder, add \code{PostProc} to the Python path, for example:
+\begin{center}
+\code{import sys; sys.path.append("path/to/FOORT/PostProc")}\\
+\code{import pyFOORT as pf}\\
+\code{import pyFOORTInterferometry as pfi}
+\end{center}
+Every function is documented in its docstring. Running \code{doxygen} in the \code{PostProc} folder generates HTML documentation of both modules in \code{docs/postproc/html}. The notebook \code{PostProc/ExampleNotebook.ipynb} demonstrates the main functions on the output of the example configuration files (see Section \ref{sec:output example}).
+
+\paragraph{Configuration requirements.} To read \code{FOORT} output with these modules, keep the following in mind when setting up the \code{Output} options:
+\begin{itemize}
+ \item The modules always look for files with extension \code{.dat}, so set \code{FileExtension = "dat";}.
+ \item All functions take a \code{FilePrefix} argument, to which they append \code{\_DiagName.dat} (or \code{\_DiagName\_n.dat}). If \code{TimeStamp = true}, the time stamp is part of this prefix, e.g.\ \code{"Output/MyRun\_251031-120000"}. Setting \code{TimeStamp = false} gives simpler prefixes, at the cost of overwriting earlier runs with the same \code{FilePrefix}.
+ \item If the output is split over several files, pass the number of files as \code{NrFiles}.
+ \item The argument \code{FirstLineDescription} (default \code{True}) must match the \code{FirstLineInfo} setting of the run.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Images with \code{pyFOORT}}\label{sec:pyFOORT}
+ 
+For each \code{Diagnostic}, \code{pyFOORT} has a function that reads the output file(s), puts the data on a grid, and displays the image, all in one call:
+\begin{center}
+\begin{tabular}{ll}
+\code{Diagnostic} & Function \\ \hline
+\code{FourColorScreen} & \code{FOORTToFourColorScreenImage} \\
+\code{EquatorialPasses} & \code{FOORTToEquatorialPassesImage} \\
+\code{EquatorialEmission} & \code{FOORTToEquatorialEmissionImage}, \code{FOORTToEquatorialEmissionLineout} \\
+\code{ClosestRadius} & \code{FOORTToClosestRadius} \\
+\code{GeodesicPosition} & \code{FOORTToDistortedBackground}
+\end{tabular}
+\end{center}
+For example, \code{pf.FOORTToEquatorialEmissionImage("Output/MyRun", NrFiles=2)} shows the emission image of a run whose output was split over two files. These functions share the arguments:
+\begin{itemize}
+ \item \code{FilePrefix}, \code{NrFiles}, \code{FirstLineDescription}: see Section \ref{sec:python setup}.
+ \item \code{GridFraction} (default 1): since the output of a \code{SquareSubdivisionMesh} does not fill a regular grid (Section \ref{sec:output files}), the data is first interpolated onto a regular square grid spanning the full screen, using nearest-neighbour interpolation. The grid has $\code{GridFraction}\cdot N_\text{side}$ points per side; e.g.\ \code{GridFraction = 0.5} gives a grid with half as many points per side, which is faster for large runs.
+ \item \code{DisplayImageTitle} (default \code{False}): use the first line of the output file as the image title.
+ \item \code{FileOutput}: if given, the image is also saved to this file.
+ \item \code{Ax}: a \code{matplotlib} axes object to draw on, for example to combine several images in one figure. If not given, a new figure is created and shown.
+ \item \code{Verbose} (default \code{False}): print progress information.
+\end{itemize}
+The additional arguments of each function are:
+\begin{itemize}
+ \item \code{FOORTToFourColorScreenImage}: colours the four quadrants blue, yellow, red and green, and geodesics that did not reach the boundary sphere black. For spacetimes without a horizon, set \code{NoHorizon = True} to drop the black colour.
+ \item \code{FOORTToEquatorialPassesImage}: shows the number of equatorial passes. Set \code{DiagType = "EquatorialEmission"} to take the passes from \code{EquatorialEmission} output instead. By default the absolute value is shown (\code{PlotAbsPass = True}), so geodesics that cross the equator equally often look the same whether or not they fall into the horizon. \code{PlotOnlyInOutBH = 0} shows only geodesics that fell into the horizon, and \code{PlotOnlyInOutBH = 1} only those that escaped. \code{PassesRange = (nmin, nmax)} sets all values outside this range to zero.
+ 
+ \item \code{FOORTToEquatorialEmissionImage}: shows the total intensity $I_\text{tot}$. The options are:
+ \begin{itemize}
+  \item \code{LimitRange = (Imin, Imax)} clips the intensities to this range. (Default: \code{(0.0, 100000.0)}.)
+  \item \code{TruncateRange = (Imin, Imax)} sets intensities outside this range to zero.
+  \item \code{EquatPassesRange = (nmin, nmax)} keeps only pixels whose (signed) number of equatorial passes lies in this range, and \code{EquatPassesSelection = [n1, n2, ...]} only pixels with one of the listed numbers of passes; if both are given, \code{EquatPassesSelection} is used. Since the intensity is a sum over passes, these do not isolate the contribution of a single pass; rather, they show the full intensity of the selected geodesics. For example, \code{EquatPassesSelection = [1]} shows only geodesics that cross the equator exactly once (the direct image), and \code{EquatPassesRange = (2, 1000)} shows the lensing bands.
+  \item \code{LightRingRadius}: for horizonless spacetimes with a light ring, this separates the ``inner'' and ``outer'' photon rings. The number of passes of every geodesic whose closest radius is smaller than \code{LightRingRadius} is given a minus sign, after which \code{EquatPassesRange} and \code{EquatPassesSelection} can select either set (e.g.\ \code{EquatPassesSelection = [-2]} for the inner $n=2$ ring). This requires the \code{ClosestRadius} \code{Diagnostic} to have been turned on in the same run. 
+ \end{itemize}
+ \item \code{FOORTToEquatorialEmissionLineout}: plots the intensity along a straight line through the centre of the screen, instead of the full image. \code{angle} (in degrees, default 20) is measured anticlockwise from the horizontal screen axis, and must lie between $-45^\circ$ and $45^\circ$. \code{x\_scale} is the full screen width in $\mu$as (default 50), used to label the distance along the line, and \code{ipl\_points} the number of points sampled along it. With \code{return\_lineout = True}, the function returns the distances and intensities as arrays. It takes the same selection options as \code{FOORTToEquatorialEmissionImage}.
+ \item \code{FOORTToClosestRadius}: shows the closest radius reached, optionally on a logarithmic scale (\code{logscale = True}). \code{contours = [r1, r2, ...]} draws labelled contours at these radii; this requires \code{Ax} to be given. \code{LimitRange} and \code{TruncateRange} work as for the emission.
+ \item \code{FOORTToDistortedBackground(FilePrefix, BackgroundFile, ...)}: shows how a background image on the celestial sphere is lensed. This uses \code{GeodesicPosition} output in which each geodesic has exactly one stored position, its final one: set \code{UpdateFrequency = 0}, \code{UpdateStart = false} and \code{UpdateFinish = true}. \code{BackgroundFile} is an image file in equirectangular projection, with $\theta$ from $0$ to $\pi$ along the vertical and $\phi$ from $0$ to $2\pi$ along the horizontal. Pixels whose geodesic ended at a radial coordinate $\leq$ \code{BlackConditionRadius} (default 4.0) are drawn black.
+\end{itemize}
+ 
+\paragraph{Lower-level functions.} Each \code{FOORTTo...} function combines three steps, which are also available separately. These are useful for custom processing, such as combining the data of several \code{Diagnostics}, using a different colour map, or analysing the gridded data numerically.
+\begin{itemize}
+ \item \code{LoadFOORTRawData(FilePrefix, DiagType, NrFiles, FirstLineDescription)} reads the output file(s) of the \code{Diagnostic} whose file name contains \code{DiagType} (the \code{DiagName} of Section \ref{sec:output files}). It returns a \code{pandas} data frame with columns \code{x}, \code{y}, \code{diag1} (and \code{diag2} for \code{EquatorialEmission}), together with the first line of the file. For \code{GeodesicPosition}, only output with a single stored position per geodesic can be read; its columns are then \code{x}, \code{y}, \code{nrpts=1}, \code{separator=;;}, \code{t}, \code{r}, \code{theta} and \code{phi}.
+ \item \code{ModifiedEquatorialEmission(FilePrefix, LightRingRadius, ...)} does the same for \code{EquatorialEmission} output, with the sign of the passes changed according to the \code{ClosestRadius} output, as described for \code{LightRingRadius} above.
+ \item \code{DataToGrid(FOORTData, GridFraction, DiagToUse, ...)} interpolates the data frame onto a regular grid, as described for \code{GridFraction} above, and returns it as a \code{numpy} array. \code{DiagToUse} (1 or 2) selects the \code{diag1} or \code{diag2} column. The options \code{TakeAbs}, \code{TruncateRange}, \code{LimitRange}, \code{Diag2RangeSelect} and \code{Diag2AdvancedSelect} manipulate the data before gridding; the last two correspond to \code{EquatPassesRange} and \code{EquatPassesSelection} above. The first index of the array runs along the vertical screen direction, so the array is displayed correctly with \code{imshow(..., origin="lower")}.
+ \item \code{GridToFourColorScreenImage}, \code{GridToEquatorialPassesImage}, \\\code{GridToEquatorialEmissionImage}, \code{GridToClosestRadiusImage} and \code{GridToDistortedImage} display a grid with the colour map and options of the corresponding \code{FOORTTo...} function. \code{DisplayImage(FOORTGrid, TheColorMap, ColorMinMax, ...)} displays a grid with any \code{matplotlib} colour map.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Visibility amplitudes with \code{pyFOORTInterferometry}}\label{sec:pyFOORTInterferometry}
+
+Interferometric observations (such as by the EHT) measure the Fourier transform of the image, the complex visibility
+\be V(\mathbf{u}) = \int I(\mathbf{x})\, e^{-2\pi i\,\mathbf{x}\cdot\mathbf{u}}\, \rmd^2\mathbf{x}, \ee
+where $\mathbf{x}$ are angular coordinates on the sky (in radians) and $\mathbf{u}$ is the baseline in units of the observing wavelength. \code{pyFOORTInterferometry} computes the visibility amplitude $|V|$ along straight lines through the origin of the $\mathbf{u}$-plane, using the projection-slice theorem: the image is first projected onto a line at the chosen angle (its Radon transform), and the projection is then Fourier transformed in one dimension.
+
+The main function is
+\begin{center}
+\code{visamps, baselines, FirstLineInfo = FOORTToVisAmp(FilePrefix, Angles, ...)}
+\end{center}
+which reads \code{EquatorialEmission} output, interpolates it onto a grid (with the same \code{GridFraction}, \code{LimitRange}, \code{TruncateRange}, \code{EquatPassesRange}, \code{EquatPassesSelection} and \code{LightRingRadius} options as \code{FOORTToEquatorialEmissionImage}), and computes the visibility amplitudes. Its specific arguments are:
+\begin{itemize}
+ \item \code{Angles}: a list of angles in degrees, one for each line in the $\mathbf{u}$-plane. An angle of $0^\circ$ corresponds to baselines along the horizontal screen axis, and $90^\circ$ to baselines along the vertical screen axis; increasing the angle rotates the baseline direction anticlockwise (as the image is displayed by \code{pyFOORT}). Since the image is real, angles $A$ and $A+180^\circ$ give the same amplitudes.
+ \item \code{AngularSize}: the angular width of the screen in radians, i.e.\ the angle between the first and last pixel columns. (Default: 50 $\mu$as.) For a source of mass $M$ at distance $D$, a screen width of $w_x$ (in units of $M$) corresponds to $w_x\, GM/(c^2D)$; for example, $w_x = 15M$ for M87* ($GM/c^2D \approx 3.8\,\mu$as) gives about $57\,\mu$as.
+ \item \code{RadonPaddingFactor} (default 25): the projection is zero-padded to this many times its length before the Fourier transform, which sets the spacing of the baselines (see below).
+ \item \code{FileOutput}: if given, the visibility amplitudes are also written to this file\\ (with \code{WriteVisAmpsToFile}, see below).
+\end{itemize}
+It returns \code{visamps}, an array with one row per angle, each normalized to 1 at zero baseline, and \code{baselines}, the corresponding baseline lengths in G$\lambda$ (the same for all angles).
+
+The baselines are sampled with spacing $\Delta u \approx 1/(\code{RadonPaddingFactor}\cdot\code{AngularSize})$, up to the Nyquist limit $u_\text{max} = (N_\text{grid}-1)/(2\cdot\code{AngularSize})$, where $N_\text{grid}$ is the number of grid points per side. For example, a 50 $\mu$as screen gridded with $N_\text{grid} = 1001$ points reaches $u_\text{max}\approx 2000$ G$\lambda$. Resolving the photon rings at long baselines thus requires a fine enough grid, i.e.\ enough subdivision levels in the \code{SquareSubdivisionMesh}. 
+
+\paragraph{Lower-level function.} The lower-level functions are:
+\begin{itemize}
+ \item \code{RadonTransform(FOORTEmissionGrid, Angles)}: the Radon transform of a grid, one row per angle.
+ \item \code{RadonToComplexVis(FOORTRadon, PaddingFactor, sample\_spacing)}: the complex visibilities from a Radon transform, at the non-negative frequencies (in cycles per unit of \code{sample\_spacing}, i.e.\ per radian if \code{sample\_spacing} is the pixel spacing in radians).
+ \item \code{ComplexVisToNormVisAmp(ComplexVis)}: the visibility amplitudes, normalized to 1 at zero baseline.
+ \item \code{WriteVisAmpsToFile(VisAmps, FileName, FirstLineInfo)} and\\ \code{LoadVisAmpsFromFile(FileName, FirstLineDescription)}: save and load visibility amplitudes as a text file (the baselines are not saved).
+ \item \code{DisplayVisAmp(VisAmp, URange, Baselines ...)}: a quick logarithmic plot of one row of visibility amplitudes against the given baselines (or against the sample index if none are given).
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Example}\label{sec:output example}
+
+The repository contains the configuration file \code{FOORT/cfgs/KerrExample.cfg}, which images a Kerr black hole with an emitting disc, with the \code{FourColorScreen} and \code{EquatorialEmission} \code{Diagnostics} turned on. Its \code{Output} settings are
+\begin{center}
+\code{FilePrefix = "Output/KerrExample"; FileExtension = "dat"; TimeStamp = false;}
+\end{center}
+and the output is split over two files per \code{Diagnostic}. Running \code{FOORT} with this configuration file from the \code{FOORT} folder produces \code{FOORT/Output/KerrExample\_FourColorScreen.dat}, \code{FOORT/Output/KerrExample\_EquatorialEmission.dat}, and their counterparts ending in \code{\_2.dat}. From the \code{PostProc} folder, the images and visibility amplitudes are then made with:
+\begin{verbatim}
+import matplotlib.pyplot as plt
+import pyFOORT as pf
+import pyFOORTInterferometry as pfi
+
+prefix = "../FOORT/Output/KerrExample"
+fig, ax = plt.subplots(1, 3, figsize=(15, 5))
+pf.FOORTToFourColorScreenImage(prefix, NrFiles=2, Ax=ax[0])
+pf.FOORTToEquatorialEmissionImage(prefix, NrFiles=2, Ax=ax[1])
+pf.FOORTToEquatorialPassesImage(prefix, NrFiles=2, Ax=ax[2],
+                                DiagType="EquatorialEmission")
+plt.show()
+
+visamps, baselines, _ = pfi.FOORTToVisAmp(prefix, Angles=[40, 60], NrFiles=2)
+plt.semilogy(baselines, visamps[0])
+plt.xlabel("baseline (G$\\lambda$)")
+plt.show()
+\end{verbatim}
+\code{PostProc/ExampleNotebook.ipynb} works through this example in more detail, and compares it with the Johannsen black hole of \code{FOORT/cfgs/JohannsenExample.cfg}.
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Procedures to Add New Objects}
+For every object to add, there are a certain number of tasks to be done. Per object, these are enumerated below. Within the source files, these add points are also indicated and sample source code is given. These steps below and the add points in the code make adding a new object not a big efFOORT at all!
+
+A general note about variable names and settings: the name that a particular property has in the configuration file will be the same as the name that features in the first argument (in quotation marks) in the argument \code{LookupValue}. So, for example, the line:
+\newline\code{TheSetting.LookupValue("ConfigurationFilePropertyName", LocalVariableName);}
+\newline
+looks at the \code{ConfigCollection} object \code{TheSetting}, which will be some branch within the configuration file, and within (that branch in) the configuration file reads in the line:
+\newline \code{ConfigurationFilePropertyName = "mysetting";}\newline
+and puts \code{"mysetting"} into \code{LocalVariableName} (which should in this case be a \code{std::string}!). Note that if the setting \code{ConfigurationFilePropertyName} does not exist under the branch \code{ConfigCollection}, then \code{LocalVariableName} will be unaltered (no exceptions are thrown). This is why, before using \code{LookupValue}, \code{LocalVariableName} should have been set to whatever the setting's default value should be. Note that \code{LocalVariableName}, \newline \code{ConfigurationFilePropertyName}, and whatever the class (private) member variable is called that eventually stores this property or value, can all be completely different names.
+
+Note that \code{LookupValueInteger} should be used for any integer-valued settings (either signed or unsigned); \code{LookupValue} can be used for other settings (both floating-point numbers and strings). Also note that \code{LookupValue}, when called for a floating-point variable, will automatically convert integers to floats.
+
+\subsection{Adding a new Metric}
+
+
+\begin{itemize}
+ \item[A.] \emph{At the end of \code{Metric.h}}: Add the declaration for your new \code{Metric} class here, inheriting publically from the base \code{Metric} class (or from \code{SphericalHorizonMetric} if your metric has a horizon at a constant radius, and/or from \code{SingularityMetric} if your metric has (an arbitrary amount of) singularities (of arbitrary codimension)). It is good practice to make the class (and all overriding virtual functions) \code{final}, unless further descendant \code{Metric} classes are possible. It is also good practice to make the member variables (metric parameters) \code{private} and \code{const} (and initialized in a constructor) since the metric should not change after initialization.  The implementations (definitions) of the new metric's functions can then go in \code{Metric.cpp} (or a different source code file).
+
+ \emph{Necessary overrides:}
+ \begin{itemize}
+     \item It is necessary to override the basic metric getter functions \code{getMetric\_dd} and \code{getMetric\_uu}, which return the metric with indices down or up. Note that these metric getters should apply the $u=\log r$ transformation if \code{m\_rLogScale} is \code{true}.
+     \item The metric should pass \code{rLogScale} to the base constructor (i.e. a call \code{Metric(rLogScale)}). If the metric descends from \code{SphericalHorizonMetric}, it instead should call that base class constructor and specify the horizon radius as well, i.e. a call\\ \code{SphericalHorizonMetric(rh, rLogScale)} where \code{rh} is an expression containing the horizon radius. See the \code{KerrMetric} implementation for an example.
+ \end{itemize}
+ 
+ \emph{Optional overrides:}
+ \begin{itemize}
+     \item It is also recommended to overload \code{getFullDescriptionStr()}, although this has been already implemented in the base class \code{Metric}.
+     \item  Note: if your metric enjoys any Killing vectors, make sure to remember to set $\code{m\_Symmetries}$ accordingly in the class constructor; e.g. a \code{Metric} that is stationary and axisymmetric should include the line $\code{m\_Symmetries = \{ 0,3 \};}$ in the constructor.
+ \item  Optionally, you can also override the \code{getChristoffel\_udd} function to implement e.g. an analytical Christoffel symbol calculation. (Otherwise, the default \code{Metric} implementation calculates Christoffel symbols using numerical derivatives of the metric.) 
+ \end{itemize}
+
+ 
+ \item[B.] \emph{In \code{Config.cpp}, in function \code{Config::GetMetric()}}: You must add a new \code{else if} clause checking for if your new metric type has been specified. If it has, then proceed to look up any other parameters necessary for the metric before creating a new instance of it in the variable \code{TheMetric}.
+\end{itemize}
+
+
+\subsection{Adding a new Diagnostic}
+
+\begin{itemize}
+ \item[A.1.] \emph{In the middle of \code{Diagnostics.h}, after all other \code{Diagnostic} class declarations}: Declare your new \code{Diagnostic} class here, inheriting publically from \code{Diagnostic}. As with \code{Metric}, it is good practice to make this new \code{Diagnostic} and all its overriding functions \code{final}. The definitions of the member functions of your class can then be given in \code{Diagnostics.cpp} (or a different source code file). The necessary functions to override are:
+ \begin{itemize}
+ \item A constructor that passes along the \code{const} pointer to the (owner) \code{Geodesic} to the base class constructor.
+ \item \code{UpdateData()}: here your \code{Diagnostic} updates itself according to the current state of its owner \code{Geodesic}.
+ \item \code{getFullDataStr()}: this is the full output string of the \code{Diagnostic} for its owner \code{Geodesic}, as should be written to a file.
+ \item \code{getFinalDataVal()}: this returns a vector of real numbers that indicates the final ``value'' that should be associated to its owner \code{Geodesic}.
+ \item \code{FinalDataValDistance(...)}: this returns a ``distance'' between two geodesics based on their two final ``values'' (as given by \code{getFinalDataVal()}. This distance is used by adaptive mesh(es) to decide where to refine the mesh.
+ \item \code{Reset()} \emph{(optional)}: If your \code{Diagnostic} has member variables that change during the trajectory of the \code{Geodesic}, then \code{Reset()} must reset all these variables to their initial values, ready to be used for a new \code{Geodesic}. If there are no such member variables in your \code{Diagnostic}, then this function does not need an override. Note: if you do override \code{Reset()}, make sure to add a call \code{Diagnostic::Reset())} in your implementation of \code{Reset()}, so that the base class also resets its internal variable!
+ \item \code{getNameStr()}: This returns a short string without spaces that will be appended to the file name, typically just a short name identifying the \code{Diagnostic}.
+ \item \code{getFullDescriptionStr()}: This returns a longer, descriptive string (with spaces allowed) of the \code{Diagnostic} and any relevant options that are selected. This will e.g. be outputted to the screen at runtime to indicate which Diagnostics are turned on. (Note that it is not strictly necessary to override this function when implementing a new \code{Diagnostic}, but it is advised.)
+ \end{itemize}
+ Finally, if the \code{Diagnostic} needs to specify options, a declaration of its \code{DiagnosticOptions} should be given here. Note that this is a \code{std::unique\_ptr} and is \code{static}: the reason is that these options get set once (at the start of the program), and then remain the same --- i.e. for all instances of the \code{Diagnostic} that belong to different instances of \code{Geodesic}s.
+ 
+ \item[A.2.] \emph{(Optional) At the end of \code{Diagnostics.h}, after all other \code{DiagnosticOptions} struct declarations}: Declare and define your new \code{DiagnosticOptions} struct here, if your \code{Diagnostic} needs additional options over the standard \code{UpdateFrequency} ones provided by the base struct \code{DiagnosticOptions}. As indicated in the code, all member variables should be \code{const} but \code{public}, and initialized in the constructor. Make sure your constructor passes along the \code{UpdateFrequency} struct information to the base struct constructor.
+ 
+ As mentioned above, the \code{DiagnosticOptions} are \code{static} members of their owning \code{Diagnostic} class; they get set at the beginning of the program and are afterwards immutable.
+ 
+ \item[B.] \emph{At the beginning of \code{Diagnostics.h} (at the definitions of the bitflags)}: Define a new \code{DiagBitflag} for your new \code{Diagnostic}. Make sure to use a bitflag that has not been used before! (All defined bitflags are here, so it should be clear what has been used already.) 
+ 
+ \item[C.] \emph{At the beginning of \code{Diagnostics.cpp}, in the definition of \code{CreateDiagnosticVector}}: add an appropriate \code{if} clause checking whether diagflags contains the new DiagBitflag, and if so call \code{AddDiagnostic(...)};
+ 
+ \item[D.1.] \emph{At the beginning of \code{Config.cpp}}: If your Diagnostic carries a \code{static DiagnosticOptions struct} (whether it is a new descendant of \code{DiagnosticOptions} or not), then it must be declared here!
+ \item[D.2.] \emph{In \code{Config.cpp}, in function \code{Config::InitializeDiagnostics()}}: Add an \code{if} clause here checking if your Diagnostic is turned on in the configuration file. If it is, intialize the relevant options and set the bitflags appropriately.
+\end{itemize}
+
+
+\subsection{Adding a new Termination}
+
+\begin{itemize}
+ \item[A.1.] \emph{At the end of the declarations of the \code{Termination} classes in \code{Terminations.h}}: Declare your new \code{Termination} class here, inheriting publically from \code{Termination}. The definitions of the member functions of your class can then be given in \code{Terminations.cpp} (or a different source code file). The necessary functions to override are:
+ \begin{itemize}
+ \item A constructor that passes along the \code{const} pointer to the (owner) \code{Geodesic} to the base class constructor.
+ \item \code{CheckTermination()}: which checks if the termination condition has been reached; if not, returns \code{Term::Continue}, if so, returns the new termination condition (see below in B.2.).
+  \item \code{Reset()} \emph{(optional)}: If your \code{Termination} has member variables that change during the trajectory of the \code{Geodesic}, then \code{Reset()} must reset all these variables to their initial values, ready to be used for a new \code{Geodesic}. If there are no such member variables in your \code{Termination}, then this function does not need an override. Note: if you do override \code{Reset()}, make sure to add a call \code{Termination::Reset())} in your implementation of \code{Reset()}, so that the base class also resets its internal variable!
+ \item \code{getFullDescriptionStr()}: This returns a descriptive string (with spaces allowed) of the \code{Termination} and any relevant options that are selected. This will e.g. be outputted to the screen at runtime to indicate which Terminations are turned on.
+ \end{itemize}
+  Finally, most likely the \code{Terminations} needs to specify options, so a declaration of its \code{TerminationOptions} should be given here. Note that this is a \code{std::unique\_ptr} and is \code{static}: as for \code{DiagnosticOptions}, these options get set once (at the start of the program), and then remain the same --- i.e. for all instances of the \code{Termination} that belong to different instances of \code{Geodesic}s.
+  
+  \item[A.2.] \emph{(Optional) At the end of \code{Terminations.h}}: Declare and define your new \code{TerminationOptions} struct here, if necessary, inheriting publically from \code{TerminationOptions}. Just as for \code{DiagnosticOptions}, all member variables should be \code{const} but \code{public}, and initialized in the constructor. Make sure your constructor passes along the number of steps to the base struct \code{TerminationOptions}.
+  
+ \item[B.1.] \emph{At the beginning of \code{Terminations.h} (at the definitions of the bitflags)}: Define a new \code{TermBitflag} for your new \code{Termination}.
+ \item[B.2.] \emph{In the definition of \code{enum class Term} in \code{Terminations.h}}: Add a new termination condition in this class that can be set by your new \code{Termination}.
+ 
+  \item[C.] \emph{At the beginning of \code{Terminations.cpp}, in the definition of \code{CreateTerminationVector}}: add an appropriate \code{if} clause checking to see if \code{termflags} contains the newly defined \code{TermBitflag} (which was defined in point B.1 above), and if so adds an instance of the \code{Termination} to the \code{Termination} vector being created.
+  
+  \item[D.1.] \emph{At the beginning of \code{Config.cpp}}: If your Termination carries a \code{static TerminationOptions struct} (whether it is a new descendant of \code{TerminationOptions} or not), then it must be declared here!
+  
+   \item[D.2.] \emph{In \code{Config.cpp}, in function \code{Config::InitializeTerminations()}}: Add an \code{if} clause here checking if your Termination is turned on in the configuration file. If it is, intialize the relevant options and set the bitflags appropriately.
+
+ 
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
