@@ -346,13 +346,18 @@ OneIndex GeneralCircularRadialFluid::GetInsideISCOCircularVelocityd(const Point 
 	real temp_sq{-1.0 - g_uu[0][0] * m_ISCOpt * m_ISCOpt - 2.0 * g_uu[0][3] * m_ISCOpt * m_ISCOpphi - g_uu[3][3] * m_ISCOpphi * m_ISCOpphi};
 
 	if (temp_sq < 0.0)
-    	WarnOnce(m_WarnedInsideISCO, "inside-ISCO radial momentum squared negative, setting to zero", p);
+		return {}; // no solution, return all zeros
+
 	real pr{-1.0 / sqrt(g_uu[1][1]) * sqrt(fmax(temp_sq, 0.0))};
 
 	if (!std::isnan(pr))
 		return OneIndex{m_ISCOpt, pr, 0.0, m_ISCOpphi};
 	else
-		return {};
+	{
+		WarnOnce(m_WarnedInsideISCO, "Circular orbit found but inside ISCO circular+infalling orbit failed; using radially infalling orbit instead.", p);
+		return {}; // no solution, return all zeros
+	}	
+
 }
 
 /**
