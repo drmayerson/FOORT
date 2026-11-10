@@ -105,7 +105,7 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 		const ConfigCollection &MetricSettings = theCfg["Metric"];
 
 		// Check log r setting first
-		bool rLogScale{false};
+		bool rLogScale{true};
 		MetricSettings.LookupValue("RLogScale", rLogScale);
 
 		// Check to see that the Metric's name has been specified

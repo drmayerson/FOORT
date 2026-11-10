@@ -783,16 +783,19 @@ def FOORTToEquatorialEmissionLineout(
     @param FileOutput: File to save image to (default None)
     @param LightRingRadius: Radius of the light ring (default None)
     @param Ax: Matplotlib axes to plot on (default None)
-    @param angle: Angle to plot the emission at (default 20.)
+    @param angle: Angle of the lineout in degrees, counter-clockwise from the +x axis, as for the Radon transform
+    and visibility amplitudes in pyFOORTInterferometry (default 20.). Any angle is accepted and taken modulo 180,
+    so angle and angle + 180 give the same lineout.
     @param ipl_points: Number of points to interpolate (default 1000)
     @param x_scale: Scale of the x-axis in microarcseconds (default 50)
     @param return_lineout: Whether to return the lineout data as arrays (default False)
+    @details The lineout runs through the screen center along the line at the given angle, from one edge of the
+    screen to the opposite one, always from left to right (from bottom to top for a vertical lineout, angle = 90).
+    The returned distance is measured along the lineout, starting from 0 at the edge where it enters the screen.
+    Note that for angles strictly between 90 and 180 (mod 180), the projection axis of
+    pyFOORTInterferometry.RadonTransform runs in the opposite direction (right to left), so a lineout and a Radon
+    projection at such an angle are mirrored with respect to each other.
     """
-
-    if not (min(abs(angle), abs(angle - 180)) <= 45):
-        raise ValueError(
-            "At the moment, only angles between -45 and 45 degrees are supported."
-        )
 
     # Load in raw FOORT output data
     if LightRingRadius:
@@ -825,12 +828,27 @@ def FOORTToEquatorialEmissionLineout(
         Verbose=Verbose,
     )
 
-    x_dim = FOORTGrid.shape[0]
-    y_dim = FOORTGrid.shape[1]
-    intpl = RectBivariateSpline(range(x_dim), range(y_dim), FOORTGrid)
-    if min(abs(angle), abs(angle - 180)) <= 45:
-        x = np.linspace(0, x_dim-1, ipl_points)
-        y = np.tan(angle * np.pi / 180) * (x - (x_dim-1) / 2) + (y_dim-1) / 2
+    # Grid rows correspond to the vertical (y) direction, columns to the horizontal (x) direction
+    y_dim = FOORTGrid.shape[0]
+    x_dim = FOORTGrid.shape[1]
+    intpl = RectBivariateSpline(range(y_dim), range(x_dim), FOORTGrid)
+
+    # Line through the screen center in direction (cos, sin), parametrized by the signed distance s (in pixels)
+    # from the center; it leaves the screen at |s| = s_max, where it first hits a vertical or horizontal edge
+    # Reduce angle to (-90, 90], so that the lineout along (cos, sin) always runs left to right (bottom to top at 90)
+    angle = (angle + 90.0) % 180.0 - 90.0
+    if angle == -90.0:
+        angle = 90.0
+    x_center, y_center = (x_dim - 1) / 2, (y_dim - 1) / 2
+    cos_angle, sin_angle = np.cos(np.deg2rad(angle)), np.sin(np.deg2rad(angle))
+    s_max = min(
+        x_center / abs(cos_angle) if abs(cos_angle) > 1e-12 else np.inf,
+        y_center / abs(sin_angle) if abs(sin_angle) > 1e-12 else np.inf,
+    )
+    s = np.linspace(-s_max, s_max, ipl_points)
+    # clip guards against round-off pushing the end points just outside the grid
+    x = np.clip(x_center + s * cos_angle, 0, x_dim - 1)
+    y = np.clip(y_center + s * sin_angle, 0, y_dim - 1)
 
     I = intpl.ev(y, x)
 
@@ -839,9 +857,8 @@ def FOORTToEquatorialEmissionLineout(
     else:
         ax = Ax
 
-    slice_length = x_scale / np.cos(angle * np.pi / 180)
-
-    distance = x * slice_length/ (x_dim-1)
+    # distance along the lineout in microarcseconds, x_scale being the full screen width
+    distance = (s + s_max) * x_scale / (x_dim - 1)
     ax.plot(distance, I, linewidth=1.0, **plot_kwargs)
 
     # Save the picture to file if applicable
