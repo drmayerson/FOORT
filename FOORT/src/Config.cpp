@@ -121,9 +121,13 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 		{
 			// Kerr
 
-			// First setting to look up: the a parameter
-			double theKerra{0.5};
-			double theKerrm{1.0};
+			// default parameters
+			double theKerra_default{0.5};
+			double theKerrm_default{1.0};
+
+			// Look up parameters
+			double theKerra{theKerra_default};
+			double theKerrm{theKerrm_default};
 			if (!MetricSettings.LookupValue("a", theKerra))
 			{
 				ScreenOutput("Kerr: no value for a given. Using default: " + std::to_string(theKerra) + ".",
@@ -133,6 +137,20 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 			{
 				ScreenOutput("Kerr: no value for m given. Using default: " + std::to_string(theKerrm) + ".",
 							 Output_Other_Default);
+			}
+
+			// Checks on entered parameters; if invalid, use default values and output warning
+			if (theKerrm <= 0.0)
+			{
+				ScreenOutput("Kerr: invalid value for m given; must be positive. Using default: " + std::to_string(theKerrm_default) + ".",
+							 Output_Important_Default);
+				theKerrm = theKerrm_default;
+			}
+			if (theKerra < -1.0 || theKerra > 1.0)
+			{
+				ScreenOutput("Kerr: invalid value for a given; must be between -1 and 1. Using default: " + std::to_string(theKerra_default) + ".",
+							 Output_Important_Default);
+				theKerra = theKerra_default;
 			}
 
 			// All settings complete; create Metric object!
@@ -148,11 +166,17 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 		{
 			// The Rasheed-Larsen black hole
 
+			// Default parameters
+			double Rlm_default{1.0};
+			double Rla_default{0.5};
+			double Rlp_default{2.0};
+			double Rlq_default{2.0};
+
 			// Look up four parameters of BH
-			double RLm{1.0};
-			double RLa{0.5};
-			double RLp{2.0};
-			double RLq{2.0};
+			double RLm{Rlm_default};
+			double RLa{Rla_default};
+			double RLp{Rlp_default};
+			double RLq{Rlq_default};
 			if (!MetricSettings.LookupValue("m", RLm))
 			{
 				ScreenOutput("Rasheed-Larsen: no value for m given. Using default: " + std::to_string(RLm) + ".",
@@ -174,6 +198,17 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 							 Output_Other_Default);
 			}
 
+			// Check parameters
+			if (RLp - 2.0 * RLm < 0.0 || RLq - 2.0 * RLm < 0.0 || RLa * RLa > RLm * RLm || RLm < 0.0)
+			{
+				ScreenOutput("Rasheed-Larsen: invalid parameters given; must satisfy p >= 2m, q >= 2m, |a| <= m, m > 0. Using defaults: m = " + std::to_string(Rlm_default) + ", a = " + std::to_string(Rla_default) + ", p = " + std::to_string(Rlp_default) + ", q = " + std::to_string(Rlq_default) + ".",
+							 Output_Important_Default);
+				RLm = Rlm_default;
+				RLa = Rla_default;
+				RLp = Rlp_default;
+				RLq = Rlq_default;
+			}
+
 			// All settings complete; create Metric object!
 			TheMetric = std::unique_ptr<Metric>(new RasheedLarsenMetric(RLm, RLa, RLp, RLq, rLogScale));
 		}
@@ -181,12 +216,19 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 		{
 			// The Johannsen black hole (implementation by Seppe Staelens)
 
+			// Default parameters
+			double JOHa_default{0.7};
+			double JOHa13_default{2.0};
+			double JOHa22_default{0.0};
+			double JOHa52_default{0.0};
+			double JOHe3_default{0.0};
+
 			// Look up five parameters of BH
-			double JOHa{0.7};
-			double JOHa13{2.0};
-			double JOHa22{0.};
-			double JOHa52{0.};
-			double JOHe3{0.};
+			double JOHa{JOHa_default};
+			double JOHa13{JOHa13_default};
+			double JOHa22{JOHa22_default};
+			double JOHa52{JOHa52_default};
+			double JOHe3{JOHe3_default};
 			if (!MetricSettings.LookupValue("a", JOHa))
 			{
 				ScreenOutput("Johannsen: no value for a given. Using default: " + std::to_string(JOHa) + ".",
@@ -213,6 +255,19 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 							 Output_Other_Default);
 			}
 
+			// Check parameters
+			real horizon_radius = 1.0 + sqrt(1.0 - JOHa * JOHa);
+	if (JOHa * JOHa > 1.0 || JOHa52 <= -horizon_radius * horizon_radius || JOHe3 <= -horizon_radius * horizon_radius * horizon_radius || JOHa13 <= -horizon_radius * horizon_radius * horizon_radius)
+	{
+		ScreenOutput("Johannsen metric: parameters outside of allowed range (|a| < 1, a52>rh, epsilon3>rh^3, alpha13>-rh^3)! (Parameters given: a = " + std::to_string(JOHa) + ", alpha13 = " + std::to_string(JOHa13) + ", alpha22 = " + std::to_string(JOHa22) + ", alpha52 = " + std::to_string(JOHa52) + ", epsilon3 = " + std::to_string(JOHe3) + ".) Using defaults: a = " + std::to_string(JOHa_default) + ", alpha13 = " + std::to_string(JOHa13_default) + ", alpha22 = " + std::to_string(JOHa22_default) + ", alpha52 = " + std::to_string(JOHa52_default) + ", epsilon3 = " + std::to_string(JOHe3_default) + ".",
+					 OutputLevel::Level_0_WARNING);
+		JOHa = JOHa_default;
+		JOHa13 = JOHa13_default;
+		JOHa22 = JOHa22_default;
+		JOHa52 = JOHa52_default;
+		JOHe3 = JOHe3_default;
+	}
+
 			// All settings complete; create Metric object!
 			TheMetric = std::unique_ptr<Metric>(new JohannsenMetric(JOHa, JOHa13, JOHa22, JOHa52, JOHe3, rLogScale));
 		}
@@ -220,9 +275,13 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 		{
 			// The Manko-Novikov black hole with alpha3
 
+			// Default parameters
+			double MNa_default{0.};
+			double MNalpha3_default{5.0};
+
 			// Look up two parameters of BH
-			double MNa{0.};
-			double MNalpha3{5.0};
+			double MNa{MNa_default};
+			double MNalpha3{MNalpha3_default};
 			if (!MetricSettings.LookupValue("a", MNa))
 			{
 				ScreenOutput("Manko-Novikov: no value for a given. Using default: " + std::to_string(MNa) + ".",
@@ -240,13 +299,21 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 		else if (MetricName == "kerrschild" || MetricName == "kerr-schild")
 		{
 			// Kerr-Schild
+			// Default parameter
+			double theKerra_default{0.5};
 
-			// First setting to look up: the a parameter
-			double theKerra{0.5};
+			// Setting to look up: the a parameter
+			double theKerra{theKerra_default};
 			if (!MetricSettings.LookupValue("a", theKerra))
 			{
 				ScreenOutput("Kerr-Schild: no value for a given. Using default: " + std::to_string(theKerra) + ".",
 							 Output_Other_Default);
+			}
+			if (theKerra < -1.0 || theKerra > 1.0)
+			{
+				ScreenOutput("Kerr-Schild: invalid value for a given; must be between -1 and 1. Using default: " + std::to_string(theKerra_default) + ".",
+							 Output_Important_Default);
+				theKerra = theKerra_default;
 			}
 
 			// All settings complete; create Metric object!
@@ -256,9 +323,14 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 		{
 			// Ring fuzzball
 
-			real ST3CrP{2.};
-			real ST3Crq0{50.};
-			real ST3Crlambda{0.19};
+			// Default parameters
+			real ST3CrP_default{2.};
+			real ST3Crq0_default{50.};
+			real ST3Crlambda_default{0.19};
+
+			real ST3CrP{ST3CrP_default};
+			real ST3Crq0{ST3Crq0_default};
+			real ST3Crlambda{ST3Crlambda_default};
 
 			if (!MetricSettings.LookupValue("P", ST3CrP))
 			{
@@ -274,6 +346,16 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 			{
 				ScreenOutput("ST3Cr: no value for lambda given. Using default: " + std::to_string(ST3Crlambda) + ".",
 							 Output_Other_Default);
+			}
+
+			// Check for existence of fuzzball - we must have ring radius R > 0
+			if (ST3Crq0 * ST3Crq0 / pow(1. - (1. - 3. * ST3CrP * ST3CrP) * ST3Crlambda, 2) - 4. * pow(ST3CrP, 6) < 0)
+			{
+				ScreenOutput("ST3Cr metric parameter lambda given (" + std::to_string(ST3Crlambda) + ") not allowed! Using default parameters: P = " + std::to_string(ST3CrP_default) + ", q0 = " + std::to_string(ST3Crq0_default) + ", lambda = " + std::to_string(ST3Crlambda_default) + ".",
+					 Output_Important_Default);
+				ST3CrP = ST3CrP_default;
+				ST3Crq0 = ST3Crq0_default;
+				ST3Crlambda = ST3Crlambda_default;
 			}
 
 			TheMetric = std::unique_ptr<Metric>(new ST3CrMetric(ST3CrP, ST3Crq0, ST3Crlambda, rLogScale));

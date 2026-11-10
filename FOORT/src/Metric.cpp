@@ -161,7 +161,7 @@ KerrMetric::KerrMetric(real aParam, bool rLogScale, real mParam)
 	}
 
 	// Check on parameters
-	if (m_aParam * m_aParam > 1.0)
+	if (m_aParam * m_aParam > 1.0) // this should not happen since Config checks this already
 		ScreenOutput("Kerr metric a parameter given (" + std::to_string(m_aParam) + ") is not within the allowed range -1 < a < 1!",
 					 OutputLevel::Level_0_WARNING);
 
@@ -335,7 +335,7 @@ RasheedLarsenMetric::RasheedLarsenMetric(real mParam, real aParam, real pParam, 
 	}
 
 	// Check to see if the parameter values are within the correct ranges
-	if (m_pParam - 2.0 * m_mParam < 0.0 || m_qParam - 2.0 * m_mParam < 0.0 || m_aParam * m_aParam > m_mParam * m_mParam || m_mParam < 0.0)
+	if (m_pParam - 2.0 * m_mParam < 0.0 || m_qParam - 2.0 * m_mParam < 0.0 || m_aParam * m_aParam > m_mParam * m_mParam || m_mParam < 0.0) // Should not happen, is checked in config
 	{
 		ScreenOutput("Rasheed-Larsen parameters outside of allowed range! Parameters given: m = " + std::to_string(m_mParam) + ", a = " + std::to_string(m_aParam) + ", p = " + std::to_string(m_pParam) + ", q = " + std::to_string(m_qParam) + ".",
 					 OutputLevel::Level_0_WARNING);
@@ -467,7 +467,7 @@ JohannsenMetric::JohannsenMetric(real aParam, real alpha13Param, real alpha22Par
 		ScreenOutput("Johannsen is only defined in four dimensions!", OutputLevel::Level_0_WARNING);
 	}
 
-	// Check to see if the parameter values are within the correct ranges
+	// Check to see if the parameter values are within the correct ranges; should be since this is checked in config
 	real horizon_radius = 1.0 + sqrt(1.0 - m_aParam * m_aParam);
 	if (m_aParam * m_aParam > 1.0 || m_alpha52Param <= -horizon_radius * horizon_radius || m_eps3Param <= -horizon_radius * horizon_radius * horizon_radius || m_alpha13Param <= -horizon_radius * horizon_radius * horizon_radius)
 	{
@@ -745,7 +745,7 @@ KerrSchildMetric::KerrSchildMetric(real aParam, bool rLogScale)
 		ScreenOutput("Kerr-Schild is only defined in four dimensions!", OutputLevel::Level_0_WARNING);
 	}
 
-	// Check on parameters
+	// Check on parameters; should not happen since this is checked in config
 	if (m_aParam * m_aParam > 1.0)
 		ScreenOutput("Kerr-Schild metric a parameter given (" + std::to_string(m_aParam) + ") is not within the allowed range -1 < a < 1!",
 					 OutputLevel::Level_0_WARNING);
@@ -882,12 +882,17 @@ ST3CrMetric::ST3CrMetric(real P, real q0, real lambda, bool rlogscale)
 	}
 
 	// Check on parameters
-	if (m_P * m_P * m_P - m_q0 > 0.0)
-		ScreenOutput("ST3Cr metric parameters P and q0 given (" + std::to_string(m_P) + ") and (" + std::to_string(m_q0) + ") not allowed! P^3 - q0 < 0 must hold.",
+	if (m_P * m_P * m_P - m_q0 > 0.0) // Valid metric, but no black-hole scaling limit exists
+	{
+		ScreenOutput("ST3Cr metric: P^3 >= q0 (P = " + std::to_string(m_P) + ", q0 = " + std::to_string(m_q0) +
+						 "); this geometry has no black-hole scaling limit with real horizon area.",
 					 OutputLevel::Level_0_WARNING);
-	if (m_q0 * m_q0 / pow(1. - (1. - 3. * m_P * m_P) * m_lambda, 2) - 4. * pow(m_P, 6) < 0)
+	}
+	if (m_q0 * m_q0 / pow(1. - (1. - 3. * m_P * m_P) * m_lambda, 2) - 4. * pow(m_P, 6) < 0) // This should not happen as it is checked in config
+	{
 		ScreenOutput("ST3Cr metric parameter lambda given (" + std::to_string(m_lambda) + ") not allowed!",
 					 OutputLevel::Level_0_WARNING);
+	}
 
 	// Killing vector along t and phi, so we initialize the symmetries accordingly
 	m_Symmetries = {0, 3};
