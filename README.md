@@ -49,7 +49,7 @@ As a last resort, if no compiler with `<filesystem>` support is available (e.g. 
 
 #### Old MakeFiles
 
-Alternatively, old Makefiles can be found in `alternative_builds/old_makefiles`. These can be system dependent, however, but should be adaptable to your needs. If the user wants to use these, the relevant makefile should be copied into the `src` folder, in which
+Alternatively, old Makefiles can be found in `alternative_builds`. These can be system dependent, however, but should be adaptable to your needs. If the user wants to use these, the relevant makefile should be copied into the `src` folder, in which
 
 ```
 make -f <makefile>
@@ -142,7 +142,7 @@ rm -rf build
 cmake -S . -B build && cmake --build build
 ```
 
-The `rm -rf build` is needed if CMake was previously configured with Apple Clang. If this does not work, one can also revert to the `makefile_mac` in `alternative_builds/old_makefiles` (see Old MakeFiles above).
+The `rm -rf build` is needed if CMake was previously configured with Apple Clang. If this does not work, one can also revert to the `makefile_mac` in `alternative_builds` (see Old MakeFiles above).
 
 ## OUTPUT
 
