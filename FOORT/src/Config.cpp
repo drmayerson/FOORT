@@ -257,9 +257,9 @@ std::unique_ptr<Metric> Config::GetMetric(const ConfigCollection &theCfg)
 
 			// Check parameters
 			real horizon_radius = 1.0 + sqrt(1.0 - JOHa * JOHa);
-			if (JOHa * JOHa > 1.0 || JOHa52 <= -horizon_radius * horizon_radius || JOHe3 <= -horizon_radius * horizon_radius * horizon_radius || JOHa13 <= -horizon_radius * horizon_radius * horizon_radius)
+			if (JOHa * JOHa > 1.0 || JOHa52 <= -horizon_radius * horizon_radius || JOHe3 <= -horizon_radius * horizon_radius * horizon_radius || JOHa13 <= -horizon_radius * horizon_radius * horizon_radius || JOHa22 <= -horizon_radius * horizon_radius)
 			{
-				ScreenOutput("Johannsen metric: parameters outside of allowed range (|a| < 1, a52>-rh^2, epsilon3>-rh^3, alpha13>-rh^3)! (Parameters given: a = " + std::to_string(JOHa) + ", alpha13 = " + std::to_string(JOHa13) + ", alpha22 = " + std::to_string(JOHa22) + ", alpha52 = " + std::to_string(JOHa52) + ", epsilon3 = " + std::to_string(JOHe3) + ".) Using defaults: a = " + std::to_string(JOHa_default) + ", alpha13 = " + std::to_string(JOHa13_default) + ", alpha22 = " + std::to_string(JOHa22_default) + ", alpha52 = " + std::to_string(JOHa52_default) + ", epsilon3 = " + std::to_string(JOHe3_default) + ".",
+				ScreenOutput("Johannsen metric: parameters outside of allowed range (|a| < 1, a52>-rh^2, epsilon3>-rh^3, alpha13>-rh^3, alpha22>-rh^2)! (Parameters given: a = " + std::to_string(JOHa) + ", alpha13 = " + std::to_string(JOHa13) + ", alpha22 = " + std::to_string(JOHa22) + ", alpha52 = " + std::to_string(JOHa52) + ", epsilon3 = " + std::to_string(JOHe3) + ".) Using defaults: a = " + std::to_string(JOHa_default) + ", alpha13 = " + std::to_string(JOHa13_default) + ", alpha22 = " + std::to_string(JOHa22_default) + ", alpha52 = " + std::to_string(JOHa52_default) + ", epsilon3 = " + std::to_string(JOHe3_default) + ".",
 							OutputLevel::Level_0_WARNING);
 				JOHa = JOHa_default;
 				JOHa13 = JOHa13_default;
