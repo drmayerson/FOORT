@@ -239,7 +239,7 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 				// then write to console from now on
 				if (!outf)
 				{
-					ScreenOutput("Output file error! Could not open " + GetFileName(curdiag, m_CurrentFullFiles + curfile) + ". Will write rest of output to console.", OutputLevel::Level_0_WARNING);
+					ScreenOutput("Output file error! Could not open " + outputfile + ". Will write rest of output to console.", OutputLevel::Level_0_WARNING);
 					m_WriteToConsole = true;
 				}
 				else
@@ -254,6 +254,8 @@ void GeodesicOutputHandler::WriteCachedOutputToFile()
 
 					// We are done with this diagnostic file, close file
 					outf.close();
+					if (!outf) // writing or flushing failed (e.g. disk full)
+						ScreenOutput("Output file error while writing " + outputfile + "! Output may be incomplete.", OutputLevel::Level_0_WARNING);
 				}
 			}
 
@@ -380,5 +382,7 @@ void GeodesicOutputHandler::OpenForFirstTime(const std::string &filename)
 
 		// Close the file
 		outf.close();
+		if (!outf)
+			ScreenOutput("Output file error while writing " + filename + "!", OutputLevel::Level_0_WARNING);
 	}
 }
