@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     if (argc < 2) // no configuration file given
     {
         ScreenOutput("No configuration file given. Exiting...\n", OutputLevel::Level_0_WARNING);
-        exit(0);
+        exit(EXIT_FAILURE);
     }
     else
     {
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
             {
                 // File not found
                 std::cerr << "Config file not found at " << configpath << ".\n Exiting...\n";
-                exit(0);
+                exit(EXIT_FAILURE);
             }
         }
         catch (const ConfigReader::ConfigReaderException &configex)
@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
             // Something is wrong in the configuration file (syntax error)
             std::cerr << configex.what() << "\n"
                       << "Remember that all numbers must be given as values, e.g. \"3.14/2.0\" is not allowed.\nExiting...\n";
-            exit(0);
+            exit(EXIT_FAILURE);
         }
     }
     // If we have made it here, the configuration file is present and its syntax is correct,

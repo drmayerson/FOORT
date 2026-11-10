@@ -609,6 +609,11 @@ void Config::InitializeDiagnostics(const ConfigCollection &theCfg, DiagBitflag &
 				AllDiagSettings["EquatorialEmission"].LookupValue("mu", mu);
 				AllDiagSettings["EquatorialEmission"].LookupValue("gamma", gamma);
 				AllDiagSettings["EquatorialEmission"].LookupValue("sigma", sigma);
+				if (sigma <= 0.0)
+				{
+					ScreenOutput("EquatorialEmission: sigma parameter must be positive; adjusting to default", Output_Other_Default);
+					sigma = defaultsigma;
+				}
 				theEmission = std::unique_ptr<EmissionModel>{new GLMJohnsonSUEmission(mu, gamma, sigma)};
 			}
 			// Other emission models can be checked for here...
@@ -1107,7 +1112,7 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigCollection &theCfg, DiagBitfla
 			// Simple Square Mesh!
 			largecounter totalpixels{100 * 100};
 			MeshSettings.LookupValueInteger("TotalPixels", totalpixels);
-			
+
 			if (totalpixels < 4) // need at least a 2x2 grid (screen coordinates divide by rowsize - 1)
 			{
 				ScreenOutput("TotalPixels must be at least 4. Using TotalPixels = 4.", Output_Other_Default);
@@ -1209,15 +1214,36 @@ GeodesicIntegratorFunc Config::GetGeodesicIntegrator(const ConfigCollection &the
 		}
 		else
 		{
+			if (stepsize <= 0.0)
+			{
+				ScreenOutput("Invalid integrator stepsize given; must be positive. Using default integrator stepsize: " +
+								 std::to_string(Integrators::epsilon) + ".",
+							 Output_Other_Default);
+				stepsize = Integrators::epsilon;
+			}
 			Integrators::epsilon = stepsize;
 		}
 
 		// Look up derivative h value (no default message necessary)
 		IntegratorSettings.LookupValue("DerivativeH", hval);
+		if (hval <= 0.0)
+		{
+			ScreenOutput("Invalid derivative h value given; must be positive. Using default derivative h value: " +
+							 std::to_string(Integrators::Derivative_hval) + ".",
+						 Output_Other_Default);
+			hval = Integrators::Derivative_hval;
+		}
 		Integrators::Derivative_hval = hval;
 
 		// Look up smallest possible step size (no default message necessary)
 		IntegratorSettings.LookupValue("SmallestPossibleStepsize", smalleststep);
+		if (smalleststep <= 0.0)
+		{
+			ScreenOutput("Invalid smallest possible step size given; must be positive. Using default smallest possible step size: " +
+							 std::to_string(Integrators::SmallestPossibleStepsize) + ".",
+						 Output_Other_Default);
+			smalleststep = Integrators::SmallestPossibleStepsize;
+		}
 		Integrators::SmallestPossibleStepsize = smalleststep;
 
 		// Check to see that the Integrator type has been specified
