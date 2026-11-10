@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt  # Used to plot images
 from scipy.interpolate import interp1d  # Used for interpolating
 from scipy import signal  # Used in finding outer envelope functions
 from typing import Any  # Used for type hints
+import warnings  # Used to warn about flux cut off by the edge of the screen
 
 # --- BASIC FUNCTIONS TO CREATE VISAMP FROM FOORT DATA AND SAVE/LOAD VISAMPS --- #
 
@@ -28,14 +29,20 @@ def RadonTransform(
     @param FOORTEmissionGrid: The FOORT emission grid to calculate the radon transform of.
     @param Angles: The angles to calculate the radon transform at. Angles are given as counter-clockwise from the +x axis.
     @param Verbose: Whether to print out progress information (default = True).
-    @return radontransf: The radon transform of the FOORT emission grid.
+    @return radontransf: The radon transform of the FOORT emission grid, one row (projection) per angle.
+    @details The whole (square) grid is used, including its corners: each projection has length ceil(sqrt(2) N)
+    for an N x N grid, and sums to the total flux on the screen (up to interpolation errors).
     """
     # returns radon transform
     if Verbose:
-        print("Calculating radon transform for " + f"{len(Angles)}" + " angles...")    
+        print("Calculating radon transform for " + f"{len(Angles)}" + " angles...")
     # skimage projects onto (cos t, -sin t) in (column, row) coordinates; FOORT grids have the row index pointing up,
-    # so theta = -Angle gives the projection onto the baseline direction at Angle anticlockwise from +x
-    radontransf = radon(FOORTEmissionGrid, theta = -np.asarray(Angles, dtype=float)).transpose()
+    # so theta = -Angle gives the projection onto the baseline direction at Angle anticlockwise from +x.
+    # circle=False: do not assume the image vanishes outside the inscribed circle (that would cut off the flux in
+    # the corners for all angles other than multiples of 90 degrees); preserve_range=True: keep the intensity values.
+    radontransf = radon(
+        FOORTEmissionGrid, theta=-np.asarray(Angles, dtype=float), circle=False, preserve_range=True
+    ).transpose()
     if Verbose:
         print("Done calculating radon transform.")
     return radontransf
@@ -81,7 +88,9 @@ def ComplexVisToNormVisAmp(ComplexVis: np.ndarray, Verbose: bool = True) -> np.n
     @brief Normalizes the complex visibility to get the visibility amplitude.
     @param ComplexVis: The complex visibility to normalize.
     @param Verbose: Whether to print out progress information (default = True).
-    @return visamp: The normalized visibility amplitude.
+    @return visamp: The normalized visibility amplitude |V(u)| / V(0), per angle.
+    @details The zero-baseline visibility V(0) is the total flux on the screen, so only the normalized amplitudes
+    are returned; the absolute flux normalization is not.
     """
     if Verbose:
         print("Normalizing complex visibility to get visibility amplitude...")
@@ -201,6 +210,7 @@ def FOORTToVisAmp(
     * 1e-6
     * np.pi
     / (180 * 60 * 60),  # in radians (default = 50 microarcseconds)
+    EdgeWarningThreshold: float = 1e-2,
 ) -> tuple[np.ndarray, np.ndarray, str]:
     """!
     @brief Converts FOORT output data to visibility amplitudes.
@@ -218,7 +228,9 @@ def FOORTToVisAmp(
     @param FileOutput: The name of the file to save the visibility amplitudes to (default = None).
     @param LightRingRadius: The radius of the light ring, if one is present (default = None). When used, this separets "inner" and "outer" photon rings.
     @param AngularSize: Full angular width of the screen in radians, i.e. the angle between the first and last pixel columns, which sit exactly on the screen edges (default = 50 microarcseconds, converted to radians).
-    @return visamps: The visibility amplitudes.
+    @param EdgeWarningThreshold: Warn if the largest intensity on the edge of the screen exceeds this fraction of the peak intensity, i.e. if the emission is cut off by the edge of the screen (default = 1e-2).
+    @return visamps: The normalized visibility amplitudes |V(u)| / V(0), with V(0) the total flux on the screen (one row per angle).
+    @details Two diagnostics are computed (and printed if Verbose): the retained flux fraction, i.e. the flux in each Radon projection relative to the total flux on the screen (should be 1), and the edge-to-peak intensity ratio. A warning is given if the former deviates from 1 by more than 1%, or if the latter exceeds EdgeWarningThreshold: emission reaching the edge of the screen means the field of view truncates the source, which affects V(0) and hence the normalized amplitudes.
     @return baselines: The baselines of the visibility amplitudes corresponding to the visamps.
     @return FirstLineInfo: The first line of the file, if applicable.
     """
@@ -253,6 +265,27 @@ def FOORTToVisAmp(
 
     # Radon transform
     rad = RadonTransform(FOORTGrid, Angles, Verbose)
+
+    # Diagnostics: is all flux retained in the projections, and does the emission reach the edge of the screen?
+    TotalFlux = np.sum(FOORTGrid)
+    RetainedFraction = np.sum(rad, axis=-1) / TotalFlux if TotalFlux != 0 else np.full(len(rad), np.nan)
+    EdgeValues = np.concatenate((FOORTGrid[0, :], FOORTGrid[-1, :], FOORTGrid[:, 0], FOORTGrid[:, -1]))
+    PeakValue = np.max(np.abs(FOORTGrid))
+    EdgeToPeak = np.max(np.abs(EdgeValues)) / PeakValue if PeakValue > 0 else 0.0
+    if Verbose:
+        print(f"Retained flux fraction in the projections: {np.min(RetainedFraction):.4f} to {np.max(RetainedFraction):.4f}.")
+        print(f"Edge-to-peak intensity ratio: {EdgeToPeak:.2e}.")
+    if np.any(np.abs(RetainedFraction - 1) > 0.01):
+        warnings.warn(
+            f"The Radon projections retain between {np.min(RetainedFraction):.4f} and {np.max(RetainedFraction):.4f} "
+            "of the total flux on the screen (expected 1)."
+        )
+    if EdgeToPeak > EdgeWarningThreshold:
+        warnings.warn(
+            f"The intensity on the edge of the screen is up to {EdgeToPeak:.2e} times the peak intensity: the emission "
+            "is cut off by the edge of the screen, which affects V(0) and the normalized visibility amplitudes. "
+            "Consider a larger screen (field of view)."
+        )
     # complex visibility
     complvis, freqs = RadonToComplexVis(
         rad,
