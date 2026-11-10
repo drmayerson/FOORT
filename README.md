@@ -159,7 +159,7 @@ bin/FOORT cfgs/JohannsenExample.cfg
 bin/FOORT cfgs/KerrCriticalCurve.cfg
 ```
 
-`KerrExample.cfg` and `JohannsenExample.cfg` each integrate about 550,000 geodesics, which takes about a minute on an 8-core laptop (about 5 CPU-minutes, so longer on fewer cores); `KerrCriticalCurve.cfg` takes a few seconds. For a quick check, `cfgs/KerrExample-lowres.cfg` runs the Kerr example on a 100 x 100 grid in about a second (see the notebook for how to use its output).
+`KerrExample.cfg` and `JohannsenExample.cfg` each integrate about 617,622 geodesics, which takes about a minute or two on an 8-core laptop (about 5-10 CPU-minutes, so longer on fewer cores); `KerrCriticalCurve.cfg` takes a few seconds. For a quick check, `cfgs/KerrExample-lowres.cfg` runs the Kerr example on a 100 x 100 grid in a few seconds (see the notebook for how to use its output).
 
 This populates the necessary output files in the Output subfolder. A Python environment for the post-processing scripts and notebook is provided in `PostProc/environment.yml`. Create and activate it, e.g., using conda
 

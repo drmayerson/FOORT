@@ -362,7 +362,7 @@ The different possible Termination subheadings and further options therein are:
  
  \item \code{TimeOut}: Terminate the geodesic integration if it has taken too many integration steps. This sometimes happens if a geodesic travels too close to a coordinate singularity. Options to set are:
  \begin{itemize}
- \item \code{MaxSteps = int;} \newline The maximum number of integration steps allowed before the geodesic terminates. Default is 10000. Note: make sure to set this higher (e.g. 100000 or more) when not using \code{RLogScale = false} in the metric, as otherwise most geodesics will time-out prematurely!
+ \item \code{MaxSteps = int;} \newline The maximum number of integration steps allowed before the geodesic terminates. Default is 10000. Note: make sure to set this higher (e.g. 100000 or more) when using \code{RLogScale = false} in the metric, as otherwise most geodesics will time-out prematurely!
  \item \code{UpdateFrequency = int;} \newline Analogous to the same setting under \code{Horizon} above. Default is 1.\newline \textbf{Warning:} if this is not set to 1, then the effective maximum number of integration steps that the geodesic is allowed before being terminated is \code{MaxSteps}$*$\code{UpdateFrequency}!
 \end{itemize}
 
@@ -637,7 +637,7 @@ which reads \code{EquatorialEmission} output, interpolates it onto a grid (with 
 \end{itemize}
 It returns \code{visamps}, an array with one row per angle, each normalized to 1 at zero baseline, and \code{baselines}, the corresponding baseline lengths in G$\lambda$ (the same for all angles).
 
-The baselines are sampled with spacing $\Delta u \approx 1/(\code{RadonPaddingFactor}\cdot\code{AngularSize})$, up to the Nyquist limit $u_\text{max} = (N_\text{grid}-1)/(2\cdot\code{AngularSize})$, where $N_\text{grid}$ is the number of grid points per side. For example, a 50 $\mu$as screen gridded with $N_\text{grid} = 1001$ points reaches $u_\text{max}\approx 2000$ G$\lambda$. Resolving the photon rings at long baselines thus requires a fine enough grid, i.e.\ enough subdivision levels in the \code{SquareSubdivisionMesh}. 
+The baselines are sampled with spacing $\Delta u \approx 1/(\sqrt{2}\ \code{RadonPaddingFactor}\cdot\code{AngularSize})$, up to the Nyquist limit $u_\text{max} = (N_\text{grid}-1)/(2\cdot\code{AngularSize})$, where $N_\text{grid}$ is the number of grid points per side. For example, a 50 $\mu$as screen gridded with $N_\text{grid} = 1001$ points reaches $u_\text{max}\approx 2000$ G$\lambda$. Resolving the photon rings at long baselines thus requires a fine enough grid, i.e.\ enough subdivision levels in the \code{SquareSubdivisionMesh}. 
 
 \paragraph{Lower-level function.} The lower-level functions are:
 \begin{itemize}
