@@ -178,7 +178,7 @@ public:
 		: Mesh(valdiag),
 		  m_InitialPixels{static_cast<pixelcoord>(sqrt(initialPixels)) * static_cast<pixelcoord>(sqrt(initialPixels))},
 		  m_MaxSubdivide{maxSubdivide},
-		  m_RowColumnSize{static_cast<pixelcoord>((sqrt(initialPixels) - 1) * ExpInt(2, maxSubdivide - 1) + 1)},
+		  m_RowColumnSize{(static_cast<pixelcoord>(sqrt(initialPixels)) - 1) * ExpInt(2, maxSubdivide - 1) + 1},
 		  m_IterationPixels{iterationPixels}, m_MaxPixels{maxPixels}, m_InitialSubDividideToFinal{initialSubToFinal},
 		  m_InfinitePixels{maxPixels == 0}, m_PixelsLeft{maxPixels}
 	{

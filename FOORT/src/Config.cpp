@@ -1107,6 +1107,12 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigCollection &theCfg, DiagBitfla
 			// Simple Square Mesh!
 			largecounter totalpixels{100 * 100};
 			MeshSettings.LookupValueInteger("TotalPixels", totalpixels);
+			
+			if (totalpixels < 4) // need at least a 2x2 grid (screen coordinates divide by rowsize - 1)
+			{
+				ScreenOutput("TotalPixels must be at least 4. Using TotalPixels = 4.", Output_Other_Default);
+				totalpixels = 4;
+			}
 
 			theMesh = std::unique_ptr<Mesh>(new SimpleSquareMesh(totalpixels, valdiag));
 		}
@@ -1116,6 +1122,12 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigCollection &theCfg, DiagBitfla
 			// (the Mesh will ask for input in its constructor, so here!)
 			largecounter totalpixels{100 * 100};
 			MeshSettings.LookupValueInteger("TotalPixels", totalpixels);
+
+			if (totalpixels < 4) // need at least a 2x2 grid
+			{
+				ScreenOutput("TotalPixels must be at least 4. Using TotalPixels = 4.", Output_Other_Default);
+				totalpixels = 4;
+			}
 
 			theMesh = std::unique_ptr<Mesh>(new InputCertainPixelsMesh(totalpixels, valdiag));
 		}
@@ -1130,6 +1142,11 @@ std::unique_ptr<Mesh> Config::GetMesh(const ConfigCollection &theCfg, DiagBitfla
 			MeshSettings.LookupValueInteger("MaxPixels", maxpixels);
 			MeshSettings.LookupValueInteger("IterationPixels", iterationpixels);
 			MeshSettings.LookupValue("MaxSubdivide", maxsubdivide);
+			if (initialpixels < 4) // Must have at least 4 pixels to start with (2x2 grid)
+			{
+				ScreenOutput("InitialPixels must be at least 4. Using 4 initial pixels.", Output_Other_Default);
+				initialpixels = 4;
+			}
 			if (maxpixels !=0 && maxpixels < initialpixels) // maxpixels == 0 means "no maximum" (i.e. subdivide until the mesh is fully refined)
 				maxpixels = initialpixels;
 			if (maxsubdivide < 1) // 1 is the minimum level (initial grid is level 1)
