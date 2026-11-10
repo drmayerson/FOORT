@@ -274,7 +274,7 @@ Term NaNTermination::CheckTermination()
 
 		for (int i = 0; i < dimension && ret == Term::Continue; ++i)
 		{
-			if (std::isnan(pos[i]) || std::isnan(vel[i]))
+			if (!std::isfinite(pos[i]) || !std::isfinite(vel[i])) // not infinite or NaN
 				ret = Term::NaN;
 		}
 		if (ret == Term::NaN && TermOptions->OutputToConsole)
