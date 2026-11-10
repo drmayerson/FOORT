@@ -407,58 +407,77 @@ void GeneralCircularRadialFluid::FindISCO()
 		upperbound = log(m_ISCOupperbound);
 	}
 
-	// Perform binary search for ISCO
-	// Allow only 1000 iterations max
-	real currentr{(lowerbound + upperbound) / 2.0};
-	int iterations{0};
-	bool exactfound{false}; // in case we converge exactly on the ISCO
-	bool nextsmaller{true};
-	while (upperbound - lowerbound > 2.0 * Integrators::Derivative_hval && iterations < 1000 && !exactfound)
+	// Helper function to return stability of the circular orbit at search coordinate x (r or log r):
+	// +1 if a stable (or marginally stable) circular orbit exists there, -1 if it is unstable or does not exist
+	auto stability = [this](real x) -> int
 	{
-		// If this returns non-zero values than it found a circular orbit
-		OneIndex currentp{GetCircularVelocityd(Point{0.0, currentr, pi / 2.0, 0.0}, false)};
-		if (currentp[0] < 0.0) // found pure circular orbit at this point
-		{
-			// Calculate stability of this circular orbit by considering a small perturbation of the radius
-			// This is \partial_r(g^{ab}\Gamma^r_{bc}g^{cd})
-			TwoIndex ChristrRaisedDer{GetChristrRaisedDer(currentr)};
-			// rdd is the rhs of the resulting perturbed geodesic equation for r
-			real rdd{};
-			for (int i = 0; i < dimension; ++i)
-				for (int j = 0; j < dimension; ++j)
-					rdd += -currentp[i] * ChristrRaisedDer[i][j] * currentp[j];
+		OneIndex p{GetCircularVelocityd(Point{0.0, x, pi / 2.0, 0.0}, false)};
+		if (!(p[0] < 0.0)) // no circular orbit at this radius
+			return -1;
+		// rdd is the rhs of the perturbed geodesic equation for r: rdd > 0 means unstable
+		TwoIndex ChristrRaisedDer{GetChristrRaisedDer(x)};
+		real rdd{};
+		for (int i = 0; i < dimension; ++i)
+			for (int j = 0; j < dimension; ++j)
+				rdd += -p[i] * ChristrRaisedDer[i][j] * p[j];
+		return rdd > 0.0 ? -1 : +1; // stable (or marginally stable) circular orbit exists if rdd <= 0
+	};
 
-			if (rdd < 0.0)
-				// stable orbit, so ISCO < currentr
-				nextsmaller = true;
-			else if (rdd > 0.0)
-				// unstable orbit, so ISCO > currentr
-				nextsmaller = false;
-			else
-				// ISCO = currentr exactly
-				exactfound = true;
-		}
-		else
-		{
-			// Did not find a circular orbit at all at this radius, so ISCO > currentr
-			nextsmaller = false;
-		}
-		if (!exactfound && nextsmaller) // ISCO < currentr
-		{
-			upperbound = currentr;
-			currentr = (lowerbound + upperbound) / 2.0;
-		}
-		else if (!exactfound && !nextsmaller) // ISCO > currentr
-		{
-			lowerbound = currentr;
-			currentr = (lowerbound + upperbound) / 2.0;
-		}
+	// NOTE ABOUT ISCO
+	// Our working definition of ISCO is that it is the outermost transition from a stable circular orbit to an unstable or non-existent circular orbit.
+	// Note that this is not exactly the standard definition of ISCO; but this allows us to find an "ISCO" even in spacetimes where the standard definition fails,
+	// e.g. the boson star (which has an "inner stable region" ranging all the way to zero radius),
+	// while still also returning correct/consistent results for spacetimes where the standard definition does work (e.g. Kerr).
 
-		++iterations; // update iteration count
+	// First, check that upper bound has a stable circular orbit
+	if (stability(upperbound) < 0)
+	{
+		ScreenOutput("No stable circular orbit at the ISCO upper bound r = " + std::to_string(m_ISCOupperbound) +
+						 ", so no ISCO was determined. Consider increasing ISCOUpperBound.",
+					 OutputLevel::Level_0_WARNING);
+		m_ISCOexists = false;
+		return;
 	}
 
-	// Store the ISCO momentum components
-	OneIndex pdownISCO{GetCircularVelocityd(Point{0.0, exactfound ? currentr : upperbound, pi / 2.0, 0.0})};
+	// Now, scan inward from the upper bound for the first radius WITHOUT a stable circular orbit
+	constexpr int nscan{200};
+	real xstable{upperbound}; // innermost point found so far in the outer stable region
+	real xunstable{};		  // first point inside it without a stable circular orbit
+	bool transitionfound{false};
+	for (int k = 1; k <= nscan && !transitionfound; ++k)
+	{
+		real x{upperbound - (upperbound - lowerbound) * k / nscan};
+		if (stability(x) < 0)
+		{
+			xunstable = x;
+			transitionfound = true;
+		}
+		else
+			xstable = x;
+	}
+	if (!transitionfound) // Only stable circular orbits were found in the entire search interval
+	{
+		ScreenOutput("All circular orbits between the ISCO bounds r = " + std::to_string(m_ISCOlowerbound) + " and r = " +
+						 std::to_string(m_ISCOupperbound) + " are stable, so no ISCO was determined. If the metric has an ISCO, consider decreasing ISCOLowerBound.",
+					 OutputLevel::Level_0_WARNING);
+		m_ISCOexists = false;
+		return;
+	}
+
+	// We have found an unstable orbit; now we converge on the transition between stable and unstable orbits - this is the ISCO.
+	int iterations{0};
+	while (xstable - xunstable > 2.0 * Integrators::Derivative_hval && iterations < 1000)
+	{
+		real xmid{(xstable + xunstable) / 2.0};
+		if (stability(xmid) < 0)
+			xunstable = xmid;
+		else
+			xstable = xmid;
+		++iterations;
+	}
+
+	// Store the ISCO momentum components (use the stable side of the bisection - a circular orbit exists there)
+	OneIndex pdownISCO{GetCircularVelocityd(Point{0.0, xstable, pi / 2.0, 0.0})};
 	if (pdownISCO[0] >= 0.0)
 	{
 		ScreenOutput("Finding ISCO and ISCO momentum failed!", OutputLevel::Level_0_WARNING);
@@ -467,11 +486,11 @@ void GeneralCircularRadialFluid::FindISCO()
 	else
 	{
 		m_ISCOexists = true;
-		m_ISCOr = exactfound ? currentr : upperbound; // use upper bound to ensure a circular geodesic momentum was/can be found
+		m_ISCOr = xstable;
 		m_ISCOpt = pdownISCO[0];
 		m_ISCOpphi = pdownISCO[3];
 
-		// The binary search converges onto a search bound whenever the stability transition lies outside
+		// The search converges onto a search bound whenever the stability transition lies outside
 		// [lower bound, upper bound] (or the stability structure there is not a single transition), so an
 		// ISCO within a small fraction of the search interval of either bound is likely not the true ISCO.
 		// Distances are compared in the search coordinate (log(r) if the metric uses a logarithmic scale).
