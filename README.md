@@ -1,5 +1,7 @@
 # Welcome To FOORT!
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24132984.svg)](https://doi.org/10.5281/zenodo.24132984)
+
 The code files are all in the `FOORT/src` subfolder.
 
 ## QUICK INSTALL GUIDE

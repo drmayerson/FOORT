@@ -12,6 +12,7 @@ authors:
     orcid: https://orcid.org/0000-0002-7526-8154
 title: "FOORT: Flexible Object-Oriented Ray Tracing"
 version: 1.0.0
+doi: 10.5281/zenodo.24132984
 date-released: 2026-11-11
 url: "https://github.com/drmayerson/FOORT"
 type: software
