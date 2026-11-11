@@ -125,16 +125,19 @@ The same requirements and CMake commands as for Linux apply. However, Apple Clan
 
 #### MacOS Troubleshooting
 
-Install GCC with Homebrew (`brew install gcc`), then point CMake to it and to the active macOS SDK
+Install GCC with Homebrew (`brew install gcc`), then point CMake to it and to the macOS SDK that this GCC was built for
 (see also [this note](https://gist.github.com/scivision/d69faebbc56da9714798087b56de925a)):
 
 ```
 export CC=$(brew --prefix)/bin/gcc-15      # use the version you installed, e.g. gcc-14
 export CXX=$(brew --prefix)/bin/g++-15
-export SDKROOT=$(xcrun --show-sdk-path)
+$CXX -v 2>&1 | grep -o 'with-sysroot=[^ ]*'  # the SDK this GCC was built for, e.g. .../MacOSX15.sdk
+export SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX15.sdk
 ```
 
-For convenience, `alternative_builds/MacOS_workaround.sh` does this automatically, picking the newest Homebrew GCC. From the top-level folder, run
+Use the SDK that GCC reports rather than the newest one (`xcrun --show-sdk-path`): after a Command Line Tools update, the newest SDK can contain headers that an older GCC cannot parse, giving errors such as `expected constructor, destructor, or type conversion before '(' token` in `mach/message.h`. If that SDK is not installed, upgrade GCC (`brew upgrade gcc`).
+
+For convenience, `alternative_builds/MacOS_workaround.sh` does this automatically, picking the newest Homebrew GCC and its matching SDK. From the top-level folder, run
 
 ```
 source alternative_builds/MacOS_workaround.sh
